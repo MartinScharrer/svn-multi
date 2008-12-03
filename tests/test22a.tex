@@ -1,0 +1,45 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage[obeyspaces]{url}
+\usepackage{hyperref}
+
+%\svnidlong
+%{$HeadURL$}
+%{$LastChangedDate$}
+%{$LastChangedRevision$}
+%{$LastChangedBy$}
+%\svnid{$Id$}
+
+\makeatletter
+\svnkwsave {$Test: file_with_underscore%20perc^&*#ent.tex 15 2006-05-26 15:47:47Z maryd $}
+\svnid{$Id$}
+%{$Id$}
+%\begingroup
+%\svn@readkw 
+
+
+\begin{document}
+
+\chapter{Test 22}
+
+\noindent
+\svnkw{Id} | \svnkw{Test}
+
+Id: \url{\svnkwId}
+\svnkwId
+
+Test: \url{\svnkwTest}
+\svnkwTest
+
+ \noindent
+ svnkw\{Filename\} : \svnkw{Filename} \\
+ svnfiledate : \svnfiledate  \\
+ svnfileauthor : \svnfileauthor  \\
+ svnfileyear : \svnfileyear  \\
+ svnfilemonth : \svnfilemonth  \\
+ svnfileday : \svnfileday  \\
+ svnfilehour : \svnfilehour  \\
+ svnfileminute : \svnfileminute  \\
+ svnfilesecond : \svnfilesecond  \\
+ svnfiletimezone : \svnfiletimezone  \\
+\end{document}

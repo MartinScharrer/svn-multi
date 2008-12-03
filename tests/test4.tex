@@ -1,0 +1,30 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{ifthen}
+
+\svnkwdef{Testkw1}{test value}
+\svnkwdef{Testkw2}{test value with : colon}
+
+\begin{document}
+\svnkwdef{Testkw3}{test value after begin document}
+
+\chapter{Test 4}
+Usage of \verb+\svnkwdef+.
+
+\section*{Keywords}
+\noindent
+Testkw1: \svnkw{Testkw1}\\
+Testkw2: \svnkw{Testkw2}\\
+Testkw3: \svnkw{Testkw3}\\
+
+\ifthenelse{\equal{test value}{\svnkw{Testkw1}}}{}{\error}
+\ifthenelse{\equal{test value with : colon}{\svnkw{Testkw2}}}{}{\error}
+\ifthenelse{\equal{test value after begin document}{\svnkw{Testkw3}}}{}{\error}
+
+\section{Test overwritting}
+\svnkwdef{Testkw1}{overwritten value}
+Testkw1: \svnkw{Testkw1}\\
+
+\ifthenelse{\equal{overwritten value}{\svnkw{Testkw1}}}{}{\error}
+ 
+\end{document}

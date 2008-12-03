@@ -1,0 +1,24 @@
+\documentclass {scrartcl} 
+\usepackage[obeyspaces]{url} 
+\usepackage{eso-pic,svnkw,hyperref} 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}    % T1 Schriften verwenden
+\usepackage{lmodern}
+
+ 
+\AddToShipoutPicture{% 
+     \AtPageLowerLeft{% 
+         \raisebox{5pt}{% 
+             \parbox[b]{\paperwidth}{% 
+                 \strut{}Repository: % \svnkw
+ {\urlstyle{rm}\svnnolinkurl{\svnkwRepoUrl}}% 
+             }% 
+         }% 
+     }% 
+} 
+ 
+ 
+\begin{document} 
+\svnkwsave{$RepoUrl: file:///\Server/repository/trunk/"$%^&*()!_+=][ $} 
+    \nolinkurl{$RepoUrl: file:///\Server/repository/trunk/"$%^&*()!_+=][ $} 
+\end{document} 

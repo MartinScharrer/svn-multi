@@ -1,0 +1,46 @@
+\documentclass[a4paper]{scrbook}
+\usepackage{svn-multi}
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+
+\usepackage{hyperref}
+
+\title{\texttt{svn-multi} Namespace example document}
+\author{Martin Scharrer}
+\date{Revision: \svnrev}
+
+\def\svnnamespace#1{}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\part{Abc}
+\svnnamespace{abc}
+\include{namespace_example_part1a}
+\include{namespace_example_part1b}
+\include{namespace_example_part1c}
+
+\part{Def}
+\svnnamespace{def}
+\include{namespace_example_part2a}
+\include{namespace_example_part2b}
+
+\part{Ghi}
+\svnnamespace{ghi}
+\include{namespace_example_part3a}
+\include{namespace_example_part3b}
+
+% Part 4 inside an include file
+\include{namespace_example_part4}
+\include{namespace_example_part4a}
+\include{namespace_example_part4b}
+\include{namespace_example_part4c}
+
+\end{document}
+
+% Vim setting modeline - please do not delete
+% vim: tabstop=2 expandtab autoindent

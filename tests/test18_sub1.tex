@@ -1,0 +1,27 @@
+% URL with _ and %
+\begingroup
+\catcode\%=12
+\svnidlong
+{$LastChangedRevision$}
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedBy$}
+\svnid{$Id$}
+\endgroup
+
+% percent normal again
+
+\section{Input file}
+
+\noindent
+HeadURL: \url{\svnkw{HeadURL}} \\
+Filename: \url{\svnkw{Filename}} \\
+Main URL: \url{\svnmainurl} \\
+Main file name: \url{\svnmainfilename} \\
+
+\noindent
+HeadURL: \svnnolinkurl{\svnkw{HeadURL}} \\
+Filename: \svnnolinkurl{\svnkw{Filename}} \\
+Main URL: \svnnolinkurl{\svnmainurl} \\
+Main file name: \svnnolinkurl{\svnmainfilename} \\
+

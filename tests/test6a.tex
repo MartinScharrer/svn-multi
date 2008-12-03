@@ -1,0 +1,24 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+% URL without _ or %
+\svnidlong{$HeadURL$}{$LastChangedDate$}{$LastChangedRevision$}{$LastChangedBy$}
+
+\svnid{$Id$}
+
+\begin{document}
+
+\chapter{Test 6}
+Usage of \verb+\svnkw+:\\
+
+\noindent
+HeadURL: \svnkw{HeadURL} \\
+LastChangedDate: \svnkw{LastChangedDate} \\
+Date: \svnkw{Date} \\
+LastChangedRevision: \svnkw{LastChangedRevision} \\
+Revision: \svnkw{Revision} \\
+Rev: \svnkw{Rev} \\
+LastChangedBy: \svnkw{LastChangedBy} \\
+Filename: \svnkw{Filename} \\
+
+\end{document}

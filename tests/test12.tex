@@ -1,0 +1,26 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{hyperref}
+
+% URL with _
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+
+\begin{document}
+
+\chapter{Test 12}
+Usage of \verb+\svnsetmainurl+ together with \verb+\svnmainurl+ and \verb+\svnmainfilename+.\\
+
+\section{Main file}
+
+\noindent
+svnmainurl: \svnnolinkurl{\svnmainurl} \\
+svnmainfilename: \svnnolinkurl{\svnmainfilename} \\
+
+\input{test11_sub1}
+
+\end{document}

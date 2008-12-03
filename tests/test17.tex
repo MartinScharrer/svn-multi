@@ -1,0 +1,29 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{hyperref}
+
+% URL with _ and %
+\begingroup
+\catcode\%=12
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+\endgroup
+
+\begin{document}
+
+\chapter{Test 17}
+Test of filenames with percent letter.
+
+\noindent
+HeadURL: \url{\svnkw{HeadURL}} \\
+Filename: \url{\svnkw{Filename}} \\
+
+\noindent
+HeadURL: \svnnolinkurl{\svnkw{HeadURL}} \\
+Filename: \svnnolinkurl{\svnkw{Filename}} \\
+
+\end{document}

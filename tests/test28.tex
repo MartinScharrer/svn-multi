@@ -1,0 +1,68 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{color}
+\usepackage{calc}
+
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+\svnkwsave{$Test: file_with_underscore%20percent.tex 15 2006-05-26 15:47:47Z maryd $}
+
+\begin{document}
+
+\chapter{Test 28}
+Spaces test. Includes a file inside a fbox containing only svnid, svnidlong and svnkwsave.
+The fbox should be empty with no spaces. So the width of the resulting box should be
+equal to 2\fboxrule + 2\fboxsep.
+
+% Calc reference width of one space
+\newlength{\refwidth}
+\settowidth{\refwidth}{\ }
+
+% Create testbox
+\newsavebox{\testbox}
+
+% Save original sep and rule values
+\newlength{\origfboxsep}
+\newlength{\origfboxrule}
+\setlength{\origfboxsep}{\fboxsep}
+\setlength{\origfboxrule}{\fboxrule}
+
+% Set sep and rule
+\setlength{\fboxsep}{0pt}
+\setlength{\fboxrule}{0pt}
+
+% Save box
+\savebox{\testbox}{%
+\color{red}%
+\fbox{\input{test28_sub1}}}
+
+% Measure width
+\newlength{\testwidth}
+\settowidth{\testwidth}{\usebox{\testbox}}
+% Sub rule and sep values
+\addtolength{\testwidth}{-2\fboxrule-2\fboxsep}
+
+% Typeset value (should be 0pt)
+\the\testwidth
+
+% Draw second frame in green for visiual test
+\setlength{\fboxsep}{\origfboxsep}
+\setlength{\fboxrule}{\origfboxrule}
+{\color{green}\fbox{\usebox{\testbox}}}
+
+% Test width and raise error if greater than zero
+\ifnum\testwidth>0pt
+    \newcounter{spaces}
+    \setcounter{spaces}{\testwidth/\refwidth}
+    \edef\thespaces{\arabic{spaces}}
+    \message{Spaces found: \the\testwidth\space = \thespaces\space space(s)}
+    \nonstopmode
+    \error TEST failed!
+\fi
+
+\end{document}
+

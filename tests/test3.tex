@@ -1,0 +1,31 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{ifthen}
+
+% Note that the $ at the end must have a leading space!
+\svnkwsave{$Testkw1: test value $}
+\svnkwsave{$Testkw2: test value with : colon  $}
+
+\begin{document}
+\svnkwsave{$Testkw3: test value after begin document $}
+
+\chapter{Test 3}
+Usage of \verb+\svnkwsave+.
+
+\section*{Keywords}
+\noindent
+Testkw1: .\svnkw{Testkw1}.\\
+Testkw2: .\svnkw{Testkw2}.\\
+Testkw3: .\svnkw{Testkw3}.\\
+
+\ifthenelse{\equal{test value}{\svnkw{Testkw1}}}{}{\error}
+\ifthenelse{\equal{test value with : colon}{\svnkw{Testkw2}}}{}{\error}
+\ifthenelse{\equal{test value after begin document}{\svnkw{Testkw3}}}{}{\error}
+
+\section{Test overwritting}
+\svnkwsave{$Testkw1: overwritten value $}
+Testkw1: .\svnkw{Testkw1}.\\
+
+\ifthenelse{\equal{overwritten value}{\svnkw{Testkw1}}}{}{\error}
+
+\end{document}

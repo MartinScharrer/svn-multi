@@ -1,0 +1,20 @@
+\documentclass {scrartcl} 
+\usepackage[obeyspaces]{url} 
+\usepackage{eso-pic,svnkw,hyperref} 
+ 
+\AddToShipoutPicture{% 
+     \AtPageLowerLeft{% 
+         \raisebox{5pt}{% 
+             \parbox[b]{\paperwidth}{% 
+                 \strut{}Repository: % 
+ {\urlstyle{rm}\expandafter\nolinkurl\expandafter{\svnkwRepoUrl}}% 
+             }% 
+         }% 
+     }% 
+} 
+ 
+\svnkwsave{$RepoUrl: file:///\Server/repository/trunk $} 
+ 
+\begin{document} 
+ \nolinkurl{file:///\Server/repository/trunk} 
+\end{document} 

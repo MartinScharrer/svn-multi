@@ -1,0 +1,43 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+\svnid{$Id$}
+
+\svnRegisterAuthor{maryd}{Mary Doe}
+\svnRegisterRevision{15}{Version 1}
+
+\begin{document}
+
+\chapter{Test 15}
+Usage of \verb+\svnRegisterAuthor+, \verb+\svnFullAuthor+,
+\verb+\svnRegisterAuthor+ and \verb+\svnFullRevision+.
+
+\noindent
+svnauthor: \svnauthor\\
+svnfileauthor: \svnfileauthor\\
+
+\noindent
+Full author of document: \svnFullAuthor{\svnauthor}\\
+Full author of file: \svnFullAuthor{\svnfileauthor}\\
+Full author (fixed user name): \svnFullAuthor{maryd}\\
+
+\noindent
+Full author of document: \svnFullAuthor*{\svnauthor}\\
+Full author of file: \svnFullAuthor*{\svnfileauthor}\\
+Full author (fixed user name): \svnFullAuthor*{maryd}\\
+
+\noindent
+svnrev: \svnrev\\
+svnfilerev: \svnfilerev\\
+
+\noindent
+Revision name of document: \svnFullRevision{\svnrev}\\
+Revision name of file: \svnFullRevision{\svnfilerev}\\
+Revision name (fixed number): \svnFullRevision{15}\\
+
+\noindent
+Revision name of document: \svnFullRevision*{\svnrev}\\
+Revision name of file: \svnFullRevision*{\svnfilerev}\\
+Revision name (fixed number): \svnFullRevision*{15}\\
+
+\end{document}

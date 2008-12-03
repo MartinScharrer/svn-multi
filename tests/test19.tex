@@ -1,0 +1,35 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{hyperref}
+
+% URL with _ and %
+\catcode\%=12
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+\catcode\%=14
+% Percent normal again
+
+\begin{document}
+
+\chapter{Test 19}
+Test of filenames with percent letter with multiple files.
+
+\noindent
+HeadURL: \url{\svnkw{HeadURL}} \\
+Filename: \url{\svnkw{Filename}} \\
+Main URL: \url{\svnmainurl} \\
+Main file name: \url{\svnmainfilename} \\
+
+\noindent
+HeadURL: \svnnolinkurl{\svnkw{HeadURL}} \\
+Filename: \svnnolinkurl{\svnkw{Filename}} \\
+Main URL: \svnnolinkurl{\svnmainurl} \\
+Main file name: \svnnolinkurl{\svnmainfilename} \\
+
+\input{test19_sub1}
+
+\end{document}

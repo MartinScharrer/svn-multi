@@ -1,0 +1,28 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+% URL without _ or %
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+
+\begin{document}
+
+\chapter{Test 8}
+Usage of per file revision information:\\
+
+\noindent
+ svnfiledate : \svnfiledate  \\
+ svnfileauthor : \svnfileauthor  \\
+ svnfileyear : \svnfileyear  \\
+ svnfilemonth : \svnfilemonth  \\
+ svnfileday : \svnfileday  \\
+ svnfilehour : \svnfilehour  \\
+ svnfileminute : \svnfileminute  \\
+ svnfilesecond : \svnfilesecond  \\
+ svnfiletimezone : \svnfiletimezone  \\
+
+\end{document}

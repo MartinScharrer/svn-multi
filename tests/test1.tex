@@ -1,0 +1,14 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+\begin{document}
+\chapter{Test 1}
+Usage of \texttt{\textbackslash usepackage\{svn-multi\}} alone without using
+the macros.
+
+The file \jobname.svn should not be generated.
+
+\IfFileExists{\jobname.svn}
+{\error .svn file generated!}
+{}
+\end{document}

@@ -1,0 +1,28 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+% URL without _ or %
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+
+\begin{document}
+
+\chapter{Test 7}
+Usage of ``whole document'' revision information:\\
+
+\noindent
+ svndate : \svndate  \\
+ svnauthor : \svnauthor  \\
+ svnyear : \svnyear  \\
+ svnmonth : \svnmonth  \\
+ svnday : \svnday  \\
+ svnhour : \svnhour  \\
+ svnminute : \svnminute  \\
+ svnsecond : \svnsecond  \\
+ svntimezone : \svntimezone  \\
+
+\end{document}

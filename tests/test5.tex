@@ -1,0 +1,19 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{ifthen}
+
+\begin{document}
+
+\chapter{Test 5}
+Usage of \verb+\svn+:\\
+\verb+\svn+: \svn{$Revision$}, \svn{$Just something $}, \ldots\\
+\verb+\svn*+: \svn*{$Revision$}, \svn*{$Just something $}, \ldots
+
+
+\makeatletter
+%\catcode`\ =12
+\ifthenelse{\equal{Just something }{\svn@n{$Just something $}}}{}{\error}%
+\ifthenelse{\equal{Just something}{\svn@s*{$Just something $}}}{}{\error}%
+\ifthenelse{\equal{Revision: 123 }{\svn@n{$Revision$}}}{}{\error}%
+\ifthenelse{\equal{Revision: 123}{\svn@s*{$Revision$}}}{}{\error}%
+\end{document}

@@ -1,0 +1,46 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+% URL without _ or %
+\svnidlong{$HeadURL$}{$LastChangedDate$}{$LastChangedRevision$}{$LastChangedBy$}
+
+\svnid{$Id$}
+
+\begin{document}
+
+\chapter{Test 9}
+Usage of ``whole document'' and local file revision in multi file document:\\
+
+\section{Main file}
+\noindent
+HeadURL : \{\texttt{\svnkw{HeadURL}}\} \\
+HeadURL : \{\url{\svnkw{HeadURL}}\} \\
+HeadURL : \{\href{\svnkw{HeadURL}}{\svnkw{HeadURL}}\} \\
+HeadURL : \{\svnnolinkurl{\svnkw{HeadURL}}\} \\
+HeadURL : \{\svnnolinkurl{\svnkw{HeadURL}}\} \\
+ svndate : \{\svndate\} \\
+ svnauthor : \{\svnauthor\} \\
+ svnyear : \{\svnyear\} \\
+ svnmonth : \{\svnmonth\} \\
+ svnday : \{\svnday\} \\
+ svnhour : \{\svnhour\} \\
+ svnminute : \{\svnminute\} \\
+ svnsecond : \{\svnsecond\} \\
+ svntimezone : \{\svntimezone\} \\
+
+\noindent
+ svnfiledate : \{\svnfiledate\} \\
+ svnfileauthor : \{\svnfileauthor\} \\
+ svnfileyear : \{\svnfileyear\} \\
+ svnfilemonth : \{\svnfilemonth\} \\
+ svnfileday : \{\svnfileday\} \\
+ svnfilehour : \{\svnfilehour\} \\
+ svnfileminute : \{\svnfileminute\} \\
+ svnfilesecond : \{\svnfilesecond\} \\
+ svnfiletimezone : \{\svnfiletimezone\} \\
+
+\input{test9_sub1}
+
+\end{document}

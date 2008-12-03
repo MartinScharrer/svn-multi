@@ -1,0 +1,61 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+% Version control information:
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+\svnid{$Id$}
+% Don't forget to set the svn property 'svn:keywords' to
+% 'HeadURL LastChangedDate LastChangedRevision LastChangedBy' or
+% 'Id' or both depending if you use \svnidlong and/or \svnid
+
+\usepackage{hyperref}
+\usepackage{url}
+
+\usepackage{fancyhdr}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{14.5pt}
+% This will display the last changed revision of the current chapter.
+% Change \svnkw{LastChangedRevision} to \svnrev if you like to have the
+% document revision.
+\newcommand{\svnfooter}{Last Changed Rev: \svnkw{LastChangedRevision}}
+
+\pdfinfo{%
+  /CreationDate (D:\svnpdfdate)
+}
+
+\svnRegisterAuthor{johnd}{John Doe}
+\svnRegisterAuthor{maryd}{Mary Doe}
+\svnRegisterRevision{15}{Version~1}
+
+\listfiles
+\begin{document}
+\begin{titlepage}
+ \vspace{8ex}
+ {\huge Title\par}
+ \vspace{2ex}
+ {\large \noindent This is an example document for the \texttt{svn-multi} (aka
+ \texttt{svnkw}) package. Please also look at the LaTeX source code of this
+ document.}
+ \vfill
+ \flushleft\sffamily
+ Version control information:\\
+ Head URL: \url{\svnkw{HeadURL}}\\
+ Head URL: \svnnolinkurl{\svnkw{HeadURL}}\\
+ Last changed date: \svndate\\
+ Last changes revision: \svnrev\\
+ Version: \svnFullRevision*{\svnrev}\\
+ Last changed by: \svnFullAuthor*{\svnauthor}\\
+\end{titlepage}
+
+\tableofcontents
+
+% Include chapters
+\include{example_chap1}
+%\include{example_chap2}
+%\include{example_chap3}
+
+\end{document}

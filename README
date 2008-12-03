@@ -1,0 +1,64 @@
+--------------------------------------------------------------
+ svn-multi (was svnkw)
+ version 1.3a, July 10th, 2007
+--------------------------------------------------------------
+
+This package lets you typeset keywords of the version 
+control system Subversion inside your LaTeX files anywhere
+you like. Unlike the very similar package 'svn' the usage of 
+multiple files for one LaTeX document is well supported.
+
+Copyright (C) 2006,2007	Martin Scharrer
+E-mail: martin@scharrer-online.de
+WWW: http://www.scharrer-online.de/latex/svn-multi/
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Martin Scharrer.
+
+This work consists of the files svn-multi.dtx and svn-multi.ins
+and the derived files svn-multi.sty and svnkw.sty.
+
+
+Tiny example:
+~~~~~~~~~~~~~
+Put the following Subversion keyword in all your LaTeX files of 
+your document:
+
+\svnid{$Id$}
+
+Subversion will expand it (set property svn:keyword to 'Id') and 
+then you can typeset the SVN information using
+	\svnauthor, \svnrev, \svndate, \svnhour, ...
+which will hold the information of the latest comitted file 
+anywhere in your multi-file LaTeX document.
+
+Also per-file macros exist:
+	\svnfileauthor, \svnfilerev, ...
+which hold the keyword values of the current file.
+
+
+INSTALL:
+~~~~~~~~
+From the .dtx file (if you don't get the .sty files directly):
+==================
+Unpack the zip file and run 'make'.
+You also can do it manually:
+  [pdf]latex svn-multi.ins	# for the style file
+  [pdf]latex svn-multi.dtx	# for the documentation
+  [pdf]latex example-main.tex	# for the example
+
+Place the two .sty files
+  svn-multi.sty			# Package
+  svnkw.sty			# Wrapper for backward compatibility
+into your TEXMF tree, e.g. in
+  $TEXMF/tex/latex/svn-multi
+
