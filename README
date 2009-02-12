@@ -1,6 +1,6 @@
 --------------------------------------------------------------
  svn-multi (was svnkw)
- version 1.3a, July 10th, 2007
+ version 1.3b, Dec 3rd, 2009
 --------------------------------------------------------------
 
 This package lets you typeset keywords of the version 
@@ -8,7 +8,7 @@ control system Subversion inside your LaTeX files anywhere
 you like. Unlike the very similar package 'svn' the usage of 
 multiple files for one LaTeX document is well supported.
 
-Copyright (C) 2006,2007	Martin Scharrer
+Copyright (C) 2006-2009 Martin Scharrer
 E-mail: martin@scharrer-online.de
 WWW: http://www.scharrer-online.de/latex/svn-multi/
 
@@ -37,12 +37,12 @@ your document:
 
 Subversion will expand it (set property svn:keyword to 'Id') and 
 then you can typeset the SVN information using
-	\svnauthor, \svnrev, \svndate, \svnhour, ...
+    \svnauthor, \svnrev, \svndate, \svnhour, ...
 which will hold the information of the latest comitted file 
 anywhere in your multi-file LaTeX document.
 
 Also per-file macros exist:
-	\svnfileauthor, \svnfilerev, ...
+    \svnfileauthor, \svnfilerev, ...
 which hold the keyword values of the current file.
 
 
@@ -52,13 +52,13 @@ From the .dtx file (if you don't get the .sty files directly):
 ==================
 Unpack the zip file and run 'make'.
 You also can do it manually:
-  [pdf]latex svn-multi.ins	# for the style file
-  [pdf]latex svn-multi.dtx	# for the documentation
-  [pdf]latex example-main.tex	# for the example
+  [pdf]latex svn-multi.ins  # for the style file
+  [pdf]latex svn-multi.dtx  # for the documentation
+  [pdf]latex example-main.tex   # for the example
 
 Place the two .sty files
-  svn-multi.sty			# Package
-  svnkw.sty			# Wrapper for backward compatibility
+  svn-multi.sty         # Package
+  svnkw.sty         # Wrapper for backward compatibility
 into your TEXMF tree, e.g. in
   $TEXMF/tex/latex/svn-multi
 
