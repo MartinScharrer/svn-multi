@@ -72,8 +72,9 @@ tests: package
 		> /dev/null
 
 ${TESTS}: % : ${TESTDIR}/%.tex package
-	@if (pdflatex ${TESTARGS} $<) && (pdflatex ${TESTARGS} $<); \
-		then echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
-		else echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
+	@-pdflatex ${TESTARGS} $< 1>/dev/null 2>/dev/null
+	@if (pdflatex ${TESTARGS} $<); \
+		then echo  "${GREEN}$@ succeeded${WHITE}" >&2; \
+		else echo  "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
 
 
