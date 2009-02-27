@@ -1,11 +1,11 @@
 --------------------------------------------------------------
  svn-multi (was svnkw)
- version 1.3b, Dec 3rd, 2009
+ version 1.4, Feb 27rd, 2009
 --------------------------------------------------------------
 
-This package lets you typeset keywords of the version 
+This package lets you typeset keywords of the version
 control system Subversion inside your LaTeX files anywhere
-you like. Unlike the very similar package 'svn' the usage of 
+you like. Unlike the very similar package 'svn' the usage of
 multiple files for one LaTeX document is well supported.
 
 Copyright (C) 2006-2009 Martin Scharrer
@@ -30,15 +30,15 @@ and the derived files svn-multi.sty and svnkw.sty.
 
 Tiny example:
 ~~~~~~~~~~~~~
-Put the following Subversion keyword in all your LaTeX files of 
+Put the following Subversion keyword in all your LaTeX files of
 your document:
 
 \svnid{$Id$}
 
-Subversion will expand it (set property svn:keyword to 'Id') and 
+Subversion will expand it (set property svn:keyword to 'Id') and
 then you can typeset the SVN information using
     \svnauthor, \svnrev, \svndate, \svnhour, ...
-which will hold the information of the latest comitted file 
+which will hold the information of the latest comitted file
 anywhere in your multi-file LaTeX document.
 
 Also per-file macros exist:
