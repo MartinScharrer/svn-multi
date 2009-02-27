@@ -27,12 +27,12 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{svn-multi}
 %<*package|driver>
-    [2009/27/02 v1.4 SVN Keywords for multi-file LaTeX documents]
+    [2009/02/27 v1.4 SVN Keywords for multi-file LaTeX documents]
 %</package|driver>
 %<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [2009/27/02 v1.4 Backward compatibility wrapper for svn-multi]
-%<wrapper>\RequirePackage{svn-multi}[2009/27/02]
+%<wrapper> [2009/02/27 v1.4 Backward compatibility wrapper for svn-multi]
+%<wrapper>\RequirePackage{svn-multi}[2009/02/27]
 %
 %<*driver>
 \documentclass{ltxdoc}
@@ -130,7 +130,7 @@
 % \changes{v1.3b}{2008/12/03}{Changed the way catcodes are modified to be compatible
 % with the french option of the babel package or other packages which modify the
 % list of special characters.}
-% \changes{v1.4}{2009/27/02}{Added support for timezones with non-zero minute
+% \changes{v1.4}{2009/02/27}{Added support for timezones with non-zero minute
 % part, \eg +0530.}
 %
 % \GetFileInfo{svn-multi.sty}
@@ -520,7 +520,7 @@
 % This macros return the global and local time zones. Since v1.4 the minute part
 % is returned as well and the macro removes manually added |00| after it to
 % support older documents.
-% \changes{v1.4}{2009/27/02}{Return now full timezone (hour + minute part).
+% \changes{v1.4}{2009/02/27}{Return now full timezone (hour + minute part).
 % Manually added 00 minutes are removed.}
 %    \begin{macrocode}
 \def\svntimezone{\svntimezonehour\svntimezoneminute\svn@gobblezeros}
