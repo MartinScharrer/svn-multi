@@ -1,0 +1,15 @@
+\svnidlong
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test30a.tex $}
+{$LastChangedDate: 2009-02-27 12:24:50 +2345 (Fri, 27 Feb 2009) $}
+{$LastChangedRevision: 205 $}
+{$LastChangedBy: martin $}
+
+
+\section{Sub file}
+Timezone:   '\svnfiletimezone00' (Should be '\svnfiletimezone').\\
+\ifthenelse{\equal{+1234}{\svnfiletimezone00}}{}{\error}%
+
+\section{Global in sub file}
+Timezone:   '\svntimezone00' (Should be '\svntimezone').\\
+\ifthenelse{\equal{+1234}{\svntimezone00}}{}{\error}%
+
