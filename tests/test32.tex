@@ -1,0 +1,27 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}[2009/02/28]
+\usepackage[english]{babel}
+%\usepackage{ifthen}
+
+\svnidlong
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test30.tex $}
+{$LastChangedDate: 2000-04-22 12:24:50 +1234 (Xxx, 22 Apr 2000) $}
+{$LastChangedRevision: 206 $}
+{$LastChangedBy: martin $}
+
+\begin{document}
+
+\chapter{Test 32}
+New (v1.5) today-like macros.
+
+\section{Main file}
+\noindent
+Global Today: \svntoday =?= April 22, 2000\\
+Local Today: \svnfiletoday =?= April 22, 2000\\
+
+%\ifthenelse{\equal{\svntoday}{April 22, 2000}}{}{\error}%
+%\ifthenelse{\equal{\svnfiletoday}{April 22, 2000}}{}{\error}%
+
+\input{test32_sub}
+
+\end{document}

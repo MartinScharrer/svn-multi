@@ -69,11 +69,12 @@ tests: package
 	@echo "Running tests: ${TESTS}:"
 	@${MAKE} -e -i --no-print-directory ${TESTS} \
 		TESTARGS="-interaction=batchmode -output-directory=${TESTDIR}"\
+		TESTPLOPT="-q"\
 		> /dev/null
 
 ${TESTS}: % : ${TESTDIR}/%.tex package
 	@-pdflatex -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
-	@if (pdflatex ${TESTARGS} $<); \
+	@if (pdflatex ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
 		then echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
 		else echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
 
