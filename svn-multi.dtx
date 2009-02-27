@@ -27,12 +27,12 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{svn-multi}
 %<*package|driver>
-    [2009/02/27 v1.4 SVN Keywords for multi-file LaTeX documents]
+    [2009/02/28 v1.5 SVN Keywords for multi-file LaTeX documents]
 %</package|driver>
 %<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [2009/02/27 v1.4 Backward compatibility wrapper for svn-multi]
-%<wrapper>\RequirePackage{svn-multi}[2009/02/27]
+%<wrapper> [2009/02/28 v1.5 Backward compatibility wrapper for svn-multi]
+%<wrapper>\RequirePackage{svn-multi}[2009/02/28]
 %
 %<*driver>
 \documentclass{ltxdoc}
@@ -95,7 +95,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{617}
+% \CheckSum{641}
 %
 % {\makeatother
 % \CharacterTable
@@ -132,6 +132,8 @@
 % list of special characters.}
 % \changes{v1.4}{2009/02/27}{Added support for timezones with non-zero minute
 % part, \eg +0530.}
+% \changes{v1.5}{2009/02/28}{Added \cs{today}-style macros \cs{svntoday} and
+% \cs{svnfiletoday}.}
 %
 % \GetFileInfo{svn-multi.sty}
 %
@@ -283,6 +285,11 @@
 % the macros hold still the values of the last file. Please see
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
+%
+% \DescribeMacro{\svntoday}
+% \DescribeMacro{\svnfiletoday}
+% This macros typeset the document-global or file-local date, respectively,
+% using the format of |\today| which depends on the used language.
 %
 % \DescribeMacro{\svnmainurl}
 % \DescribeMacro{\svnmainfilename}
@@ -547,6 +554,30 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+
+% \subsection{\textit{Today} macros}
+% This macros use the |\today| macro to typeset the current date using the local
+% language settings. Thanks and credit goes to Manuel P\'egouri\'e-Gonnard for
+% suggesting this feature and for providing the code.
+% \begin{macro}{\svntoday}
+%    \begin{macrocode}
+\newcommand\svntoday{%
+\begingroup
+\year\svnyear \month\svnmonth \day\svnday
+\relax \today
+\endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svnfiletoday}
+%    \begin{macrocode}
+\newcommand\svnfiletoday{%
+\begingroup
+\year\svnfileyear \month\svnfilemonth \day\svnfileday
+\relax \today
+\endgroup}
+%    \end{macrocode}
 % \end{macro}
 
 % \subsection{Id macros}
