@@ -1,11 +1,12 @@
 \documentclass[12pt]{report}
 \usepackage{svn-multi}
+\usepackage{ifthen}
 
 \svnidlong
-{$HeadURL$}
-{$LastChangedDate$}
-{$LastChangedRevision$}
-{$LastChangedBy$}
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test30.tex $}
+{$LastChangedDate: 2009-02-27 12:24:50 +1234 (Fri, 27 Feb 2009) $}
+{$LastChangedRevision: 206 $}
+{$LastChangedBy: martin $}
 
 \begin{document}
 
@@ -13,26 +14,19 @@
 New (v1.4) timezone macros.
 
 \section{Global}
-
-\subsection{Normal usage}
 Timezone Full:   \svntimezone\\
 Timezone Hour:   \svntimezonehour\\
 Timezone Minute: \svntimezoneminute\\
+\ifthenelse{\equal{+12}{\svntimezonehour}}{}{\error}%
+\ifthenelse{\equal{34}{\svntimezoneminute}}{}{\error}%
 
-\subsection{Removal of trailing 00}
-Timezone: \svntimezone00\\
-(Should be '\svntimezone').
 
 \section{Main file}
-
-\subsection{Normal usage}
 Timezone Full:   \svnfiletimezone\\
 Timezone Hour:   \svnfiletimezonehour\\
 Timezone Minute: \svnfiletimezoneminute\\
-
-\subsection{Removal of trailing 00}
-Timezone: \svnfiletimezone00\\
-(Should be '\svnfiletimezone').
+\ifthenelse{\equal{+12}{\svnfiletimezonehour}}{}{\error}%
+\ifthenelse{\equal{34}{\svnfiletimezoneminute}}{}{\error}%
 
 \input{test30a}
 

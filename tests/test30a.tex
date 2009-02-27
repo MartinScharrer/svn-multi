@@ -1,18 +1,20 @@
 \svnidlong
-{$HeadURL$}
-{$LastChangedDate$}
-{$LastChangedRevision$}
-{$LastChangedBy$}
-
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test30a.tex $}
+{$LastChangedDate: 2009-02-27 12:24:50 +2345 (Fri, 27 Feb 2009) $}
+{$LastChangedRevision: 206 $}
+{$LastChangedBy: martin $}
 
 \section{Sub file}
-
-\subsection{Normal usage}
 Timezone Full:   \svnfiletimezone\\
 Timezone Hour:   \svnfiletimezonehour\\
 Timezone Minute: \svnfiletimezoneminute\\
+\ifthenelse{\equal{+23}{\svnfiletimezonehour}}{}{\error}%
+\ifthenelse{\equal{45}{\svnfiletimezoneminute}}{}{\error}%
 
-\subsection{Removal of trailing 00}
-Timezone: \svnfiletimezone00\\
-(Should be '\svnfiletimezone').
+\section{Global in sub file}
+Timezone Full:   \svntimezone\\
+Timezone Hour:   \svntimezonehour\\
+Timezone Minute: \svntimezoneminute\\
+\ifthenelse{\equal{+12}{\svntimezonehour}}{}{\error}%
+\ifthenelse{\equal{34}{\svntimezoneminute}}{}{\error}%
 
