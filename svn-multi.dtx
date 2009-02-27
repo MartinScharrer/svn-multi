@@ -95,7 +95,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{564}
+% \CheckSum{0}
 %
 % {\makeatother
 % \CharacterTable
@@ -489,11 +489,25 @@
 \def\svnhour{0}     \def\svnfilehour{0}     \def\@svn@hour{0}   
 \def\svnminute{0}   \def\svnfileminute{0}   \def\@svn@minute{0} 
 \def\svnsecond{0}   \def\svnfilesecond{0}   \def\@svn@second{0} 
-\def\svntimezone{0} \def\svnfiletimezone{0} \def\@svn@timezone{0}   
+\def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
+\def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}   
 %    \end{macrocode}
 %
+% \subsection{Timezone macros}
+\def\svntimezone{\svntimezonehour\svntimezoneminute\svn@gobblezeros}
+\def\svnfiletimezone{\svnfiletimezonehour\svnfiletimezoneminute\svn@gobblezeros}
 
+\def\svn@gobblezeros{%
+\@ifnextchar{0}{%
+\svn@gobblezeros@%
+}{}
+}
+\def\svn@gobblezeros@#1{%
+\@ifnextchar{0}{%
+\@gobble
+}{A}
+}
 % \subsection{Id macros}
 % \subsubsection{Normal Id}
 % \begin{macro}{\svnid}
@@ -557,7 +571,8 @@
 \xdef\@svn@hour{\svnfilehour}%
 \xdef\@svn@minute{\svnfileminute}%
 \xdef\@svn@second{\svnfilesecond}%
-\xdef\@svn@timezone{\svnfiletimezone}%
+\xdef\@svn@timezonehour{\svnfiletimezonehour}%
+\xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \else\fi
 \fi
 }
@@ -881,7 +896,8 @@
 \gdef\svnfilehour{#4}%
 \gdef\svnfileminute{#5}%
 \gdef\svnfilesecond{#6#7}%
-\gdef\svnfiletimezone{+00}% #8 always 'Z' for Zulu-time (UTC)
+\gdef\svnfiletimezonehour{+00}%
+\gdef\svnfiletimezoneminute{00}% #8 always 'Z' for Zulu-time (UTC)
 }
 %    \end{macrocode}
 % \end{macro}
@@ -891,14 +907,24 @@
 %    \begin{macrocode}
 \def\@svn@scanlongdate#1{\expandafter\@svn@scanlongdate@#1\relax}
 %
-\def\@svn@scanlongdate@#1-#2-#3 #4:#5:#6 #700 #8\relax{%
+\def\@svn@scanlongdate@#1-#2-#3 #4:#5:#6 #7 #8\relax{%
 \gdef\svnfileyear{#1}%
 \gdef\svnfilemonth{#2}%
 \gdef\svnfileday{#3}%
 \gdef\svnfilehour{#4}%
 \gdef\svnfileminute{#5}%
 \gdef\svnfilesecond{#6}%
-\gdef\svnfiletimezone{#7}%
+\@svn@parsetimezone#7\relax%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\@svn@parsetimezone}
+% Scans timezone and splits hour and minute part.
+%    \begin{macrocode}
+\def\@svn@parsetimezone#1#2#3#4#5\relax{%
+\gdef\svnfiletimezonehour{#1#2#3}%
+\gdef\svnfiletimezoneminute{#4#5}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -907,7 +933,7 @@
 % Returns date in a format needed for |\pdfinfo|.
 %    \begin{macrocode}
 \def\svnpdfdate{\svnyear\svnmonth\svnday
-\svnhour\svnminute\svnsecond\svntimezone'00'}
+\svnhour\svnminute\svnsecond\svntimezonehour'\svntimezoneminute'}
 %    \end{macrocode}
 % \end{macro}
 
@@ -1052,7 +1078,8 @@
  \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
  \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
  \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
- \noexpand\def\noexpand\svntimezone{\@svn@timezone}^^J%
+ \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
+ \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
  }
  \immediate\closeout\svn@write%
  \fi\fi\fi\fi\fi%
