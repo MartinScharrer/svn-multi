@@ -95,7 +95,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{641}
+% \CheckSum{0}
 %
 % {\makeatother
 % \CharacterTable
@@ -520,6 +520,7 @@
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}   
+\def\svn@ns{}
 %    \end{macrocode}
 %
 % \subsection{Timezone macros}
@@ -635,7 +636,25 @@
 %    \begin{macrocode}
 \ifx\svnfilerev\empty\else
 \ifnum\@svn@rev<\svnfilerev
-\xdef\@svn@rev{#1}%
+\xdef\@svn@rev{\svnfilerev}%
+\xdef\@svn@date{\svnfiledate}%
+\xdef\@svn@author{\svnfileauthor}%
+\xdef\@svn@year{\svnfileyear}%
+\xdef\@svn@month{\svnfilemonth}%
+\xdef\@svn@day{\svnfileday}%
+\xdef\@svn@hour{\svnfilehour}%
+\xdef\@svn@minute{\svnfileminute}%
+\xdef\@svn@second{\svnfilesecond}%
+\xdef\@svn@timezonehour{\svnfiletimezonehour}%
+\xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
+\else\fi
+
+\ifx\svn@ns\empty\else
+\edef\@tempa{\csname svnns@\svn@ns @rev\endcsname}
+\ifnum\@tempa<\svnfilerev
+\expandafter\xdef\csname @svnns@\svn@ns @rev\endcsname{\svnfilerev}%
+\show\@tempa
+\iffalse
 \xdef\@svn@date{#2}%
 \xdef\@svn@author{#3}%
 \xdef\@svn@year{\svnfileyear}%
@@ -646,7 +665,10 @@
 \xdef\@svn@second{\svnfilesecond}%
 \xdef\@svn@timezonehour{\svnfiletimezonehour}%
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
+\fi
 \else\fi
+\fi
+
 \fi
 }
 %    \end{macrocode}
@@ -1121,9 +1143,56 @@
 %    \end{macrocode}
 % \end{macro}
 
+% \subsection{Namespace macros}
+%    \begin{macrocode}
+\let\svn@nslist=\relax
+
+\def\svnnamespace#1{%
+\xdef\svn@ns{#1}%
+\expandafter\ifx\csname svn@ns@#1\endcsname\relax%
+\expandafter\xdef\csname svn@ns@#1\endcsname{1}%
+\expandafter\xdef\csname @svnns@#1@rev\endcsname{12}
+\ifx\svn@nslist\relax
+\xdef\svn@nslist{#1}
+\else
+\xdef\svn@nslist{\svn@nslist,#1}
+\fi
+\fi
+}
+
+\def\@svnns@save#1#2#3{%
+\expandafter\xdef\csname @svnns@#1@#2\endcsname{#3}
+}
+
+\def\svnns#1#2{%
+\csname svnns@#1@#2\endcsname
+}
+\def\svncns#1{%
+\csname svnns@\svn@ns @#1\endcsname
+}
+
+\def\svn@write@namespaces#1{%
+\immediate\write#1{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
+\@for\svn@ns:=\svn@nslist\do{%
+ \edef\@tempa{\csname @svnns@\svn@ns @rev\endcsname}
+ \ifx\@tempa\relax\else
+ \ifnum\@tempa>0
+ \immediate\write#1{%
+ \@percentchar\space \svn@ns^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
+ }
+ \fi\fi
+}
+}
+
+%    \end{macrocode}
+
+
 % \subsection{Auxiliary file generation and read-back}
 % At the end of document we write the values to an auxiliary file.
 %    \begin{macrocode}
+
+
 \AtEndDocument{%
 %    \end{macrocode}
 % We first check if we have something to save. Revision, date and author must be
@@ -1154,6 +1223,7 @@
  \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
  \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
  }
+ \svn@write@namespaces\svn@write
  \immediate\closeout\svn@write%
  \fi\fi\fi\fi\fi%
 }

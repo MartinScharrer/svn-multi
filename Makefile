@@ -47,7 +47,7 @@ example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 	pdflatex $<
 	mv example_main.pdf $@
 
-nsexample: namespace_example.tex $(wildcard namespace*.tex)
+nsexample: namespace_example.tex $(wildcard namespace*.tex) svn-multi.sty
 	pdflatex $<
 	pdflatex $<
 
