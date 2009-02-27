@@ -1,0 +1,39 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+
+\begin{document}
+
+\chapter{Test 30}
+New (v1.4) timezone macros.
+
+\section{Global}
+
+\subsection{Normal usage}
+Timezone Full:   \svntimezone\\
+Timezone Hour:   \svntimezonehour\\
+Timezone Minute: \svntimezoneminute\\
+
+\subsection{Removal of trailing 00}
+Timezone: \svntimezone00\\
+(Should be '\svntimezone').
+
+\section{Main file}
+
+\subsection{Normal usage}
+Timezone Full:   \svnfiletimezone\\
+Timezone Hour:   \svnfiletimezonehour\\
+Timezone Minute: \svnfiletimezoneminute\\
+
+\subsection{Removal of trailing 00}
+Timezone: \svnfiletimezone00\\
+(Should be '\svnfiletimezone').
+
+\input{test30a}
+
+\end{document}
