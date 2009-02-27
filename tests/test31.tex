@@ -8,18 +8,34 @@
 {$LastChangedRevision: 206 $}
 {$LastChangedBy: martin $}
 
+\newcounter{mytimeza}
+\newcounter{mytimezb}
 \begin{document}
 
 \chapter{Test 31}
 New (v1.4) timezone macros - removing of trailing \verb|00|.
 
 \section{Global}
-Timezone:   '\svntimezone00' (Should be '\svntimezone').\\
-\ifthenelse{\equal{+1234}{\svntimezone00}}{}{\error}%
+Timezone:   '\svntimezone'\\
+Timezone:   '\svntimezone00'\\
+\setcounter{mytimeza}{\svntimezone}
+\setcounter{mytimezb}{\svntimezone00}
+Counter A: \themytimeza\\
+Counter B: \themytimezb\\
+\ifthenelse{\themytimeza = +1234}{}{\error}%
+\ifthenelse{\themytimezb = +1234}{}{\error}%
+\ifthenelse{\themytimeza = \themytimezb}{}{\error}%
 
 \section{Main file}
-Timezone:   '\svnfiletimezone00' (Should be '\svnfiletimezone').\\
-\ifthenelse{\equal{+1234}{\svnfiletimezone00}}{}{\error}%
+Timezone:   '\svnfiletimezone'\\
+Timezone:   '\svnfiletimezone00'\\
+\setcounter{mytimeza}{\svnfiletimezone}
+\setcounter{mytimezb}{\svnfiletimezone00}
+Counter A: \themytimeza\\
+Counter B: \themytimezb\\
+\ifthenelse{\themytimeza = +1234}{}{\error}%
+\ifthenelse{\themytimezb = +1234}{}{\error}%
+\ifthenelse{\themytimeza = \themytimezb}{}{\error}%
 
 
 \input{test31_sub}

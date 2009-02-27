@@ -6,10 +6,24 @@
 
 
 \section{Sub file}
-Timezone:   '\svnfiletimezone00' (Should be '\svnfiletimezone').\\
-\ifthenelse{\equal{+1234}{\svnfiletimezone00}}{}{\error}%
+Timezone:   '\svnfiletimezone'\\
+Timezone:   '\svnfiletimezone00'\\
+\setcounter{mytimeza}{\svnfiletimezone}
+\setcounter{mytimezb}{\svnfiletimezone00}
+Counter A: \themytimeza\\
+Counter B: \themytimezb\\
+\ifthenelse{\themytimeza = +2345}{}{\error}%
+\ifthenelse{\themytimezb = +2345}{}{\error}%
+\ifthenelse{\themytimeza = \themytimezb}{}{\error}%
 
 \section{Global in sub file}
-Timezone:   '\svntimezone00' (Should be '\svntimezone').\\
-\ifthenelse{\equal{+1234}{\svntimezone00}}{}{\error}%
+Timezone:   '\svntimezone'\\
+Timezone:   '\svntimezone00'\\
+\setcounter{mytimeza}{\svntimezone}
+\setcounter{mytimezb}{\svntimezone00}
+Counter A: \themytimeza\\
+Counter B: \themytimezb\\
+\ifthenelse{\themytimeza = +1234}{}{\error}%
+\ifthenelse{\themytimezb = +1234}{}{\error}%
+\ifthenelse{\themytimeza = \themytimezb}{}{\error}%
 
