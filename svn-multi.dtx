@@ -342,8 +342,8 @@
 % \DescribeMacro{\svnfilemonth}
 % \DescribeMacro{\svnfileday}
 % \DescribeMacro{\svnfilehour}
-% Whenever the date information is read, \ie by \cs{svnidlong}, \cs{svnid},
-% |\svnkwsave{Date}| or |\svnkwsave{LastChangedDate}|, the following macros are
+% Whenever the date information is read, \ie by |\svnkwsave{LastChangedDate}|
+% |\svnkwsave{Date}|, \cs{svnidlong} or \cs{svnid}, the following macros are
 % set to the appropriate date parts for the current file (the |\svnfile...|
 % versions) and for the whole document.
 %
@@ -351,6 +351,8 @@
 % \DescribeMacro{\svnfileminute}
 % \DescribeMacro{\svnfilesecond}
 % \DescribeMacro{\svnfiletimezone}
+% \DescribeMacro{\svnfiletimezonehour}
+% \DescribeMacro{\svnfiletimezoneminute}
 % Please note that the hour and timezone are dependend on the keyword which
 % defines the date informations. The hour will be in UTC aka Zulu-time, \ie
 % timezone +0000, when the date comes from the |Id| keyword.
@@ -368,17 +370,37 @@
 % \DescribeMacro{\svnminute}
 % \DescribeMacro{\svnsecond}
 % \DescribeMacro{\svntimezone}
-% Please also note that the timezone macros only hold the sign and the first
-% two digits of the timezone. This is needed to define \cs{svnpdfdate}. The last
-% two digits are always `00' anyway. If you need full ISO timezone write
-% |\svnfiletimezone00| or |\svntimezone00|.
+% \DescribeMacro{\svntimezonehour}
+% \DescribeMacro{\svntimezoneminute}
+% Starting with v1.4 of |svn-multi| the timezone macros return the full
+% timezone, \ie sign, hour and minute part, \eg |+0100|, not only the sign and
+% hour. The new macros % |\svntimezonehour|/|\svnfiletimezonehour| and
+% |\svntimezoneminute|/\linebreak[3]|\svnfiletimezoneminute| can be used to access only the
+% hour including sign or the minute part, respectively.
 %
-% \vspace{7ex}
+% Older versions of this manual assumed the minute part as always |00| and
+% suggested to add it manually if needed: |\svnfiletimezone00| or |\svntimezone00|.
+% In order not to ``break'' documents which followed this suggestion this two
+% macros now remove a trailing |00| if present.
+% However, this can be a problem when they are used inside an argument of
+% another macro. One solution for this is to redefine them without the |00|
+% removal part:\\
+% \begingroup\small
+% |\renewcommand{\svntimezone}{\svntimezonehour\svntimezoneminute}|\\
+% |\renewcommand{\svnfiletimezone}{\svnfiletimezonehour\svnfiletimezoneminute}|
+% \endgroup\par
+% To revert to the old (pre-v1.4) definition use:\\
+% \begingroup\small
+% |\renewcommand{\svntimezone}{\svntimezonehour}|\\
+% |\renewcommand{\svnfiletimezone}{\svnfiletimezonehour}|
+% \endgroup
+% \vspace{1ex}
 %
 % \DescribeMacro{\svnpdfdate}
 % Returns the last changed date of the whole document in a format needed for
-% |\pdfinfo|. Can be used like this:
-% |\pdfinfo{ /CreationDate (D:\svnpdfdate) }|, to set the PDF creation date to
+% |\pdfinfo|. Can be used like this:\\
+% \hbox{}\hfill|\pdfinfo{ /CreationDate (D:\svnpdfdate) }|\hfill\hbox{}\\
+% to set the PDF creation date to
 % the last changed date if you use |pdflatex| to compile your \LaTeX{} document.
 %
 % \subsection{Using full author names}
@@ -517,18 +539,20 @@
 % |\svnfiletimezone| and |\svntimezone|.
 %    \begin{macrocode}
 \def\svn@gobblezeros{%
-\@ifnextchar{0}{%
-\svn@gobblezeros@%
-}{}
+\futurelet\svn@nextchar\svn@gobblezeros@
 }
-\def\svn@gobblezeros@#1{%
-\@ifnextchar{0}{%
-\@gobble
-}{A}
+\def\svn@gobblezeros@{%
+\let\@tempa=\relax
+\def\@tempb{0}%
+\ifx0\svn@nextchar
+\let\@tempa=\@gobbletwo
+\fi
+\@tempa
 }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
+
 % \subsection{Id macros}
 % \subsubsection{Normal Id}
 % \begin{macro}{\svnid}
