@@ -72,9 +72,9 @@ tests: package
 		> /dev/null
 
 ${TESTS}: % : ${TESTDIR}/%.tex package
-	@-pdflatex ${TESTARGS} $< 1>/dev/null 2>/dev/null
+	@-pdflatex -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
 	@if (pdflatex ${TESTARGS} $<); \
-		then echo  "${GREEN}$@ succeeded${WHITE}" >&2; \
-		else echo  "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
+		then echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
+		else echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
 
 
