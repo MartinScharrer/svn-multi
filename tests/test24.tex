@@ -1,6 +1,9 @@
-\documentclass {scrartcl} 
-\usepackage[obeyspaces]{url} 
-\usepackage{eso-pic,svnkw,hyperref} 
+\documentclass {scrartcl}
+\let\ifvtex\relax
+\usepackage[obeyspaces]{url}
+\usepackage{eso-pic}
+\usepackage{svnkw}
+\usepackage{hyperref}
  
 \AddToShipoutPicture{% 
      \AtPageLowerLeft{% 
@@ -16,5 +19,6 @@
 \svnkwsave{$RepoUrl: file:///\Server/repository/trunk $} 
  
 \begin{document} 
- \nolinkurl{file:///\Server/repository/trunk} 
+ \hbox{}
+ %\url{file:///\Server/repository/trunk} 
 \end{document} 
