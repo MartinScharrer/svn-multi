@@ -651,24 +651,27 @@
 
 \ifx\svn@ns\empty\else
 \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname<\svnfilerev
-\expandafter\xdef\csname @svnns@\svn@ns @rev\endcsname{\svnfilerev}%
-\iffalse
-\xdef\@svn@date{#2}%
-\xdef\@svn@author{#3}%
-\xdef\@svn@year{\svnfileyear}%
-\xdef\@svn@month{\svnfilemonth}%
-\xdef\@svn@day{\svnfileday}%
-\xdef\@svn@hour{\svnfilehour}%
-\xdef\@svn@minute{\svnfileminute}%
-\xdef\@svn@second{\svnfilesecond}%
-\xdef\@svn@timezonehour{\svnfiletimezonehour}%
-\xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
-\fi
+\@svncns@save{rev}{\svnfilerev}
+\@svncns@save{date}{\svnfiledate}%
+\@svncns@save{author}{\svnfileauthor}%
+\@svncns@save{year}{\svnfileyear}%
+\@svncns@save{month}{\svnfilemonth}%
+\@svncns@save{day}{\svnfileday}%
+\@svncns@save{hour}{\svnfilehour}%
+\@svncns@save{minute}{\svnfileminute}%
+\@svncns@save{second}{\svnfilesecond}%
+\@svncns@save{timezonehour}{\svnfiletimezonehour}%
+\@svncns@save{timezoneminute}{\svnfiletimezoneminute}%
 \fi
 \fi
 
 \fi
 }
+
+\def\@svncns@save#1#2{%
+\expandafter\xdef\csname @svnns@\svn@ns @#1\endcsname{#2}
+}
+
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1161,10 +1164,6 @@
 \fi
 }
 
-\def\@svnns@save#1#2#3{%
-\expandafter\xdef\csname @svnns@#1@#2\endcsname{#3}
-}
-
 \def\svnns#1#2{%
 \csname svnns@#1@#2\endcsname
 }
@@ -1182,6 +1181,16 @@
  \immediate\write#1{%
  \@percentchar\space \svn@ns^^J%
  \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @date{\csname @svnns@\svn@ns @date\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @author{\csname @svnns@\svn@ns @author\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @year{\csname @svnns@\svn@ns @year\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @month{\csname @svnns@\svn@ns @month\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @day{\csname @svnns@\svn@ns @day\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @hour{\csname @svnns@\svn@ns @hour\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @minute{\csname @svnns@\svn@ns @minute\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @second{\csname @svnns@\svn@ns @second\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @timezonehour{\csname @svnns@\svn@ns @timezonehour\endcsname}^^J%
+ \noexpand\def\@backslashchar svnns@\svn@ns @timezoneminute{\csname @svnns@\svn@ns @timezoneminute\endcsname}^^J%
  }
  \fi\fi
 }
