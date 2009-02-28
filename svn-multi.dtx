@@ -138,7 +138,7 @@
 % part, \eg +0530.}
 % \changes{v1.5}{2009/02/28}{Added \cs{today}-style macros \cs{svntoday} and
 % \cs{svnfiletoday}.}
-% \changes{v2.0}{2009/02/29}{Namespaces for subversion keywords got introduced.}
+% \changes{v2.0}{2009/02/29}{File groups for subversion keywords got introduced.}
 %
 % \GetFileInfo{svn-multi.sty}
 %
@@ -1285,7 +1285,7 @@
 % Write file group values if file groups were used:
 %    \begin{macrocode}
   \ifx\svn@fglist\empty\else
-    \immediate\write\svn@write{^^J\@percentchar\space SVN Namespaces: \svn@fglist}
+    \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}
     \immediate\write\svn@write{\noexpand\makeatletter}
 %    \end{macrocode}
 % For every activated file group check if any revision information got recorded
