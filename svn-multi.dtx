@@ -650,10 +650,8 @@
 \else\fi
 
 \ifx\svn@ns\empty\else
-\edef\@tempa{\csname svnns@\svn@ns @rev\endcsname}
-\ifnum\@tempa<\svnfilerev
+\expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname<\svnfilerev
 \expandafter\xdef\csname @svnns@\svn@ns @rev\endcsname{\svnfilerev}%
-\show\@tempa
 \iffalse
 \xdef\@svn@date{#2}%
 \xdef\@svn@author{#3}%
@@ -666,7 +664,7 @@
 \xdef\@svn@timezonehour{\svnfiletimezonehour}%
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \fi
-\else\fi
+\fi
 \fi
 
 \fi
@@ -1145,14 +1143,17 @@
 
 % \subsection{Namespace macros}
 %    \begin{macrocode}
-\let\svn@nslist=\relax
+\let\svn@nslist=\empty
 
 \def\svnnamespace#1{%
 \xdef\svn@ns{#1}%
 \expandafter\ifx\csname svn@ns@#1\endcsname\relax%
-\expandafter\xdef\csname svn@ns@#1\endcsname{1}%
-\expandafter\xdef\csname @svnns@#1@rev\endcsname{12}
-\ifx\svn@nslist\relax
+\expandafter\gdef\csname svn@ns@#1\endcsname{1}%
+\expandafter\gdef\csname @svnns@#1@rev\endcsname{0}
+\expandafter\ifx\csname svnns@#1@rev\endcsname\relax
+\expandafter\gdef\csname svnns@#1@rev\endcsname{0}
+\fi
+\ifx\svn@nslist\empty
 \xdef\svn@nslist{#1}
 \else
 \xdef\svn@nslist{\svn@nslist,#1}
@@ -1172,17 +1173,19 @@
 }
 
 \def\svn@write@namespaces#1{%
+\ifx\svn@nslist\empty\else
 \immediate\write#1{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
+\immediate\write#1{\noexpand\makeatletter}
 \@for\svn@ns:=\svn@nslist\do{%
- \edef\@tempa{\csname @svnns@\svn@ns @rev\endcsname}
- \ifx\@tempa\relax\else
- \ifnum\@tempa>0
+ \expandafter\ifx\csname @svnns@\svn@ns @rev\endcsname\relax\else
+ \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname=0\else
  \immediate\write#1{%
  \@percentchar\space \svn@ns^^J%
  \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
  }
  \fi\fi
 }
+\fi
 }
 
 %    \end{macrocode}
