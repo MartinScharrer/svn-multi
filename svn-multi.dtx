@@ -188,21 +188,56 @@
 % multiple files for one \LaTeX{} document is well supported. The package
 % acquires the keywords of the last changed file and provides them to the user
 % through macros. The package has to read all keywords of all files first and
-% writes the most recent values in an auxiliary file with an `.svn'
-% extention. This file is read back at the next \LaTeX{} run which introduces a
+% writes the most recent values in an auxiliary file with an `|.svn|'
+% extension. This file is read back at the next \LaTeX{} run which introduces a
 % delay like by the table of contents. The standard \LaTeX{} switch |\nofiles|
 % can be used to suppress the file generation. Macros to typeset the keywords 
 % of the current |include|d or |input|ed \LaTeX{} file are also provided.
 %
+% \subsection{Scope of Keywords}
+% This package provides the Subversion keyword data in several different scopes:
+% document-global, file-local and, new with v2.0, by file group.
+%
+% \subsubsection*{Document global}
+% The normal macros, \eg |\svnrev|, return the latest version control
+% informations (keyword data) for the whole multi-file document, \ie the
+% information of the latest changed file of the document. To collect, sort and
+% provide this informations is the main functionality of this package.
+%
+% \subsubsection*{Local to current file} There are also other macros, \eg
+% |\svnfilerev|, which return the version control informations of the current
+% file, \ie the file they are used in. It is assumed here that every file using
+% this macros calls first either a |\svnid| or |\svnidlong| macro or both. See
+% section~\ref{sec:usage:id} for more details about the id macros.  Please note
+% that the file-local macros technically actually return the \emph{last
+% registered} informations from the last |\svnid| or |\svnidlong| (or
+% |\svnkwsave|) even when these were in a different, previous file.  This will
+% cause wrong results if they are used in a file before or without any id
+% macros.
+%
+% \subsubsection*{File Groups} Version 2.0 introduces the concept of file
+% groups. Several files of a multi-file \LaTeX\ document can be grouped together
+% and the latest version control informations of all files of a group is
+% provided by macros. This works in the same way as the global macros mentioned
+% above but only with the files in the group.
+%
+% There is no limitation (besides internal \LaTeX\ resource limits) for the
+% number of different groups. The files of one group do not have to be included
+% in a row but can be included everywhere in the document. The version control
+% informations of every group can be accessed (using the group name) everywhere
+% in the document, even inside other groups. Also, macros are provided to access
+% the current group information without knowing the current group name.
+%
+% See section~\ref{sec:file-group} for further details and usage instructions on
+% file group macros.
 %
 % \section{Usage}
 %
-% \subsection{Including of the Subversion keywords}
+% \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
 % This macros should be written very
 % early in each file, \ie in the preamble of the main document soon after
-% |\documentclass| and |\usepackage{svn-multi}| (or, outdated,
-% |\usepackage{svnkw}|) and as first in \emph{every} |\include|d
+% |\documentclass| and |\usepackage{svn-multi}| and as first in \emph{every} |\include|d
 % subfile before the |\chapter| macro. They do not create any output.
 % See section~\ref{sec:kwaccess} to learn how to typeset the keyword values.
 %
