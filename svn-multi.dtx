@@ -563,7 +563,7 @@
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}   
-\def\svn@ns{}
+\def\svn@fg{}
 %    \end{macrocode}
 %
 % \subsection{Timezone macros}
@@ -692,27 +692,27 @@
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \else\fi
 
-\ifx\svn@ns\empty\else
-\expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname<\svnfilerev
-\@svncns@save{rev}{\svnfilerev}
-\@svncns@save{date}{\svnfiledate}%
-\@svncns@save{author}{\svnfileauthor}%
-\@svncns@save{year}{\svnfileyear}%
-\@svncns@save{month}{\svnfilemonth}%
-\@svncns@save{day}{\svnfileday}%
-\@svncns@save{hour}{\svnfilehour}%
-\@svncns@save{minute}{\svnfileminute}%
-\@svncns@save{second}{\svnfilesecond}%
-\@svncns@save{timezonehour}{\svnfiletimezonehour}%
-\@svncns@save{timezoneminute}{\svnfiletimezoneminute}%
+\ifx\svn@fg\empty\else
+\expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname<\svnfilerev
+\@svncfg@save{rev}{\svnfilerev}
+\@svncfg@save{date}{\svnfiledate}%
+\@svncfg@save{author}{\svnfileauthor}%
+\@svncfg@save{year}{\svnfileyear}%
+\@svncfg@save{month}{\svnfilemonth}%
+\@svncfg@save{day}{\svnfileday}%
+\@svncfg@save{hour}{\svnfilehour}%
+\@svncfg@save{minute}{\svnfileminute}%
+\@svncfg@save{second}{\svnfilesecond}%
+\@svncfg@save{timezonehour}{\svnfiletimezonehour}%
+\@svncfg@save{timezoneminute}{\svnfiletimezoneminute}%
 \fi
 \fi
 
 \fi
 }
 
-\def\@svncns@save#1#2{%
-\expandafter\xdef\csname @svnns@\svn@ns @#1\endcsname{#2}
+\def\@svncfg@save#1#2{%
+\expandafter\xdef\csname @svnfg@\svn@fg @#1\endcsname{#2}
 }
 
 %    \end{macrocode}
@@ -1187,60 +1187,60 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \subsection{Namespace macros}
-% This macros implement the user interface for the namespace functionality introduced
+% \subsection{File group macros}
+% This macros implement the user interface for the file group functionality introduced
 % with v2.0.
 %
-% The list of namespaces |\svn@nslist| is initial set empty and will be filled
-% by |\svnnamespace|.
+% The list of file groups |\svn@fglist| is initial set empty and will be filled
+% by |\svnfilegroup|.
 %    \begin{macrocode}
-\let\svn@nslist=\empty
+\let\svn@fglist=\empty
 %    \end{macrocode}
 
-% \begin{macro}{\svnnamespace}
-% Saves the namespace to |\svn@ns| and initiates |\svn@ns@|\meta{namespace}|@rev|
-% and |\@svn@ns@|\meta{namespace}|@rev| if this is the first time the namespace
+% \begin{macro}{\svnfilegroup}
+% Saves the file group to |\svn@fg| and initiates |\svn@fg@|\meta{file group}|@rev|
+% and |\@svn@fg@|\meta{file group}|@rev| if this is the first time the file group
 % got used.
 %    \begin{macrocode}
-\def\svnnamespace#1{%
-\xdef\svn@ns{#1}%
-\expandafter\ifx\csname svn@ns@#1\endcsname\relax%
-\expandafter\gdef\csname svn@ns@#1\endcsname{1}%
-\expandafter\gdef\csname @svnns@#1@rev\endcsname{0}
-\expandafter\ifx\csname svnns@#1@rev\endcsname\relax
-\expandafter\gdef\csname svnns@#1@rev\endcsname{0}
+\def\svnfilegroup#1{%
+\xdef\svn@fg{#1}%
+\expandafter\ifx\csname svn@fg@#1\endcsname\relax%
+\expandafter\gdef\csname svn@fg@#1\endcsname{1}%
+\expandafter\gdef\csname @svnfg@#1@rev\endcsname{0}
+\expandafter\ifx\csname svnfg@#1@rev\endcsname\relax
+\expandafter\gdef\csname svnfg@#1@rev\endcsname{0}
 \fi
 %    \end{macrocode}
-% Now save new namespace to list. The list is checked if its empty to avoid an
+% Now save new file group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
 %    \begin{macrocode}
-\ifx\svn@nslist\empty
-\xdef\svn@nslist{#1}
+\ifx\svn@fglist\empty
+\xdef\svn@fglist{#1}
 \else
-\xdef\svn@nslist{\svn@nslist,#1}
+\xdef\svn@fglist{\svn@fglist,#1}
 \fi
 \fi
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnns}
+% \begin{macro}{\svnfg}
 % The macro checks if the requested SVN information got saved for the requested
-% namespace. If so it returns the value, if not it returns |?| to not break
+% file group. If so it returns the value, if not it returns |?| to not break
 % other macros like |\svnFullAuthor|.
 %    \begin{macrocode}
-\def\svnns#1#2{%
-\@ifundefined{svnns@#1@#2}{?}{%
-\csname svnns@#1@#2\endcsname}
+\def\svnfg#1#2{%
+\@ifundefined{svnfg@#1@#2}{?}{%
+\csname svnfg@#1@#2\endcsname}
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncns}
-% This macro just calls |\svnns| with |\svn@ns| as first argument.
+% \begin{macro}{\svncfg}
+% This macro just calls |\svnfg| with |\svn@fg| as first argument.
 %    \begin{macrocode}
-\def\svncns#1{%
-\svnns{\svn@ns}{#1}%
+\def\svncfg#1{%
+\svnfg{\svn@fg}{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1281,31 +1281,31 @@
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
   }
 %    \end{macrocode}
-% Write namespace values if namespaces were used:
+% Write file group values if file groups were used:
 %    \begin{macrocode}
-  \ifx\svn@nslist\empty\else
-    \immediate\write\svn@write{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
+  \ifx\svn@fglist\empty\else
+    \immediate\write\svn@write{^^J\@percentchar\space SVN Namespaces: \svn@fglist}
     \immediate\write\svn@write{\noexpand\makeatletter}
 %    \end{macrocode}
-% For every activated namespace check if any revision information got recorded
+% For every activated file group check if any revision information got recorded
 % and write to the output file:
 %    \begin{macrocode}
-    \@for\svn@ns:=\svn@nslist\do{%
-      \expandafter\ifx\csname @svnns@\svn@ns @rev\endcsname\relax\else
-      \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname=0\else
+    \@for\svn@fg:=\svn@fglist\do{%
+      \expandafter\ifx\csname @svnfg@\svn@fg @rev\endcsname\relax\else
+      \expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname=0\else
         \immediate\write\svn@write{%
-          \@percentchar\space \svn@ns^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @date{\csname @svnns@\svn@ns @date\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @author{\csname @svnns@\svn@ns @author\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @year{\csname @svnns@\svn@ns @year\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @month{\csname @svnns@\svn@ns @month\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @day{\csname @svnns@\svn@ns @day\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @hour{\csname @svnns@\svn@ns @hour\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @minute{\csname @svnns@\svn@ns @minute\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @second{\csname @svnns@\svn@ns @second\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @timezonehour{\csname @svnns@\svn@ns @timezonehour\endcsname}^^J%
-          \noexpand\def\@backslashchar svnns@\svn@ns @timezoneminute{\csname @svnns@\svn@ns @timezoneminute\endcsname}^^J%
+          \@percentchar\space \svn@fg^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @rev{\csname @svnfg@\svn@fg @rev\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @date{\csname @svnfg@\svn@fg @date\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @author{\csname @svnfg@\svn@fg @author\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @year{\csname @svnfg@\svn@fg @year\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @month{\csname @svnfg@\svn@fg @month\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @day{\csname @svnfg@\svn@fg @day\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @hour{\csname @svnfg@\svn@fg @hour\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @minute{\csname @svnfg@\svn@fg @minute\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @second{\csname @svnfg@\svn@fg @second\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @timezonehour{\csname @svnfg@\svn@fg @timezonehour\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @timezoneminute{\csname @svnfg@\svn@fg @timezoneminute\endcsname}^^J%
         }
       \fi\fi
     }
