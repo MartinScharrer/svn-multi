@@ -1,14 +1,18 @@
 \documentclass[a4paper,oneside]{scrbook}
 \usepackage{svn-multi}
 \svnidlong
-{$HeadURL$}
-{$LastChangedDate$}
-{$LastChangedRevision$}
-{$LastChangedBy$}
-\svnid{$Id$}
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/namespace_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: namespace_example.tex 226 2009-02-28 00:26:17Z martin $}
 
 \usepackage{hyperref}
 \let\include=\url
+
+\svnRegisterAuthor{martina}{Martin A.}
+\svnRegisterAuthor{martinb}{Martin B.}
+\svnRegisterAuthor{martinj}{Martin J.}
 
 \title{\texttt{svn-multi} Namespace example document}
 \author{Martin Scharrer}
@@ -20,10 +24,11 @@
 
 \part{Abc}
 \svnnamespace{abc}
-\svnid{$Id$}
+Last changed by: \svncns{author}
+\svnid{$Id: namespace_example.tex 226 2009-02-27 00:26:17Z martina $}
 \include{namespace_example_part1a}
 \include{namespace_example_part1b}
-\svnid{$Id$}
+\svnid{$Id: namespace_example.tex 228 2009-02-28 01:26:17Z martinb $}
 \include{namespace_example_part1c}
 
 Current: \svncns{rev}\\
@@ -31,11 +36,12 @@ Def: \svnns{def}{rev}\\
 
 \part{Def}
 \svnnamespace{def}
-\svnid{$Id$}
+Last changed by: \svncns{author} | \svnFullAuthor{\svncns{author}}
+\svnid{$Id: namespace_example.tex 222 2009-02-29 02:26:17Z martinj $}
 \include{namespace_example_part2a}
 \include{namespace_example_part2b}
 Current: \svncns{rev}\\
-Abc: \svnns{abc}{rev}\\
+Abc: \svnns{abc}{rev} | \svnFullAuthor{\svnns{abc}{author}} \\
 
 \part{Ghi}
 \svnnamespace{ghi}
