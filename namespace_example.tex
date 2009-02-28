@@ -1,4 +1,4 @@
-\documentclass[a4paper]{scrbook}
+\documentclass[a4paper,oneside]{scrbook}
 \usepackage{svn-multi}
 \svnidlong
 {$HeadURL$}
@@ -26,11 +26,16 @@
 \svnid{$Id$}
 \include{namespace_example_part1c}
 
+Current: \svncns{rev}\\
+Def: \svnns{def}{rev}\\
+
 \part{Def}
 \svnnamespace{def}
 \svnid{$Id$}
 \include{namespace_example_part2a}
 \include{namespace_example_part2b}
+Current: \svncns{rev}\\
+Abc: \svnns{abc}{rev}\\
 
 \part{Ghi}
 \svnnamespace{ghi}
