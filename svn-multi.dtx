@@ -1,5 +1,5 @@
 % \iffalse meta-comment
-% Copyright (C) 2006-2007 by Martin Scharrer <martin@scharrer-online.de>
+% Copyright (C) 2006-2009 by Martin Scharrer <martin@scharrer-online.de>
 % http://www.scharrer-online.de/latex/
 % -----------------------------------------------------------------
 % 
@@ -27,12 +27,15 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{svn-multi}
 %<*package|driver>
-    [2009/02/28 v1.5 SVN Keywords for multi-file LaTeX documents]
+    [2009/02/29 v2.0 SVN Keywords for multi-file LaTeX documents]
 %</package|driver>
 %<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [2009/02/28 v1.5 Backward compatibility wrapper for svn-multi]
-%<wrapper>\RequirePackage{svn-multi}[2009/02/28]
+%<wrapper> [2009/02/29 v2.0 Backward compatibility wrapper for svn-multi]
+%<wrapper>\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
+%<wrapper>and is now only a backward compatibility wrapper which loads 'svn-multi'.
+%<wrapper>Please adjust your document preamble to use the new name.}
+%<wrapper>\RequirePackage{svn-multi}[2009/02/29]
 %
 %<*driver>
 \documentclass{ltxdoc}
@@ -134,6 +137,7 @@
 % part, \eg +0530.}
 % \changes{v1.5}{2009/02/28}{Added \cs{today}-style macros \cs{svntoday} and
 % \cs{svnfiletoday}.}
+% \changes{v2.0}{2009/02/29}{Namespaces for subversion keywords got introduced.}
 %
 % \GetFileInfo{svn-multi.sty}
 %
@@ -171,7 +175,8 @@
 % |svn-multi|\footnote{CTAN:
 % \url{http://www.ctan.org/tex-archive/macros/latex/contrib/svn-multi/}}
 % directory. Therefore the style file got renamed to |svn-multi|, but a
-% |svnkw| dummy style file is still provided for backward compatibility.
+% |svnkw| dummy style file which loads the new package is still provided
+% for backward compatibility.
 %
 % \section{Introduction}
 % This package lets you typeset keywords of the version control system Subversion\footnote
