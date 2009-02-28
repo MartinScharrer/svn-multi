@@ -1165,83 +1165,74 @@
 }
 
 \def\svnns#1#2{%
-\csname svnns@#1@#2\endcsname
+\@ifundefined{svnns@#1@#2}{?}{%
+\csname svnns@#1@#2\endcsname}
 }
 \def\svncns#1{%
-\csname svnns@\svn@ns @#1\endcsname
+\svnns{\svn@ns}{#1}%
 }
-
-\def\svn@write@namespaces#1{%
-\ifx\svn@nslist\empty\else
-\immediate\write#1{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
-\immediate\write#1{\noexpand\makeatletter}
-\@for\svn@ns:=\svn@nslist\do{%
- \expandafter\ifx\csname @svnns@\svn@ns @rev\endcsname\relax\else
- \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname=0\else
- \immediate\write#1{%
- \@percentchar\space \svn@ns^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @date{\csname @svnns@\svn@ns @date\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @author{\csname @svnns@\svn@ns @author\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @year{\csname @svnns@\svn@ns @year\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @month{\csname @svnns@\svn@ns @month\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @day{\csname @svnns@\svn@ns @day\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @hour{\csname @svnns@\svn@ns @hour\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @minute{\csname @svnns@\svn@ns @minute\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @second{\csname @svnns@\svn@ns @second\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @timezonehour{\csname @svnns@\svn@ns @timezonehour\endcsname}^^J%
- \noexpand\def\@backslashchar svnns@\svn@ns @timezoneminute{\csname @svnns@\svn@ns @timezoneminute\endcsname}^^J%
- }
- \fi\fi
-}
-\fi
-}
-
 %    \end{macrocode}
 
 
 % \subsection{Auxiliary file generation and read-back}
-% At the end of document we write the values to an auxiliary file.
-%    \begin{macrocode}
-
-
-\AtEndDocument{%
-%    \end{macrocode}
+% 
 % We first check if we have something to save. Revision, date and author must be
 % non-empty. This suppresses the auxiliary file if the user doesn't use the
 % appropriate macros but other provided by this package.
 %    \begin{macrocode}
- \if@filesw
- \ifx\@svn@rev\empty\else
- \ifnum\@svn@rev=0\else
- \ifx\@svn@date\empty\else
- \ifx\@svn@author\empty\else
+\def\svn@writeaux{%
+  \if@filesw \ifx\@svn@rev\empty\else \ifnum\@svn@rev=0\else \ifx\@svn@date\empty\else \ifx\@svn@author\empty\else
 %    \end{macrocode}
 % Open outfile to write project keywords.
 %    \begin{macrocode}
- \newwrite\svn@write
- \immediate\openout\svn@write=\jobname.svn
- \immediate\write\svn@write{%
- \@percentchar\space SVN cache^^J%
- \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
- \noexpand\def\noexpand\svndate{\@svn@date}^^J%
- \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
- \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
- \noexpand\def\noexpand\svnmonth{\@svn@month}^^J%
- \noexpand\def\noexpand\svnday{\@svn@day}^^J%
- \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
- \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
- \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
- \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
- \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
- }
- \svn@write@namespaces\svn@write
- \immediate\closeout\svn@write%
- \fi\fi\fi\fi\fi%
+  \newwrite\svn@write
+  \immediate\openout\svn@write=\jobname.svn
+  \immediate\write\svn@write{%
+    \@percentchar\space SVN cache^^J%
+    \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
+    \noexpand\def\noexpand\svndate{\@svn@date}^^J%
+    \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
+    \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
+    \noexpand\def\noexpand\svnmonth{\@svn@month}^^J%
+    \noexpand\def\noexpand\svnday{\@svn@day}^^J%
+    \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
+    \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
+    \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
+    \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
+    \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
+  }
+  \ifx\svn@nslist\empty\else
+    \immediate\write\svn@write{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
+    \immediate\write\svn@write{\noexpand\makeatletter}
+    \@for\svn@ns:=\svn@nslist\do{%
+      \expandafter\ifx\csname @svnns@\svn@ns @rev\endcsname\relax\else
+      \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname=0\else
+        \immediate\write\svn@write{%
+          \@percentchar\space \svn@ns^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @rev{\csname @svnns@\svn@ns @rev\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @date{\csname @svnns@\svn@ns @date\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @author{\csname @svnns@\svn@ns @author\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @year{\csname @svnns@\svn@ns @year\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @month{\csname @svnns@\svn@ns @month\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @day{\csname @svnns@\svn@ns @day\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @hour{\csname @svnns@\svn@ns @hour\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @minute{\csname @svnns@\svn@ns @minute\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @second{\csname @svnns@\svn@ns @second\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @timezonehour{\csname @svnns@\svn@ns @timezonehour\endcsname}^^J%
+          \noexpand\def\@backslashchar svnns@\svn@ns @timezoneminute{\csname @svnns@\svn@ns @timezoneminute\endcsname}^^J%
+        }
+      \fi\fi
+    }
+  \fi
+  \immediate\closeout\svn@write%
+ \fi\fi\fi\fi\fi
 }
-
 %    \end{macrocode}
-% Reread output from last compile run if it exists.
+% At the end of document we write the values to an auxiliary file.
+%    \begin{macrocode}
+\AtEndDocument{\svn@writeaux}
+%    \end{macrocode}
+% Finally reread output from last compile run if it exists.
 %    \begin{macrocode}
 \InputIfFileExists{\jobname.svn}{}{}
 %    \end{macrocode}
