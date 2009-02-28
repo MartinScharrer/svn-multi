@@ -510,9 +510,35 @@
 % Please note that you can't use |hyperref|s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
+% \subsection{File Group Macros}\label{sec:file-group}
+% \DescribeMacro{\svnfilegroup}\hspace{-.75em}\marg{file group}\\
+% This macro declares all following files (actually only following |\svnid|,
+% |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| macro 
+% as part of the given group. It can be placed inside the main file before some
+% |\include|/|\input| macros or inside sub-files before the id macros, \ie
+% direct at the start of the file. Please note that the file group will then swap
+% over to the following file. However, the group can be closed manually using an
+% empty |\svnfilegroup{}|, \eg at the end of a file.
+%
+% \smallskip\noindent
+% \DescribeMacro{\svnfg}\hspace{-.75em}\marg{file group}\marg{VC name}\\
+% Returns the version control keyword data, \eg \emph{rev}, \emph{date},
+% \emph{author}, \ldots, given by \meta{VC name} from the requested file group.
+% See the |\svnfile|\meta{XXX} or |\svn|\meta{XXX} macros for a complete list.
+% Please note that, like for the global values, a second \LaTeX\ run is needed
+% to provide correct values.\\
+% Example: |\svnfg{mygroup}{date}| will return the date of group \emph{mygroup}
+% like |\svndate| returns it for the whole document or |\svnfiledate| for the
+% current file.
+%
+% \smallskip\noindent
+% \DescribeMacro{\svncfg}\hspace{-.75em}\marg{VC name}\\
+% This macro returns the same data as |\svnfg| but for the current file group.
+%
+%
 % \section{Further Reading}
-% The \textsf{svn-multi} package and its usage got discussed in the following
-% articles:
+% The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
+% the following articles:
 %
 % \begin{itemize}
 %  \item[{[1]}] Martin Scharrer, ``Version Control of LaTeX Documents with
