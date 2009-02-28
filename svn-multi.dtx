@@ -1145,9 +1145,20 @@
 % \end{macro}
 
 % \subsection{Namespace macros}
+% This macros implement the user interface for the namespace functionality introduced
+% with v2.0.
+%
+% The list of namespaces |\svn@nslist| is initial set empty and will be filled
+% by |\svnnamespace|.
 %    \begin{macrocode}
 \let\svn@nslist=\empty
+%    \end{macrocode}
 
+% \begin{macro}{\svnnamespace}
+% Saves the namespace to |\svn@ns| and initiates |\svn@ns@|\meta{namespace}|@rev|
+% and |\@svn@ns@|\meta{namespace}|@rev| if this is the first time the namespace
+% got used.
+%    \begin{macrocode}
 \def\svnnamespace#1{%
 \xdef\svn@ns{#1}%
 \expandafter\ifx\csname svn@ns@#1\endcsname\relax%
@@ -1156,6 +1167,10 @@
 \expandafter\ifx\csname svnns@#1@rev\endcsname\relax
 \expandafter\gdef\csname svnns@#1@rev\endcsname{0}
 \fi
+%    \end{macrocode}
+% Now save new namespace to list. The list is checked if its empty to avoid an
+% unwanted leading comma.
+%    \begin{macrocode}
 \ifx\svn@nslist\empty
 \xdef\svn@nslist{#1}
 \else
@@ -1163,30 +1178,51 @@
 \fi
 \fi
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svnns}
+% The macro checks if the requested SVN information got saved for the requested
+% namespace. If so it returns the value, if not it returns |?| to not break
+% other macros like |\svnFullAuthor|.
+%    \begin{macrocode}
 \def\svnns#1#2{%
 \@ifundefined{svnns@#1@#2}{?}{%
 \csname svnns@#1@#2\endcsname}
 }
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svncns}
+% This macro just calls |\svnns| with |\svn@ns| as first argument.
+%    \begin{macrocode}
 \def\svncns#1{%
 \svnns{\svn@ns}{#1}%
 }
 %    \end{macrocode}
-
+% \end{macro}
 
 % \subsection{Auxiliary file generation and read-back}
-% 
+%
+% \begin{macro}{\svn@writeaux}
+% This macro writes the |.svn| auxiliary file and is called from a
+% |\AtEndDocument| macro later on.
+%    \begin{macrocode}
+\def\svn@writeaux{%
+%    \end{macrocode}
 % We first check if we have something to save. Revision, date and author must be
 % non-empty. This suppresses the auxiliary file if the user doesn't use the
 % appropriate macros but other provided by this package.
 %    \begin{macrocode}
-\def\svn@writeaux{%
   \if@filesw \ifx\@svn@rev\empty\else \ifnum\@svn@rev=0\else \ifx\@svn@date\empty\else \ifx\@svn@author\empty\else
 %    \end{macrocode}
-% Open outfile to write project keywords.
+% Open outfile to write project keywords:
 %    \begin{macrocode}
   \newwrite\svn@write
   \immediate\openout\svn@write=\jobname.svn
+%    \end{macrocode}
+% Write document global values:
+%    \begin{macrocode}
   \immediate\write\svn@write{%
     \@percentchar\space SVN cache^^J%
     \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
@@ -1201,9 +1237,16 @@
     \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
   }
+%    \end{macrocode}
+% Write namespace values if namespaces were used:
+%    \begin{macrocode}
   \ifx\svn@nslist\empty\else
     \immediate\write\svn@write{^^J\@percentchar\space SVN Namespaces: \svn@nslist}
     \immediate\write\svn@write{\noexpand\makeatletter}
+%    \end{macrocode}
+% For every activated namespace check if any revision information got recorded
+% and write to the output file:
+%    \begin{macrocode}
     \@for\svn@ns:=\svn@nslist\do{%
       \expandafter\ifx\csname @svnns@\svn@ns @rev\endcsname\relax\else
       \expandafter\ifnum\csname @svnns@\svn@ns @rev\endcsname=0\else
@@ -1224,10 +1267,15 @@
       \fi\fi
     }
   \fi
+%    \end{macrocode}
+% Finally close output file:
+%    \begin{macrocode}
   \immediate\closeout\svn@write%
  \fi\fi\fi\fi\fi
 }
 %    \end{macrocode}
+% \end{macro}
+%
 % At the end of document we write the values to an auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{\svn@writeaux}
