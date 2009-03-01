@@ -27,16 +27,16 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{svn-multi}
 %<*package|driver>
-    [2009/02/29 v2.0 SVN Keywords for multi-file LaTeX documents]
+    [2009/03/01 v2.0 SVN Keywords for multi-file LaTeX documents]
 %</package|driver>
 %<wrapper>%% DTX Id: $Id$
 %<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [2009/02/29 v2.0 Backward compatibility wrapper for svn-multi]
+%<wrapper> [2009/03/01 v2.0 Backward compatibility wrapper for svn-multi]
 %<wrapper>\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
 %<wrapper>and is now only a backward compatibility wrapper which loads 'svn-multi'.
 %<wrapper>Please adjust your document preamble to use the new name.}
-%<wrapper>\RequirePackage{svn-multi}[2009/02/29]
+%<wrapper>\RequirePackage{svn-multi}[2009/03/01]
 %
 %<*driver>
 \documentclass{ltxdoc}
@@ -702,10 +702,13 @@
 % \begin{macro}{\svncfgtoday}
 %    \begin{macrocode}
 \newcommand*{\svncfgtoday}{%
+\@ifundefined{svnfg@\svn@cfg @year}{??}{%
 \begingroup
 \year\svncfgyear \month\svncfgmonth \day\svncfgday
 \relax \today
-\endgroup}
+\endgroup
+}%
+}%
 %    \end{macrocode}
 % \end{macro}
 
@@ -1359,7 +1362,7 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 % Simply returns |\svnfg@#1@#2| if defined, '??' otherwise.
 %    \begin{macrocode}
 \def\svnfg#1#2{%
-\@ifundefined{svnfg@\svn@#1@#2}{??}{%
+\@ifundefined{svnfg@#1@#2}{??}{%
 \csname svnfg@#1@#2\endcsname}%
 }
 %    \end{macrocode}
