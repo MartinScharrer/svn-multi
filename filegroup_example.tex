@@ -8,9 +8,6 @@
 {$LastChangedBy: martin $}
 \svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
 
-\usepackage{hyperref}
-\let\include=\url
-
 \svnRegisterAuthor{martina}{Martin A.}
 \svnRegisterAuthor{martinb}{Martin B.}
 \svnRegisterAuthor{martinj}{Martin J.}
@@ -18,6 +15,89 @@
 \title{\texttt{svn-multi} File groups example document}
 \author{Martin Scharrer}
 \date{Revision: \svnrev}
+
+
+% This file generates some example sub files from this file to avoid a lot of small
+% example files in the CTAN directory. In real life there would be separate
+% files from the beginning.
+
+\begin{filecontents}{filegroup_example_part1a.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 1a}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part1b.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 1b}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part1c.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 1c}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part2a.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 2a}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part2b.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 2b}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part3a.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 3a}
+Content of chapter \ldots
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part3b.tex}
+\svnidlong
+{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
+{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
+{$LastChangedRevision: 226 $}
+{$LastChangedBy: martin $}
+\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+\chapter{Part 3b}
+Content of chapter \ldots
+\end{filecontents}
+
 
 \begin{document}
 \maketitle
@@ -34,10 +114,8 @@ Today Other group: {\svnsetcfg{abc}\svncfgtoday}
 \part{Abc}
 \svnfilegroup{abc}
 Last changed by: \svncfgauthor{}
-\svnid{$Id: filegroup_example.tex 226 2009-02-27 00:26:17Z martina $}
 \include{filegroup_example_part1a}
 \include{filegroup_example_part1b}
-\svnid{$Id: filegroup_example.tex 228 2009-02-28 01:26:17Z martinb $}
 \include{filegroup_example_part1c}
 
 Current: \svncfgrev{}\\
@@ -46,7 +124,6 @@ Def: \svncfgrev{def}\\
 \part{Def}
 \svnfilegroup{def}
 Last changed by: \svncfgauthor{} | \svnFullAuthor{\svncfgauthor}
-\svnid{$Id: filegroup_example.tex 222 2009-02-29 02:26:17Z martinj $}
 \include{filegroup_example_part2a}
 \include{filegroup_example_part2b}
 Current: \svncfgrev{}\\
@@ -54,24 +131,8 @@ Abc: \svncfgrev{abc} | \svnFullAuthor{\svncfgauthor} \\
 
 \part{Ghi}
 \svnfilegroup{ghi}
-\svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
 \include{filegroup_example_part3a}
 \include{filegroup_example_part3b}
 
-% Part 4 inside an include file
-\include{filegroup_example_part4}
-\include{filegroup_example_part4a}
-\include{filegroup_example_part4b}
-\include{filegroup_example_part4c}
-
-\svnfilegroup{}
-\svnid{$Id: filegroup_example.tex 152 2009-02-29 02:26:17Z martinj $}
-
 \end{document}
 
-% Vim setting modeline - please do not delete
-% vim: tabstop=2 expandtab autoindent

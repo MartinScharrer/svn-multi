@@ -48,6 +48,7 @@ example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 	mv example_main.pdf $@
 
 fgexample: filegroup_example.tex $(wildcard filegroup*.tex) svn-multi.sty
+	${RM} filegroup_example_*.tex
 	pdflatex $<
 	pdflatex $<
 
