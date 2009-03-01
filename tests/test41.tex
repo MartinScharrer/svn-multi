@@ -1,0 +1,32 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}[2009/03/01]
+
+\begin{document}
+\chapter{Test 40}
+Test if the file group macros all return '??' without any file group activated.
+
+\def\qq{??}
+
+\def\testqq#1{%
+\edef\testarg{#1}
+\ifx\testarg\qq\else\show\testarg\error{#1}\fi%
+}
+
+\testqq{\svncfgrev}
+\testqq{\svncfgdate}
+\testqq{\svncfgauthor}
+\testqq{\svncfgyear}
+\testqq{\svncfgmonth}
+\testqq{\svncfgday}
+\testqq{\svncfghour}
+\testqq{\svncfgminute}
+\testqq{\svncfgsecond}
+\testqq{\svncfgtimezonehour}
+\testqq{\svncfgtimezoneminute}
+\testqq{\svnfg{}{}}
+
+% Timezone returns '????'
+\def\qq{????}
+\testqq{\svncfgtimezone}
+
+\end{document}
