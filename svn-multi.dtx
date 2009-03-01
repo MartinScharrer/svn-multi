@@ -330,12 +330,6 @@
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
 %
-% \DescribeMacro{\svntoday}
-% \DescribeMacro{\svnfiletoday}
-% This macros typeset the document-global or file-local date, respectively,
-% using the format of |\today| which depends on the used language. To adjust the
-% language of your document use the |babel| package.
-%
 % \DescribeMacro{\svnmainurl}
 % \DescribeMacro{\svnmainfilename}
 % The macro |\svnmainurl| and |\svnmainfilename| hold the URL and the filename
@@ -454,6 +448,15 @@
 % \hbox{}\hfill|\pdfinfo{ /CreationDate (D:\svnpdfdate) }|\hfill\hbox{}\\
 % to set the PDF creation date to
 % the last changed date if you use |pdflatex| to compile your \LaTeX{} document.
+%
+% \DescribeMacro{\svntoday}
+% \DescribeMacro{\svnfiletoday}
+% \DescribeMacro{\svnfgtoday}
+% This macros typeset the document-global, current-file or file-group date, respectively,
+% using the format of |\today| which depends on the used language. The
+% |\svnfgtoday| macro allows for an optional argument to specify the file group,
+% otherwise the currently active file group is used. To adjust the
+% language of your document use the |babel| package.
 %
 % \subsection{Using full author names}
 % If you like to have the full author\footnote{This means subversion authors,
@@ -658,7 +661,7 @@
 % suggesting this feature and for providing the code.
 % \begin{macro}{\svntoday}
 %    \begin{macrocode}
-\newcommand\svntoday{%
+\newcommand*{\svntoday}{%
 \begingroup
 \year\svnyear \month\svnmonth \day\svnday
 \relax \today
@@ -668,9 +671,19 @@
 %
 % \begin{macro}{\svnfiletoday}
 %    \begin{macrocode}
-\newcommand\svnfiletoday{%
+\newcommand*{\svnfiletoday}{%
 \begingroup
 \year\svnfileyear \month\svnfilemonth \day\svnfileday
+\relax \today
+\endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svnfgtoday}
+%    \begin{macrocode}
+\newcommand*{\svnfgtoday}[1][\svn@fg]{%
+\begingroup
+\year\svnfgyear[#1] \month\svnfgmonth[#1] \day\svnfgday[#1]
 \relax \today
 \endgroup}
 %    \end{macrocode}
