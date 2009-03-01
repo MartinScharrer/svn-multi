@@ -9,7 +9,13 @@ Test if the file group macros all return '??' without any file group activated.
 
 \def\testqq#1{%
 \edef\testarg{#1}
-\ifx\testarg\qq\else\show\testarg\error{#1}\fi%
+\noindent\string#1:
+\ifx\testarg\qq
+PASSED
+\else
+FAILED
+\show\testarg\error{#1}\fi%
+\\
 }
 
 \testqq{\svncfgrev}
@@ -23,6 +29,9 @@ Test if the file group macros all return '??' without any file group activated.
 \testqq{\svncfgsecond}
 \testqq{\svncfgtimezonehour}
 \testqq{\svncfgtimezoneminute}
+
+\testqq{\svncfgtoday}
+
 \testqq{\svnfg{}{}}
 
 % Timezone returns '????'
