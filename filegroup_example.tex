@@ -1,5 +1,6 @@
 \documentclass[a4paper,oneside]{scrbook}
 \usepackage{svn-multi}
+\usepackage{calc}
 \svnidlong
 {$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
 {$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
@@ -21,33 +22,35 @@
 \begin{document}
 \maketitle
 \tableofcontents
-Last changed by: \svnfgauthor[abc] | \svnfgauthor\relax
+Last changed by: \svncfgauthor\relax
 
 \svnfilegroup{ghi}
-Test: '\svnfgrev', \svnfgauthor, \svnfgdate, \svnfgtimezone, '\svncfg{rev}'\\
-\svnfilegroup{}
+Test: '\svncfgrev{}', \svncfgauthor{}, \svncfgdate{}, \svncfgtimezone{}\\
+'\svncfgday{}' | \svncfgday
 
+Today: \svncfgtoday\relax
+Today Other group: {\svnsetcfg{abc}\svncfgtoday}
 
 \part{Abc}
 \svnfilegroup{abc}
-Last changed by: \svncfg{author}
+Last changed by: \svncfgauthor{}
 \svnid{$Id: filegroup_example.tex 226 2009-02-27 00:26:17Z martina $}
 \include{filegroup_example_part1a}
 \include{filegroup_example_part1b}
 \svnid{$Id: filegroup_example.tex 228 2009-02-28 01:26:17Z martinb $}
 \include{filegroup_example_part1c}
 
-Current: \svncfg{rev}\\
-Def: \svnfg{def}{rev}\\
+Current: \svncfgrev{}\\
+Def: \svncfgrev{def}\\
 
 \part{Def}
 \svnfilegroup{def}
-Last changed by: \svncfg{author} | \svnFullAuthor{\svncfg{author}}
+Last changed by: \svncfgauthor{} | \svnFullAuthor{\svncfgauthor}
 \svnid{$Id: filegroup_example.tex 222 2009-02-29 02:26:17Z martinj $}
 \include{filegroup_example_part2a}
 \include{filegroup_example_part2b}
-Current: \svncfg{rev}\\
-Abc: \svnfg{abc}{rev} | \svnFullAuthor{\svnfg{abc}{author}} \\
+Current: \svncfgrev{}\\
+Abc: \svncfgrev{abc} | \svnFullAuthor{\svncfgauthor} \\
 
 \part{Ghi}
 \svnfilegroup{ghi}

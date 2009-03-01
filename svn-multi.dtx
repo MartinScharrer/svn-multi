@@ -239,7 +239,7 @@
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
-% This macros should be written very
+% These macros should be written very
 % early in each file, \ie in the preamble of the main document soon after
 % |\documentclass| and |\usepackage{svn-multi}| and as first in \emph{every} |\include|d
 % subfile before the |\chapter| macro. They do not create any output.
@@ -451,12 +451,10 @@
 %
 % \DescribeMacro{\svntoday}
 % \DescribeMacro{\svnfiletoday}
-% \DescribeMacro{\svnfgtoday}
-% This macros typeset the document-global, current-file or file-group date, respectively,
-% using the format of |\today| which depends on the used language. The
-% |\svnfgtoday| macro allows for an optional argument to specify the file group,
-% otherwise the currently active file group is used. To adjust the
-% language of your document use the |babel| package.
+% \DescribeMacro{\svncfgtoday}
+% These macros typeset the document-global, current-file or current-file-group
+% date, respectively, using the format of |\today| which depends on the used
+% language. To adjust the language of your document use the |babel| package.
 %
 % \subsection{Using full author names}
 % If you like to have the full author\footnote{This means subversion authors,
@@ -479,7 +477,7 @@
 %
 % \subsection{Using full revision names}
 % Like the author's also revision names/tags can be registered and used later.
-% This macros were implemented on user request and have the drawback
+% These macros were implemented on user request and have the drawback
 % that you have to guess the next revision number of your document in order
 % to get correct results when you like to tag the to-be-checked-in revision.
 % Please note that this has nothing to do with the normal subversion tagging.
@@ -517,6 +515,7 @@
 % Starting with v2.0 files can be grouped together and the keyword values of the
 % latest revision of a group can be accessed.
 %
+% \noindent
 % \DescribeMacro{\svnfilegroup}\hspace{-.75em}\marg{file group}\\
 % This macro declares all following files (actually only following |\svnid|,
 % |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| as part
@@ -524,39 +523,62 @@
 % |\include|/|\input| macros or inside sub-files before the id macros, \ie
 % direct at the start of the file. Please note that the file group will then
 % swap over to the following file. However, the group can be closed manually
-% using an empty |\svnfilegroup{}|, \eg at the end of a file.
+% using an empty |\svnfilegroup{}|, \eg at the end of a file.\par
+% The changes done by this macro are \TeX\ global, \ie there can't be caught
+% using \TeX\ groups (|{ }|).
 %
 % \smallskip
 % \DescribeMacro{\thesvnfilegroup}
 % Returns the name of the current file group.
 %
 % \smallskip
-% \DescribeMacro{\svnfgrev}
-% \DescribeMacro{\svnfgauthor}
-% \DescribeMacro{\svnfgdate}
-% \DescribeMacro{\svnfgyear}
-% \DescribeMacro{\svnfgmonth}
-% \DescribeMacro{\svnfgday}
-% \DescribeMacro{\svnfghour}
-% \DescribeMacro{\svnfgminute}
-% \DescribeMacro{\svnfgsecond}
-% This macros return keyword values of a specific file group like the |\svnrev|,
+% \DescribeMacro{\svncfgrev}
+% \DescribeMacro{\svncfgauthor}
+% \DescribeMacro{\svncfgdate}
+% \DescribeMacro{\svncfgyear}
+% \DescribeMacro{\svncfgmonth}
+% \DescribeMacro{\svncfgday}
+% \DescribeMacro{\svncfghour}
+% \DescribeMacro{\svncfgminute}
+% \DescribeMacro{\svncfgsecond}
+% These macros return keyword values of the currently selected file group, like the |\svnrev|,
 % |\svnfilerev|, etc., macros described in sections~\ref{sec:kwaccess} do for
-% the whole document and the current file, respectively.
-% The currently active file group (selected by the last |\svnfilegroup|) is used
-% by default but any other one can be specified using an optional argument:
-% \oarg{file group}.\par
-% \DescribeMacro{\svnfgtimezone}
-% \DescribeMacro{\svnfgtimezonehour}
-% \DescribeMacro{\svnfgtimezoneminute}
-% When the used file group is invalid the macros return a '??'. This can happen
-% out of the following reasons:
-% \begin{itemize}
-%   \item Another \LaTeX\ run is needed to update the macros.
-%   \item Invalid, \ie not existing, file group given as optional argument.
-%   \item No file group specified and no active file group, \ie empty or
-%   missing |\svnfilegroup|.
-% \end{itemize}
+% the whole document and the current file, respectively. 
+% In order to hold them robust, which is important to use them in macros like
+% |\svnFullAuthor| they do not provide any arguments to select other file groups
+% than the current one. To access keyword values of other file groups use the
+% general macro |\svnfg|\marg{file group}\marg{key} or change the locally
+% selected file group using the |\svnsetcfg|.\par
+% \vspace{2\baselineskip}
+% \DescribeMacro{\svncfgtimezone}
+% \DescribeMacro{\svncfgtimezonehour}
+% \DescribeMacro{\svncfgtimezoneminute}
+% \vspace{3\baselineskip}
+%
+% \smallskip\noindent
+% \DescribeMacro{\svnsetcfg}\hspace{-.75em}\marg{file group}\\
+% Normally the |\svncfg|\meta{XXX} macros mentioned above use the last file group defined by
+% |\svnfilegroup|, but this can be changed using the |\svnsetcfg| macro.\par
+% The idea is that the currently selected file group can be changed locally to
+% the current \TeX\ group for the keyword output macros |\svncfg|\meta{XXX}
+% only while the file group for the keyword input macros like |\svnid| is
+% unaffected.\par
+% To reset the used file group to the last one defined by |\svnfilegroup| simply
+% use |\svnsetcfg| with an empty argument.\par
+% \paragraph*{Example 1:} |{\svnsetcfg{abc}\svnFullAuthor{\svncfgauthor}}|\\ would
+% output the full author's name of group \textit{abc}.\par
+% \paragraph*{Example 2:} To typeset the three keyword values of group
+% \textit{abc} somewhere outside this group use:\\
+% |{\svnsetcfg{abc}Rev: \svncfgrev\\||Date: \svncfgdate\\|\\|Author: \svncfgauthor\\}|
+% \paragraph*{Example 3:} To typeset the date of group \textit{abc} outside of
+% this group in the format of |\today| use: |{\svnsetcfg{abc}\svncfgtoday}|
+%
+% \smallskip\noindent
+% \DescribeMacro{\svnfg}\hspace{-.75em}\marg{file group}\marg{key}\\
+% This macro is a general form of the |\svncfg|\meta{XXX} macro mentioned above.
+% The first argument is the requested file group, the second one the requested
+% keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please note that this
+% macro can not be used inside macros like |\svnFullAuthor|.
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
@@ -612,24 +634,22 @@
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}
-\def\svn@fg{} \def\svn@temp{}
+\def\svn@fg{} \def\svn@cfg{\svn@fg} \def\svn@temp{}
 %    \end{macrocode}
 %
 % \subsection{Timezone macros}
 % \begin{macro}{\svntimezone}
 % \begin{macro}{\svnfiletimezone}
-% \begin{macro}{\svnfgtimezone}
-% This macros return the global and local time zones. Since v1.4 the minute part
-% is returned as well and the macro removes manually added |00| after it to
-% support older documents.
+% \begin{macro}{\svncfgtimezone}
+% These macros return the global, file-local and current group time zones,
+% respectively. Since v1.4 the minute part is returned as well and the macro
+% removes manually added |00| after it to support older documents.
 % \changes{v1.4}{2009/02/27}{Return now full timezone (hour + minute part).
 % Manually added 00 minutes are removed.}
 %    \begin{macrocode}
 \def\svntimezone{\svntimezonehour\svntimezoneminute\svn@gobblezeros}
 \def\svnfiletimezone{\svnfiletimezonehour\svnfiletimezoneminute\svn@gobblezeros}
-\newcommand*{\svnfgtimezone}[1][\svn@fg]{%
-\svnfgtimezonehour[#1]\svnfgtimezoneminute[#1]%
-}
+\def\svncfgtimezone{\svncfgtimezonehour\svncfgtimezoneminute}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -656,7 +676,7 @@
 % \end{macro}
 
 % \subsection{\textit{Today} macros}
-% This macros use the |\today| macro to typeset the current date using the local
+% These macros use the |\today| macro to typeset the current date using the local
 % language settings. Thanks and credit goes to Manuel P\'egouri\'e-Gonnard for
 % suggesting this feature and for providing the code.
 % \begin{macro}{\svntoday}
@@ -679,11 +699,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\svnfgtoday}
+% \begin{macro}{\svncfgtoday}
 %    \begin{macrocode}
-\newcommand*{\svnfgtoday}[1][\svn@fg]{%
+\newcommand*{\svncfgtoday}{%
 \begingroup
-\year\svnfgyear[#1] \month\svnfgmonth[#1] \day\svnfgday[#1]
+\year\svncfgyear \month\svncfgmonth \day\svncfgday
 \relax \today
 \endgroup}
 %    \end{macrocode}
@@ -1180,8 +1200,12 @@
 % Both submacros are calling |\svnFullAuthor@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
-\def\svnFullAuthor@star*#1{\svnFullAuthor@{#1}{~(#1)}}
-\def\svnFullAuthor@normal#1{\svnFullAuthor@{#1}{}}
+\def\svnFullAuthor@star*#1{%
+\edef\svn@temp{#1}
+\svnFullAuthor@{\svn@temp}{~(\svn@temp)}}
+\def\svnFullAuthor@normal#1{%
+\edef\svn@temp{#1}
+\svnFullAuthor@{\svn@temp}{}}
 %    \end{macrocode}
 % |\svnFullAuthor@| now sets the author's full name. Note that |#2| is empty
 % when the normal version is called.
@@ -1252,7 +1276,7 @@
 % \end{macro}
 
 % \subsection{File group macros}
-% This macros implement the user interface for the file group functionality introduced
+% These macros implement the user interface for the file group functionality introduced
 % with v2.0.
 %
 % The list of file groups |\svn@fglist| is initial set empty and will be filled
@@ -1295,33 +1319,49 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnfg@def}
-% Used to generic define the |\svnfg|\meta{XXX} macros. Expands the argument and
-% calls |\svnfg@def@|.
+% \begin{macro}{\svnsetcfg}
+% Defines |\svn@cfg| to the given argument or to |\svn@fg| if the argument was
+% empty.
 %    \begin{macrocode}
-\def\svnfg@def#1{\expandafter\svnfg@def@\expandafter{#1}}
+\def\svnsetcfg#1{%
+\def\svn@temp{#1}
+\ifx\svn@temp\empty
+\def\svn@cfg{\svn@fg}%
+\else
+\def\svn@cfg{#1}%
+\fi
+}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnfg@def@}
-% Defines a |\svnfg|\meta{XXX} macro, \eg |\svnfgrev|, which returns the
+% \begin{macro}{\svncfg@def}
+% Defines a |\svncfg|\meta{XXX} macro, \eg |\svncfgrev|, which returns the
 % requested keyword values of the current or optionally given
 % file group.
 %    \begin{macrocode}
-\def\svnfg@def@#1{%
-\expandafter\newcommand\csname svnfg#1\endcsname[1][\svn@fg]{%
-\@ifundefined{svnfg@##1@#1}{??}{%
-\csname svnfg@##1@#1\endcsname}%
-}
-}
+\def\svncfg@def#1{%
+\expandafter\def\csname svncfg#1\endcsname{%
+\@ifundefined{svnfg@\svn@cfg @#1}{??}{%
+\csname svnfg@\svn@cfg @#1\endcsname}%
+}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnfgXXX}
-% Define all |\svnfg|\meta{XXX} macros by calling |\svnfg@def| in a for loop.
+% \begin{macro}{\svncfgXXX}
+% Define all |\svncfg|\meta{XXX} macros by calling |\svncfg@def| in a for loop.
 %    \begin{macrocode}
 \@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
-timezonehour,timezoneminute\do{\svnfg@def{\@tempa}}
+timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnfg}
+% Simply returns |\svnfg@#1@#2| if defined, '??' otherwise.
+%    \begin{macrocode}
+\def\svnfg#1#2{%
+\@ifundefined{svnfg@\svn@#1@#2}{??}{%
+\csname svnfg@#1@#2\endcsname}%
+}
 %    \end{macrocode}
 % \end{macro}
 
