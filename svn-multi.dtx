@@ -590,12 +590,13 @@
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}
-\def\svn@fg{}
+\def\svn@fg{} \def\svn@temp{}
 %    \end{macrocode}
 %
 % \subsection{Timezone macros}
-% \begin{macro}{\svnfiletimezone}
 % \begin{macro}{\svntimezone}
+% \begin{macro}{\svnfiletimezone}
+% \begin{macro}{\svnfgtimezone}
 % This macros return the global and local time zones. Since v1.4 the minute part
 % is returned as well and the macro removes manually added |00| after it to
 % support older documents.
@@ -604,7 +605,11 @@
 %    \begin{macrocode}
 \def\svntimezone{\svntimezonehour\svntimezoneminute\svn@gobblezeros}
 \def\svnfiletimezone{\svnfiletimezonehour\svnfiletimezoneminute\svn@gobblezeros}
+\newcommand*{\svnfgtimezone}[1][\svn@fg]{%
+\svnfgtimezonehour[#1]\svnfgtimezoneminute[#1]%
+}
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 
@@ -693,7 +698,7 @@
 % \begin{macro}{\@svn@updateid}
 % We first define the expanded arguments to variables for the user.
 % The expansion is needed because the arguments content is mostly generic like
-% |\svn@key| and |\svn@value| which can change very soon after this macro.
+% |\svn@value| which can change very soon after this macro.
 %    \begin{macrocode}
 \def\@svn@updateid#1#2#3{% #1 = rev, #2 date, #3 author (username)
 \xdef\svnfilerev{#1}%
@@ -991,8 +996,8 @@
 % returned by |\svn@value|.
 %    \begin{macrocode}
 \def\svn@checkcolon#1:#2\relax{%
-    \def\svn@test{#2}%
-    \ifx\svn@test\empty
+    \def\svn@temp{#2}%
+    \ifx\svn@temp\empty
     \svnkwdef{#1}{}%
     \else
       \svn@stripcolon#2\relax
@@ -1009,11 +1014,11 @@
 % called to strip the spaces.
 %    \begin{macrocode}
 \def\svn@stripcolon#1:\relax{%
-    \def\svn@test{#1}%
-    \ifx\svn@test\empty
+    \def\svn@temp{#1}%
+    \ifx\svn@temp\empty
       \gdef\svn@value{}%
     \else
-    \ifx\svn@test\svn@spaceonly
+    \ifx\svn@temp\svn@spaceonly
       \gdef\svn@value{}%
     \else
      \svn@stripspace#1\relax\relax
@@ -1029,8 +1034,8 @@
 % strip the trailing space.
 %    \begin{macrocode}
 \def\svn@stripspace#1#2\relax{%
-    \def\svn@test{#1}%
-    \ifx\svn@test\svn@spaceonly
+    \def\svn@temp{#1}%
+    \ifx\svn@temp\svn@spaceonly
       \gdef\svn@value{#2}%
     \else
       \svn@striptrailingspace#1#2\relax
@@ -1251,24 +1256,33 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnfg}
-% The macro checks if the requested SVN information got saved for the requested
-% file group. If so it returns the value, if not it returns |?| to not break
-% other macros like |\svnFullAuthor|.
+% \begin{macro}{\svnfg@def}
+% Used to generic define the |\svnfg|\meta{XXX} macros. Expands the argument and
+% calls |\svnfg@def@|.
 %    \begin{macrocode}
-\def\svnfg#1#2{%
-\@ifundefined{svnfg@#1@#2}{?}{%
-\csname svnfg@#1@#2\endcsname}
+\def\svnfg@def#1{\expandafter\svnfg@def@\expandafter{#1}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnfg@def@}
+% Defines a |\svnfg|\meta{XXX} macro, \eg |\svnfgrev|, which returns the
+% requested version control information of the current or optional the given
+% file group.
+%    \begin{macrocode}
+\def\svnfg@def@#1{%
+\expandafter\newcommand\csname svnfg#1\endcsname[1][\svn@fg]{%
+\@ifundefined{svnfg@##1@#1}{?}{%
+\csname svnfg@##1@#1\endcsname}%
+}
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncfg}
-% This macro just calls |\svnfg| with |\svn@fg| as first argument.
+% \begin{macro}{\svnfgXXX}
+% Define all |\svnfg|\meta{XXX} macros by calling |\svnfg@def| in a for loop.
 %    \begin{macrocode}
-\def\svncfg#1{%
-\svnfg{\svn@fg}{#1}%
-}
+\@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
+timezonehour,timezoneminute\do{\svnfg@def{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 

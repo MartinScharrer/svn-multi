@@ -21,7 +21,12 @@
 \begin{document}
 \maketitle
 \tableofcontents
-Last changed by: \svncfg{author} | \svnFullAuthor{\svnfg{abc}{author}}
+Last changed by: \svnfgauthor[abc] | \svnfgauthor\relax
+
+\svnfilegroup{ghi}
+Test: '\svnfgrev', \svnfgauthor, \svnfgdate, \svnfgtimezone, '\svncfg{rev}'\\
+\svnfilegroup{}
+
 
 \part{Abc}
 \svnfilegroup{abc}
