@@ -2,7 +2,7 @@
 % Copyright (C) 2006-2009 by Martin Scharrer <martin@scharrer-online.de>
 % http://www.scharrer-online.de/latex/
 % -----------------------------------------------------------------
-% 
+%
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
 % of this license or (at your option) any later version.
@@ -10,11 +10,11 @@
 %   http://www.latex-project.org/lppl.txt
 % and version 1.3 or later is part of all distributions of LaTeX
 % version 2005/12/01 or later.
-% 
+%
 % This work has the LPPL maintenance status `maintained'.
-% 
+%
 % The Current Maintainer of this work is Martin Scharrer.
-% 
+%
 % This work consists of the files svn-multi.dtx and svn-multi.ins
 % and the derived files svn-multi.sty and svnkw.sty.
 % $Id$
@@ -70,7 +70,7 @@
   \hypertarget{\macroname}{}
   \origmacro#1}
   {\origendmacro}
- 
+
   \DeclareRobustCommand{\cs}[1]{\hyperlink{Desc@#1}{\texttt{\textbackslash#1}}}
 
  \def\StopEventually#1{\origStopEventually{#1}%
@@ -192,7 +192,7 @@
 % writes the most recent values in an auxiliary file with an `|.svn|'
 % extension. This file is read back at the next \LaTeX{} run which introduces a
 % delay like by the table of contents. The standard \LaTeX{} switch |\nofiles|
-% can be used to suppress the file generation. Macros to typeset the keywords 
+% can be used to suppress the file generation. Macros to typeset the keywords
 % of the current |include|d or |input|ed \LaTeX{} file are also provided.
 %
 % \subsection{Scope of Keywords}
@@ -275,7 +275,7 @@
 % to\\`|HeadURL LastChangedDate LastChangedRevision LastChangedBy|'.
 %
 % Please note that the arguments are read verbatim. Special precaution are
-% taken to allow spaces, newlines and comments direct after the |\svnidlong| 
+% taken to allow spaces, newlines and comments direct after the |\svnidlong|
 % and after each of the four arguments, just in case someone need this.
 % In fact everything not inside braces \{ \} is ignored.
 %
@@ -293,7 +293,7 @@
 % for fast and simple keyword typesetting.
 %
 % \DescribeMacro{\svnkwsave}
-% This macro lets you include and save any keyword you like. The syntax is 
+% This macro lets you include and save any keyword you like. The syntax is
 % |\svnkwsave|\{\$\meta{keyword}\$\}. The keyword can be already expanded or
 % not (no value and only ``|:|'' or nothing after the key name). This macro is
 % also used internally and does not create any output.
@@ -513,7 +513,7 @@
 % \subsection{File Group Macros}\label{sec:file-group}
 % \DescribeMacro{\svnfilegroup}\hspace{-.75em}\marg{file group}\\
 % This macro declares all following files (actually only following |\svnid|,
-% |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| macro 
+% |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| macro
 % as part of the given group. It can be placed inside the main file before some
 % |\include|/|\input| macros or inside sub-files before the id macros, \ie
 % direct at the start of the file. Please note that the file group will then swap
@@ -544,7 +544,7 @@
 %  \item[{[1]}] Martin Scharrer, ``Version Control of LaTeX Documents with
 %  svn-multi'', The Prac\TeX\ Journal, (3), 2007.
 %  URL: \url{http://www.tug.org/pracjourn/2007-3/scharrer/}
-%  \item[{[2]}] Mark Eli Kalderon, ``LaTeX and Subversion'', 
+%  \item[{[2]}] Mark Eli Kalderon, ``LaTeX and Subversion'',
 %  The Prac\TeX\ Journal, (3), 2007.
 %  URL: \url{http://www.tug.org/pracjourn/2007-3/kalderon-svnmulti/}
 %  \item[{[3]}] Uwe Ziegenhagen , ``LaTeX Document Management with Subversion'',
@@ -555,7 +555,7 @@
 % \StopEventually{}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Implementation}
- 
+
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
 % After *-testing, the intermediate macros |\svn@s| and |\svn@n| are called to
@@ -578,18 +578,18 @@
 % \subsection{Definition of init values}
 %    \begin{macrocode}
 % Init values
-\def\svnrev{0}      \def\svnfilerev{0}      \def\@svn@rev{0}        
-\def\svndate{}      \def\svnfiledate{}      \def\@svn@date{}        
+\def\svnrev{0}      \def\svnfilerev{0}      \def\@svn@rev{0}
+\def\svndate{}      \def\svnfiledate{}      \def\@svn@date{}
 \def\svnauthor{}    \def\svnfileauthor{}    \def\@svn@author{}
-\def\svnyear{0}     \def\svnfileyear{0}     \def\@svn@year{0}   
-\def\svnmonth{0}    \def\svnfilemonth{0}    \def\@svn@month{0}  
-\def\svnday{0}      \def\svnfileday{0}      \def\@svn@day{0}    
-\def\svnhour{0}     \def\svnfilehour{0}     \def\@svn@hour{0}   
-\def\svnminute{0}   \def\svnfileminute{0}   \def\@svn@minute{0} 
-\def\svnsecond{0}   \def\svnfilesecond{0}   \def\@svn@second{0} 
+\def\svnyear{0}     \def\svnfileyear{0}     \def\@svn@year{0}
+\def\svnmonth{0}    \def\svnfilemonth{0}    \def\@svn@month{0}
+\def\svnday{0}      \def\svnfileday{0}      \def\@svn@day{0}
+\def\svnhour{0}     \def\svnfilehour{0}     \def\@svn@hour{0}
+\def\svnminute{0}   \def\svnfileminute{0}   \def\@svn@minute{0}
+\def\svnsecond{0}   \def\svnfilesecond{0}   \def\@svn@second{0}
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
-\def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}   
+\def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}
 \def\svn@fg{}
 %    \end{macrocode}
 %
@@ -661,7 +661,7 @@
 \newcommand*{\svnid}{%
 \@svnidswtrue
 \svnkwsave
-} 
+}
 \newif\if@svnidsw
 \@svnidswfalse
 %    \end{macrocode}
@@ -756,12 +756,12 @@
 \svnkwdef{LastChangedRevision}{0}%
 \svnkwdef{LastChangedBy}{}%
 %    \end{macrocode}
-% The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters 
+% The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters
 % inside the keywords.
-% The braces \{ \} are changed to allow comments between the arguments. 
+% The braces \{ \} are changed to allow comments between the arguments.
 % \cs{svnidlong@readargsfull} is called to read the arguments.
 %    \begin{macrocode}
-\begingroup 
+\begingroup
 \svn@catcodes
 \catcode`\{=12
 \catcode`\}=12
@@ -830,10 +830,10 @@
 % \cs{svn@readkw} and saves it using \cs{svnkwdef}.
 %    \begin{macrocode}
 \def\svnkwsave{%
-\begingroup 
+\begingroup
 \svn@catcodes
 \svnkwsave@readargs
-} 
+}
 %    \end{macrocode}
 % \end{macro}
 
@@ -864,7 +864,7 @@
 \begingroup
 \catcode`\$=12
 \gdef\svnkwsave@read $#1$\relax{%
-    \svn@checkcolon#1:\relax 
+    \svn@checkcolon#1:\relax
 }
 \endgroup
 %    \end{macrocode}
@@ -974,20 +974,20 @@
 
 % \subsection{Keyword check and strip macros}
 % The following macros are used to test whether the given keywords are fully
-% expanded or not. 
+% expanded or not.
 % Subversion supports unexpanded keywords as input with or without colon and
-% with or without trailing space(s), \ie a:~|$KW$|, b:~|$KW:$| or c:~|$KW: $|. 
-% To avoid \LaTeX{} syntax errors in this pre-commit state the keyword is 
-% checked by the following macros. Unexpanded keywords result in an empty value. 
+% with or without trailing space(s), \ie a:~|$KW$|, b:~|$KW:$| or c:~|$KW: $|.
+% To avoid \LaTeX{} syntax errors in this pre-commit state the keyword is
+% checked by the following macros. Unexpanded keywords result in an empty value.
 % Also leading and trailing spaces are removed.
 %
 % \begin{macro}{\svn@checkcolon}
-% Checks if the keyword contains a colon. It is called by \cs{svnkwsave@read} 
-% with a trailing |:\relax| so that \#2 will be empty if there is no earlier 
-% colon or will hold the value with this trailing colon otherwise. 
-% The first case means that the keyword is unexpanded without colon (case a) 
-% which leads to an empty value. In the second case \cs{svn@stripcolon} is 
-% called to strip the colon and surrounding spaces. The final value is 
+% Checks if the keyword contains a colon. It is called by \cs{svnkwsave@read}
+% with a trailing |:\relax| so that \#2 will be empty if there is no earlier
+% colon or will hold the value with this trailing colon otherwise.
+% The first case means that the keyword is unexpanded without colon (case a)
+% which leads to an empty value. In the second case \cs{svn@stripcolon} is
+% called to strip the colon and surrounding spaces. The final value is
 % returned by |\svn@value|.
 %    \begin{macrocode}
 \def\svn@checkcolon#1:#2\relax{%
