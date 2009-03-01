@@ -510,31 +510,50 @@
 % Please note that you can't use |hyperref|s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
-% \subsection{File Group Macros}\label{sec:file-group}
+% \subsection{File Groups}\label{sec:file-group}
+% Starting with v2.0 files can be grouped together and the keyword values of the
+% latest revision of a group can be accessed.
+%
 % \DescribeMacro{\svnfilegroup}\hspace{-.75em}\marg{file group}\\
 % This macro declares all following files (actually only following |\svnid|,
-% |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| macro
-% as part of the given group. It can be placed inside the main file before some
+% |\svnidlong| and |\svnkwsave| macros) until the next |\svnfilegroup| as part
+% of the given group. It can be placed inside the main file before some
 % |\include|/|\input| macros or inside sub-files before the id macros, \ie
-% direct at the start of the file. Please note that the file group will then swap
-% over to the following file. However, the group can be closed manually using an
-% empty |\svnfilegroup{}|, \eg at the end of a file.
+% direct at the start of the file. Please note that the file group will then
+% swap over to the following file. However, the group can be closed manually
+% using an empty |\svnfilegroup{}|, \eg at the end of a file.
 %
-% \smallskip\noindent
-% \DescribeMacro{\svnfg}\hspace{-.75em}\marg{file group}\marg{VC name}\\
-% Returns the version control keyword data, \eg \emph{rev}, \emph{date},
-% \emph{author}, \ldots, given by \meta{VC name} from the requested file group.
-% See the |\svnfile|\meta{XXX} or |\svn|\meta{XXX} macros for a complete list.
-% Please note that, like for the global values, a second \LaTeX\ run is needed
-% to provide correct values.\\
-% Example: |\svnfg{mygroup}{date}| will return the date of group \emph{mygroup}
-% like |\svndate| returns it for the whole document or |\svnfiledate| for the
-% current file.
+% \smallskip
+% \DescribeMacro{\thesvnfilegroup}
+% Returns the name of the current file group.
 %
-% \smallskip\noindent
-% \DescribeMacro{\svncfg}\hspace{-.75em}\marg{VC name}\\
-% This macro returns the same data as |\svnfg| but for the current file group.
-%
+% \smallskip
+% \DescribeMacro{\svnfgrev}
+% \DescribeMacro{\svnfgauthor}
+% \DescribeMacro{\svnfgdate}
+% \DescribeMacro{\svnfgyear}
+% \DescribeMacro{\svnfgmonth}
+% \DescribeMacro{\svnfgday}
+% \DescribeMacro{\svnfghour}
+% \DescribeMacro{\svnfgminute}
+% \DescribeMacro{\svnfgsecond}
+% This macros return keyword values of a specific file group like the |\svnrev|,
+% |\svnfilerev|, etc., macros described in sections~\ref{sec:kwaccess} do for
+% the whole document and the current file, respectively.
+% The currently active file group (selected by the last |\svnfilegroup|) is used
+% by default but any other one can be specified using an optional argument:
+% \oarg{file group}.\par
+% \DescribeMacro{\svnfgtimezone}
+% \DescribeMacro{\svnfgtimezonehour}
+% \DescribeMacro{\svnfgtimezoneminute}
+% When the used file group is invalid the macros return a '??'. This can happen
+% out of the following reasons:
+% \begin{itemize}
+%   \item Another \LaTeX\ run is needed to update the macros.
+%   \item Invalid, \ie not existing, file group given as optional argument.
+%   \item No file group specified and no active file group, \ie empty or
+%   missing |\svnfilegroup|.
+% \end{itemize}
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
@@ -1256,6 +1275,13 @@
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\thesvnfilegroup}
+% Returns the current file group name to the user.
+%    \begin{macrocode}
+\def\thesvnfilegroup{\svn@fg}
+%    \end{macrocode}
+% \end{macro}
+
 % \begin{macro}{\svnfg@def}
 % Used to generic define the |\svnfg|\meta{XXX} macros. Expands the argument and
 % calls |\svnfg@def@|.
@@ -1266,12 +1292,12 @@
 
 % \begin{macro}{\svnfg@def@}
 % Defines a |\svnfg|\meta{XXX} macro, \eg |\svnfgrev|, which returns the
-% requested version control information of the current or optional the given
+% requested keyword values of the current or optionally given
 % file group.
 %    \begin{macrocode}
 \def\svnfg@def@#1{%
 \expandafter\newcommand\csname svnfg#1\endcsname[1][\svn@fg]{%
-\@ifundefined{svnfg@##1@#1}{?}{%
+\@ifundefined{svnfg@##1@#1}{??}{%
 \csname svnfg@##1@#1\endcsname}%
 }
 }
@@ -1328,7 +1354,7 @@ timezonehour,timezoneminute\do{\svnfg@def{\@tempa}}
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}
     \immediate\write\svn@write{\noexpand\makeatletter}
 %    \end{macrocode}
-% For every activated file group check if any revision information got recorded
+% For every activated file group check if any keywords got recorded
 % and write to the output file:
 %    \begin{macrocode}
     \@for\svn@fg:=\svn@fglist\do{%
