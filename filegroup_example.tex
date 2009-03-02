@@ -2,20 +2,21 @@
 \usepackage{svn-multi}
 \usepackage{calc}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example.tex $}
+{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author3 $}
+\svnid{$Id: filegroup_example.tex 100 2000-01-01 01:00:00Z author3 $}
 
-\svnRegisterAuthor{martina}{Martin A.}
-\svnRegisterAuthor{martinb}{Martin B.}
-\svnRegisterAuthor{martinj}{Martin J.}
-
-\title{\texttt{svn-multi} File groups example document}
-\author{Martin Scharrer}
-\date{Revision: \svnrev}
-
+% Version control information table for each chapter
+\newcommand{\chaptervctable}{%
+\textbf{Version Control Information for this chapter}\\[\bigskipamount]%
+\begin{tabular}{ll}
+Last Changed Revision & \svnfilerev\\
+Last Changed Author   & \svnfileauthor\\
+Last Changed Date     & \svnfiledate\\
+\end{tabular}
+}
 
 % This file generates some example sub files from this file to avoid a lot of small
 % example files in the CTAN directory. In real life there would be separate
@@ -23,116 +24,191 @@
 
 \begin{filecontents}{filegroup_example_part1a.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part1a.tex $}
+{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 101 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part1a.tex 101 2000-01-01 01:00:00Z author1 $}
 \chapter{Part 1a}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part1b.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part1b.tex $}
+{$LastChangedDate: 2001-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 102 $}
+{$LastChangedBy: author2 $}
+\svnid{$Id: filegroup_example_part1b.tex 102 2001-01-01 00:00:00Z author2 $}
 \chapter{Part 1b}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part1c.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part1c.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author3 $}
+\svnid{$Id: filegroup_example_part1c.tex 100 2000-01-01 00:00:00Z author3 $}
 \chapter{Part 1c}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part2a.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part2a.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part1a.tex 100 2000-01-01 00:00:00Z author1 $}
 \chapter{Part 2a}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part2b.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part2b.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part1a.tex 100 2000-01-01 00:00:00Z author1 $}
 \chapter{Part 2b}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part3a.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part3a.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part3a.tex 100 2000-01-01 00:00:00Z author1 $}
 \chapter{Part 3a}
-Content of chapter \ldots
+\chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{filegroup_example_part3b.tex}
 \svnidlong
-{$HeadURL: svn+ssh://www.scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/filegroup_example.tex $}
-{$LastChangedDate: 2009-02-28 00:26:17 +0000 (Sat, 28 Feb 2009) $}
-{$LastChangedRevision: 226 $}
-{$LastChangedBy: martin $}
-\svnid{$Id: filegroup_example.tex 226 2009-02-28 00:26:17Z martin $}
+{$HeadURL: svn://server/filegroup_example_part3b.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part3b.tex 100 2000-01-01 00:00:00Z author1 $}
 \chapter{Part 3b}
-Content of chapter \ldots
+\chaptervctable
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part4a.tex}
+\svnidlong
+{$HeadURL: svn://server/filegroup_example_part4a.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part4a.tex 100 2000-01-01 00:00:00Z author1 $}
+\chapter{Part 4a}
+\chaptervctable
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_part4b.tex}
+\svnidlong
+{$HeadURL: svn://server/filegroup_example_part4b.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_part4b.tex 100 2000-01-01 00:00:00Z author1 $}
+\chapter{Part 4b}
+\chaptervctable
+\end{filecontents}
+
+\begin{filecontents}{filegroup_example_end.tex}
+\svnidlong
+{$HeadURL: svn://server/filegroup_example_end.tex $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedRevision: 100 $}
+{$LastChangedBy: author1 $}
+\svnid{$Id: filegroup_example_end.tex 100 2000-01-01 00:00:00Z author1 $}
+\chapter{End credits}
+\chaptervctable
 \end{filecontents}
 
 
+\svnRegisterAuthor{author1}{Andy Author, I.}
+\svnRegisterAuthor{author2}{A. Author, II.}
+\svnRegisterAuthor{author3}{Anthony Author, III.}
+
+% Have VC info on every part page
+\let\origpart=\part
+\def\part{%
+\setpartpreamble{%
+\vspace*{5cm}
+\textbf{Version Control Information for this part:}\\[\bigskipamount]%
+\begin{tabular}{ll}
+Last Changed Revision & \svncfgrev\\
+Last Changed Author   & \svncfgauthor\\
+Last Changed Date     & \svncfgdate\\
+\end{tabular}
+}\origpart
+}
+
 \begin{document}
-\maketitle
-\tableofcontents
-Last changed by: \svncfgauthor\relax
 
-\svnfilegroup{ghi}
-Test: '\svncfgrev{}', \svncfgauthor{}, \svncfgdate{}, \svncfgtimezone{}\\
-'\svncfgday{}' | \svncfgday
+% Custom titlepage:
+\vspace*{4cm}
+{\centering
+\Huge\texttt{svn-multi} File groups example document\\
+\Large Martin Scharrer\\
+\large 2009/03/01\\
+}%
+\vfill%
+{\large Version Control Information for this document:\\[\bigskipamount]}%
+\begin{tabular}{ll}
+Last Changed Revision & \svnrev\\
+Last Changed Author   & \svnauthor\\
+Last Changed Date     & \svndate\\
+\end{tabular}
+\thispagestyle{empty}
+\clearpage
 
-Today: \svncfgtoday\relax
-Today Other group: {\svnsetcfg{abc}\svncfgtoday}
+\chapter*{Version Control Overview}
 
-\part{Abc}
+\begin{tabular}{lllll}
+   \hline
+   Group & Revision & Author & Date \\ \hline
+   Global & \svnrev & \svnauthor & \svndate \\
+   \svnfilegroup{abc}\thesvncfg & \svncfgrev & \svncfgauthor & \svncfgdate \\
+   \svnfilegroup{def}\thesvncfg & \svncfgrev & \svncfgauthor & \svncfgdate \\
+   \svnfilegroup{ghi}\thesvncfg & \svncfgrev & \svncfgauthor & \svncfgdate \\
+   \hline
+\end{tabular}
+\svnfilegroup{}
+\clearpage
+
 \svnfilegroup{abc}
-Last changed by: \svncfgauthor{}
+\part{Abc}
 \include{filegroup_example_part1a}
 \include{filegroup_example_part1b}
 \include{filegroup_example_part1c}
 
-Current: \svncfgrev{}\\
-Def: \svncfgrev{def}\\
-
-\part{Def}
 \svnfilegroup{def}
-Last changed by: \svncfgauthor{} | \svnFullAuthor{\svncfgauthor}
+\part{Def}
 \include{filegroup_example_part2a}
 \include{filegroup_example_part2b}
-Current: \svncfgrev{}\\
-Abc: \svncfgrev{abc} | \svnFullAuthor{\svncfgauthor} \\
 
-\part{Ghi}
 \svnfilegroup{ghi}
+\part{Ghi}
 \include{filegroup_example_part3a}
 \include{filegroup_example_part3b}
+
+% New file group 'def' again:
+\svnfilegroup{def}
+\part{Def2}
+\include{filegroup_example_part4a}
+\include{filegroup_example_part4b}
+
+% The rest doesn't belong to a file group:
+\svnfilegroup{}
+\include{filegroup_example_end}
 
 \end{document}
 
