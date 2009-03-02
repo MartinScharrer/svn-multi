@@ -1261,23 +1261,29 @@
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
 \newcommand{\svnFullRevision}{%
-\@ifnextchar{*}
-{\svnFullRevision@star}
-{\svnFullRevision@normal}
+\@ifnextchar{*}%
+{\svnFullRevision@star}%
+{\svnFullRevision@normal}%
 }
 %    \end{macrocode}
 % Both submacros are calling |\svnFullRevision@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
-\def\svnFullRevision@star*#1{\svnFullRevision@{#1}{~(r#1)}}
-\def\svnFullRevision@normal#1{\svnFullRevision@{#1}{}}
+\def\svnFullRevision@star*#1{%
+\edef\svn@temp{#1}%
+\svnFullRevision@{\svn@temp}{~(r\svn@temp)}%
+}
+\def\svnFullRevision@normal#1{%
+\edef\svn@temp{#1}%
+\svnFullRevision@{\svn@temp}{}%
+}
 %    \end{macrocode}
 % |\svnFullRevision@| now sets the revision name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
 \def\svnFullRevision@#1#2{%
-\@ifundefined{svn@revision@#1}
-{Revision #1}
+\@ifundefined{svn@revision@#1}%
+{Revision #1}%
 {\csname svn@revision@#1\endcsname #2}%
 }
 %    \end{macrocode}
