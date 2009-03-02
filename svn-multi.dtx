@@ -1395,7 +1395,47 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+\def\svnextern{%
+  \begingroup
+  \svn@catcodes
+  \svn@extern
+}
+
+\def\svn@extern#1{%
+  \endgroup
+  \immediate\write\svn@write{%
+    \noexpand\@svnexternal{\finkpath}{#1}%
+  }%
+  {\let\@tempa\svn@fg
+  \InputIfFileExists{\finkdir\finkbase.svx}{}{}
+  \let\svn@fg\@tempa}%
+}
+
+\def\@svnexternal{%
+  \begingroup
+  \svn@catcodes
+  \@svn@external
+}
+
+\def\@svn@external#1#2{%
+  \endgroup
+  % do nothing, just gobble input
+}
+
 % \subsection{Auxiliary file generation and read-back}
+%
+% Reread output from last compile run if it exists.
+%    \begin{macrocode}
+\InputIfFileExists{\jobname.svn}{}{}
+%    \end{macrocode}
+
+% Open outfile to write project keywords:
+%    \begin{macrocode}
+\newwrite\svn@write
+\immediate\openout\svn@write=\jobname.svn
+\immediate\write\svn@write{\@percentchar\space SVN cache^^J}
+\immediate\write\svn@write{\noexpand\makeatletter}
+%    \end{macrocode}
 %
 % \begin{macro}{\svn@writeaux}
 % This macro writes the |.svn| auxiliary file and is called from a
@@ -1409,15 +1449,10 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
   \if@filesw \ifx\@svn@rev\empty\else \ifnum\@svn@rev=0\else \ifx\@svn@date\empty\else \ifx\@svn@author\empty\else
 %    \end{macrocode}
-% Open outfile to write project keywords:
-%    \begin{macrocode}
-  \newwrite\svn@write
-  \immediate\openout\svn@write=\jobname.svn
-%    \end{macrocode}
 % Write document global values:
 %    \begin{macrocode}
-  \immediate\write\svn@write{%
-    \@percentchar\space SVN cache^^J%
+  \immediate\write\svn@write{^^J%
+    \@percentchar\space Global values:^^J%
     \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
     \noexpand\def\noexpand\svndate{\@svn@date}^^J%
     \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
@@ -1435,7 +1470,6 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
   \ifx\svn@fglist\empty\else
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}
-    \immediate\write\svn@write{\noexpand\makeatletter}
 %    \end{macrocode}
 % For every activated file group check if any keywords got recorded
 % and write to the output file:
@@ -1473,13 +1507,8 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 % an auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
-\InputIfFileExists{\jobname.svx}{}{}%
 \svn@writeaux
 }
-%    \end{macrocode}
-% Finally reread output from last compile run if it exists.
-%    \begin{macrocode}
-\InputIfFileExists{\jobname.svn}{}{}
 %    \end{macrocode}
 %
 % \Finale
