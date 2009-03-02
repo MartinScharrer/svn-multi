@@ -34,6 +34,11 @@ foreach my $file (@files) {
     open(my $infoh, '-|', "svn info $file") or next;
     my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
     close($infoh);
+    if (not keys %info) {
+        print "% Could not receive keywords for '$file'!\n\n";
+        next;
+    }
+
     print "% Keywords for '$file'\n";
     print svnidlong(\%info);
     #print svnid(\%info);
