@@ -9,91 +9,189 @@
 use strict;
 use warnings;
 
+my $VERSION = "0.1";
+
 my %EXCLUDE = map { $_ => 1 } qw(sty tex aux log out toc fff ttt svn svx);
+sub create_svxfile ($@);
 
 if (!@ARGV or $ARGV[0] eq '--help' or $ARGV[0] eq '-h') {
     usage();
 }
 
+
+warn "This is svn-multi.pl, Version $VERSION\n";
+
 sub usage {
     print STDERR <<'EOT';
-Usage: svn-multi.pl outputfile[.svx] [--fls] [--file-group|-fg] input_files ...  [--file-group|-fg] input_files ...
- Output file: should be the main LaTeX file name without the extention,
-              i.e. the \\jobname.
- File group: use given file group for all following files until the next
-             file group is specified.
- Option --fls: Read list of (additional) files from 'outfile.fls' produced by LaTeX
-               when run with the '--recorder' option. The files will be appended
-               to the end of the list, so the last file group will be used for
-               them.
+Usage:
+ svn-multi.pl jobname[.tex] [--fls] [--file-group|-fg <file group>] [input_files] ...
+ ... [--file-group|-fg <file group>] [input_files] ...
+
+Description:
+ This LaTeX helper script collects Subversion keywords from non-(La)TeX files
+ and provides it to the 'svn-multi' package using '.svx' files.  It will first
+ scan the file '<jobname>.svn' for files declared by the '\svnextern' macro but
+ also allows to provide additional files including the corresponding
+ file-groups. The keywords for the additional files will be written in the file
+ '<jobname>.svx'.
+
+Options:
+ jobname[.tex] : The LaTeX `jobname`, i.e. the basename of your main LaTeX file.
+ --file-group <FG> : Use given file group <FG> for all following files,
+ or -fg <FG>         including the one read by a '--fls' option, until the next
+                     file group is specified.
+ --fls  : Read list of (additional) files from the file '<jobname>.fls'. This
+          file is produced by LaTeX when run with the '--recorder' option and
+          contains a list of all input and output files used by the LaTeX main
+          file. Only input files with a relative path will be used.
+          A previously selected file-group will be honoured.
+
+Examples:
+The main LaTeX file here is 'mymainlatexfile.tex'.
+
+ svn-multi.pl mymainlatexfile
+    Creates Subversion keywords for all files declared by '\svnextern' inside
+    the LaTeX code.
+
+ svn-multi.pl mymainlatexfile --file-group=FLS --fls
+    Creates Subversion keywords for all files declared by '\svnextern' inside
+    the LaTeX code. In addition it does the same for all relative input files
+    mentioned in the .fls file which are placed in the 'FLS' file group.
+
+ svn-multi.pl mymainlatexfile a b c --file-group=B e d f
+    In addition to the '\svnextern' declared files the keywords for the files
+    'a', 'b' and 'c' will be added without a specific file-group, i.e. the last
+    file-group specified in the LaTeX file before the '\svnextern' macro will
+    be used. The keywords for 'e', 'd', 'f' will be part of file-group 'B'.
+
+ svn-multi.pl mymainlatexfile --file-group=A a --file-group=B b --file-group='' c
+    File 'a' is in file-group 'A', 'b' is in 'B' and 'c' is not in any group.
 EOT
     exit(0);
 }
 
-my $jobname;
-my $outfile = shift @ARGV;
-
-if ($outfile =~ /^-/) {
+my $jobname = shift @ARGV;
+if ($jobname =~ /^-/) {
     usage();
 }
-elsif ($outfile =~ s/(.*)\.tex$/.svx/) {
-    $jobname = $1;
-}
-elsif ($outfile !~ /(.*)\.(?:.*)$/) {
-    $jobname = $outfile;
-    $outfile .= '.svx';
+$jobname =~ s/\.(?:tex|svx)$//;
+my $outfile = "$jobname.svx";
+
+my %external;
+
+if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
+    warn "Reading '$jobname.svn'.\n";
+    while (<$svnfh>) {
+        chomp;
+        if (/^\s*\\\@svnexternal\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+            my ($name,$list) = ($1,$2||"");
+            $name =~ s/^\.\///;
+            push @{$external{$name} ||= []}, ( split /}\s*{/, $list );
+        }
+    }
+    foreach my $list (values %external) {
+        my %temp = map { $_ => 1 } @$list;
+        $list = [ keys %temp ];
+    }
+    close ($svnfh);
 }
 else {
-    $jobname = $1;
+    warn "No .svn file found for '$jobname'!\n";
 }
 
-my @files = @ARGV;
 
-my $readfg = 0;
-my $filegroup;
+my @mainfilepairs;
+if (exists $external{"$jobname.tex"}) {
+    @mainfilepairs = (['', @{$external{"$jobname.tex"}||[]}]);
+    delete $external{"$jobname.tex"};
+}
+push @mainfilepairs, parse_args(@ARGV);
+create_svxfile("$jobname.svx", @mainfilepairs )
+    if @mainfilepairs;
 
-open (my $ofh, '>', $outfile) or die("Could not open output file!\n");
-select $ofh;
+while ( my ($texfile, $extlist) = each %external ) {
+    my $svxfile = $texfile;
+    $svxfile =~ s/\.(tex|ltx)$/.svx/;
+    create_svxfile($svxfile, ['', @$extlist]);
+}
 
-foreach my $file (@files) {
-    if ($readfg) {
-        $readfg    = 0;
-        $filegroup = $file;
-        print "\\svnfilegroup{$filegroup}\n\n";
-        next;
-    }
-    elsif ($file =~ /^--file-group|-fg/) {
-        if ($file =~ /^--file-group=(.*)/) {
-            $filegroup = $1;
-            print "\\svnfilegroup{$filegroup}\n\n";
+# Parses the arguments and builds a list of (filegroup,files) pairs
+sub parse_args {
+    my @args = @_;
+    my $filegroup = '';
+    my @files;
+    my $readfg;
+    my @pairs;
+
+    foreach my $arg (@args) {
+        if ($readfg) {
+            $readfg    = 0;
+            $filegroup = $arg;
+            $filegroup =~ s/^["']|["']$//;
+        }
+        elsif ($arg =~ /^--file-group|^-?-fg/) {
+            push @pairs, [ $filegroup, @files ];
+            @files = ();
+            if ($arg =~ /^--file-group=(.*)/) {
+                $filegroup = $1;
+                $filegroup =~ s/^["']|["']$//;
+            }
+            else {
+                $readfg = 1;
+            }
+        }
+        elsif ($arg =~ /^--fls/) {
+            push @files, read_fls("$jobname.fls");
         }
         else {
-            $readfg = 1;
+            push @files, $arg;
         }
-        next;
     }
-    elsif ($file =~ /^--fls/) {
-        usage() if not defined $jobname;
-        read_fls("$jobname.fls");
-        next;
-    }
-    open(my $infoh, '-|', "svn info $file") or next;
-    my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
-    close($infoh);
-    if (not keys %info) {
-        print "% Could not receive keywords for '$file'!\n\n";
-        next;
-    }
-
-    print "% Keywords for '$file'\n";
-    print svnidlong(\%info);
-    #print svnid(\%info);
-    print "\n";
+    push @pairs, [ $filegroup, @files ] if @files;
+    return @pairs;
 }
 
-print "\\svnfilegroup{}\n" if $filegroup;
+sub create_svxfile ($@) {
+    my ($svxfile, @fgpair) = @_;
+    my $lastfilegroup = '';
+    my $fgused = 0;
+    open(my $svxfh, '>', $svxfile) or do {
+        warn "ERROR: Could not create SVX file '$svxfile'!\n";
+        return;
+    };
+    return if not @fgpair;
+    warn "Generating .svx file '$svxfile'.\n";
+    select $svxfh;
+    print "% Generated by svn-multi.pl v$VERSION\n\n";
 
-close ($ofh);
+    while ( my ($filegroup, @files) = @{shift @fgpair||[]}) {
+    if ($filegroup ne $lastfilegroup) {
+        print "\\svnfilegroup{$filegroup}\n";
+    }
+    if ($filegroup) {
+        $fgused = 1;
+    }
+
+    foreach my $file (@files) {
+        open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
+        my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
+        close($infoh);
+        if (not keys %info) {
+            print "% Could not receive keywords for '$file'!\n\n";
+            next;
+        }
+        print "% Keywords for '$file'\n";
+        print svnidlong(\%info);
+        print "\n"
+    }
+
+    $lastfilegroup = $filegroup;
+    }
+    print "\\svnfilegroup{}\n" if $fgused and $lastfilegroup ne '';
+    print "\n";
+    close ($svxfh);
+}
+
 
 sub svnid {
     use Date::Parse;
@@ -131,8 +229,7 @@ sub read_fls {
         }
     }
     close($fh);
-    push @files, keys %stack;
-    return 1;
+    return keys %stack;
 }
 __END__
 
