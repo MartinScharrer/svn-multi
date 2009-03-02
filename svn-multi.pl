@@ -66,6 +66,9 @@ The main LaTeX file here is 'mymainlatexfile.tex'.
 
  svn-multi.pl mymainlatexfile --file-group=A a --file-group=B b --file-group='' c
     File 'a' is in file-group 'A', 'b' is in 'B' and 'c' is not in any group.
+
+Further Information:
+See the svn-multi package manual for more information about this script.
 EOT
     exit(0);
 }
