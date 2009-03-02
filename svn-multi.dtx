@@ -1196,19 +1196,19 @@
 % was not registered.}
 %    \begin{macrocode}
 \newcommand{\svnFullAuthor}{%
-\@ifnextchar{*}
-{\svnFullAuthor@star}
-{\svnFullAuthor@normal}
-}
+\@ifnextchar{*}%
+{\svnFullAuthor@star}%
+{\svnFullAuthor@normal}%
+}%
 %    \end{macrocode}
 % Both submacros are calling |\svnFullAuthor@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
 \def\svnFullAuthor@star*#1{%
-\edef\svn@temp{#1}
+\edef\svn@temp{#1}%
 \svnFullAuthor@{\svn@temp}{~(\svn@temp)}}
 \def\svnFullAuthor@normal#1{%
-\edef\svn@temp{#1}
+\edef\svn@temp{#1}%
 \svnFullAuthor@{\svn@temp}{}}
 %    \end{macrocode}
 % |\svnFullAuthor@| now sets the author's full name. Note that |#2| is empty
@@ -1298,18 +1298,18 @@
 \xdef\svn@fg{#1}%
 \expandafter\ifx\csname svn@fg@#1\endcsname\relax%
 \expandafter\gdef\csname svn@fg@#1\endcsname{1}%
-\expandafter\gdef\csname @svnfg@#1@rev\endcsname{0}
+\expandafter\gdef\csname @svnfg@#1@rev\endcsname{0}%
 \expandafter\ifx\csname svnfg@#1@rev\endcsname\relax
-\expandafter\gdef\csname svnfg@#1@rev\endcsname{0}
+\expandafter\gdef\csname svnfg@#1@rev\endcsname{0}%
 \fi
 %    \end{macrocode}
 % Now save new file group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
 %    \begin{macrocode}
 \ifx\svn@fglist\empty
-\xdef\svn@fglist{#1}
+\xdef\svn@fglist{#1}%
 \else
-\xdef\svn@fglist{\svn@fglist,#1}
+\xdef\svn@fglist{\svn@fglist,#1}%
 \fi
 \fi
 }
