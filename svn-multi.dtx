@@ -443,6 +443,12 @@
 % \endgroup
 % \vspace{1ex}
 %
+% \DescribeMacro{\svntime}
+% \DescribeMacro{\svnfiletime}
+% \DescribeMacro{\svncfgtime}
+% This macros return the time part of the date only and simply return the
+% corresponding hour, minute and second macros with a colon as separator.
+%
 % \DescribeMacro{\svnpdfdate}
 % Returns the last changed date of the whole document in a format needed for
 % |\pdfinfo|. Can be used like this:\\
@@ -673,6 +679,19 @@
 \@tempa
 }
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+
+% \begin{macro}{\svntime}
+% \begin{macro}{\svnfiletime}
+% \begin{macro}{\svncfgtime}
+% This macros simple use the hour, minute and second macros.
+%    \begin{macrocode}
+\def\svntime{\svnhour:\svnminute:\svnsecond}
+\def\svnfiletime{\svnfilehour:\svnfileminute:\svnfilesecond}
+\def\svncfgtime{\svncfghour:\svncfgminute:\svncfgsecond}
+%    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 
