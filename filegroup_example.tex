@@ -175,10 +175,13 @@ Last Changed Date     & \svndate\\
 \begin{tabular}{lllll}
    \hline
    Group & Revision & Author & Date \\ \hline
-   Global & \svnrev & \svnauthor & \svndate \\
-   \svnfilegroup{abc}abc & \svncfgrev & \svncfgauthor & \svncfgdate \\
-   \svnfilegroup{def}def & \svncfgrev & \svncfgauthor & \svncfgdate \\
-   \svnfilegroup{ghi}ghi & \svncfgrev & \svncfgauthor & \svncfgdate \\
+   Global & \svnrev & \svnFullAuthor{\svnauthor} & \svntoday\ \svntime\ \svntimezone \\
+   \svnfilegroup{abc}abc &
+   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
+   \svnfilegroup{def}def &
+   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
+   \svnfilegroup{ghi}ghi &
+   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
    \hline
 \end{tabular}
 \svnfilegroup{}
