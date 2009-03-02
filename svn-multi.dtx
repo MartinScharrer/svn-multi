@@ -1395,6 +1395,9 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+%    \begin{macrocode}
+\RequirePackage{fink}[2008/02/27]
+
 \def\svnextern{%
   \begingroup
   \svn@catcodes
@@ -1421,6 +1424,7 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
   \endgroup
   % do nothing, just gobble input
 }
+%    \end{macrocode}
 
 % \subsection{Auxiliary file generation and read-back}
 %
