@@ -44,6 +44,7 @@ example: example.pdf
 
 example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 	pdflatex $<
+	./svn-multi.pl $<
 	pdflatex $<
 	mv example_main.pdf $@
 

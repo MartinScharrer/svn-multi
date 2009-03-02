@@ -11,6 +11,17 @@
 % 'HeadURL LastChangedDate LastChangedRevision LastChangedBy' or
 % 'Id' or both depending if you use \svnidlong and/or \svnid
 
+
+% Include keywords from the following external files and put them in the
+% 'external' group.
+% Note: this only works when the 'svn-multi.pl' is run on this file after it has
+% been compiled once AND the files below are part of a Subversion working
+% directory. The latter is not the case if this file is from the CTAN server.
+\svnfilegroup{external}
+\svnextern{{Makefile}{svn-multi.dtx}{svn-multi.ins}}
+\svnfilegroup{}
+%
+
 \usepackage{hyperref}
 \usepackage{url}
 
