@@ -590,13 +590,14 @@
 %
 %
 % \section{Including Keywords of External Files}
-%
 % \DescribeMacro{\svnextern}\hspace{-.75em}|{{|\meta{filea}|}{|\meta{fileb}|}|\ldots|{|\meta{filex}|}}|\\
 % \indent
-% Subversion keywords of external files (\eg non-\LaTeX\ files like images) can
-% be included using this macro which awaits a list of files, each with the full
-% path relative to the main \LaTeX\ file and each enclosed by |{ }|. Please note
-% that path macros like |\graphicspath| are not taken into account (yet).\par
+% Subversion keywords of external files (\eg non-\LaTeX\ files like images or 
+% even directories) can be included using this macro which awaits a list of
+% files, each with the full path relative to the main \LaTeX\ file and each
+% enclosed by |{ }|. The files must be under version control by Subversion, of
+% course. Please note that path macros like |\graphicspath| are not taken into
+% account (yet).\par
 % The requested filenames are written into the |.svn| auxiliary file and then
 % processed by the external script |svn-multi.pl| which must be executed like
 % described below. The appropriate keywords are then written in \meta{source
@@ -607,7 +608,6 @@
 % \ie updated if one of the external revision is higher than the one of the
 % source file. This makes sense if the included graphics are taken as logical
 % part of a source file.
-% \medskip
 %
 % \subsection*{Script \texttt{svn-multi.pl}}
 % The file |svn-multi.pl| which comes with the |svn-multi| package is an
@@ -650,12 +650,13 @@
 % example |svn-multi.pl */*.jpg| (under Linux/Unix) will include the keywords of
 % all JPG files in all subdirectories.\par
 % It is also possible to do this with a sub-(\LaTeX)-file by calling the script
-% on it:\\ |svn-multi.pl| \meta{sub file} \meta{external files for sub file}\\
+% on it: |svn-multi.pl|~\mbox{\meta{sub file} \meta{external files for sub
+% file}}, which will create/overwrite the \meta{sub file}|.svx| file.
 % However the files given by |\svnextern| in this sub-file will not be honoured
 % in this case.\par\medskip
 % \noindent
 % \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
-% |[--file-group|\meta{file group}|] --fls|\\
+% |[--file-group| \meta{file group}|] --fls|\\
 % Instead of providing a list of all non-\LaTeX/external files the |--fls|
 % option can be used to read this list from the \meta{jobname}|.fls| file. This
 % file is produced by the \LaTeX\ compiler when run with the |--recorder| option
