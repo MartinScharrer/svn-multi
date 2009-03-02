@@ -1469,9 +1469,13 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 %
-% At the end of document we write the values to an auxiliary file.
+% At the end of document we read the external keywords and write the values to 
+% an auxiliary file.
 %    \begin{macrocode}
-\AtEndDocument{\svn@writeaux}
+\AtEndDocument{%
+\InputIfFileExists{\jobname.svx}{}{}%
+\svn@writeaux
+}
 %    \end{macrocode}
 % Finally reread output from last compile run if it exists.
 %    \begin{macrocode}
