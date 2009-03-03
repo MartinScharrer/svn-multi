@@ -23,20 +23,25 @@
 %<*driver>
 \ProvidesFile{svn-multi.dtx}
 %</driver>
-%<package>%% DTX Id: $Id$
+%<*package|driver|wrapper>
+\def\fileversion{v2.0}
+\begingroup
+\def\@svnid$Id${\gdef\filedate{#3/#4/#5}}
+\@svnid $Id$
+\endgroup
+%</package|driver|wrapper>
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{svn-multi}
 %<*package|driver>
-    [2009/03/01 v2.0 SVN Keywords for multi-file LaTeX documents]
+ [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
 %</package|driver>
-%<wrapper>%% DTX Id: $Id$
 %<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [2009/03/01 v2.0 Backward compatibility wrapper for svn-multi]
+%<wrapper> [\filedate\space\fileversion\space Backward compatibility wrapper for svn-multi]
 %<wrapper>\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
 %<wrapper>and is now only a backward compatibility wrapper which loads 'svn-multi'.
 %<wrapper>Please adjust your document preamble to use the new name.}
-%<wrapper>\RequirePackage{svn-multi}[2009/03/01]
+%<wrapper>\RequirePackage{svn-multi}[\filedate]
 %
 %<*driver>
 \documentclass{ltxdoc}
