@@ -13,7 +13,7 @@ RED   = \033[01;31m
 GREEN = \033[01;32m
 WHITE = \033[00m
 
-.PHONY: all doc package clean fullclean example ${TESTS}
+.PHONY: all doc package clean fullclean example testclean ${TESTS}
 
 all: package doc example
 new: fullclean all
@@ -67,14 +67,17 @@ ${PACKAGE}.tar.gz:
 # Make sure TeX finds the input files in TESTDIR
 tests ${TESTS}: export TEXINPUTS:=${TEXINPUTS}:${TESTDIR}
 
-tests: package
+testclean:
+	@${RM} $(foreach ext, aux log out pdf svn svx, tests/test*.${ext})
+
+tests: package testclean
 	@echo "Running tests: ${TESTS}:"
 	@${MAKE} -e -i --no-print-directory ${TESTS} \
 		TESTARGS="-interaction=batchmode -output-directory=${TESTDIR}"\
 		TESTPLOPT="-q"\
 		> /dev/null
 
-${TESTS}: % : ${TESTDIR}/%.tex package
+${TESTS}: % : ${TESTDIR}/%.tex package testclean
 	@-pdflatex -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
 	@if (pdflatex ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
 		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
