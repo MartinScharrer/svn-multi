@@ -1550,19 +1550,21 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 \InputIfFileExists{\jobname.svn}{}{}
 %    \end{macrocode}
 
-% Open outfile to write project keywords:
+% \begin{macro}{\svn@checkwrite}
+% Checks if .svn file is already open and if not opens it. This makes sure that
+% the file is only created if really needed. The macro is only needed once, so
+% it's redefines itself to |\relax| at the end.
 %    \begin{macrocode}
-
 \def\svn@checkwrite{%
  \@ifundefined{svn@write}{%
    \newwrite\svn@write
    \immediate\openout\svn@write=\jobname.svn
    \immediate\write\svn@write{\@percentchar\space SVN Keyword cache^^J}%
-   \let\svn@checkwrite=\relax
  }{}
+ \let\svn@checkwrite=\relax
 }
-
 %    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\svn@writeaux}
 % This macro writes the |.svn| auxiliary file and is called from a
