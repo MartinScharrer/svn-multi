@@ -13,6 +13,8 @@ use warnings;
 use File::Basename;
 
 my $VERSION = "0.1";
+my ($REV,$DATE) = 
+    (split ' ','$Id$')[2,3];
 
 my $dollar  = '$';
 
@@ -24,7 +26,7 @@ if (!@ARGV or $ARGV[0] eq '--help' or $ARGV[0] eq '-h') {
 }
 
 
-warn "This is svn-multi.pl, Version $VERSION\n";
+warn "This is svn-multi.pl, Version $VERSION-$REV, $DATE\n";
 
 sub usage {
     print STDERR <<'EOT';
