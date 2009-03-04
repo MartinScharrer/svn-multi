@@ -629,8 +629,7 @@
 % even directories) can be included using this macro which awaits a list of
 % files, each with the full path relative to the main \LaTeX\ file and each
 % enclosed by |{ }|. The files must be under version control by Subversion, of
-% course. Please note that path macros like |\graphicspath| are not taken into
-% account (yet).\par
+% course. Use |\svnexternpath| to specify paths to be scanned for this files.
 % The requested filenames are written into the |.svn| auxiliary file and then
 % processed by the external script |svn-multi.pl| which must be executed like
 % described below. The appropriate keywords are then written in \meta{source
@@ -641,6 +640,15 @@
 % \ie updated if one of the external revision is higher than the one of the
 % source file. This makes sense if the included graphics are taken as logical
 % part of a source file.
+%
+% \DescribeMacro{\svnexternpath}\hspace{-.75em}|{{|\meta{patha}|}{|\meta{pathb}|}|\ldots|{|\meta{pathx}|}}|\\
+% \indent
+% This macro can be used in the document preamble to declare a set of paths to
+% be scanned for files specified with |\svnextern|. This avoids the need to
+% provide the path again and again for every file.
+% The paths need to be enclosed in |{ }| and must be in Unix style, \ie with
+% `|/|' as directory separator and should end with a `|/|'. Windows users should
+% just replace all `|\|' with `|/|', \eg `|C:\My dir|' gets `|C:/My dir/|'.\par
 %
 % \subsection*{Script \texttt{svn-multi.pl}}
 % The file |svn-multi.pl| which comes with the |svn-multi| package is an
@@ -1561,12 +1569,24 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 
 % \begin{macro}{\svnextern}
 % First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
-% called.
+% called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
 %    \begin{macrocode}
 \def\svnextern{%
   \begingroup
   \svn@catcodes
-  \svn@extern
+  \svn@extern{\noexpand\@svnexternal{\finkpath}}
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnexternpath}
+% First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
+% called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
+%    \begin{macrocode}
+\def\svnexternpath{%
+  \begingroup
+  \svn@catcodes
+  \svn@extern{\noexpand\@svnexternalpath}
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1576,12 +1596,12 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 % given file list unchanged to the .svn file using the |\@svnexternal| helper
 % macro.
 %    \begin{macrocode}
-\def\svn@extern#1{%
+\def\svn@extern#1#2{%
   \endgroup
   \if@filesw
   \svn@checkwrite
   \immediate\write\svn@write{%
-    \noexpand\@svnexternal{\finkpath}{#1}%
+    #1{#2}%
   }%
   \fi
   {\let\@tempa\svn@fg
@@ -1603,6 +1623,23 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 }
 
 \def\@svn@external#1#2{%
+  \endgroup
+  % do nothing, just gobble input
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\@svnexternpath}
+% Discards the argument using special verbatim mode as before. This macro and
+% its argument is only used by the external |svn-multi.pl| script.
+%    \begin{macrocode}
+\def\@svnexternalpath{%
+  \begingroup
+  \svn@catcodes
+  \@svn@externalpath
+}
+
+\def\@svn@externalpath#1{%
   \endgroup
   % do nothing, just gobble input
 }
@@ -1647,7 +1684,8 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
  \@ifundefined{svn@write}{%
    \newwrite\svn@write
    \immediate\openout\svn@write=\jobname.svn
-   \immediate\write\svn@write{\@percentchar\space SVN Keyword cache^^J}%
+   \immediate\write\svn@write{\@percentchar\space SVN Keyword cache}%
+   %\immediate\write\svn@write{\noexpand\makeatletter}%
  }{}
  \let\svn@checkwrite=\relax
 }
