@@ -21,29 +21,17 @@
 % \fi
 % \iffalse
 %<*package|driver|wrapper>
+\def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
+ \year#4\month#5\day#6\relax
+ \def\filedate{#4/#5/#6}
+}
+\filedate$Id$
 \def\fileversion{v2.0}
-\begingroup
-\def\@svnid$#1: #2 #3 #4-#5-#6 #7 ${\gdef\filedate{#4/#5/#6}}
-\@svnid$Id$
-\endgroup
 %</package|driver|wrapper>
 %<*driver>
 \ProvidesFile{svn-multi.dtx}
-%</driver>
-%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-%<package>\ProvidesPackage{svn-multi}
-%<*package|driver>
  [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
-%</package|driver>
-%<wrapper>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-%<wrapper>\ProvidesPackage{svnkw}
-%<wrapper> [\filedate\space\fileversion\space Backward compatibility wrapper for svn-multi]
-%<wrapper>\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
-%<wrapper>and is now only a backward compatibility wrapper which loads 'svn-multi'.
-%<wrapper>Please adjust your document preamble to use the new name.}
-%<wrapper>\RequirePackage{svn-multi}[\filedate]
-%
-%<*driver>
+
 \documentclass{ltxdoc}
 \usepackage{svn-multi}
 \usepackage{ifpdf}
@@ -221,7 +209,8 @@
 % cause wrong results if they are used in a file before or without any id
 % macros.
 %
-% \subsubsection*{File Groups} Version 2.0 introduces the concept of file
+% \subsubsection*{File Groups}
+% Version 2.0 introduces the concept of file
 % groups. Several files of a multi-file \LaTeX\ document can be grouped together
 % and the latest version control informations of all files of a group is
 % provided by macros. This works in the same way as the global macros mentioned
@@ -241,6 +230,45 @@
 % The version control informations are provided by Subversion keywords which
 % first need to be read in by dedicated macros and can then be typeset using
 % different macros.
+%
+% \subsection{Package Options}
+% Since v2.0 this package provides some options to allow to activate only a
+% certain subset of its functionality, \eg to avoid problems with other packages
+% or save \TeX\ memory. For backwards compatibility to pre-2.0 package versions
+% all old features are active by default and all new features are deactivated to
+% save a little of \TeX\ memory.
+%
+% The available options are:\par
+%
+% \DescribeMacro{old}
+% Activate only pre-v2.0 features.\medskip
+%
+% \DescribeMacro{all}
+% Activate all features of the package.\medskip
+%
+% \DescribeMacro{verbatim}
+% \DescribeMacro{noverbatim}
+% Activate (default) or deactivate the verbatim mode of the keyword parser
+% macros. Normally verbatim mode is very much wanted to support strange
+% filenames of URLs. However, verbatim mode of v1.3 caused problems with the
+% active characters of the |french| language of the |babel| package, which got
+% fixed by the next version.
+% This options gives the user a possibility to disable verbatim, \eg for trouble
+% shooting.
+% \medskip
+%
+% \DescribeMacro{extern}
+% \DescribeMacro{noextern}
+% Active or deactivate (default) the support for keywords from external files
+% described in section~\ref{sec:extern}. An old |.svn| file should be removed
+% when this feature is deactivated to avoid \textit{undefined macro} errors
+% caused by macros placed there by this feature.
+% \medskip
+%
+% \DescribeMacro{filegroups}
+% \DescribeMacro{nofilegroups}
+% Active or deactivate (default) the file groups feature described in
+% section~\ref{sec:file-group}.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -526,7 +554,8 @@
 %
 % \subsection{File Groups}\label{sec:file-group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
-% latest revision of a group can be accessed.
+% latest revision of a group can be accessed. Use the |filegroups| option to
+% activate these macros.
 %
 % \noindent
 % \DescribeMacro{\svnfilegroup}\hspace{-.75em}\marg{file group}\\
@@ -594,7 +623,7 @@
 % macro can not be used inside macros like |\svnFullAuthor|.
 %
 %
-% \section{Including Keywords of External Files}
+% \section{Including Keywords of External Files}\label{sec:extern}
 % \DescribeMacro{\svnextern}\hspace{-.75em}|{{|\meta{filea}|}{|\meta{fileb}|}|\ldots|{|\meta{filex}|}}|\\
 % \indent
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or 
@@ -687,25 +716,45 @@
 % \StopEventually{}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Implementation}
-
-% \begin{macro}{\svn}
-% \begin{macro}{\svn*}
-% After *-testing, the intermediate macros |\svn@s| and |\svn@n| are called to
-% strip the |{ }| from |\svn|[|*|]|{$...$}| and to remove the |*|. Then the
-% actual macros are called to strip the dollars with or without the space
-% before the last dollar.
-% \changes{v1.2}{2007/06/22}{Added star version. Normal version was not
-% changed to not break existing documents with user defined keywords without
-% leading space.}
+% \subsection{Package Header}
+% \subsubsection*{Package Identification}
 %    \begin{macrocode}
-\newcommand{\svn}{\@ifnextchar{*}{\svn@s}{\svn@n}}
-\def\svn@n#1{\@svn@n#1}
-\def\svn@s*#1{\@svn@s#1}
-\def\@svn@n$#1${#1}
-\def\@svn@s$#1 ${#1}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{svn-multi}
+ [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
+
+% \subsubsection*{Preliminary Declarations}
+% Declaration of feature switches.
+%    \begin{macrocode}
+\newif\if@svnmulti@verbatim
+\newif\if@svnmulti@filegroups
+\newif\if@svnmulti@extern
+%    \end{macrocode}
+%
+% \subsubsection*{Options}
+%    \begin{macrocode}
+\DeclareOption{old}{%
+  \@svnmulti@verbatimtrue
+  \@svnmulti@filegroupsfalse
+  \@svnmulti@externfalse
+}
+\DeclareOption{all}{%
+  \@svnmulti@verbatimtrue
+  \@svnmulti@filegroupstrue
+  \@svnmulti@externtrue
+}
+\DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
+\DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
+\DeclareOption{filegroups}{\@svnmulti@filegroupstrue}
+\DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
+\DeclareOption{extern}{\@svnmulti@externtrue}
+\DeclareOption{noextern}{\@svnmulti@externfalse}
+
+\ExecuteOptions{old}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
 
 % \subsection{Definition of init values}
 %    \begin{macrocode}
@@ -1392,6 +1441,7 @@
 % The list of file groups |\svn@fglist| is initial set empty and will be filled
 % by |\svnfilegroup|.
 %    \begin{macrocode}
+\if@svnmulti@filegroups
 \let\svn@fglist=\empty
 %    \end{macrocode}
 
@@ -1475,10 +1525,15 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
 % \subsection{External Files}
 % The |fink| package is needed to get the current source file path. A package
 % error is generated if the loaded version doesn't provide the necessary macros.
 %    \begin{macrocode}
+\if@svnmulti@extern
 \RequirePackage{fink}[2008/02/27]
 \begingroup
 \def\svn@finkerror{%
@@ -1540,7 +1595,29 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
   \endgroup
   % do nothing, just gobble input
 }
+
+\fi
 %    \end{macrocode}
+% \end{macro}
+
+% \subsection{Other macros}
+% \begin{macro}{\svn}
+% \begin{macro}{\svn*}
+% After *-testing, the intermediate macros |\svn@s| and |\svn@n| are called to
+% strip the |{ }| from |\svn|[|*|]|{$...$}| and to remove the |*|. Then the
+% actual macros are called to strip the dollars with or without the space
+% before the last dollar.
+% \changes{v1.2}{2007/06/22}{Added star version. Normal version was not
+% changed to not break existing documents with user defined keywords without
+% leading space.}
+%    \begin{macrocode}
+\newcommand{\svn}{\@ifnextchar{*}{\svn@s}{\svn@n}}
+\def\svn@n#1{\@svn@n#1}
+\def\svn@s*#1{\@svn@s#1}
+\def\@svn@n$#1${#1}
+\def\@svn@s$#1 ${#1}
+%    \end{macrocode}
+% \end{macro}
 % \end{macro}
 
 % \subsection{Auxiliary file generation and read-back}
@@ -1599,6 +1676,7 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % Write file group values if file groups were used:
 %    \begin{macrocode}
+  \if@svnmulti@filegroups
   \ifx\svn@fglist\empty\else
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}
 %    \end{macrocode}
@@ -1624,7 +1702,7 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
         }
       \fi\fi
     }
-  \fi
+  \fi\fi
 %    \end{macrocode}
 % Finally close output file:
 %    \begin{macrocode}
@@ -1641,6 +1719,27 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 \svn@writeaux
 }
 %    \end{macrocode}
+%
+% \subsection{Backward compatibility wrapper \texttt{svnkw.sty}}
+% For backward compatibility a wrapper file with the old package name |svnkw| is
+% provided. Newer documents should use the name |svn-multi|.
+% \setcounter{CodelineNo}{0}
+% \iffalse
+%</package>
+%<*wrapper>
+% \fi
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{svnkw}
+ [\filedate\space\fileversion\space Backward compatibility wrapper for svn-multi]
+\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
+and is now only a backward compatibility wrapper which loads 'svn-multi'.
+Please adjust your document preamble to use the new name.}
+\RequirePackage{svn-multi}[\filedate]
+%    \end{macrocode}
+% \iffalse
+%</wrapper>
+% \fi
 %
 % \Finale
 \endinput
