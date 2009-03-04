@@ -972,9 +972,13 @@
 % \cs{svnidlong@readargsfull} is called to read the arguments.
 %    \begin{macrocode}
 \begingroup
+\if@svnmulti@verbatim
 \svn@catcodes
 \catcode`\{=12
 \catcode`\}=12
+\else
+\def\svnidlong@readargsfull{\svnidlong@readargs}
+\fi
 \svnidlong@readargsfull
 }
 %    \end{macrocode}
@@ -985,11 +989,15 @@
 % return is changed to category ``ignore'' so line breaks are not taken as
 % part of the verbatim arguments.
 %    \begin{macrocode}
+\if@svnmulti@verbatim
 \def\svn@catcodes{%
 \let\do\@makeother \dospecials
 \catcode`\^^M9 \catcode`\ 10
 \catcode`\{1 \catcode`\}2
 }
+\else
+\def\svn@catcodes{}
+\fi
 %    \end{macrocode}
 % \end{macro}
 
@@ -1002,6 +1010,7 @@
 % to a local replacement.
 %
 %    \begin{macrocode}
+\if@svnmulti@verbatim
 \begingroup
 \catcode`\{=12\catcode`\}=12
 \catcode`\(=1\catcode`\)=2
@@ -1009,6 +1018,7 @@
  \svnidlong@readargs(#2)(#4)(#6)(#8)%
 )
 \endgroup
+\fi
 %    \end{macrocode}
 % \end{macro}
 
@@ -1072,7 +1082,9 @@
 % Reads the full keyword and strips the dollars.
 %    \begin{macrocode}
 \begingroup
+\if@svnmulti@verbatim
 \catcode`\$=12
+\fi
 \gdef\svnkwsave@read $#1$\relax{%
     \svn@checkcolon#1:\relax
 }
