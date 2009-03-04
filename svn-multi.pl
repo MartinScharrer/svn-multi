@@ -6,7 +6,7 @@
 # This script belongs to the LaTeX package 'svn-multi'.
 # Version: 2009/03/02
 #
-# $Id:$
+# $Id$
 ################################################################################
 use strict;
 use warnings;
