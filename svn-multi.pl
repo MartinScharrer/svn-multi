@@ -8,6 +8,7 @@
 ################################################################################
 use strict;
 use warnings;
+use File::Basename;
 
 my $VERSION = "0.1";
 
@@ -73,11 +74,15 @@ EOT
     exit(0);
 }
 
-my $jobname = shift @ARGV;
+my ($jobname, $dir, $suffix) = fileparse(shift @ARGV);
+if ($dir && $dir ne './') {
+  printf STDERR "Main directory is '$dir'.\n";
+  chdir($dir);
+}
+
 if ($jobname =~ /^-/) {
     usage();
 }
-$jobname =~ s/\.(?:tex|svx)$//;
 my $outfile = "$jobname.svx";
 
 my %external;
