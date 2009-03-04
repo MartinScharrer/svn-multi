@@ -1699,18 +1699,30 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
       \expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname=0\else
         \immediate\write\svn@write{%
           \@percentchar\space \svn@fg^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @rev{\csname @svnfg@\svn@fg @rev\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @date{\csname @svnfg@\svn@fg @date\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @author{\csname @svnfg@\svn@fg @author\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @year{\csname @svnfg@\svn@fg @year\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @month{\csname @svnfg@\svn@fg @month\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @day{\csname @svnfg@\svn@fg @day\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @hour{\csname @svnfg@\svn@fg @hour\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @minute{\csname @svnfg@\svn@fg @minute\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @second{\csname @svnfg@\svn@fg @second\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @timezonehour{\csname @svnfg@\svn@fg @timezonehour\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @timezoneminute{\csname @svnfg@\svn@fg @timezoneminute\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @rev%
+                {\csname @svnfg@\svn@fg @rev\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @date%
+                {\csname @svnfg@\svn@fg @date\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @author%
+                {\csname @svnfg@\svn@fg @author\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @year%
+                {\csname @svnfg@\svn@fg @year\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @month%
+                {\csname @svnfg@\svn@fg @month\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @day%
+                {\csname @svnfg@\svn@fg @day\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @hour%
+                {\csname @svnfg@\svn@fg @hour\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @minute%
+                {\csname @svnfg@\svn@fg @minute\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @second%
+                {\csname @svnfg@\svn@fg @second\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @timezoneminute%
+                {\csname @svnfg@\svn@fg @timezoneminute\endcsname}^^J%
+          \noexpand\def\@backslashchar svnfg@\svn@fg @timezonehour%
+                {\csname @svnfg@\svn@fg @timezonehour\endcsname}^^J%
         }
+        \relax
       \fi\fi
     }
   \fi\fi
