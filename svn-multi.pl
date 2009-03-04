@@ -5,12 +5,16 @@
 #
 # This script belongs to the LaTeX package 'svn-multi'.
 # Version: 2009/03/02
+#
+# $Id:$
 ################################################################################
 use strict;
 use warnings;
 use File::Basename;
 
 my $VERSION = "0.1";
+
+my $dollar  = '$';
 
 my %EXCLUDE = map { $_ => 1 } qw(sty tex aux log out toc fff ttt svn svx);
 sub create_svxfile ($@);
@@ -208,7 +212,7 @@ sub svnid {
     return "" if (not defined $href->{Name});
     my $date = time2str("%Y-%m-%d %XZ", str2time($href->{'Last Changed Date'}), 'Z');
     return <<"EOT";
-\\svnid{\$Id: $href->{Name} $href->{'Last Changed Rev'} $date $href->{'Last Changed Author'} \$}
+\\svnid{${dollar}Id: $href->{Name} $href->{'Last Changed Rev'} $date $href->{'Last Changed Author'} \$}
 EOT
 }
 
@@ -216,10 +220,10 @@ sub svnidlong {
     my $href = shift;
     return <<"EOT";
 \\svnidlong
-{\$HeadURL: $href->{URL} \$}
-{\$LastChangedDate: $href->{'Last Changed Date'} \$}
-{\$LastChangedRevision: $href->{'Last Changed Rev'} \$}
-{\$LastChangedBy: $href->{'Last Changed Author'} \$}
+{${dollar}HeadURL: $href->{URL} \$}
+{${dollar}LastChangedDate: $href->{'Last Changed Date'} \$}
+{${dollar}LastChangedRevision: $href->{'Last Changed Rev'} \$}
+{${dollar}LastChangedBy: $href->{'Last Changed Author'} \$}
 EOT
 }
 
