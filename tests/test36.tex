@@ -1,5 +1,5 @@
 \documentclass[12pt]{report}
-\usepackage[extern]{svn-multi}[2009/03/05]
+\usepackage[external]{svn-multi}[2009/03/05]
 \usepackage{ifthen}
 
 \begin{filecontents}{\jobname.svx}
@@ -8,20 +8,20 @@
 
 \begin{document}
 \chapter{Test 36}
-\verb+\svnextern+ and \verb+\svnexternpath+ should not produce any spaces.
+\verb+\svnexternal+ and \verb+\svnexternalpath+ should not produce any spaces.
 
 \newlength{\mywidth}
 \newsavebox{\mybox}
-\savebox{\mybox}{\svnextern{}}
+\savebox{\mybox}{\svnexternal{}}
 \settowidth{\mywidth}{\usebox{\mybox}}
 \noindent
-svnextern width: \the\mywidth; '\usebox{\mybox}'\\
-\ifthenelse{\mywidth>0}{\error{svnexternpath produces spaces!}}{}
+svnexternal width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svnexternalpath produces spaces!}}{}
 
-\savebox{\mybox}{\svnextern{}}
+\savebox{\mybox}{\svnexternal{}}
 \settowidth{\mywidth}{\usebox{\mybox}}
 \noindent
-svnexternpath width: \the\mywidth; '\usebox{\mybox}'\\
-\ifthenelse{\mywidth>0}{\error{svnexternpath produces spaces!}}{}
+svnexternalpath width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svnexternalpath produces spaces!}}{}
 
 \end{document}

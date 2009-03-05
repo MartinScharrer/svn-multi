@@ -256,10 +256,10 @@
 % with some packages, like |babel| with the |french| option.
 % \medskip
 %
-% \DescribeMacro{extern}
-% \DescribeMacro{noextern}
+% \DescribeMacro{external}
+% \DescribeMacro{noexternal}
 % Activate or deactivate (default) the support for keywords from external files
-% described in section~\ref{sec:extern}. An old |.svn| file should be removed
+% described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
 % caused by macros placed there by this feature.
 % \medskip
@@ -273,20 +273,20 @@
 % \DescribeMacro{nographics}
 % This option (default: off) allows to automatically declare all images included
 % using |\includegraphics| from the |graphics|/|graphicx| package as external
-% files (see section~\ref{sec:extern}). The options |extern| and |autoload| are
+% files (see section~\ref{sec:external}). The options |external| and |autoload| are
 % activated by the |graphics| option so that the produced |.svx| files are
 % loaded automatically.  An |noautoload| option after |graphics| will deactivate
-% this, but then an |\svnextern| macro must be included in all \LaTeX\ files
+% this, but then an |\svnexternal| macro must be included in all \LaTeX\ files
 % which should take the image revisions into account.\par
-% Please note that the |noextern| option causes |nographics|.
+% Please note that the |noexternal| option causes |nographics|.
 %
 % \DescribeMacro{autoload}
 % \DescribeMacro{noautoload}
 % Activate or deactivate (default) automatic loading of corresponding |.svx|
 % files at the begin of files included using |\input| or |\import|. This avoids
-% the need of putting an |\svnextern| macro in every file just to load the
+% the need of putting an |\svnexternal| macro in every file just to load the
 % |.svx| files created automatically by the |graphics| option. The option
-% |extern| is activated by |autoload|.
+% |external| is activated by |autoload|.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -641,29 +641,29 @@
 % macro can not be used inside macros like |\svnFullAuthor|.
 %
 %
-% \section{Including Keywords of External Files}\label{sec:extern}
-% \DescribeMacro{\svnextern}\hspace{-.75em}|{{|\meta{filea}|}{|\meta{fileb}|}|\ldots|{|\meta{filex}|}}|\\
+% \section{Including Keywords of External Files}\label{sec:external}
+% \DescribeMacro{\svnexternal}\hspace{-.75em}|{{|\meta{filea}|}{|\meta{fileb}|}|\ldots|{|\meta{filex}|}}|\\
 % \indent
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or 
 % even directories) can be included using this macro which awaits a list of
 % files, each with the full path relative to the main \LaTeX\ file and each
 % enclosed by |{ }|. The files must be under version control by Subversion, of
-% course. Use |\svnexternpath| to specify paths to be scanned for this files.
+% course. Use |\svnexternalpath| to specify paths to be scanned for this files.
 % The requested filenames are written into the |.svn| auxiliary file and then
 % processed by the external script |svn-multi.pl| which must be executed like
 % described below. The appropriate keywords are then written in \meta{source
-% file}|.svx| files (|x| like eXternal) which are read in by the |\svnextern|
+% file}|.svx| files (|x| like eXternal) which are read in by the |\svnexternal|
 % macro at the next \LaTeX\ run. Therefore the keywords are processed at the
 % location \eg in the same file group as this macro. The file local macros like
-% |\svnfilerev| which appear in a source file after |\svnextern| are affected,
+% |\svnfilerev| which appear in a source file after |\svnexternal| are affected,
 % \ie updated if one of the external revision is higher than the one of the
 % source file. This makes sense if the included graphics are taken as logical
 % part of a source file.
 %
-% \DescribeMacro{\svnexternpath}\hspace{-.75em}|{{|\meta{patha}|}{|\meta{pathb}|}|\ldots|{|\meta{pathx}|}}|\\
+% \DescribeMacro{\svnexternalpath}\hspace{-.75em}|{{|\meta{patha}|}{|\meta{pathb}|}|\ldots|{|\meta{pathx}|}}|\\
 % \indent
 % This macro can be used in the document preamble to declare a set of paths to
-% be scanned for files specified with |\svnextern|. This avoids the need to
+% be scanned for files specified with |\svnexternal|. This avoids the need to
 % provide the path again and again for every file.
 % The paths need to be enclosed in |{ }| and must be in Unix style, \ie with
 % `|/|' as directory separator and should end with a `|/|'. Windows users should
@@ -689,11 +689,11 @@
 % \noindent
 % \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}\\
 % \indent
-% As already mentioned in the |\svnextern| description above this script reads
+% As already mentioned in the |\svnexternal| description above this script reads
 % the requested external filename from the \meta{jobname}|.svn| file. The
 % Subversion command line client |svn| is then used to fetch the needed keywords
 % which are placed in a |\svnidlong| macro inside a \meta{source file}|.svx|
-% file. Every single source file which uses |\svnextern| will become its own
+% file. Every single source file which uses |\svnexternal| will become its own
 % |.svx| file which allows to attach specific external files to one (or more)
 % specific source files.\par\medskip
 % \noindent
@@ -705,14 +705,14 @@
 % group is used for all external files listed after the option until the next
 % group is specified. All keywords of these files are written in the
 % \meta{jobname}|.svx| file and read in by the main \LaTeX\ file if a,
-% possible empty, |\svnextern| macro is included. This allows for easy including
+% possible empty, |\svnexternal| macro is included. This allows for easy including
 % of many external files without specifying them all inside the source file. For
 % example |svn-multi.pl */*.jpg| (under Linux/Unix) will include the keywords of
 % all JPG files in all subdirectories.\par
 % It is also possible to do this with a sub-(\LaTeX)-file by calling the script
 % on it: |svn-multi.pl|~\mbox{\meta{sub file} \meta{external files for sub
 % file}}, which will create/overwrite the \meta{sub file}|.svx| file.
-% However the files given by |\svnextern| in this sub-file will not be honoured
+% However the files given by |\svnexternal| in this sub-file will not be honoured
 % in this case.\par\medskip
 % \noindent
 % \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
@@ -755,7 +755,7 @@
 %    \begin{macrocode}
 \newif\if@svnmulti@verbatim
 \newif\if@svnmulti@filegroups
-\newif\if@svnmulti@extern
+\newif\if@svnmulti@external
 \newif\if@svnmulti@graphics
 \newif\if@svnmulti@autoload
 %    \end{macrocode}
@@ -765,14 +765,14 @@
 \DeclareOption{old}{%
   \@svnmulti@verbatimtrue
   \@svnmulti@filegroupsfalse
-  \@svnmulti@externfalse
+  \@svnmulti@externalfalse
   \@svnmulti@graphicsfalse
   \@svnmulti@autoloadfalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
   \@svnmulti@filegroupstrue
-  \@svnmulti@externtrue
+  \@svnmulti@externaltrue
   \@svnmulti@graphicstrue
   \@svnmulti@autoloadtrue
 }
@@ -780,17 +780,17 @@
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
 \DeclareOption{filegroups}{\@svnmulti@filegroupstrue}
 \DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
-\DeclareOption{extern}{\@svnmulti@externtrue}
-\DeclareOption{noextern}{\@svnmulti@externfalse}
+\DeclareOption{external}{\@svnmulti@externaltrue}
+\DeclareOption{noexternal}{\@svnmulti@externalfalse}
 \DeclareOption{graphics}{%
     \@svnmulti@graphicstrue
-    \@svnmulti@externtrue
+    \@svnmulti@externaltrue
     \@svnmulti@autoloadtrue
 }
 \DeclareOption{nographics}{\@svnmulti@graphicsfalse}
 \DeclareOption{autoload}{%
     \@svnmulti@autoloadtrue
-    \@svnmulti@externtrue
+    \@svnmulti@externaltrue
 }
 \DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
 
@@ -1588,7 +1588,7 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 % The |fink| package is needed to get the current source file path. A package
 % error is generated if the loaded version doesn't provide the necessary macros.
 %    \begin{macrocode}
-\if@svnmulti@extern
+\if@svnmulti@external
 \RequirePackage{fink}[2008/02/27]
 \begingroup
 \def\svn@finkerror{%
@@ -1634,36 +1634,36 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \fi
 %    \end{macrocode}
 
-% \begin{macro}{\svnextern}
+% \begin{macro}{\svnexternal}
 % First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
 % called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
 %    \begin{macrocode}
-\def\svnextern{%
+\def\svnexternal{%
   \begingroup
   \svn@catcodes
-  \svn@extern{\noexpand\@svnexternal{\finkpath}}
+  \svn@external{\noexpand\@svnexternal{\finkpath}}
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternpath}
+% \begin{macro}{\svnexternalpath}
 % First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
 % called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
 %    \begin{macrocode}
-\def\svnexternpath{%
+\def\svnexternalpath{%
   \begingroup
   \svn@catcodes
-  \svn@extern{\noexpand\@svnexternalpath}%
+  \svn@external{\noexpand\@svnexternalpath}%
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@extern}
+% \begin{macro}{\svn@external}
 % This deactivates verbatim mode and writes the current source file path and the
 % given file list unchanged to the |.svn| file using the |\@svnexternal| helper
 % macro. Finally it loads a |.svx| file for the current file if it exists.
 %    \begin{macrocode}
-\def\svn@extern#1#2{%
+\def\svn@external#1#2{%
   \endgroup
   \if@filesw
   \svn@checkwrite
