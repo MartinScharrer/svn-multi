@@ -1,0 +1,21 @@
+\documentclass[12pt]{report}
+\usepackage[external]{svn-multi}[2009/03/05]
+
+\begin{document}
+\chapter{Test 37}
+\verb+\svnexternal+ and \verb+\svnexternalpath+ can read filename containing
+`\_' and other special characters.
+
+\svnexternal{{test_file}{test2__file}}
+\svnexternalpath{{test_dir/}{test2__dir/}}
+
+\svnexternal{{test^file}{test2^file}}
+\svnexternalpath{{test^dir/}{test2^dir/}}
+
+\svnexternal{{test$file}{test2$$file}}
+\svnexternalpath{{test$dir/}{test2$$dir/}}
+
+\svnexternal{{test#file}{test2##file}}
+\svnexternalpath{{test#dir/}{test2##dir/}}
+
+\end{document}
