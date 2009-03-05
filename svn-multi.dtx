@@ -658,8 +658,9 @@
 % |\svnfilerev| which appear in a source file after |\svnexternal| are affected,
 % \ie updated if one of the external revision is higher than the one of the
 % source file. This makes sense if the included graphics are taken as logical
-% part of a source file.
+% part of a source file.\medskip
 %
+% \noindent
 % \DescribeMacro{\svnexternalpath}\hspace{-.75em}|{{|\meta{patha}|}{|\meta{pathb}|}|\ldots|{|\meta{pathx}|}}|\\
 % \indent
 % This macro can be used in the document preamble to declare a set of paths to
@@ -667,7 +668,7 @@
 % provide the path again and again for every file.
 % The paths need to be enclosed in |{ }| and must be in Unix style, \ie with
 % `|/|' as directory separator and should end with a `|/|'. Windows users should
-% just replace all `|\|' with `|/|', \eg `|C:\My dir|' gets `|C:/My dir/|'.\par
+% just replace all `|\|' with `|/|', \eg `|C:\My dir|' gets `|{C:/My dir/}|'.
 %
 % \subsection*{Script \texttt{svn-multi.pl}}
 % The file |svn-multi.pl| which comes with the |svn-multi| package is an
@@ -1710,6 +1711,22 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% \subsection{Graphics option}
+% Automatic declaration of all images included by |\includegraphics| from the
+% |graphics| package as external files. We use the |\Gin@setfile| macro from
+% that package which receives the image file name as third argument.
+%    \begin{macrocode}
+\if@svnmulti@graphics
+\RequirePackage{graphics}[2006/02/20]
+
+\let\svnmulti@Gin@setfile\Gin@setfile
+\renewcommand*{\Gin@setfile}[3]{%
+    \svnexternal{{#3}}%
+    \svnmulti@Gin@setfile{#1}{#2}{#3}%
+}
+\fi
+%    \end{macrocode}
+%
 % \subsection{Other macros}
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
