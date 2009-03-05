@@ -86,6 +86,7 @@
 \begin{document}
   \DocInput{svn-multi.dtx}
   \PrintChanges
+  \clearpage
   \PrintIndex
 \end{document}
 %</driver>
@@ -262,12 +263,13 @@
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
 % caused by macros placed there by this feature.
+% Please note that the |noexternal| option causes |nographics| and |nopgfimages|.
 % \medskip
 %
 % \DescribeMacro{filegroups}
 % \DescribeMacro{nofilegroups}
 % Activate or deactivate (default) the file groups feature described in
-% section~\ref{sec:file-group}.
+% section~\ref{sec:file-group}.\\[\baselineskip]
 %
 % \DescribeMacro{graphics}
 % \DescribeMacro{nographics}
@@ -278,7 +280,20 @@
 % loaded automatically.  An |noautoload| option after |graphics| will deactivate
 % this, but then an |\svnexternal| macro must be included in all \LaTeX\ files
 % which should take the image revisions into account.\par
-% Please note that the |noexternal| option causes |nographics|.
+% The |graphics| package is loaded if this option is active. If this package is
+% needed with some special options it should be loaded by the \LaTeX\ document
+% before |svn-multi|.
+% Please note that this feature needs to tie itself into the |graphics| package
+% and might fail if the internal structure of this package changes in future
+% versions.
+% \medskip
+%
+% \DescribeMacro{pgfimages}
+% \DescribeMacro{nopgfimages}
+% Same like the |graphics| option but for the |pgf| package (2008/01/15 or
+% later) with the |\pgfuseimage| macro. Please also see the notes about package
+% loading and ties mentioned above.
+% \medskip
 %
 % \DescribeMacro{autoload}
 % \DescribeMacro{noautoload}
@@ -758,6 +773,7 @@
 \newif\if@svnmulti@filegroups
 \newif\if@svnmulti@external
 \newif\if@svnmulti@graphics
+\newif\if@svnmulti@pgfimages
 \newif\if@svnmulti@autoload
 %    \end{macrocode}
 %
@@ -768,6 +784,7 @@
   \@svnmulti@filegroupsfalse
   \@svnmulti@externalfalse
   \@svnmulti@graphicsfalse
+  \@svnmulti@pgfimagesfalse
   \@svnmulti@autoloadfalse
 }
 \DeclareOption{all}{%
@@ -775,6 +792,7 @@
   \@svnmulti@filegroupstrue
   \@svnmulti@externaltrue
   \@svnmulti@graphicstrue
+  \@svnmulti@pgfimagestrue
   \@svnmulti@autoloadtrue
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
@@ -782,13 +800,24 @@
 \DeclareOption{filegroups}{\@svnmulti@filegroupstrue}
 \DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
 \DeclareOption{external}{\@svnmulti@externaltrue}
-\DeclareOption{noexternal}{\@svnmulti@externalfalse}
+\DeclareOption{noexternal}{%
+    \@svnmulti@externalfalse
+    \@svnmulti@pgfimagesfalse
+    \@svnmulti@graphicsfalse
+    \@svnmulti@autoloadfalse
+}
 \DeclareOption{graphics}{%
     \@svnmulti@graphicstrue
     \@svnmulti@externaltrue
     \@svnmulti@autoloadtrue
 }
 \DeclareOption{nographics}{\@svnmulti@graphicsfalse}
+\DeclareOption{pgfimages}{%
+    \@svnmulti@pgfimagestrue
+    \@svnmulti@externaltrue
+    \@svnmulti@autoloadtrue
+}
+\DeclareOption{nopgfimages}{\@svnmulti@pgfimagesfalse}
 \DeclareOption{autoload}{%
     \@svnmulti@autoloadtrue
     \@svnmulti@externaltrue
@@ -1711,7 +1740,8 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \subsection{Graphics option}
+% \subsection{Support for Graphic Packages}
+% \subsubsection{Package \texttt{graphics}}
 % Automatic declaration of all images included by |\includegraphics| from the
 % |graphics| package as external files. We use the |\Gin@setfile| macro from
 % that package which receives the image file name as third argument.
@@ -1723,6 +1753,35 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \renewcommand*{\Gin@setfile}[3]{%
     \svnexternal{{#3}}%
     \svnmulti@Gin@setfile{#1}{#2}{#3}%
+}
+\fi
+%    \end{macrocode}
+
+% \subsubsection{Package \texttt{pgf}}
+% The |pgf| macro |\pgf@declareimage| which is called by the user macro
+% |\pgfdeclareimage| is used.
+%    \begin{macrocode}
+\if@svnmulti@pgfimages
+\RequirePackage{pgf}[2008/01/15]
+
+\let\svnmulti@pgf@declareimage\pgf@declareimage
+\renewcommand*{\pgf@declareimage}[3][]{%
+  \svnmulti@pgf@declareimage[#1]{#2}{#3}%
+%    \end{macrocode}
+% At this point the used image filename is defined by |\pgf@filename| and the
+% image itself is defined by |\pgf@image@#2!| which is a |\let| copy of
+% temporary |\pgf@image|.  An own copy of this is created and the old name
+% |\pgf@image@#2!| is used to execute |\svnexternal| every time the image is
+% included using |\pgfuseimage|.
+% \begin{macrocode}
+  \ifx\pgf@filename\empty\else
+      \expandafter\global\expandafter%
+        \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
+      \expandafter\xdef\csname pgf@image@#2!\endcsname{%
+        \noexpand\svnexternal{{\pgf@filename}}%
+        \csname svnmulti@pgf@image@#2!\endcsname
+      }
+  \fi
 }
 \fi
 %    \end{macrocode}
