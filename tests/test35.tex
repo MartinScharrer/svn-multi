@@ -1,0 +1,20 @@
+\documentclass[12pt]{report}
+\usepackage[autoload]{svn-multi}[2009/03/05]
+
+\begin{filecontents}{test35.svx}
+\gdef\mainsvxgotloaded{YES}
+\end{filecontents}
+
+\begin{filecontents}{test35_sub.svx}
+\gdef\subsvxgotloaded{YES}
+\end{filecontents}
+
+\begin{document}
+\chapter{Test 35}
+Autoload of .svx files.
+'\svnextern{}'
+Main SVX loaded? : \mainsvxgotloaded \\
+\input{test35_sub}
+Sub SVX loaded? : \subsvxgotloaded \\
+
+\end{document}
