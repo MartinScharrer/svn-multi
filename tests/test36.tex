@@ -8,13 +8,20 @@
 
 \begin{document}
 \chapter{Test 36}
-\verb+\svnextern+ should not produce any spaces.
+\verb+\svnextern+ and \verb+\svnexternpath+ should not produce any spaces.
 
 \newlength{\mywidth}
-\settowidth{\mywidth}{\svnextern{}}
+\newsavebox{\mybox}
+\savebox{\mybox}{\svnextern{}}
+\settowidth{\mywidth}{\usebox{\mybox}}
+\noindent
+svnextern width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svnexternpath produces spaces!}}{}
 
-Width: \the\mywidth\\
-
-\ifthenelse{\mywidth>0pt}{\error{svnextern produces spaces!}}{}
+\savebox{\mybox}{\svnextern{}}
+\settowidth{\mywidth}{\usebox{\mybox}}
+\noindent
+svnexternpath width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svnexternpath produces spaces!}}{}
 
 \end{document}
