@@ -1595,14 +1595,17 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \endgroup
 %    \end{macrocode}
 
-% Autoload code:
+% Auto loading of |.svx| files at the begin of |\input| or |\include| files. The
+% macro |\fink@prepare| from the |fink| package is used as a hook to read the
+% |.svx| file direct before the \TeX\ is read.
 %    \begin{macrocode}
-%%\g@addto@macro\fink@prepare{\svn@inputsvx{\fink@nextdir\fink@nextbase.svx}}
+\if@svnmulti@autoload
 \let\orig@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \orig@fink@prepare{#1}
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}
 }
+\fi
 %    \end{macrocode}
 
 % \begin{macro}{\svnextern}
