@@ -176,6 +176,7 @@ sub parse_args {
 
 sub path_search {
     my $file = shift;
+    $file =~ s/##/#/g;
     return $file if not $file or -e $file or not @PATH;
 
     foreach my $dir (@PATH) {
