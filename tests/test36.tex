@@ -1,0 +1,20 @@
+\documentclass[12pt]{report}
+\usepackage[extern]{svn-multi}[2009/03/05]
+\usepackage{ifthen}
+
+\begin{filecontents}{\jobname.svx}
+% empty
+\end{filecontents}
+
+\begin{document}
+\chapter{Test 36}
+\verb+\svnextern+ should not produce any spaces.
+
+\newlength{\mywidth}
+\settowidth{\mywidth}{\svnextern{}}
+
+Width: \the\mywidth\\
+
+\ifthenelse{\mywidth>0pt}{\error{svnextern produces spaces!}}{}
+
+\end{document}
