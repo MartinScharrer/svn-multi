@@ -258,7 +258,7 @@
 %
 % \DescribeMacro{extern}
 % \DescribeMacro{noextern}
-% Active or deactivate (default) the support for keywords from external files
+% Activate or deactivate (default) the support for keywords from external files
 % described in section~\ref{sec:extern}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
 % caused by macros placed there by this feature.
@@ -266,8 +266,26 @@
 %
 % \DescribeMacro{filegroups}
 % \DescribeMacro{nofilegroups}
-% Active or deactivate (default) the file groups feature described in
+% Activate or deactivate (default) the file groups feature described in
 % section~\ref{sec:file-group}.
+%
+% \DescribeMacro{graphics}
+% \DescribeMacro{nographics}
+% This option (default: off) allows to automatically declare all images included
+% using |\includegraphics| from the |graphics|/|graphicx| package as external
+% files (see section~\ref{sec:extern}). The options |extern| and |autoload| are
+% activated by the |graphics| option so that the produced |.svx| files are
+% loaded automatically.  An |noautoload| option after |graphics| will deactivate
+% this, but then an |\svnextern| macro must be included in all \LaTeX\ files
+% which should take the image revisions into account.\par
+% Please note that the |noextern| option causes |nographics|.
+%
+% \DescribeMacro{autoload}
+% \DescribeMacro{noautoload}
+% Activate or deactivate (default) automatic loading of corresponding |.svx|
+% files at the begin of files included using |\input| or |\import|. This avoids
+% the need of putting an |\svnextern| macro in every file just to load the
+% |.svx| files created automatically by the |graphics| option.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -737,6 +755,8 @@
 \newif\if@svnmulti@verbatim
 \newif\if@svnmulti@filegroups
 \newif\if@svnmulti@extern
+\newif\if@svnmulti@graphics
+\newif\if@svnmulti@autoload
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -745,11 +765,15 @@
   \@svnmulti@verbatimtrue
   \@svnmulti@filegroupsfalse
   \@svnmulti@externfalse
+  \@svnmulti@graphicsfalse
+  \@svnmulti@autoloadfalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
   \@svnmulti@filegroupstrue
   \@svnmulti@externtrue
+  \@svnmulti@graphicstrue
+  \@svnmulti@autoloadtrue
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
@@ -757,6 +781,10 @@
 \DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
 \DeclareOption{extern}{\@svnmulti@externtrue}
 \DeclareOption{noextern}{\@svnmulti@externfalse}
+\DeclareOption{graphics}{\@svnmulti@graphicstrue}
+\DeclareOption{nographics}{\@svnmulti@graphicsfalse}
+\DeclareOption{autoload}{\@svnmulti@autoloadtrue}
+\DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
 
 \ExecuteOptions{old}
 \ProcessOptions\relax
@@ -1557,15 +1585,25 @@ timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
 \begingroup
 \def\svn@finkerror{%
 \PackageError{svn-multi}{Your installed version of the 'fink' package is too
-old. Please update it a recent version, e.g. from 2008/02/27}{}%
+old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \let\svn@finkerror\relax
 }
 \@ifundefined{finkpath}{\svn@finkerror}{}%
 \@ifundefined{finkdir}{\svn@finkerror}{}%
 \@ifundefined{finkbase}{\svn@finkerror}{}%
+\@ifundefined{fink@prepare}{\svn@finkerror}{}%
 \endgroup
 %    \end{macrocode}
 
+% Autoload code:
+%    \begin{macrocode}
+%%\g@addto@macro\fink@prepare{\svn@inputsvx{\fink@nextdir\fink@nextbase.svx}}
+\let\orig@fink@prepare\fink@prepare
+\renewcommand*{\fink@prepare}[1]{%
+  \orig@fink@prepare{#1}
+  \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}
+}
+%    \end{macrocode}
 
 % \begin{macro}{\svnextern}
 % First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
@@ -1593,8 +1631,8 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 
 % \begin{macro}{\svn@extern}
 % This deactivates verbatim mode and writes the current source file path and the
-% given file list unchanged to the .svn file using the |\@svnexternal| helper
-% macro.
+% given file list unchanged to the |.svn| file using the |\@svnexternal| helper
+% macro. Finally it loads a |.svx| file for the current file if it exists.
 %    \begin{macrocode}
 \def\svn@extern#1#2{%
   \endgroup
