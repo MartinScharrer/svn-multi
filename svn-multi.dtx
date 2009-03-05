@@ -23,7 +23,7 @@
 %<*package|driver|wrapper>
 \def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
  \year#4\month#5\day#6\relax
- \def\filedate{#4/#5/#6}
+ \def\filedate{#4/#5/#6}%
 }
 \filedate$Id$
 \def\fileversion{v2.0}
@@ -60,20 +60,20 @@
 
  \renewenvironment{macro}[1]{%
   \edef\macroname{\expandafter\removeslash\detokenize{#1}END}
-  \hypertarget{\macroname}{}
-  \origmacro#1}
+  \hypertarget{\macroname}{}%
+  \origmacro#1}%
   {\origendmacro}
 
   \DeclareRobustCommand{\cs}[1]{\hyperlink{Desc@#1}{\texttt{\textbackslash#1}}}
 
  \def\StopEventually#1{\origStopEventually{#1}%
- \DeclareRobustCommand{\cs}[1]{\hyperlink{##1}{\texttt{\textbackslash##1}}}
+ \DeclareRobustCommand{\cs}[1]{\hyperlink{##1}{\texttt{\textbackslash##1}}}%
  }
 
  \def\PrintDescribeMacro#1{%
   \edef\macroname{\expandafter\removeslash\detokenize{#1}END}%
-  \raisebox{11pt}[11pt]{\hypertarget{Desc@\macroname}{}}
-  \origPrintDescribeMacro{#1}
+  \raisebox{11pt}[11pt]{\hypertarget{Desc@\macroname}{}}%
+  \origPrintDescribeMacro{#1}%
  }
 \fi
 
@@ -84,7 +84,7 @@
 \RecordChanges
 %\OnlyDescription
 \begin{document}
-  \DocInput{svn-multi.dtx}
+  \DocInput{svn-multi.dtx}%
   \PrintChanges
   \clearpage
   \PrintIndex
@@ -1004,7 +1004,7 @@
 
 \ifx\svn@fg\empty\else
 \expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname<\svnfilerev
-\@svncfg@save{rev}{\svnfilerev}
+\@svncfg@save{rev}{\svnfilerev}%
 \@svncfg@save{date}{\svnfiledate}%
 \@svncfg@save{author}{\svnfileauthor}%
 \@svncfg@save{year}{\svnfileyear}%
@@ -1022,7 +1022,7 @@
 }
 
 \def\@svncfg@save#1#2{%
-\expandafter\xdef\csname @svnfg@\svn@fg @#1\endcsname{#2}
+\expandafter\xdef\csname @svnfg@\svn@fg @#1\endcsname{#2}%
 }
 
 %    \end{macrocode}
@@ -1050,7 +1050,7 @@
 \catcode`\{=12
 \catcode`\}=12
 \else
-\def\svnidlong@readargsfull{\svnidlong@readargs}
+\def\svnidlong@readargsfull{\svnidlong@readargs}%
 \fi
 \svnidlong@readargsfull
 }
@@ -1110,7 +1110,7 @@
 %    \begin{macrocode}
 \ifx\svnkwLastChangedDate\empty
 \else\@svn@scanlongdate{\svnkwLastChangedDate}\fi
-\@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}
+\@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}%
 {\svnkw{LastChangedBy}}%
 \ignorespaces
 }%
@@ -1171,7 +1171,7 @@
 \begingroup
 \catcode`\$=11
 \gdef\svnkwsave@parse$#1:#2${%
-\expandafter\xdef\csname svnkw#1\endcsname{#2}}
+\expandafter\xdef\csname svnkw#1\endcsname{#2}}%
 \endgroup
 %    \end{macrocode}
 % \end{macro}
@@ -1181,11 +1181,11 @@
 % \cs{svnkwdef@}\meta{keyword}.
 %    \begin{macrocode}
 \newcommand{\svnkwdef}[2]{%
-\@ifundefined{svnkwdef@#1}
+\@ifundefined{svnkwdef@#1}%
 %    \end{macrocode}
 % If not we call the general macro \cs{svnkwdef@}.
 %    \begin{macrocode}
-{\svnkwdef@{#1}{#2}}
+{\svnkwdef@{#1}{#2}}%
 %    \end{macrocode}
 % If yes we just call it with the value as argument.
 %    \begin{macrocode}
@@ -1199,7 +1199,7 @@
 % The |\xdef| is used to expand the content first (needed for internal use)
 % and make the definition globally.
 %    \begin{macrocode}
-\newcommand{\svnkwdef@}[2]
+\newcommand{\svnkwdef@}[2]%
 {\expandafter\xdef\csname svnkw#1\endcsname{#2}}
 %    \end{macrocode}
 % Example: |\svnkwdef{Revision}{23}| will define |\svnkwRevision| as 23.
@@ -1260,8 +1260,8 @@
 % misspelled, keyword is given.}
 %    \begin{macrocode}
 \newcommand{\svnkw}[1]{%
-\@ifundefined{svnkw#1}
-{\PackageWarning{svn-multi}{SVN keyword '#1' not defined (typo?)}}
+\@ifundefined{svnkw#1}%
+{\PackageWarning{svn-multi}{SVN keyword '#1' not defined (typo?)}}%
 {\csname svnkw#1\endcsname}}%
 %    \end{macrocode}
 % \end{macro}
@@ -1404,8 +1404,8 @@
 % Will be called automatically in the preamble.
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
-\newcommand{\svnsetmainfile}
-{\edef\svnmainurl{\svnkw{HeadURL}}
+\newcommand{\svnsetmainfile}%
+{\edef\svnmainurl{\svnkw{HeadURL}}%
 \edef\svnmainfilename{\svnkw{Filename}}}
 \AtBeginDocument{\svnsetmainfile}
 %    \end{macrocode}
@@ -1440,17 +1440,16 @@
 %    \begin{macrocode}
 \def\svnFullAuthor@star*#1{%
 \edef\svn@temp{#1}%
-\svnFullAuthor@{\svn@temp}{~(\svn@temp)}}
+\svnFullAuthor@{\svn@temp}{~(\svn@temp)}}%
 \def\svnFullAuthor@normal#1{%
 \edef\svn@temp{#1}%
-\svnFullAuthor@{\svn@temp}{}}
+\svnFullAuthor@{\svn@temp}{}}%
 %    \end{macrocode}
 % |\svnFullAuthor@| now sets the author's full name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
 \def\svnFullAuthor@#1#2{%
-\@ifundefined{svn@author@#1}
-{#1}
+\@ifundefined{svn@author@#1}{#1}%
 {\csname svn@author@#1\endcsname #2}%
 }
 %    \end{macrocode}
@@ -1463,7 +1462,7 @@
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
 \newcommand{\svnRegisterRevision}[2]{%
-\expandafter\def\csname svn@revision@#1\endcsname{#2}
+\expandafter\def\csname svn@revision@#1\endcsname{#2}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1510,12 +1509,12 @@
 % of course the |hyperref| package. A warning is given if it isn't loaded.
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
-    \DeclareRobustCommand*{\svnnolinkurl}{%
-        \@ifundefined{hyper@normalise}
-        {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
-        \svnnolinkurl.}}
-        {\hyper@normalise\svnnolinkurl@}}%
-    \def\svnnolinkurl@#1{\Hurl{#1}}
+\DeclareRobustCommand*{\svnnolinkurl}{%
+    \@ifundefined{hyper@normalise}%
+    {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
+    \svnnolinkurl.}}%
+    {\hyper@normalise\svnnolinkurl@}}%
+\def\svnnolinkurl@#1{\Hurl{#1}}
 %    \end{macrocode}
 % \end{macro}
 
@@ -1569,7 +1568,7 @@
 % empty.
 %    \begin{macrocode}
 \def\svnsetcfg#1{%
-\def\svn@temp{#1}
+\def\svn@temp{#1}%
 \ifx\svn@temp\empty
 \def\svn@cfg{\svn@fg}%
 \else
@@ -1671,7 +1670,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \def\svnexternal{%
   \begingroup
   \svn@catcodes
-  \svn@external{\noexpand\@svnexternal{\finkpath}}
+  \svn@external{\noexpand\@svnexternal{\finkpath}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1780,7 +1779,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
       \expandafter\xdef\csname pgf@image@#2!\endcsname{%
         \noexpand\svnexternal{{\pgf@filename}}%
         \csname svnmulti@pgf@image@#2!\endcsname
-      }
+      }%
   \fi
 }
 \fi
@@ -1859,13 +1858,13 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
     \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
     \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
-  }
+  }%
 %    \end{macrocode}
 % Write file group values if file groups were used:
 %    \begin{macrocode}
   \if@svnmulti@filegroups
   \ifx\svn@fglist\empty\else
-    \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}
+    \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
 %    \end{macrocode}
 % For every activated file group check if any keywords got recorded
 % and write to the output file:
@@ -1897,10 +1896,10 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
                 {\csname @svnfg@\svn@fg @timezoneminute\endcsname}^^J%
           \noexpand\def\@backslashchar svnfg@\svn@fg @timezonehour%
                 {\csname @svnfg@\svn@fg @timezonehour\endcsname}^^J%
-        }
+        }%
         \relax
       \fi\fi
-    }
+    }%
   \fi\fi
 %    \end{macrocode}
 % Finally close output file:
