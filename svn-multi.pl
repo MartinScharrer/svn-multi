@@ -19,6 +19,8 @@ my ($REV,$DATE) =
 my $dollar  = '$';
 
 my %EXCLUDE = map { $_ => 1 } qw(sty tex aux log out toc fff ttt svn svx);
+my @PATH;
+
 sub create_svxfile ($@);
 
 if (!@ARGV or $ARGV[0] eq '--help' or $ARGV[0] eq '-h') {
@@ -97,7 +99,10 @@ if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
     print STDERR "Reading '$jobname.svn'.\n";
     while (<$svnfh>) {
         chomp;
-        if (/^\s*\\\@svnexternal\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+        if    (/^\s*\\\@svnexternalpath\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+            push @PATH, ( split /}\s*{/, $1 );
+        }
+        elsif (/^\s*\\\@svnexternal\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
             my ($name,$list) = ($1,$2||"");
             $name =~ s/^\.\///;
             push @{$external{$name} ||= []}, ( split /}\s*{/, $list );
@@ -113,6 +118,10 @@ else {
     warn "No .svn file found for '$jobname'!\n";
 }
 
+# Add TEXINPUTS to path
+push @PATH, map { $_ =~ s/(?<!\/)$/\//; $_ } grep { $_ } 
+                split(':', $ENV{'TEXINPUTS'}||"");
+print STDERR join (':', @PATH), "\n";
 
 my @mainfilepairs;
 if (exists $external{"$jobname.tex"}) {
@@ -165,6 +174,19 @@ sub parse_args {
     return @pairs;
 }
 
+sub path_search {
+    my $file = shift;
+    return $file if not $file or -e $file or not @PATH;
+
+    foreach my $dir (@PATH) {
+        if (-e "$dir$file") {
+            return "$dir$file";
+        }
+    }
+
+    return $file;
+}
+
 sub create_svxfile ($@) {
     my ($svxfile, @fgpair) = @_;
     my $lastfilegroup = '';
@@ -187,6 +209,7 @@ sub create_svxfile ($@) {
     }
 
     foreach my $file (@files) {
+        $file = path_search($file);
         open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
         my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
         close($infoh);
