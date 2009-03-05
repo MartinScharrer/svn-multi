@@ -285,7 +285,8 @@
 % Activate or deactivate (default) automatic loading of corresponding |.svx|
 % files at the begin of files included using |\input| or |\import|. This avoids
 % the need of putting an |\svnextern| macro in every file just to load the
-% |.svx| files created automatically by the |graphics| option.
+% |.svx| files created automatically by the |graphics| option. The option
+% |extern| is activated by |autoload|.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -781,9 +782,16 @@
 \DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
 \DeclareOption{extern}{\@svnmulti@externtrue}
 \DeclareOption{noextern}{\@svnmulti@externfalse}
-\DeclareOption{graphics}{\@svnmulti@graphicstrue}
+\DeclareOption{graphics}{%
+    \@svnmulti@graphicstrue
+    \@svnmulti@externtrue
+    \@svnmulti@autoloadtrue
+}
 \DeclareOption{nographics}{\@svnmulti@graphicsfalse}
-\DeclareOption{autoload}{\@svnmulti@autoloadtrue}
+\DeclareOption{autoload}{%
+    \@svnmulti@autoloadtrue
+    \@svnmulti@externtrue
+}
 \DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
 
 \ExecuteOptions{old}
@@ -1602,8 +1610,8 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \if@svnmulti@autoload
 \let\orig@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
-  \orig@fink@prepare{#1}
-  \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}
+  \orig@fink@prepare{#1}%
+  \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
 }
 \fi
 %    \end{macrocode}
@@ -1627,7 +1635,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \def\svnexternpath{%
   \begingroup
   \svn@catcodes
-  \svn@extern{\noexpand\@svnexternalpath}
+  \svn@extern{\noexpand\@svnexternalpath}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1641,11 +1649,9 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
   \endgroup
   \if@filesw
   \svn@checkwrite
-  \immediate\write\svn@write{%
-    #1{#2}%
-  }%
+  \immediate\write\svn@write{#1{#2}}%
   \fi
-  \svn@inputsvx{\finkdir\finkbase.svx}
+  \svn@inputsvx{\finkdir\finkbase.svx}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1656,12 +1662,11 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 % got redefined by the |fink| package and there is no need to use |fink| for the
 % |.svx| files.
 %    \begin{macrocode}
-\def\svn@inputsvx#1{
+\def\svn@inputsvx#1{%
   \begingroup
   \let\svn@temp\svn@fg
-  \edef\svn@svxfile{#1}
-  %\InputIfFileExists{\svn@svxfile}{}{}
-  \IfFileExists{#1}{\@@input#1\relax}{}{}
+  \edef\svn@svxfile{#1}%
+  \IfFileExists{#1}{\@@input#1\relax}{}{}%
   \global\let\svn@fg\svn@temp
   \endgroup
 }
@@ -1739,10 +1744,10 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \def\svn@checkwrite{%
  \@ifundefined{svn@write}{%
    \newwrite\svn@write
-   \immediate\openout\svn@write=\jobname.svn
+   \immediate\openout\svn@write=\jobname.svn\relax%
    \immediate\write\svn@write{\@percentchar\space SVN Keyword cache}%
    %\immediate\write\svn@write{\noexpand\makeatletter}%
- }{}
+ }{}%
  \let\svn@checkwrite=\relax
 }
 %    \end{macrocode}
