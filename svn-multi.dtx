@@ -1603,9 +1603,26 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \endgroup
 %    \end{macrocode}
 
+% \begin{macro}{\svn@inputsvx}
+% Macro to load |.svx| files.  The current file group is saved away and restored
+% after the |.svx| file is loaded. |\IfFileExists| with |\@@input| is used
+% because |\InputIfFileExists| got redefined by the |fink| package and there is
+% no need to use |fink| for the |.svx| files.
+%    \begin{macrocode}
+\def\svn@inputsvx#1{%
+  \begingroup
+  \let\svn@temp\svn@fg
+  \edef\svn@svxfile{#1}%
+  \IfFileExists{#1}{\@@input#1\relax}{}{}%
+  \global\let\svn@fg\svn@temp
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files. The
 % macro |\fink@prepare| from the |fink| package is used as a hook to read the
-% |.svx| file direct before the \TeX\ is read.
+% |.svx| file direct before the \TeX\ is read. The main |.svx| is loaded here.
 %    \begin{macrocode}
 \if@svnmulti@autoload
 \let\orig@fink@prepare\fink@prepare
@@ -1613,6 +1630,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
   \orig@fink@prepare{#1}%
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
 }
+\svn@inputsvx{\jobname.svx}%
 \fi
 %    \end{macrocode}
 
@@ -1652,23 +1670,6 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
   \immediate\write\svn@write{#1{#2}}%
   \fi
   \svn@inputsvx{\finkdir\finkbase.svx}%
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svn@inputsvx}
-% The current file group is saved away and restored after the |.svx| file is
-% loaded. |\IfFileExists| with |\@@input| is used because |\InputIfFileExists|
-% got redefined by the |fink| package and there is no need to use |fink| for the
-% |.svx| files.
-%    \begin{macrocode}
-\def\svn@inputsvx#1{%
-  \begingroup
-  \let\svn@temp\svn@fg
-  \edef\svn@svxfile{#1}%
-  \IfFileExists{#1}{\@@input#1\relax}{}{}%
-  \global\let\svn@fg\svn@temp
-  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
