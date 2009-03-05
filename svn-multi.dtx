@@ -657,7 +657,7 @@
 % |Makeindex|. A Perl interpreter and a Subversion command line client (|svn|)
 % must be installed to execute this script. Both are available for free for all
 % major operating systems.\par
-% The script must be run in the following order:
+% The script should be run inside the document folder in the following order:
 % \begin{enumerate}
 %  \item Compile \LaTeX\ document, |.svn| file is generated.
 %  \item Run |svn-multi.pl| script, |.svx| files are generated.
@@ -1604,13 +1604,28 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
     #1{#2}%
   }%
   \fi
-  {\let\@tempa\svn@fg
-  \InputIfFileExists{\finkdir\finkbase.svx}{}{}
-  \let\svn@fg\@tempa}%
+  \svn@inputsvx{\finkdir\finkbase.svx}
 }
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svn@inputsvx}
+% The current file group is saved away and restored after the |.svx| file is
+% loaded. |\IfFileExists| with |\@@input| is used because |\InputIfFileExists|
+% got redefined by the |fink| package and there is no need to use |fink| for the
+% |.svx| files.
+%    \begin{macrocode}
+\def\svn@inputsvx#1{
+  \begingroup
+  \let\svn@temp\svn@fg
+  \edef\svn@svxfile{#1}
+  %\InputIfFileExists{\svn@svxfile}{}{}
+  \IfFileExists{#1}{\@@input#1\relax}{}{}
+  \global\let\svn@fg\svn@temp
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
 
 % \begin{macro}{\@svnextern}
 % Discards the argument using special verbatim mode as before. This macro and
@@ -1672,7 +1687,7 @@ old. Please update it a recent version, e.g. from 2008/02/27}{}%
 %
 % Reread output from last compile run if it exists.
 %    \begin{macrocode}
-\InputIfFileExists{\jobname.svn}{}{}
+\IfFileExists{\jobname.svn}{\@@input\jobname.svn\relax}{}
 %    \end{macrocode}
 
 % \begin{macro}{\svn@checkwrite}
