@@ -1664,80 +1664,48 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnexternal}
-% First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
-% called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
+% Writes the current input file path and its argument as arguments of
+% |\@svnexternal| into the |.svn| file.
 %    \begin{macrocode}
-\def\svnexternal{%
-  \begingroup
-  \svn@catcodes
-  \svn@external{\noexpand\@svnexternal{\finkpath}}%
+\def\svnexternal#1{%
+  \if@filesw
+      \svn@checkwrite
+      \immediate\write\svn@write{%
+          \noexpand\@svnexternal{\finkpath}{#1}%
+      }%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
 
 % \begin{macro}{\svnexternalpath}
-% First the verbatim mode is activated (|{}| excluded) and then the sub-macro is
-% called. The macro to be written into the |.svn| file is saved into |\svn@temp|.
+% Writes its argument as argument of |\@svnexternalpath| into the |.svn| file.
 %    \begin{macrocode}
-\def\svnexternalpath{%
-  \begingroup
-  \svn@catcodes
-  \svn@external{\noexpand\@svnexternalpath}%
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svn@external}
-% This deactivates verbatim mode and writes the current source file path and the
-% given file list unchanged to the |.svn| file using the |\@svnexternal| helper
-% macro. Finally it loads a |.svx| file for the current file if it exists.
-%    \begin{macrocode}
-\def\svn@external#1#2{%
-  \endgroup
+\def\svnexternalpath#1{%
   \if@filesw
-  \svn@checkwrite
-  \immediate\write\svn@write{#1{#2}}%
+      \svn@checkwrite
+      \immediate\write\svn@write{%
+          \noexpand\@svnexternalpath{#1}%
+      }%
   \fi
-  \svn@inputsvx{\finkdir\finkbase.svx}%
 }
 %    \end{macrocode}
 % \end{macro}
 
 % \begin{macro}{\@svnextern}
-% Discards the argument using special verbatim mode as before. This macro and
-% its argument is only used by the external |svn-multi.pl| script.
+% \begin{macro}{\@svnexternpath}
+% Discards the argument(s). These macros and their arguments are only used by
+% the external |svn-multi.pl| script.
 %    \begin{macrocode}
-\def\@svnexternal{%
-  \begingroup
-  \svn@catcodes
-  \@svn@external
-}
-
-\def\@svn@external#1#2{%
-  \endgroup
-  % do nothing, just gobble input
-}
+\def\@svnexternal#1#2{}
+\def\@svnexternalpath#1{}
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
 
-% \begin{macro}{\@svnexternpath}
-% Discards the argument using special verbatim mode as before. This macro and
-% its argument is only used by the external |svn-multi.pl| script.
 %    \begin{macrocode}
-\def\@svnexternalpath{%
-  \begingroup
-  \svn@catcodes
-  \@svn@externalpath
-}
-
-\def\@svn@externalpath#1{%
-  \endgroup
-  % do nothing, just gobble input
-}
-
 \fi
 %    \end{macrocode}
-% \end{macro}
 
 % \subsection{Support for Graphic Packages}
 % \subsubsection{Package \texttt{graphics}}
