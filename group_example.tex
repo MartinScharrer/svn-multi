@@ -1,12 +1,16 @@
 \documentclass[a4paper,oneside]{scrbook}
-\usepackage[groups]{svn-multi}
-\usepackage{calc}
+\usepackage[groups]{svn-multi}[2009/03/06]
 \svnidlong
 {$HeadURL: svn://server/group_example.tex $}
-{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Main file) $}
 {$LastChangedRevision: 98 $}
 {$LastChangedBy: author3 $}
-\svnid{$Id: group_example.tex 100 2000-01-01 01:00:00Z author3 $}
+
+\let\ifvtex=\relax
+\usepackage{hyperref}
+
+% This is an example document to show the group feature of svn-multi 2.0.
+% Please the notes below.
 
 % Version control information table for each chapter
 \newcommand{\chaptervctable}{%
@@ -25,109 +29,109 @@ Last Changed Date     & \svnfiledate\\
 \begin{filecontents}{group_example_part1a.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part1a.tex $}
-{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Chapter 1a) $}
 {$LastChangedRevision: 101 $}
 {$LastChangedBy: author1 $}
-\svnid{$Id: group_example_part1a.tex 101 2000-01-01 01:00:00Z author1 $}
-\chapter{Part 1a}
+
+\chapter{Subfile 1a}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1b.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part1b.tex $}
-{$LastChangedDate: 2001-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2001-01-01 00:00:01 +0000 (Subfile 1b) $}
 {$LastChangedRevision: 102 $}
 {$LastChangedBy: author2 $}
-\svnid{$Id: group_example_part1b.tex 102 2001-01-01 00:00:00Z author2 $}
-\chapter{Part 1b}
+
+\chapter{Subfile 1b}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1c.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part1c.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 1c) $}
 {$LastChangedRevision: 104 $}
 {$LastChangedBy: author3 $}
-\svnid{$Id: group_example_part1c.tex 100 2000-01-01 00:00:00Z author3 $}
-\chapter{Part 1c}
+
+\chapter{Subfile 1c}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2a.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part2a.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 2a) $}
 {$LastChangedRevision: 100 $}
 {$LastChangedBy: author1 $}
-\svnid{$Id: group_example_part1a.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 2a}
+
+\chapter{Subfile 2a}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2b.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part2b.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
-{$LastChangedRevision: 100 $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 2b) $}
+{$LastChangedRevision: 101 $}
 {$LastChangedBy: author1 $}
-\svnid{$Id: group_example_part1a.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 2b}
+
+\chapter{Subfile 2b}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3a.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part3a.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 3a) $}
 {$LastChangedRevision: 104 $}
 {$LastChangedBy: author3 $}
-\svnid{$Id: group_example_part3a.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 3a}
+
+\chapter{Subfile 3a}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3b.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part3b.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 3b) $}
 {$LastChangedRevision: 103 $}
 {$LastChangedBy: author2 $}
-\svnid{$Id: group_example_part3b.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 3b}
+
+\chapter{Subfile 3b}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4a.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part4a.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 4a) $}
 {$LastChangedRevision: 99 $}
 {$LastChangedBy: author3 $}
-\svnid{$Id: group_example_part4a.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 4a}
+
+\chapter{Subfile 4a}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4b.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_part4b.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Subfile 4b) $}
 {$LastChangedRevision: 105 $}
 {$LastChangedBy: author2 $}
-\svnid{$Id: group_example_part4b.tex 100 2000-01-01 00:00:00Z author1 $}
-\chapter{Part 4b}
+
+\chapter{Subfile 4b}
 \chaptervctable
 \end{filecontents}
 
 \begin{filecontents}{group_example_end.tex}
 \svnidlong
 {$HeadURL: svn://server/group_example_end.tex $}
-{$LastChangedDate: 2000-01-01 00:00:01 +0000 (Sat, 1 Jan 2000) $}
+{$LastChangedDate: 2000-01-01 00:00:01 +0000 (End) $}
 {$LastChangedRevision: 100 $}
 {$LastChangedBy: author1 $}
-\svnid{$Id: group_example_end.tex 100 2000-01-01 00:00:00Z author1 $}
+
 \chapter{End credits}
 \chaptervctable
 \end{filecontents}
@@ -160,6 +164,15 @@ Last Changed Date     & \svncgdate\\
 \Large Martin Scharrer\\
 \large 2009/03/01\\
 }%
+\vspace{4cm}
+This is an example and test document for the group feature of svn-multi 2.0.
+Please note that the revision keywords were generated manually for testing
+purposes. The dates are not consistent with the revisions and contain a debug
+name instead of the date text like `(Sat, January 1 2009)'. This doesn't
+influence the correct functionality of the svn-multi package.
+
+\bigskip
+{\hbox{}\hfill Happy \TeX ing!}\\
 \vfill%
 {\large Version Control Information for this document:\\[\bigskipamount]}%
 \begin{tabular}{ll}
@@ -182,6 +195,8 @@ Last Changed Date     & \svndate\\
    \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
    \svngroup{ghi}ghi &
    \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
+   \svngroup{jkl}jkl &
+   \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
    \hline
 \end{tabular}
 \svngroup{}
@@ -203,9 +218,8 @@ Last Changed Date     & \svndate\\
 \include{group_example_part3a}
 \include{group_example_part3b}
 
-% New file group 'def' again:
-\svngroup{def}
-\part{Def2}
+\svngroup{jkl}
+\part{Jkl}
 \include{group_example_part4a}
 \include{group_example_part4b}
 
