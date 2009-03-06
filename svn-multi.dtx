@@ -241,10 +241,10 @@
 % number of different groups. The files of one group do not have to be included
 % in a row but can be included everywhere in the document. The version control
 % informations of the current group can be typeset with macros like
-% \cs{svncfgrev}.  Also, a general but less robust macro \cs{svnfg} is provided
+% \cs{svncgrev}.  Also, a general but less robust macro \cs{svng} is provided
 % to access others groups by name everywhere in the document. To avoid some
 % macro robustness problems the current group can be changed locally for the
-% output macros using \cs{svnsetcfg}.
+% output macros using \cs{svnsetcg}.
 %
 % See section~\ref{sec:group} for further details and usage instructions on
 % group macros.
@@ -535,7 +535,7 @@
 %
 % \DescribeMacro{svntime}
 % \DescribeMacro{svnfiletime}
-% \DescribeMacro{svncfgtime}
+% \DescribeMacro{svncgtime}
 % This macros return the time part of the date only and simply return the
 % corresponding hour, minute and second macros with a colon as separator.
 % \vspace{2\baselineskip}
@@ -549,7 +549,7 @@
 %
 % \DescribeMacro{svntoday}
 % \DescribeMacro{svnfiletoday}
-% \DescribeMacro{svncfgtoday}
+% \DescribeMacro{svncgtoday}
 % These macros typeset the document-global, current-file or current-group
 % date, respectively, using the format of |\today| which depends on the used
 % language. To adjust the language of your document use the |babel| package.
@@ -615,31 +615,31 @@
 % activate these macros.
 %
 % \noindent
-% \DescribeMacro{svnfilegroup}\hspace{-.75em}\marg{group name}\\
+% \DescribeMacro{svngroup}\hspace{-.75em}\marg{group name}\\
 % This macro declares all following files (actually only following \cs{svnid},
-% \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svnfilegroup} as part
+% \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svngroup} as part
 % of the given keyword group. It can be placed inside the main file before some
 % |\include|/|\input| macros or inside sub-files before the id macros, \ie
 % direct at the start of the file. Please note that the group will then
 % swap over to the following file. However, the group can be closed manually
-% using an empty |\svnfilegroup{}|, \eg at the end of a file.\par
+% using an empty |\svngroup{}|, \eg at the end of a file.\par
 % The changes done by this macro are \TeX\ global, \ie there can't be caught
 % using \TeX\ groups (|{ }|).
 %
 % \smallskip
-% \DescribeMacro{thesvnfilegroup}
+% \DescribeMacro{thesvngroup}
 % Returns the name of the current keyword group.
 %
 % \smallskip
-% \DescribeMacro{svncfgrev}
-% \DescribeMacro{svncfgauthor}
-% \DescribeMacro{svncfgdate}
-% \DescribeMacro{svncfgyear}
-% \DescribeMacro{svncfgmonth}
-% \DescribeMacro{svncfgday}
-% \DescribeMacro{svncfghour}
-% \DescribeMacro{svncfgminute}
-% \DescribeMacro{svncfgsecond}
+% \DescribeMacro{svncgrev}
+% \DescribeMacro{svncgauthor}
+% \DescribeMacro{svncgdate}
+% \DescribeMacro{svncgyear}
+% \DescribeMacro{svncgmonth}
+% \DescribeMacro{svncgday}
+% \DescribeMacro{svncghour}
+% \DescribeMacro{svncgminute}
+% \DescribeMacro{svncgsecond}
 % These macros return keyword values of the currently selected keyword group,
 % like the \cs{svnrev}, \cs{svnfilerev}, etc., macros described in
 % sections~\ref{sec:kwaccess} do for the whole document and the current file,
@@ -647,35 +647,35 @@
 % In order to hold them robust, which is important to use them in macros like
 % \cs{svnFullAuthor} they do not provide any arguments to select other groups
 % than the current one. To access keyword values of other groups use the
-% general macro \cs{svnfg}\marg{group name}\marg{key} or change the locally
-% selected keyword group using the \cs{svnsetcfg}.\par
+% general macro \cs{svng}\marg{group name}\marg{key} or change the locally
+% selected keyword group using the \cs{svnsetcg}.\par
 % \vspace{2\baselineskip}
-% \DescribeMacro{svncfgtimezone}
-% \DescribeMacro{svncfgtimezonehour}
-% \DescribeMacro{svncfgtimezoneminute}
+% \DescribeMacro{svncgtimezone}
+% \DescribeMacro{svncgtimezonehour}
+% \DescribeMacro{svncgtimezoneminute}
 % \vspace{3\baselineskip}
 %
 % \smallskip\noindent
-% \DescribeMacro{svnsetcfg}\hspace{-.75em}\marg{group name}\\
-% Normally the |\svncfg|\meta{XXX} macros mentioned above use the last keyword
-% group defined by \cs{svnfilegroup}, but this can be changed using the
-% \cs{svnsetcfg} macro.\par The idea is that the currently selected group
+% \DescribeMacro{svnsetcg}\hspace{-.75em}\marg{group name}\\
+% Normally the |\svncg|\meta{XXX} macros mentioned above use the last keyword
+% group defined by \cs{svngroup}, but this can be changed using the
+% \cs{svnsetcg} macro.\par The idea is that the currently selected group
 % can be changed locally to the current \TeX\ group for the keyword output
-% macros |\svncfg|\meta{XXX} only while the group for the keyword input
+% macros |\svncg|\meta{XXX} only while the group for the keyword input
 % macros like \cs{svnid} is unaffected.\par
-% To reset the used group to the last one defined by \cs{svnfilegroup} simply
-% use \cs{svnsetcfg} with an empty argument.\par
-% \paragraph*{Example 1:} |{\svnsetcfg{abc}\svnFullAuthor{\svncfgauthor}}|\\ would
+% To reset the used group to the last one defined by \cs{svngroup} simply
+% use \cs{svnsetcg} with an empty argument.\par
+% \paragraph*{Example 1:} |{\svnsetcg{abc}\svnFullAuthor{\svncgauthor}}|\\ would
 % output the full author's name of group \textit{abc}.\par
 % \paragraph*{Example 2:} To typeset the three keyword values of group
 % \textit{abc} somewhere outside this group use:\\
-% |{\svnsetcfg{abc}Rev: \svncfgrev\\||Date: \svncfgdate\\|\\|Author: \svncfgauthor\\}|
+% |{\svnsetcg{abc}Rev: \svncgrev\\||Date: \svncgdate\\|\\|Author: \svncgauthor\\}|
 % \paragraph*{Example 3:} To typeset the date of group \textit{abc} outside of
-% this group in the format of |\today| use: |{\svnsetcfg{abc}\svncfgtoday}|
+% this group in the format of |\today| use: |{\svnsetcg{abc}\svncgtoday}|
 %
 % \smallskip\noindent
-% \DescribeMacro{svnfg}\hspace{-.75em}\marg{group name}\marg{key}\\
-% This macro is a general form of the |\svncfg|\meta{XXX} macro mentioned above.
+% \DescribeMacro{svng}\hspace{-.75em}\marg{group name}\marg{key}\\
+% This macro is a general form of the |\svncg|\meta{XXX} macro mentioned above.
 % The first argument is the requested keyword group, the second one the requested
 % keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please note that this
 % macro can not be used inside macros like \cs{svnFullAuthor}.
@@ -869,13 +869,13 @@
 \def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}
-\def\svn@fg{} \def\svn@cfg{\svn@fg} \def\svn@temp{}
+\def\svn@g{} \def\svn@cg{\svn@g} \def\svn@temp{}
 %    \end{macrocode}
 %
 % \subsection{Timezone macros}
 % \begin{macro}{\svntimezone}
 % \begin{macro}{\svnfiletimezone}
-% \begin{macro}{\svncfgtimezone}
+% \begin{macro}{\svncgtimezone}
 % These macros return the global, file-local and current group time zones,
 % respectively. Since v1.4 the minute part is returned as well and the macro
 % removes manually added |00| after it to support older documents.
@@ -884,7 +884,7 @@
 %    \begin{macrocode}
 \def\svntimezone{\svntimezonehour\svntimezoneminute\svn@gobblezeros}
 \def\svnfiletimezone{\svnfiletimezonehour\svnfiletimezoneminute\svn@gobblezeros}
-\def\svncfgtimezone{\svncfgtimezonehour\svncfgtimezoneminute}
+\def\svncgtimezone{\svncgtimezonehour\svncgtimezoneminute}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -912,12 +912,12 @@
 
 % \begin{macro}{\svntime}
 % \begin{macro}{\svnfiletime}
-% \begin{macro}{\svncfgtime}
+% \begin{macro}{\svncgtime}
 % This macros simple use the hour, minute and second macros.
 %    \begin{macrocode}
 \def\svntime{\svnhour:\svnminute:\svnsecond}
 \def\svnfiletime{\svnfilehour:\svnfileminute:\svnfilesecond}
-\def\svncfgtime{\svncfghour:\svncfgminute:\svncfgsecond}
+\def\svncgtime{\svncghour:\svncgminute:\svncgsecond}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -947,12 +947,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\svncfgtoday}
+% \begin{macro}{\svncgtoday}
 %    \begin{macrocode}
-\newcommand*{\svncfgtoday}{%
-\@ifundefined{svnfg@\svn@cfg @year}{??}{%
+\newcommand*{\svncgtoday}{%
+\@ifundefined{svng@\svn@cg @year}{??}{%
 \begingroup
-\year\svncfgyear \month\svncfgmonth \day\svncfgday
+\year\svncgyear \month\svncgmonth \day\svncgday
 \relax \today
 \endgroup
 }%
@@ -1027,27 +1027,27 @@
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \else\fi
 
-\ifx\svn@fg\empty\else
-\expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname<\svnfilerev
-\@svncfg@save{rev}{\svnfilerev}%
-\@svncfg@save{date}{\svnfiledate}%
-\@svncfg@save{author}{\svnfileauthor}%
-\@svncfg@save{year}{\svnfileyear}%
-\@svncfg@save{month}{\svnfilemonth}%
-\@svncfg@save{day}{\svnfileday}%
-\@svncfg@save{hour}{\svnfilehour}%
-\@svncfg@save{minute}{\svnfileminute}%
-\@svncfg@save{second}{\svnfilesecond}%
-\@svncfg@save{timezonehour}{\svnfiletimezonehour}%
-\@svncfg@save{timezoneminute}{\svnfiletimezoneminute}%
+\ifx\svn@g\empty\else
+\expandafter\ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
+\@svncg@save{rev}{\svnfilerev}%
+\@svncg@save{date}{\svnfiledate}%
+\@svncg@save{author}{\svnfileauthor}%
+\@svncg@save{year}{\svnfileyear}%
+\@svncg@save{month}{\svnfilemonth}%
+\@svncg@save{day}{\svnfileday}%
+\@svncg@save{hour}{\svnfilehour}%
+\@svncg@save{minute}{\svnfileminute}%
+\@svncg@save{second}{\svnfilesecond}%
+\@svncg@save{timezonehour}{\svnfiletimezonehour}%
+\@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
 \fi
 \fi
 
 \fi
 }
 
-\def\@svncfg@save#1#2{%
-\expandafter\xdef\csname @svnfg@\svn@fg @#1\endcsname{#2}%
+\def\@svncg@save#1#2{%
+\expandafter\xdef\csname @svng@\svn@g @#1\endcsname{#2}%
 }
 
 %    \end{macrocode}
@@ -1548,24 +1548,24 @@
 % introduced with v2.0.
 %
 % The list of keyword groups |svn@fglist| is initial set empty and will be filled
-% by \cs{svnfilegroup}.
+% by \cs{svngroup}.
 %    \begin{macrocode}
 \if@svnmulti@filegroups
 \let\svn@fglist=\empty
 %    \end{macrocode}
 
-% \begin{macro}{\svnfilegroup}
-% Saves the group to |svn@fg| and initiates |svn@fg@|\meta{group name}|@rev|
-% and |@svn@fg@|\meta{group name}|@rev| if this is the first time the group
+% \begin{macro}{\svngroup}
+% Saves the group to |svn@g| and initiates |svn@g@|\meta{group name}|@rev|
+% and |@svn@g@|\meta{group name}|@rev| if this is the first time the group
 % got used.
 %    \begin{macrocode}
-\def\svnfilegroup#1{%
-\xdef\svn@fg{#1}%
-\expandafter\ifx\csname svn@fg@#1\endcsname\relax%
-\expandafter\gdef\csname svn@fg@#1\endcsname{1}%
-\expandafter\gdef\csname @svnfg@#1@rev\endcsname{0}%
-\expandafter\ifx\csname svnfg@#1@rev\endcsname\relax
-\expandafter\gdef\csname svnfg@#1@rev\endcsname{0}%
+\def\svngroup#1{%
+\xdef\svn@g{#1}%
+\expandafter\ifx\csname svn@g@#1\endcsname\relax%
+\expandafter\gdef\csname svn@g@#1\endcsname{1}%
+\expandafter\gdef\csname @svng@#1@rev\endcsname{0}%
+\expandafter\ifx\csname svng@#1@rev\endcsname\relax
+\expandafter\gdef\csname svng@#1@rev\endcsname{0}%
 \fi
 %    \end{macrocode}
 % Now save new group to list. The list is checked if its empty to avoid an
@@ -1581,54 +1581,54 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\thesvnfilegroup}
+% \begin{macro}{\thesvngroup}
 % Returns the current group name to the user.
 %    \begin{macrocode}
-\def\thesvnfilegroup{\svn@fg}
+\def\thesvngroup{\svn@g}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnsetcfg}
-% Defines |svn@cfg| to the given argument or to |svn@fg| if the argument was
+% \begin{macro}{\svnsetcg}
+% Defines |svn@cg| to the given argument or to |svn@g| if the argument was
 % empty.
 %    \begin{macrocode}
-\def\svnsetcfg#1{%
+\def\svnsetcg#1{%
 \def\svn@temp{#1}%
 \ifx\svn@temp\empty
-\def\svn@cfg{\svn@fg}%
+\def\svn@cg{\svn@g}%
 \else
-\def\svn@cfg{#1}%
+\def\svn@cg{#1}%
 \fi
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncfg@def}
-% Defines a |\svncfg|\meta{XXX} macro, \eg |svncfgrev|, which returns the
+% \begin{macro}{\svncg@def}
+% Defines a |\svncg|\meta{XXX} macro, \eg |svncgrev|, which returns the
 % requested keyword values of the current keyword group.
 %    \begin{macrocode}
-\def\svncfg@def#1{%
-\expandafter\def\csname svncfg#1\endcsname{%
-\@ifundefined{svnfg@\svn@cfg @#1}{??}{%
-\csname svnfg@\svn@cfg @#1\endcsname}%
+\def\svncg@def#1{%
+\expandafter\def\csname svncg#1\endcsname{%
+\@ifundefined{svng@\svn@cg @#1}{??}{%
+\csname svng@\svn@cg @#1\endcsname}%
 }}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncfgXXX}
-% Define all |\svncfg|\meta{XXX} macros by calling \cs{svncfg@def} in a for loop.
+% \begin{macro}{\svncgXXX}
+% Define all |\svncg|\meta{XXX} macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
 \@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
-timezonehour,timezoneminute\do{\expandafter\svncfg@def\expandafter{\@tempa}}
+timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnfg}
-% Simply returns |svnfg@#1@#2| if defined, '??' otherwise.
+% \begin{macro}{\svng}
+% Simply returns |svng@#1@#2| if defined, '??' otherwise.
 %    \begin{macrocode}
-\def\svnfg#1#2{%
-\@ifundefined{svnfg@#1@#2}{??}{%
-\csname svnfg@#1@#2\endcsname}%
+\def\svng#1#2{%
+\@ifundefined{svng@#1@#2}{??}{%
+\csname svng@#1@#2\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1664,10 +1664,10 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@inputsvx#1{%
   \begingroup
-  \let\svn@temp\svn@fg
+  \let\svn@temp\svn@g
   \edef\svn@svxfile{#1}%
   \IfFileExists{#1}{\@@input#1\relax}{}{}%
-  \global\let\svn@fg\svn@temp
+  \global\let\svn@g\svn@temp
   \endgroup
 }
 %    \end{macrocode}
@@ -1861,33 +1861,33 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 % For every activated keyword group check if any keywords got recorded
 % and write to the output file:
 %    \begin{macrocode}
-    \@for\svn@fg:=\svn@fglist\do{%
-      \expandafter\ifx\csname @svnfg@\svn@fg @rev\endcsname\relax\else
-      \expandafter\ifnum\csname @svnfg@\svn@fg @rev\endcsname=0\else
+    \@for\svn@g:=\svn@fglist\do{%
+      \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
+      \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname=0\else
         \immediate\write\svn@write{%
-          \@percentchar\space \svn@fg^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @rev%
-                {\csname @svnfg@\svn@fg @rev\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @date%
-                {\csname @svnfg@\svn@fg @date\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @author%
-                {\csname @svnfg@\svn@fg @author\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @year%
-                {\csname @svnfg@\svn@fg @year\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @month%
-                {\csname @svnfg@\svn@fg @month\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @day%
-                {\csname @svnfg@\svn@fg @day\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @hour%
-                {\csname @svnfg@\svn@fg @hour\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @minute%
-                {\csname @svnfg@\svn@fg @minute\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @second%
-                {\csname @svnfg@\svn@fg @second\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @timezoneminute%
-                {\csname @svnfg@\svn@fg @timezoneminute\endcsname}^^J%
-          \noexpand\def\@backslashchar svnfg@\svn@fg @timezonehour%
-                {\csname @svnfg@\svn@fg @timezonehour\endcsname}^^J%
+          \@percentchar\space \svn@g^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @rev%
+                {\csname @svng@\svn@g @rev\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @date%
+                {\csname @svng@\svn@g @date\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @author%
+                {\csname @svng@\svn@g @author\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @year%
+                {\csname @svng@\svn@g @year\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @month%
+                {\csname @svng@\svn@g @month\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @day%
+                {\csname @svng@\svn@g @day\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @hour%
+                {\csname @svng@\svn@g @hour\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @minute%
+                {\csname @svng@\svn@g @minute\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @second%
+                {\csname @svng@\svn@g @second\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @timezoneminute%
+                {\csname @svng@\svn@g @timezoneminute\endcsname}^^J%
+          \noexpand\def\@backslashchar svng@\svn@g @timezonehour%
+                {\csname @svng@\svn@g @timezonehour\endcsname}^^J%
         }%
         \relax
       \fi\fi
