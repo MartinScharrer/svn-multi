@@ -1145,8 +1145,7 @@
 
 % \subsection{KeyWord Macros}
 % \begin{macro}{\svnkwsave}
-% Save macro. Takes a dollar wrapped keyword string, reads it though
-% |svn@readkw| and saves it using \cs{svnkwdef}.
+% Enabled verbatim mode and uses a sub macro to read the arguments afterwards.
 %    \begin{macrocode}
 \def\svnkwsave{%
 \begingroup
