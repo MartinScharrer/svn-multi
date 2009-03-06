@@ -60,12 +60,17 @@
 \def\DescribeMacro#1{
     \leavevmode \@bsphack
     \marginpar{%
-    \raggedleft\texttt{\textbackslash #1}}%
+    \raggedleft\texttt{\strut\textbackslash #1}}%
     \raisebox{11pt}[11pt]{\hypertarget{Desc@#1}{}}%
     \SpecialUsageIndex {#1}\@esphack \ignorespaces
 }
-
-\def\DescribeOption{\origPrintDescribeMacro}
+\def\DescribeOption#1{
+    \leavevmode \@bsphack
+    \marginpar{%
+    \raggedleft\texttt{\strut #1}}%
+    \raisebox{11pt}[11pt]{\hypertarget{option@#1}{}}%
+    \@esphack \ignorespaces
+}
 
 \renewenvironment{macro}[1]{%
 \edef\macroname{\expandafter\removeslash\detokenize{#1}END}
@@ -75,6 +80,7 @@
 
 \DeclareRobustCommand{\cs}[1]{\hyperlink{Desc@#1}{\texttt{\textbackslash#1}}}
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
+\DeclareRobustCommand{\op}[1]{\hyperlink{option@#1}{\texttt{#1}}}
 
 \def\StopEventually#1{\origStopEventually{#1}%
 \DeclareRobustCommand{\cs}[1]{\hyperlink{##1}{\texttt{\textbackslash##1}}}%
@@ -268,7 +274,7 @@
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
 % caused by macros placed there by this feature.
-% Please note that the |noexternal| option causes |nographics| and |nopgfimages|.
+% Please note that the \op{noexternal} option causes \op{nographics} and \op{nopgfimages}.
 % \medskip
 %
 % \DescribeOption{filegroups}
@@ -280,9 +286,9 @@
 % \DescribeOption{nographics}
 % This option (default: off) allows to automatically declare all images included
 % using |\includegraphics| from the |graphics|/|graphicx| package as external
-% files (see section~\ref{sec:external}). The options |external| and |autoload| are
+% files (see section~\ref{sec:external}). The options \op{external} and \op{autoload} are
 % activated by the |graphics| option so that the produced |.svx| files are
-% loaded automatically.  An |noautoload| option after |graphics| will deactivate
+% loaded automatically.  An \op{noautoload} option after |graphics| will deactivate
 % this, but then an \cs{svnexternal} macro must be included in all \LaTeX\ files
 % which should take the image revisions into account.\par
 % The |graphics| package is loaded if this option is active. If this package is
@@ -295,7 +301,7 @@
 %
 % \DescribeOption{pgfimages}
 % \DescribeOption{nopgfimages}
-% Same like the |graphics| option but for the |pgf| package (2008/01/15 or
+% Same like the \op{graphics} option but for the |pgf| package (2008/01/15 or
 % later) with the |pgfuseimage| and |pgfimage| macros. Please also see the
 % notes about package loading and ties mentioned above.
 % \medskip
@@ -305,8 +311,8 @@
 % Activate or deactivate (default) automatic loading of corresponding |.svx|
 % files at the begin of files included using |\input| or |\import|. This avoids
 % the need of putting an \cs{svnexternal} macro in every file just to load the
-% |.svx| files created automatically by the |graphics| option. The option
-% |external| is activated by |autoload|.
+% |.svx| files created automatically by the \op{graphics} option. The option
+% \op{external} is activated by \op{autoload}.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
