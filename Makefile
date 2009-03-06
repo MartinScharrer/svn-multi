@@ -1,13 +1,16 @@
 # $Id: Makefile 628 2007-07-10 20:32:06Z martin $
 
 PACKAGE=svn-multi
-PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf example_main.tex \
+PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf svn-multi-pl.dtx svn-multi.pl example_main.tex \
 			example_chap1.tex example.pdf Makefile README
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.toc *.ilg *.gls *.hd
 TESTDIR = tests
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
 TESTARGS = -output-directory ${TESTDIR}
-GENERATED = ${PACKAGE}.pdf ${PACKAGE}.sty svnkw.sty example.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
+INSGENERATED = ${PACKAGE}.sty svnkw.sty svn-multi.pl
+GENERATED = ${INSGENERATED} ${PACKAGE}.pdf svn-multi-pl.pdf example.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
+
+
 
 RED   = \033[01;31m
 GREEN = \033[01;32m
@@ -30,8 +33,9 @@ package: ${PACKAGE}.sty
 	pdflatex $*.dtx
 	pdflatex $*.dtx
 
-${PACKAGE}.sty: ${PACKAGE}.dtx ${PACKAGE}.ins
+${INSGENERATED}: ${PACKAGE}.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
+	@-chmod +x *.pl
 
 clean:
 	rm -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX})
@@ -43,7 +47,7 @@ example: example.pdf
 
 example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 	pdflatex $<
-	./svn-multi.pl $<
+	perl ./svn-multi.pl $<
 	pdflatex $<
 	mv example_main.pdf $@
 
@@ -56,7 +60,9 @@ zip: package doc example ${PACKAGE}.zip
 
 ${PACKAGE}.zip: ${PACKFILES}
 	grep -q '\* Checksum passed \*' svn-multi.log
-	cd .. && zip ${PACKAGE}/$@ $(addprefix ${PACKAGE}/, ${PACKFILES})
+	grep -q '\* Checksum passed \*' svn-multi-pl.log
+	zip $@ ${PACKFILES}
+	#cd .. && zip ${PACKAGE}/$@ $(addprefix ${PACKAGE}/, ${PACKFILES})
 
 tar.gz: ${PACKAGE}.tar.gz
 
