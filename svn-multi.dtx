@@ -325,25 +325,25 @@
 %
 % \DescribeMacro{svnid}
 % Macro for the svn Id keyword.
-% Write the macro as \cs{svnid}|{$||Id$}| into your \LaTeX{} files. A trailing colon
+% Write the macro as |\svnid{$||Id$}| into your \LaTeX{} files. A trailing colon
 % with spaces after the |Id| is also valid but \textbf{everything else} except
 % a valid Subversion string will cause a \TeX{} parse error.
 % Don't forget to set the subversion property |svn:keywords| of the files
 % to at least `|Id|'. Subversion will expand it at the next commit.
 % Please note that because the value is read verbatim the macro should exactly be
-% written like above. Spaces, newlines or comments between \cs{svnid} and
+% written like above. Spaces, newlines or comments between |\svnid| and
 % the \{ will lead to \TeX{} parse errors.
 %
 % \DescribeMacro{svnidlong}
 % Macro for a ``long Id''.
 % Saves similar values like in `|Id|' but from the keywords
 % |HeadURL|, |LastChangedDate|, |LastChangedRevision| and |LastChangedBy|.
-% The usage of \cs{svnid} or \cs{svnidlong} is a matter of taste. The second is
+% The usage of \cs{svnid} or |\svnidlong| is a matter of taste. The second is
 % more readable inside the code and results in a nicer date and a full URL,
 % not only the filename. Both can also be used together.
 %
 % Write this macro like this (order of arguments not meaningfull)\\[2ex]
-% \cs{svnidlong}\\
+% |\svnidlong|\\
 % |{$||HeadURL$}|\\
 % |{$||LastChangedDate$}|\\
 % |{$||LastChangedRevision$}|\\
@@ -353,7 +353,7 @@
 % to\\`|HeadURL LastChangedDate LastChangedRevision LastChangedBy|'.
 %
 % Please note that the arguments are read verbatim. Special precaution are
-% taken to allow spaces, newlines and comments direct after the \cs{svnidlong}
+% taken to allow spaces, newlines and comments direct after the |\svnidlong|
 % and after each of the four arguments, just in case someone need this.
 % In fact everything not inside braces \{ \} is ignored.
 %
@@ -372,7 +372,7 @@
 %
 % \DescribeMacro{svnkwsave}
 % This macro lets you include and save any keyword you like. The syntax is
-% \cs{svnkwsave}\{\$\meta{keyword}\$\}. The keyword can be already expanded or
+% |\svnkwsave{$|\meta{keyword}|$}|. The keyword can be already expanded or
 % not (no value and only ``|:|'' or nothing after the key name). This macro is
 % also used internally and does not create any output.
 % Please note that the argument is read verbatim and that there should be no
