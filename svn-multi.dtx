@@ -246,7 +246,7 @@
 % macro robustness problems the current group can be changed locally for the
 % output macros using \cs{svnsetcfg}.
 %
-% See section~\ref{sec:file-group} for further details and usage instructions on
+% See section~\ref{sec:group} for further details and usage instructions on
 % group macros.
 %
 % \section{Basic Usage}
@@ -288,10 +288,10 @@
 % Please note that the \op{noexternal} option causes \op{nographics} and \op{nopgfimages}.
 % \medskip
 %
-% \DescribeOption{filegroups}
-% \DescribeOption{nofilegroups}
-% Activate or deactivate (default) the file groups feature described in
-% section~\ref{sec:file-group}.\\[\baselineskip]
+% \DescribeOption{groups}
+% \DescribeOption{nogroups}
+% Activate or deactivate (default) the keyword groups feature described in
+% section~\ref{sec:group}.\\[\baselineskip]
 %
 % \DescribeOption{graphics}
 % \DescribeOption{nographics}
@@ -550,7 +550,7 @@
 % \DescribeMacro{svntoday}
 % \DescribeMacro{svnfiletoday}
 % \DescribeMacro{svncfgtoday}
-% These macros typeset the document-global, current-file or current-file-group
+% These macros typeset the document-global, current-file or current-group
 % date, respectively, using the format of |\today| which depends on the used
 % language. To adjust the language of your document use the |babel| package.
 %
@@ -609,18 +609,18 @@
 % Please note that you can't use |hyperref|s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
-% \subsection{File Groups}\label{sec:file-group}
+% \subsection{File Groups}\label{sec:group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
 % latest revision of a group can be accessed. Use the |filegroups| option to
 % activate these macros.
 %
 % \noindent
-% \DescribeMacro{svnfilegroup}\hspace{-.75em}\marg{file group}\\
+% \DescribeMacro{svnfilegroup}\hspace{-.75em}\marg{group name}\\
 % This macro declares all following files (actually only following \cs{svnid},
 % \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svnfilegroup} as part
-% of the given group. It can be placed inside the main file before some
+% of the given keyword group. It can be placed inside the main file before some
 % |\include|/|\input| macros or inside sub-files before the id macros, \ie
-% direct at the start of the file. Please note that the file group will then
+% direct at the start of the file. Please note that the group will then
 % swap over to the following file. However, the group can be closed manually
 % using an empty |\svnfilegroup{}|, \eg at the end of a file.\par
 % The changes done by this macro are \TeX\ global, \ie there can't be caught
@@ -628,7 +628,7 @@
 %
 % \smallskip
 % \DescribeMacro{thesvnfilegroup}
-% Returns the name of the current file group.
+% Returns the name of the current keyword group.
 %
 % \smallskip
 % \DescribeMacro{svncfgrev}
@@ -640,14 +640,15 @@
 % \DescribeMacro{svncfghour}
 % \DescribeMacro{svncfgminute}
 % \DescribeMacro{svncfgsecond}
-% These macros return keyword values of the currently selected file group, like the \cs{svnrev},
-% \cs{svnfilerev}, etc., macros described in sections~\ref{sec:kwaccess} do for
-% the whole document and the current file, respectively. 
+% These macros return keyword values of the currently selected keyword group,
+% like the \cs{svnrev}, \cs{svnfilerev}, etc., macros described in
+% sections~\ref{sec:kwaccess} do for the whole document and the current file,
+% respectively. 
 % In order to hold them robust, which is important to use them in macros like
-% \cs{svnFullAuthor} they do not provide any arguments to select other file groups
-% than the current one. To access keyword values of other file groups use the
-% general macro \cs{svnfg}\marg{file group}\marg{key} or change the locally
-% selected file group using the \cs{svnsetcfg}.\par
+% \cs{svnFullAuthor} they do not provide any arguments to select other groups
+% than the current one. To access keyword values of other groups use the
+% general macro \cs{svnfg}\marg{group name}\marg{key} or change the locally
+% selected keyword group using the \cs{svnsetcfg}.\par
 % \vspace{2\baselineskip}
 % \DescribeMacro{svncfgtimezone}
 % \DescribeMacro{svncfgtimezonehour}
@@ -655,14 +656,14 @@
 % \vspace{3\baselineskip}
 %
 % \smallskip\noindent
-% \DescribeMacro{svnsetcfg}\hspace{-.75em}\marg{file group}\\
-% Normally the |\svncfg|\meta{XXX} macros mentioned above use the last file group defined by
-% \cs{svnfilegroup}, but this can be changed using the \cs{svnsetcfg} macro.\par
-% The idea is that the currently selected file group can be changed locally to
-% the current \TeX\ group for the keyword output macros |\svncfg|\meta{XXX}
-% only while the file group for the keyword input macros like \cs{svnid} is
-% unaffected.\par
-% To reset the used file group to the last one defined by \cs{svnfilegroup} simply
+% \DescribeMacro{svnsetcfg}\hspace{-.75em}\marg{group name}\\
+% Normally the |\svncfg|\meta{XXX} macros mentioned above use the last keyword
+% group defined by \cs{svnfilegroup}, but this can be changed using the
+% \cs{svnsetcfg} macro.\par The idea is that the currently selected group
+% can be changed locally to the current \TeX\ group for the keyword output
+% macros |\svncfg|\meta{XXX} only while the group for the keyword input
+% macros like \cs{svnid} is unaffected.\par
+% To reset the used group to the last one defined by \cs{svnfilegroup} simply
 % use \cs{svnsetcfg} with an empty argument.\par
 % \paragraph*{Example 1:} |{\svnsetcfg{abc}\svnFullAuthor{\svncfgauthor}}|\\ would
 % output the full author's name of group \textit{abc}.\par
@@ -673,9 +674,9 @@
 % this group in the format of |\today| use: |{\svnsetcfg{abc}\svncfgtoday}|
 %
 % \smallskip\noindent
-% \DescribeMacro{svnfg}\hspace{-.75em}\marg{file group}\marg{key}\\
+% \DescribeMacro{svnfg}\hspace{-.75em}\marg{group name}\marg{key}\\
 % This macro is a general form of the |\svncfg|\meta{XXX} macro mentioned above.
-% The first argument is the requested file group, the second one the requested
+% The first argument is the requested keyword group, the second one the requested
 % keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please note that this
 % macro can not be used inside macros like \cs{svnFullAuthor}.
 %
@@ -693,7 +694,7 @@
 % described below. The appropriate keywords are then written in \meta{source
 % file}|.svx| files (|x| like eXternal) which are read in by the \cs{svnexternal}
 % macro at the next \LaTeX\ run. Therefore the keywords are processed at the
-% location \eg in the same file group as this macro. The file local macros like
+% location \eg in the same keyword group as this macro. The file local macros like
 % \cs{svnfilerev} which appear in a source file after \cs{svnexternal} are affected,
 % \ie updated if one of the external revision is higher than the one of the
 % source file. This makes sense if the included graphics are taken as logical
@@ -738,10 +739,10 @@
 % specific source files.\par\medskip
 % \noindent
 % \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
-% |[--file-group| \meta{file % group}|]| \meta{file(s)} \ldots\\
+% |[--group| \meta{file % group}|]| \meta{file(s)} \ldots\\
 % The second way to use |svn-multi.pl| is to call it with a list of external
-% files. A file group can be specified using the |--file-group| \meta{file
-% group} option which can placed any number of times between the file names. The
+% files. A keyword group can be specified using the |--group| \meta{group name}
+% option which can placed any number of times between the file names. The
 % group is used for all external files listed after the option until the next
 % group is specified. All keywords of these files are written in the
 % \meta{jobname}|.svx| file and read in by the main \LaTeX\ file if a,
@@ -756,12 +757,12 @@
 % in this case.\par\medskip
 % \noindent
 % \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
-% |[--file-group| \meta{file group}|] --fls|\\
+% |[--group| \meta{group name}|] --fls|\\
 % Instead of providing a list of all non-\LaTeX/external files the |--fls|
 % option can be used to read this list from the \meta{jobname}|.fls| file. This
 % file is produced by the \LaTeX\ compiler when run with the |--recorder| option
 % and contains a list of all input and output files. Only input files with a
-% relative path are used. A corresponding file group can also be specified.
+% relative path are used. A corresponding keyword group can also be specified.
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
@@ -1542,11 +1543,11 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \subsection{File group macros}
-% These macros implement the user interface for the file group functionality introduced
-% with v2.0.
+% \subsection{Keyword Group Macros}
+% These macros implement the user interface for the keyword group functionality
+% introduced with v2.0.
 %
-% The list of file groups |svn@fglist| is initial set empty and will be filled
+% The list of keyword groups |svn@fglist| is initial set empty and will be filled
 % by \cs{svnfilegroup}.
 %    \begin{macrocode}
 \if@svnmulti@filegroups
@@ -1554,8 +1555,8 @@
 %    \end{macrocode}
 
 % \begin{macro}{\svnfilegroup}
-% Saves the file group to |svn@fg| and initiates |svn@fg@|\meta{file group}|@rev|
-% and |@svn@fg@|\meta{file group}|@rev| if this is the first time the file group
+% Saves the group to |svn@fg| and initiates |svn@fg@|\meta{group name}|@rev|
+% and |@svn@fg@|\meta{group name}|@rev| if this is the first time the group
 % got used.
 %    \begin{macrocode}
 \def\svnfilegroup#1{%
@@ -1567,7 +1568,7 @@
 \expandafter\gdef\csname svnfg@#1@rev\endcsname{0}%
 \fi
 %    \end{macrocode}
-% Now save new file group to list. The list is checked if its empty to avoid an
+% Now save new group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
 %    \begin{macrocode}
 \ifx\svn@fglist\empty
@@ -1581,7 +1582,7 @@
 % \end{macro}
 
 % \begin{macro}{\thesvnfilegroup}
-% Returns the current file group name to the user.
+% Returns the current group name to the user.
 %    \begin{macrocode}
 \def\thesvnfilegroup{\svn@fg}
 %    \end{macrocode}
@@ -1604,8 +1605,7 @@
 
 % \begin{macro}{\svncfg@def}
 % Defines a |\svncfg|\meta{XXX} macro, \eg |svncfgrev|, which returns the
-% requested keyword values of the current or optionally given
-% file group.
+% requested keyword values of the current keyword group.
 %    \begin{macrocode}
 \def\svncfg@def#1{%
 \expandafter\def\csname svncfg#1\endcsname{%
@@ -1657,7 +1657,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svn@inputsvx}
-% Macro to load |.svx| files.  The current file group is saved away and restored
+% Macro to load |.svx| files.  The current keyword group is saved away and restored
 % after the |.svx| file is loaded. |\IfFileExists| with |\@@input| is used
 % because |\InputIfFileExists| got redefined by the |fink| package and there is
 % no need to use |fink| for the |.svx| files.
@@ -1852,13 +1852,13 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
   }%
 %    \end{macrocode}
-% Write file group values if file groups were used:
+% Write keyword group values if groups were specified:
 %    \begin{macrocode}
   \if@svnmulti@filegroups
   \ifx\svn@fglist\empty\else
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
 %    \end{macrocode}
-% For every activated file group check if any keywords got recorded
+% For every activated keyword group check if any keywords got recorded
 % and write to the output file:
 %    \begin{macrocode}
     \@for\svn@fg:=\svn@fglist\do{%
