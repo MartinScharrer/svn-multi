@@ -33,27 +33,27 @@ print STDERR "This is svn-multi.pl, Version $VERSION-$REV, $DATE\n";
 sub usage {
     print STDERR <<'EOT';
 Usage:
- svn-multi.pl jobname[.tex] [--fls] [--file-group|-fg <file group>] [input_files] ...
- ... [--file-group|-fg <file group>] [input_files] ...
+ svn-multi.pl jobname[.tex] [--fls] [--group|-g <group name>] [input_files] ...
+ ... [--group|-g <group name>] [input_files] ...
 
 Description:
  This LaTeX helper script collects Subversion keywords from non-(La)TeX files
  and provides it to the 'svn-multi' package using '.svx' files.  It will first
  scan the file '<jobname>.svn' for files declared by the '\svnextern' macro but
  also allows to provide additional files including the corresponding
- file-groups. The keywords for the additional files will be written in the file
+ groups. The keywords for the additional files will be written in the file
  '<jobname>.svx'.
 
 Options:
  jobname[.tex] : The LaTeX `jobname`, i.e. the basename of your main LaTeX file.
- --file-group <FG> : Use given file group <FG> for all following files,
- or -fg <FG>         including the one read by a '--fls' option, until the next
-                     file group is specified.
+ --group <GN>  : Use given group name <GN> for all following files,
+ or -g <GN>      including the one read by a '--fls' option, until the next
+                 group is specified.
  --fls  : Read list of (additional) files from the file '<jobname>.fls'. This
           file is produced by LaTeX when run with the '--recorder' option and
           contains a list of all input and output files used by the LaTeX main
           file. Only input files with a relative path will be used.
-          A previously selected file-group will be honoured.
+          A previously selected group will be honoured.
 
 Examples:
 The main LaTeX file here is 'mymainlatexfile.tex'.
@@ -62,19 +62,19 @@ The main LaTeX file here is 'mymainlatexfile.tex'.
     Creates Subversion keywords for all files declared by '\svnextern' inside
     the LaTeX code.
 
- svn-multi.pl mymainlatexfile --file-group=FLS --fls
+ svn-multi.pl mymainlatexfile --group=FLS --fls
     Creates Subversion keywords for all files declared by '\svnextern' inside
     the LaTeX code. In addition it does the same for all relative input files
-    mentioned in the .fls file which are placed in the 'FLS' file group.
+    mentioned in the .fls file which are placed in the 'FLS' group.
 
- svn-multi.pl mymainlatexfile a b c --file-group=B e d f
+ svn-multi.pl mymainlatexfile a b c --group=B e d f
     In addition to the '\svnextern' declared files the keywords for the files
-    'a', 'b' and 'c' will be added without a specific file-group, i.e. the last
-    file-group specified in the LaTeX file before the '\svnextern' macro will
-    be used. The keywords for 'e', 'd', 'f' will be part of file-group 'B'.
+    'a', 'b' and 'c' will be added without a specific group, i.e. the last
+    group specified in the LaTeX file before the '\svnextern' macro will
+    be used. The keywords for 'e', 'd', 'f' will be part of group 'B'.
 
- svn-multi.pl mymainlatexfile --file-group=A a --file-group=B b --file-group='' c
-    File 'a' is in file-group 'A', 'b' is in 'B' and 'c' is not in any group.
+ svn-multi.pl mymainlatexfile --group=A a --group=B b --group='' c
+    File 'a' is in group 'A', 'b' is in 'B' and 'c' is not in any group.
 
 Further Information:
 See the svn-multi package manual for more information about this script.
@@ -138,10 +138,10 @@ while ( my ($texfile, $extlist) = each %external ) {
     create_svxfile($svxfile, ['', @$extlist]);
 }
 
-# Parses the arguments and builds a list of (filegroup,files) pairs
+# Parses the arguments and builds a list of (group,files) pairs
 sub parse_args {
     my @args = @_;
-    my $filegroup = '';
+    my $group = '';
     my @files;
     my $readfg;
     my @pairs;
@@ -149,15 +149,15 @@ sub parse_args {
     foreach my $arg (@args) {
         if ($readfg) {
             $readfg    = 0;
-            $filegroup = $arg;
-            $filegroup =~ s/^["']|["']$//;
+            $group = $arg;
+            $group =~ s/^["']|["']$//;
         }
-        elsif ($arg =~ /^--file-group|^-?-fg/) {
-            push @pairs, [ $filegroup, @files ];
+        elsif ($arg =~ /^--group|^-?-fg/) {
+            push @pairs, [ $group, @files ];
             @files = ();
-            if ($arg =~ /^--file-group=(.*)/) {
-                $filegroup = $1;
-                $filegroup =~ s/^["']|["']$//;
+            if ($arg =~ /^--group=(.*)/) {
+                $group = $1;
+                $group =~ s/^["']|["']$//;
             }
             else {
                 $readfg = 1;
@@ -170,7 +170,7 @@ sub parse_args {
             push @files, $arg;
         }
     }
-    push @pairs, [ $filegroup, @files ] if @files;
+    push @pairs, [ $group, @files ] if @files;
     return @pairs;
 }
 
@@ -190,7 +190,7 @@ sub path_search {
 
 sub create_svxfile ($@) {
     my ($svxfile, @fgpair) = @_;
-    my $lastfilegroup = '';
+    my $lastgroup = '';
     my $fgused = 0;
     open(my $svxfh, '>', $svxfile) or do {
         warn "ERROR: Could not create SVX file '$svxfile'!\n";
@@ -201,11 +201,11 @@ sub create_svxfile ($@) {
     select $svxfh;
     print "% Generated by svn-multi.pl v$VERSION\n\n";
 
-    while ( my ($filegroup, @files) = @{shift @fgpair||[]}) {
-    if ($filegroup ne $lastfilegroup) {
-        print "\\svnfilegroup{$filegroup}\n";
+    while ( my ($group, @files) = @{shift @fgpair||[]}) {
+    if ($group ne $lastgroup) {
+        print "\\svngroup{$group}\n";
     }
-    if ($filegroup) {
+    if ($group) {
         $fgused = 1;
     }
 
@@ -223,9 +223,9 @@ sub create_svxfile ($@) {
         print "\n"
     }
 
-    $lastfilegroup = $filegroup;
+    $lastgroup = $group;
     }
-    print "\\svnfilegroup{}\n" if $fgused and $lastfilegroup ne '';
+    print "\\svngroup{}\n" if $fgused and $lastgroup ne '';
     print "\n";
     close ($svxfh);
 }
