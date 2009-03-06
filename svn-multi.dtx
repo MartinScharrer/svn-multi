@@ -198,11 +198,11 @@
 % extension. This file is read back at the next \LaTeX{} run which introduces a
 % delay like by the table of contents. The standard \LaTeX{} switch |\nofiles|
 % can be used to suppress the file generation. Macros to typeset the keywords
-% of the current |include|d or |input|ed \LaTeX{} file are also provided.
+% of the current |\include|-d or |\input|-ed \LaTeX{} file are also provided.
 %
 % \subsection{Scope of Keywords}
 % This package provides the Subversion keyword data in several different scopes:
-% document-global, file-local and, new with v2.0, by file group.
+% document-global, file-local and, new with v2.0, by group.
 %
 % \subsubsection*{Document global}
 % The normal macros, \eg \cs{svnrev}, return the latest version control
@@ -221,19 +221,23 @@
 % cause wrong results if they are used in a file before or without any id
 % macros.
 %
-% \subsubsection*{File Groups}
-% Version 2.0 introduces the concept of file
-% groups. Several files of a multi-file \LaTeX\ document can be grouped together
+% \subsubsection*{Groups}
+% Version 2.0 introduces the concept of groups. Several files\footnote{actually
+% several id macros} of a multi-file \LaTeX\ document can be grouped together
 % and the latest version control informations of all files of a group is
 % provided by macros. This works in the same way as the global macros mentioned
-% above but only with the files in the group.
+% above but only with the files in the group. It can also be seen from the other
+% side: the macros are local like the file-local macros mentioned above but for
+% all files of the group, not only the current one.
 %
 % There is no limitation (besides internal \LaTeX\ resource limits) for the
 % number of different groups. The files of one group do not have to be included
 % in a row but can be included everywhere in the document. The version control
-% informations of every group can be accessed (using the group name) everywhere
-% in the document, even inside other groups. Also, macros are provided to access
-% the current group information without knowing the current group name.
+% informations of the current group can be typeset with macros like
+% \cs{svncfgrev}.  Also, a general but less robust macro \cs{svnfg} is provided
+% to access others groups by name everywhere in the document. To avoid some
+% macro robustness problems the current group can be changed locally for the
+% output macros using \cs{svnsetcfg}.
 %
 % See section~\ref{sec:file-group} for further details and usage instructions on
 % file group macros.
