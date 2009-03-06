@@ -1,27 +1,35 @@
 \documentclass[12pt]{report}
-\usepackage[external]{svn-multi}[2009/03/05]
+\usepackage[all]{svn-multi}[2009/03/05]
 \usepackage{ifthen}
-
-\begin{filecontents}{\jobname.svx}
-% empty
-\end{filecontents}
 
 \begin{document}
 \chapter{Test 36}
-\verb+\svnexternal+ and \verb+\svnexternalpath+ should not produce any spaces.
+\verb+\svnexternal+ and \verb+\svnexternalpath+ and others should not produce any spaces.
 
 \newlength{\mywidth}
 \newsavebox{\mybox}
-\savebox{\mybox}{\svnexternal{}}
+\savebox{\mybox}{\svnexternal{{test}{bla}}}
 \settowidth{\mywidth}{\usebox{\mybox}}
 \noindent
 svnexternal width: \the\mywidth; '\usebox{\mybox}'\\
 \ifthenelse{\mywidth>0}{\error{svnexternalpath produces spaces!}}{}
 
-\savebox{\mybox}{\svnexternal{}}
+\savebox{\mybox}{\svnexternalpath{{test/}}}
 \settowidth{\mywidth}{\usebox{\mybox}}
 \noindent
 svnexternalpath width: \the\mywidth; '\usebox{\mybox}'\\
 \ifthenelse{\mywidth>0}{\error{svnexternalpath produces spaces!}}{}
+
+\savebox{\mybox}{\svngroup{abc}}
+\settowidth{\mywidth}{\usebox{\mybox}}
+\noindent
+svngroup width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svngroup produces spaces!}}{}
+
+\savebox{\mybox}{\svnsetcg{abc}}
+\settowidth{\mywidth}{\usebox{\mybox}}
+\noindent
+svnsetcg width: \the\mywidth; '\usebox{\mybox}'\\
+\ifthenelse{\mywidth>0}{\error{svnsetcg produces spaces!}}{}
 
 \end{document}
