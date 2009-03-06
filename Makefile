@@ -33,7 +33,7 @@ package: ${PACKAGE}.sty
 	pdflatex $*.dtx
 	pdflatex $*.dtx
 
-${INSGENERATED}: ${PACKAGE}.dtx ${PACKAGE}.ins 
+${INSGENERATED}: *.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
 	@-chmod +x *.pl
 
@@ -84,6 +84,7 @@ tests: package testclean
 
 ${TESTS}: % : ${TESTDIR}/%.tex package testclean
 	@-pdflatex -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
+	@if test -e ${TESTDIR}/$*.svn; then perl ./svn-multi.pl ${TESTDIR}/$* 1>/dev/null ; fi
 	@if (pdflatex ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
 		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
 		else /bin/echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
