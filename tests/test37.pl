@@ -11,7 +11,7 @@ use Test::More tests => 1;
 
 my $name = $0;
 $name =~ s/\.pl$//;
-print STDERR "Perl test script for $name.\n";
+print "Perl test script for $name.\n";
 
 # Read tex and svn file and compare both:
 open (my $tex, '<', "$name.tex");
