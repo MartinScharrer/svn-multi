@@ -18,18 +18,17 @@ WHITE = \033[00m
 all: package doc example
 new: fullclean all
 
-doc: ${PACKAGE}.pdf
+doc: ${PACKAGE}.pdf svn-multi-pl.pdf
 
 package: ${PACKAGE}.sty
 
-${PACKAGE}.pdf: ${PACKAGE}.dtx ${PACKAGE}.sty
-	pdflatex ${PACKAGE}.dtx
-	pdflatex ${PACKAGE}.dtx
-	pdflatex ${PACKAGE}.dtx
-	makeindex -s gind.ist -o ${PACKAGE}.ind ${PACKAGE}.idx
-	makeindex -s gglo.ist -o ${PACKAGE}.gls ${PACKAGE}.glo
-	pdflatex ${PACKAGE}.dtx
-	pdflatex ${PACKAGE}.dtx
+%.pdf: %.dtx
+	pdflatex $*.dtx
+	pdflatex $*.dtx
+	-makeindex -s gind.ist -o $*.ind $*.idx
+	-makeindex -s gglo.ist -o $*.gls $*.glo
+	pdflatex $*.dtx
+	pdflatex $*.dtx
 
 ${PACKAGE}.sty: ${PACKAGE}.dtx ${PACKAGE}.ins
 	yes | latex ${PACKAGE}.ins

@@ -1,3 +1,87 @@
+% \iffalse
+%<*driver>
+\def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
+ \year#4\month#5\day#6\relax
+ \def\filedate{#4/#5/#6}%
+}
+\filedate$Id$
+\def\fileversion{v0.1}
+\ProvidesFile{svn-multi-pl.dtx}
+ [\filedate\space\fileversion\space SVN Keywords extractor for svn-multi]
+
+\documentclass{ltxdoc}
+\usepackage{ifpdf}
+\ifpdf
+    % use hypdoc if you have it, hyperref else
+    %\usepackage[hyperfootnotes=false]{hyperref}
+    \usepackage{hypdoc}
+\else\let\url=\texttt\fi
+\usepackage{xspace}
+\newcommand{\ie}{i.e.\@\xspace}
+\newcommand{\eg}{e.g.\@\xspace}
+
+\newenvironment{sub}{\begin{macro}}{\end{macro}}
+
+%\EnableCrossrefs
+\DisableCrossrefs
+\CodelineIndex
+%\PageIndex
+%\RecordChanges
+\begin{document}
+  %\OnlyDescription
+  \DocInput{\jobname.dtx}%
+  %\PrintChanges
+  %\clearpage
+  %\PrintIndex
+\end{document}
+%</driver>
+%<*script>
+%\fi
+%
+% \CheckSum{0}
+%
+% {\makeatother
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+% }
+%
+% \title{The \textsf{svn-multi.pl} script\thanks{This document
+%   corresponds to \textsf{svn-multi.pl}~\fileversion, dated \filedate.}}
+% \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
+% \url{http://www.scharrer-online.de/latex/svn-multi}}
+%
+% \ifpdf
+% \hypersetup{
+%	pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
+%	pdftitle={The svn-multi.pl script},
+%	pdfsubject={Documentation of Perl script svn-multi.pl which allows the
+%	typesetting of external Subversion keywords in multi-file LaTeX documents},
+%	pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
+%	Control, Id, script}
+% }
+% \fi
+% \maketitle
+% \section{Usage}
+% See the section in the |svn-multi| package manual.
+%
+% \StopEventually{}
+% \section{Implementation}
+% The implementation description is still work in progress.
+%
+% \iffalse
 #!/usr/bin/perl
 ################################################################################
 # Copyright (c) 2009 Martin Scharrer <martin@scharrer-online.de>
@@ -8,6 +92,8 @@
 #
 # $Id$
 ################################################################################
+% \fi
+%    \begin{macrocode}
 use strict;
 use warnings;
 use File::Basename;
@@ -27,9 +113,12 @@ if (!@ARGV or $ARGV[0] eq '--help' or $ARGV[0] eq '-h') {
     usage();
 }
 
-
 print STDERR "This is svn-multi.pl, Version $VERSION-$REV, $DATE\n";
+%    \end{macrocode}
 
+% \begin{sub}{usage}
+% Prints usage information.
+%    \begin{macrocode}
 sub usage {
     print STDERR <<'EOT';
 Usage:
@@ -81,7 +170,10 @@ See the svn-multi package manual for more information about this script.
 EOT
     exit(0);
 }
+%    \end{macrocode}
+% \end{sub}
 
+%    \begin{macrocode}
 my ($jobname, $dir, $suffix) = fileparse(shift @ARGV);
 if ($dir && $dir ne './') {
   printf STDERR "Main directory is '$dir'.\n";
@@ -121,7 +213,6 @@ else {
 # Add TEXINPUTS to path
 push @PATH, map { $_ =~ s/(?<!\/)$/\//; $_ } grep { $_ } 
                 split(':', $ENV{'TEXINPUTS'}||"");
-print STDERR join (':', @PATH), "\n";
 
 my @mainfilepairs;
 if (exists $external{"$jobname.tex"}) {
@@ -137,8 +228,11 @@ while ( my ($texfile, $extlist) = each %external ) {
     $svxfile =~ s/\.(tex|ltx)$/.svx/;
     create_svxfile($svxfile, ['', @$extlist]);
 }
+%    \end{macrocode}
 
-# Parses the arguments and builds a list of (group,files) pairs
+% \begin{sub}{parse args}
+% Parses the arguments and builds a list of (group,files) pairs
+%    \begin{macrocode}
 sub parse_args {
     my @args = @_;
     my $group = '';
@@ -150,14 +244,14 @@ sub parse_args {
         if ($readfg) {
             $readfg    = 0;
             $group = $arg;
-            $group =~ s/^["']|["']$//;
+            $group =~ s/^["']|["']$//; # '
         }
         elsif ($arg =~ /^--group|^-?-fg/) {
             push @pairs, [ $group, @files ];
             @files = ();
             if ($arg =~ /^--group=(.*)/) {
                 $group = $1;
-                $group =~ s/^["']|["']$//;
+                $group =~ s/^["']|["']$//; # '
             }
             else {
                 $readfg = 1;
@@ -174,6 +268,11 @@ sub parse_args {
     return @pairs;
 }
 
+%    \end{macrocode}
+% \end{sub}
+
+% \begin{sub}{read fls}
+%    \begin{macrocode}
 sub path_search {
     my $file = shift;
     $file =~ s/##/#/g;
@@ -187,7 +286,11 @@ sub path_search {
 
     return $file;
 }
+%    \end{macrocode}
+% \end{sub}
 
+% \begin{sub}{ceate svxfile}
+%    \begin{macrocode}
 sub create_svxfile ($@) {
     my ($svxfile, @fgpair) = @_;
     my $lastgroup = '';
@@ -229,8 +332,12 @@ sub create_svxfile ($@) {
     print "\n";
     close ($svxfh);
 }
+%    \end{macrocode}
+% \end{sub}
 
-
+% \begin{sub}{svnid}
+% Generates a svnid macro line.
+%    \begin{macrocode}
 sub svnid {
     use Date::Parse;
     use Date::Format;
@@ -241,7 +348,12 @@ sub svnid {
 \\svnid{${dollar}Id: $href->{Name} $href->{'Last Changed Rev'} $date $href->{'Last Changed Author'} \$}
 EOT
 }
+%    \end{macrocode}
+% \end{sub}
 
+% \begin{sub}{svnidlong}
+% Generates svnidlong macro lines.
+%    \begin{macrocode}
 sub svnidlong {
     my $href = shift;
     return <<"EOT";
@@ -252,8 +364,11 @@ sub svnidlong {
 {${dollar}LastChangedBy: $href->{'Last Changed Author'} \$}
 EOT
 }
+%    \end{macrocode}
+% \end{sub}
 
-
+% \begin{sub}{read fls}
+%    \begin{macrocode}
 sub read_fls {
     my $fls = shift;
     my %stack;
@@ -269,5 +384,9 @@ sub read_fls {
     close($fh);
     return keys %stack;
 }
-__END__
-
+%    \end{macrocode}
+% \end{sub}
+% \Finale
+% \iffalse
+%</script>
+% \fi
