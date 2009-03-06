@@ -1,0 +1,44 @@
+\documentclass[12pt]{report}
+\usepackage[groups]{svn-multi}[2009/03/03]
+
+\begin{document}
+\chapter{Test 42}
+Test if internal group list doesn't has any empty elements.
+
+
+\svngroup{abc}
+\svnid{$Id: test12.tex 146 2008-12-03 13:29:19Z martin $}
+\svngroup{}
+\svngroup{}
+\svngroup{def}
+\svngroup{}
+\svngroup{ghi}
+\svngroup{}
+\svnsetcg{abc}
+\svngroup{}
+\svnsetcg{def}
+\svnsetcg{}
+\svnsetcg{doesntexist}
+\svnsetcg{}
+\svngroup{abc}
+\svngroup{}
+\svngroup{def}
+\svngroup{}
+\svngroup{ghi}
+\svngroup{}
+\svnsetcg{abc}
+\svngroup{}
+\svnsetcg{def}
+\svnsetcg{}
+\svnsetcg{doesntexist}
+
+\def\reference{abc,def,ghi}
+
+\makeatletter
+\ifx\svn@fglist\reference\else
+    \message{List contains empty elements: '\svn@fglist'}
+    \error{List contains empty elements!}
+\fi
+\makeatother
+
+\end{document}
