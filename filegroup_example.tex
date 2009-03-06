@@ -144,9 +144,9 @@ Last Changed Date     & \svnfiledate\\
 \vspace*{5cm}
 \textbf{Version Control Information for this part:}\\[\bigskipamount]%
 \begin{tabular}{ll}
-Last Changed Revision & \svncfgrev\\
-Last Changed Author   & \svncfgauthor\\
-Last Changed Date     & \svncfgdate\\
+Last Changed Revision & \svncgrev\\
+Last Changed Author   & \svncgauthor\\
+Last Changed Date     & \svncgdate\\
 \end{tabular}
 }\origpart
 }
@@ -176,41 +176,41 @@ Last Changed Date     & \svndate\\
    \hline
    Group & Revision & Author & Date \\ \hline
    Global & \svnrev & \svnFullAuthor{\svnauthor} & \svntoday\ \svntime\ \svntimezone \\
-   \svnfilegroup{abc}abc &
-   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
-   \svnfilegroup{def}def &
-   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
-   \svnfilegroup{ghi}ghi &
-   \svncfgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
+   \svngroup{abc}abc &
+   \svncgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
+   \svngroup{def}def &
+   \svncgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
+   \svngroup{ghi}ghi &
+   \svncgrev & \svnFullAuthor{\svncfgauthor} & \svncfgtoday\ \svncfgtime\ \svntimezone \\
    \hline
 \end{tabular}
-\svnfilegroup{}
+\svngroup{}
 \clearpage
 
-\svnfilegroup{abc}
+\svngroup{abc}
 \part{Abc}
 \include{filegroup_example_part1a}
 \include{filegroup_example_part1b}
 \include{filegroup_example_part1c}
 
-\svnfilegroup{def}
+\svngroup{def}
 \part{Def}
 \include{filegroup_example_part2a}
 \include{filegroup_example_part2b}
 
-\svnfilegroup{ghi}
+\svngroup{ghi}
 \part{Ghi}
 \include{filegroup_example_part3a}
 \include{filegroup_example_part3b}
 
 % New file group 'def' again:
-\svnfilegroup{def}
+\svngroup{def}
 \part{Def2}
 \include{filegroup_example_part4a}
 \include{filegroup_example_part4b}
 
 % The rest doesn't belong to a file group:
-\svnfilegroup{}
+\svngroup{}
 \include{filegroup_example_end}
 
 \end{document}
