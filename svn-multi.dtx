@@ -230,6 +230,13 @@
 % side: the macros are local like the file-local macros mentioned above but for
 % all files of the group, not only the current one.
 %
+% This groups could also be called \textit{file groups}, \textit{keyword groups}
+% or, like in programming languages, \textit{namespaces}. In this manual they
+% will be reference as simple \textit{groups} most the time. In places where
+% they could be confused with \TeX\ groups (|{ }|, |\begingroup| |\endgroup|),
+% \eg ``in the current group'' or ``group local'', they will be called
+% \textit{keyword groups}.
+%
 % There is no limitation (besides internal \LaTeX\ resource limits) for the
 % number of different groups. The files of one group do not have to be included
 % in a row but can be included everywhere in the document. The version control
@@ -240,7 +247,7 @@
 % output macros using \cs{svnsetcfg}.
 %
 % See section~\ref{sec:file-group} for further details and usage instructions on
-% file group macros.
+% group macros.
 %
 % \section{Basic Usage}
 % The version control informations are provided by Subversion keywords which
