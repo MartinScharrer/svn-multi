@@ -674,6 +674,10 @@
 % \paragraph*{Example 3:} To typeset the date of group \textit{abc} outside of
 % this group in the format of |\today| use: |{\svnsetcg{abc}\svncgtoday}|
 %
+% \smallskip
+% \DescribeMacro{thesvncg}
+% Returns the name of the current group selected by \cs{svnsetcg}.
+%
 % \smallskip\noindent
 % \DescribeMacro{svng}\hspace{-.75em}\marg{group name}\marg{key}\\
 % This macro is a general form of the |\svncg|\meta{XXX} macro mentioned above.
@@ -1620,6 +1624,13 @@
 %    \begin{macrocode}
 \@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
 timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\thesvncg}
+% Simply return the internal macro.
+%    \begin{macrocode}
+\def\thesvncg{\svn@cg}
 %    \end{macrocode}
 % \end{macro}
 
