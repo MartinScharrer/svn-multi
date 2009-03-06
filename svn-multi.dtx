@@ -71,6 +71,7 @@
     \raisebox{11pt}[11pt]{\hypertarget{option@#1}{}}%
     \@esphack \ignorespaces
 }
+\let\DescribeScript\DescribeOption
 
 \renewenvironment{macro}[1]{%
 \edef\macroname{\expandafter\removeslash\detokenize{#1}END}
@@ -728,7 +729,7 @@
 % any combination of them. Please note that the word |jobname| stands for
 % the main \LaTeX\ file name without the |.tex| extension.\par\medskip
 % \noindent
-% \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}\\
+% \DescribeScript{svn-multi.pl}\hspace{-.5em}\meta{jobname}\\
 % \indent
 % As already mentioned in the \cs{svnexternal} description above this script reads
 % the requested external filename from the \meta{jobname}|.svn| file. The
@@ -738,7 +739,7 @@
 % |.svx| file which allows to attach specific external files to one (or more)
 % specific source files.\par\medskip
 % \noindent
-% \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
+% \DescribeScript{svn-multi.pl}\hspace{-.5em}\meta{jobname}
 % |[--group| \meta{file % group}|]| \meta{file(s)} \ldots\\
 % The second way to use |svn-multi.pl| is to call it with a list of external
 % files. A keyword group can be specified using the |--group| \meta{group name}
@@ -756,7 +757,7 @@
 % However the files given by \cs{svnexternal} in this sub-file will not be honoured
 % in this case.\par\medskip
 % \noindent
-% \DescribeMacro{svn-multi.pl}\hspace{-.5em}\meta{jobname}
+% \DescribeScript{svn-multi.pl}\hspace{-.5em}\meta{jobname}
 % |[--group| \meta{group name}|] --fls|\\
 % Instead of providing a list of all non-\LaTeX/external files the |--fls|
 % option can be used to read this list from the \meta{jobname}|.fls| file. This
