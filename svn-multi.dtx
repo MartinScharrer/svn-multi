@@ -612,7 +612,7 @@
 %
 % \subsection{File Groups}\label{sec:group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
-% latest revision of a group can be accessed. Use the |filegroups| option to
+% latest revision of a group can be accessed. Use the |groups| option to
 % activate these macros.
 %
 % \noindent
@@ -796,7 +796,7 @@
 % Declaration of feature switches.
 %    \begin{macrocode}
 \newif\if@svnmulti@verbatim
-\newif\if@svnmulti@filegroups
+\newif\if@svnmulti@groups
 \newif\if@svnmulti@external
 \newif\if@svnmulti@graphics
 \newif\if@svnmulti@pgfimages
@@ -807,7 +807,7 @@
 %    \begin{macrocode}
 \DeclareOption{old}{%
   \@svnmulti@verbatimtrue
-  \@svnmulti@filegroupsfalse
+  \@svnmulti@groupsfalse
   \@svnmulti@externalfalse
   \@svnmulti@graphicsfalse
   \@svnmulti@pgfimagesfalse
@@ -815,7 +815,7 @@
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
-  \@svnmulti@filegroupstrue
+  \@svnmulti@groupstrue
   \@svnmulti@externaltrue
   \@svnmulti@graphicstrue
   \@svnmulti@pgfimagestrue
@@ -823,8 +823,8 @@
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
-\DeclareOption{filegroups}{\@svnmulti@filegroupstrue}
-\DeclareOption{nofilegroups}{\@svnmulti@filegroupsfalse}
+\DeclareOption{groups}{\@svnmulti@groupstrue}
+\DeclareOption{nogroups}{\@svnmulti@groupsfalse}
 \DeclareOption{external}{\@svnmulti@externaltrue}
 \DeclareOption{noexternal}{%
     \@svnmulti@externalfalse
@@ -1550,7 +1550,7 @@
 % The list of keyword groups |svn@fglist| is initial set empty and will be filled
 % by \cs{svngroup}.
 %    \begin{macrocode}
-\if@svnmulti@filegroups
+\if@svnmulti@groups
 \let\svn@fglist=\empty
 %    \end{macrocode}
 
@@ -1854,7 +1854,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
-  \if@svnmulti@filegroups
+  \if@svnmulti@groups
   \ifx\svn@fglist\empty\else
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
 %    \end{macrocode}
