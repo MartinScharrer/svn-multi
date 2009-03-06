@@ -1565,6 +1565,7 @@
 %    \begin{macrocode}
 \def\svngroup#1{%
 \xdef\svn@g{#1}%
+\ifx\svn@g\empty\else%
 \expandafter\ifx\csname svn@g@#1\endcsname\relax%
 \expandafter\gdef\csname svn@g@#1\endcsname{1}%
 \expandafter\gdef\csname @svng@#1@rev\endcsname{0}%
@@ -1579,6 +1580,7 @@
 \xdef\svn@fglist{#1}%
 \else
 \xdef\svn@fglist{\svn@fglist,#1}%
+\fi
 \fi
 \fi
 }
