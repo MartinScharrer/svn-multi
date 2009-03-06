@@ -3,7 +3,7 @@
 PACKAGE=svn-multi
 PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf svn-multi-pl.dtx svn-multi.pl example_main.tex \
 			example_chap1.tex example.pdf Makefile README
-TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.toc *.ilg *.gls *.hd
+TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.toc *.ilg *.gls *.hd
 TESTDIR = tests
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
 TESTARGS = -output-directory ${TESTDIR}
