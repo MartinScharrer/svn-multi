@@ -325,6 +325,13 @@
 % the need of putting an \cs{svnexternal} macro in every file just to load the
 % |.svx| files created automatically by the \op{graphics} option. The option
 % \op{external} is activated by \op{autoload}.
+% \medskip
+%
+% \DescribeOption{table}
+% \DescribeOption{notable}
+% Activate or deactivate (default) a \cs{tableofrevisions} macro which shows the
+% revisions of all files and groups. This needs \op{groups} to work which is
+% activated with \op{table}.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -805,6 +812,7 @@
 \newif\if@svnmulti@graphics
 \newif\if@svnmulti@pgfimages
 \newif\if@svnmulti@autoload
+\newif\if@svnmulti@table
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -816,6 +824,7 @@
   \@svnmulti@graphicsfalse
   \@svnmulti@pgfimagesfalse
   \@svnmulti@autoloadfalse
+  \@svnmulti@tablefalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
@@ -824,6 +833,7 @@
   \@svnmulti@graphicstrue
   \@svnmulti@pgfimagestrue
   \@svnmulti@autoloadtrue
+  \@svnmulti@tabletrue
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
@@ -853,6 +863,11 @@
     \@svnmulti@externaltrue
 }
 \DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
+\DeclareOption{table}{%
+    \@svnmulti@tabletrue
+    \@svnmulti@groupstrue
+}
+\DeclareOption{notable}{\@svnmulti@tablefalse}
 
 \ExecuteOptions{old}
 \ProcessOptions\relax
@@ -1538,6 +1553,7 @@
 % of course the |hyperref| package. A warning is given if it isn't loaded.
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
+%% Adapted from the \url macro of the `hyperref` package.
 \DeclareRobustCommand*{\svnnolinkurl}{%
     \@ifundefined{hyper@normalise}%
     {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
@@ -1834,6 +1850,145 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \fi
 %    \end{macrocode}
 %
+% \subsection{Table of Revisions}
+%
+%    \begin{macrocode}
+\if@svnmulti@table
+\ifx\tableofcontents\relax\else
+%    \end{macrocode}
+%
+% \begin{macro}{\l@svngroup}
+% Macro used by |\contentsline{svngroup}{..}|.
+%    \begin{macrocode}
+\def\l@svngroup#1#2{\l@@svngroup{#1}#2}
+\def\l@@svngroup#1#2#3#4{%
+    \@dottedtocline {1}{1.5em}{2.3em}{#1}{#2}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svnrevisionsname}
+% Simple definition for now. Language support over `babel's |\languagename| possible.
+%    \begin{macrocode}
+\def\svnrevisionsname{Table of Revisions}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svn@svt}
+% File ending for table of revision auxiliary file. A macro is used to allow
+% redefinition by the user if another package is uses the same ending.
+%    \begin{macrocode}
+\def\svn@svt{svt}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svn@svt}
+% File ending for table of revision auxiliary file. A macro is used to allow
+% redefinition by the user if another package is uses the same ending.
+%    \begin{macrocode}
+\def\svn@svtwrite{\csname ft@\svn@svt\endcsname}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tableofrevisions}
+% The |\tableofcontents| macro from standard \LaTeX\ is adapted for this macro.
+% Classes which provide chapters will get a different table then one which not.
+%    \begin{macrocode}
+\AtBeginDocument{%
+\ifx\chapter\@undefined
+
+%% Adapted from the \tableofcontents macro, LaTeX `article' class [2005/09/16 v1.4f]
+\newcommand\tableofrevisions{%
+  \section*{\svnrevisionsname
+    \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
+  \@starttoc{\svn@svt}%
+}
+
+\else
+
+%% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16 v1.4f]
+\newcommand\tableofrevisions{%
+  \if@twocolumn
+    \@restonecoltrue\onecolumn
+  \else
+    \@restonecolfalse
+  \fi
+  \chapter*{\svnrevisionsname
+    \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
+  \@starttoc{\svn@svt}%
+  \if@restonecol\twocolumn\fi
+}
+
+\fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\fi
+
+\def\svn@writerow#1#2{% #1 is row type, #2 is argument for type
+  \immediate\write\svn@svtwrite{%
+    \expandafter\noexpand\csname svn#1row\endcsname
+    \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
+    \@ampersamchar\space
+    \svn@tab{rev}\space\@ampersamchar\space
+    \svn@tab{author}\space\@ampersamchar\space
+    \noexpand\svntabdate%
+    \svn@tabel{year}%
+    \svn@tabel{month}%
+    \svn@tabel{day}%
+    \svn@tabel{hour}%
+    \svn@tabel{minute}%
+    \svn@tabel{second}%
+    \svn@tabel{timezonehour}%
+    \svn@tabel{timezoneminute}%
+    \@backslashchar\@backslashchar
+  }
+}
+
+\def\svn@writegrouprow#1{% #1 is current group
+  \begingroup
+  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname{\csname
+  @svng@\svn@g @##1\endcsname}}
+  \def\svn@tabel##1{{\csname @svng@#1@##1\endcsname}}
+  \svn@writerow{group}{#1}%
+  \endgroup
+}
+
+\def\svn@writeglobalrow{%
+  \begingroup
+  \def\svn@tabel##1{{\csname @svn@##1\endcsname}}
+  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabel{##1}%
+  }
+  \svn@writerow{global}{}%
+  \endgroup
+}
+
+\def\svntabledef{llll}
+\def\svntable{%
+  \begin{tabular}{\svntabledef}%
+    \hline
+    \strut Name & Revision & Last Author & Last Changed At \\\hline
+}
+\def\endsvntable{\hline\end{tabular}}
+\def\svnglobalrow{}
+\def\svngrouprow{}
+\def\svntabgroup#1{Group `#1'}
+\def\svntabglobal{Whole Document}
+\def\svntabrev{}
+\def\svntabauthor#1{\svnFullAuthor{#1}}
+\def\svntabdate#1#2#3#4#5#6#7#8{%
+    \begingroup
+        \year#1 \month#2 \day#3\relax
+        \today\ #4:#5:#6 #7#8%
+    \endgroup
+}
+\fi
+%    \end{macrocode}
+%
+% 
 % \subsection{Other macros}
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
@@ -1882,6 +2037,9 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 % This macro writes the |.svn| auxiliary file and is called from a
 % |\AtEndDocument| macro later on.
 %    \begin{macrocode}
+{\catcode`\&=12
+\gdef\@ampersamchar{&}
+}
 \def\svn@writeaux{%
 %    \end{macrocode}
 % We first check if we have something to save. Revision, date and author must be
@@ -1914,6 +2072,12 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \begin{macrocode}
   \if@svnmulti@groups
   \ifx\svn@fglist\empty\else
+    \if@svnmulti@table
+      \newwrite\svn@svtwrite
+      \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
+      \immediate\write\svn@svtwrite{\noexpand\svntable}%
+      \svn@writeglobalrow{}%
+    \fi
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
 %    \end{macrocode}
 % For every activated keyword group check if any keywords got recorded
@@ -1961,9 +2125,15 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
             \noexpand\csname svng@\svn@g @files\noexpand\endcsname%
               {\csname @svng@\svn@g @files\endcsname}^^J%
         }%
-        \relax
+        \if@svnmulti@table
+            \svn@writegrouprow{\svn@g}%
+        \fi
       \fi\fi
     }%
+    \if@svnmulti@table
+      \immediate\write\svn@svtwrite{\noexpand\endsvntable}%
+      \immediate\closeout\svn@svtwrite%
+    \fi
   \fi\fi
 %    \end{macrocode}
 % Finally close output file:
