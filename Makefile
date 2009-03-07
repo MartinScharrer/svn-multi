@@ -49,7 +49,9 @@ example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 	pdflatex $<
 	mv example_main.pdf $@
 
-gexample: group_example.tex $(wildcard group*.tex) svn-multi.sty
+gexample: group_example.pdf
+	
+group_example.pdf: group_example.tex $(wildcard group*.tex) svn-multi.sty
 	${RM} group_example_*.tex
 	pdflatex $<
 	pdflatex $<

@@ -1698,6 +1698,50 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 }
 \svn@inputsvx{\jobname.svx}%
 \fi
+
+\if@svnmulti@groups
+
+\def\svnfileasgroup{%
+    \svn@checkwrite
+    \begingroup
+    \catcode`\_=12
+    \catcode`\^=12
+    \catcode`\&=12
+    \def\texext{.tex}%
+    \ifx\finkext\texext
+        \edef\filename{\finkbase}%
+    \else
+    \ifx\finkext\empty
+        \edef\filename{\finkbase}%
+    \else
+        \edef\filename{\finkbase.\finkext}%
+    \fi\fi
+
+    % write file to list of this group
+    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{\filename}%
+    \else
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
+            \csname @svng@\svn@g @files\endcsname,\filename}%
+    \fi
+
+    \immediate\write\svn@write{%
+      \@percentchar\space File '\filename'^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @rev\noexpand\endcsname{\svnfilerev}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @date\noexpand\endcsname{\svnfiledate}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @author\noexpand\endcsname{\svnfileauthor}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @year\noexpand\endcsname{\svnfileyear}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @month\noexpand\endcsname{\svnfilemonth}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @day\noexpand\endcsname{\svnfileday}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @hour\noexpand\endcsname{\svnfilehour}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @minute\noexpand\endcsname{\svnfileminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @second\noexpand\endcsname{\svnfilesecond}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
+    }%
+    \endgroup
+}
+\fi
 %    \end{macrocode}
 
 % \begin{macro}{\svnexternal}
@@ -1863,6 +1907,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
     \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
     \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
+    \noexpand\def\noexpand\svng@@files{\csname @svng@\svn@g @files\endcsname}^^J%
   }%
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
@@ -1878,29 +1923,43 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
       \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
       \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname=0\else
         \immediate\write\svn@write{%
-          \@percentchar\space \svn@g^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @rev%
-                {\csname @svng@\svn@g @rev\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @date%
-                {\csname @svng@\svn@g @date\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @author%
-                {\csname @svng@\svn@g @author\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @year%
-                {\csname @svng@\svn@g @year\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @month%
-                {\csname @svng@\svn@g @month\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @day%
-                {\csname @svng@\svn@g @day\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @hour%
-                {\csname @svng@\svn@g @hour\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @minute%
-                {\csname @svng@\svn@g @minute\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @second%
-                {\csname @svng@\svn@g @second\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @timezoneminute%
-                {\csname @svng@\svn@g @timezoneminute\endcsname}^^J%
-          \noexpand\def\@backslashchar svng@\svn@g @timezonehour%
-                {\csname @svng@\svn@g @timezonehour\endcsname}^^J%
+          \@percentchar\space\svn@g^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @rev\noexpand\endcsname%
+              {\csname @svng@\svn@g @rev\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @date\noexpand\endcsname%
+              {\csname @svng@\svn@g @date\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @author\noexpand\endcsname%
+              {\csname @svng@\svn@g @author\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @year\noexpand\endcsname%
+              {\csname @svng@\svn@g @year\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @month\noexpand\endcsname%
+              {\csname @svng@\svn@g @month\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @day\noexpand\endcsname%
+              {\csname @svng@\svn@g @day\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @hour\noexpand\endcsname%
+              {\csname @svng@\svn@g @hour\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @minute\noexpand\endcsname%
+              {\csname @svng@\svn@g @minute\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @second\noexpand\endcsname%
+              {\csname @svng@\svn@g @second\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @timezonehour\noexpand\endcsname%
+              {\csname @svng@\svn@g @timezonehour\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @timezoneminute\noexpand\endcsname%
+              {\csname @svng@\svn@g @timezoneminute\endcsname}^^J%
+          \noexpand\expandafter\noexpand\def
+            \noexpand\csname svng@\svn@g @files\noexpand\endcsname%
+              {\csname @svng@\svn@g @files\endcsname}^^J%
         }%
         \relax
       \fi\fi
