@@ -22,7 +22,7 @@ open (my $svn, '<', "$name.svn");
 my @SVN = grep { chomp; s/^\s*\\\@svnexternal\s*// } <$svn>;
 close ($svn);
 
-for (@SVN) { s/^\s*{.*?}//; s/##/#/g }
+for (@SVN) { s/^\s*(?:\[(.*?)\])?{.*?}//; $_ = "[$1]".$_ if $1; s/##/#/g }
 for (@TEX,@SVN) { s/^path\s*/path / }
 
 is_deeply( \@TEX, \@SVN );
