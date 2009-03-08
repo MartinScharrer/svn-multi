@@ -1549,22 +1549,6 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\svnnolinkurl}
-% This code is taken from the |hyperref| package and is the definition of
-% |\url| just without the part which creates the actual hyperlink. This needs
-% of course the |hyperref| package. A warning is given if it isn't loaded.
-% \changes{v1.2}{2007/06/22}{New macro}
-%    \begin{macrocode}
-%% Adapted from the \url macro of the `hyperref` package.
-\DeclareRobustCommand*{\svnnolinkurl}{%
-    \@ifundefined{hyper@normalise}%
-    {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
-    \svnnolinkurl.}}%
-    {\hyper@normalise\svnnolinkurl@}}%
-\def\svnnolinkurl@#1{\Hurl{#1}}
-%    \end{macrocode}
-% \end{macro}
-
 % \subsection{Keyword Group Macros}
 % These macros implement the user interface for the keyword group functionality
 % introduced with v2.0.
@@ -2154,7 +2138,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \fi
 %    \end{macrocode}
 %
-% 
+
 % \subsection{Other macros}
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
@@ -2173,6 +2157,22 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \def\@svn@s$#1 ${#1}
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+
+% \begin{macro}{\svnnolinkurl}
+% This code is taken from the |hyperref| package and is the definition of
+% |\url| just without the part which creates the actual hyperlink. This needs
+% of course the |hyperref| package. A warning is given if it isn't loaded.
+% \changes{v1.2}{2007/06/22}{New macro}
+%    \begin{macrocode}
+%% Adapted from the \url macro of the `hyperref` package.
+\DeclareRobustCommand*{\svnnolinkurl}{%
+    \@ifundefined{hyper@normalise}%
+    {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
+    \svnnolinkurl.}}%
+    {\hyper@normalise\svnnolinkurl@}}%
+\def\svnnolinkurl@#1{\Hurl{#1}}
+%    \end{macrocode}
 % \end{macro}
 
 % \subsection{Auxiliary file generation and read-back}
