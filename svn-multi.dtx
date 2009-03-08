@@ -2181,27 +2181,27 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svn@writerow}
-% Writes a table row by using |\svn@tab| and |\svn@tabel| defined by the
+% Writes a table row by using |\svn@tabcell| and |\svn@tabcellarg| defined by the
 % |\svn@writeXXXrow| macro below. First argument is row type ('group', 'file',
 % 'global') and second one is a type specific argument provided to
 % |\svntab|\meta{type}.
 %    \begin{macrocode}
-\def\svn@writerow#1#2{% #1 is row type, #2 is argument for type
+\def\svn@writerow#1#2{%
   \immediate\write\svn@svtwrite{%
     \expandafter\noexpand\csname svn#1row\endcsname
     \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
     \@ampersamchar\space
-    \svn@tab{rev}\space\@ampersamchar\space
-    \svn@tab{author}\space\@ampersamchar\space
+    \svn@tabcell{rev}\space\@ampersamchar\space
+    \svn@tabcell{author}\space\@ampersamchar\space
     \noexpand\svntabdate%
-    \svn@tabel{year}%
-    \svn@tabel{month}%
-    \svn@tabel{day}%
-    \svn@tabel{hour}%
-    \svn@tabel{minute}%
-    \svn@tabel{second}%
-    \svn@tabel{timezonehour}%
-    \svn@tabel{timezoneminute}%
+    \svn@tabcellarg{year}%
+    \svn@tabcellarg{month}%
+    \svn@tabcellarg{day}%
+    \svn@tabcellarg{hour}%
+    \svn@tabcellarg{minute}%
+    \svn@tabcellarg{second}%
+    \svn@tabcellarg{timezonehour}%
+    \svn@tabcellarg{timezoneminute}%
     \@backslashchar\@backslashchar
   }
 }
@@ -2209,13 +2209,13 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svn@writegrouprow}
-% TODO: Rename svn@tab and svn@tabel.
+% TODO: Rename svn@tabcell and svn@tabcellarg.
 %    \begin{macrocode}
 \def\svn@writegrouprow#1{% #1 is current group
   \begingroup
-  \def\svn@tabel##1{{\csname @svng@#1@##1\endcsname}}
-  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabel{##1}%
+  \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
+  \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{group}{#1}%
   \endgroup
@@ -2229,9 +2229,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \expandafter
   \ifx\csname @svng@#1@rev\endcsname\relax\else
   \begingroup
-  \def\svn@tabel##1{{\csname @svng@#1@##1\endcsname}}
-  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabel{##1}%
+  \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
+  \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{file}{#1}%
   \endgroup
@@ -2244,9 +2244,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@writeglobalrow{% no arguments
   \begingroup
-  \def\svn@tabel##1{{\csname @svn@##1\endcsname}}
-  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabel{##1}%
+  \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
+  \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{global}{}%
   \endgroup
