@@ -1820,15 +1820,19 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\svn@addfiletogroup}
 % Adds the given file to the given group. If the group list doesn't exist yet
-% it is initialised.
-% TODO: Ensure that it's only added once.
+% it is initialised. A extra macro for each file is used to remember that the
+% file is already in the group. This could be avoided using a list search.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
-    \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
+    \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
+      \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
+      %
+      \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
         \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
-    \else
+      \else
         \expandafter\xdef\csname @svng@#2@files\endcsname{%
             \csname @svng@#2@files\endcsname,#1}%
+      \fi
     \fi
 }
 %    \end{macrocode}
