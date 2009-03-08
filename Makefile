@@ -55,6 +55,10 @@ group_example.pdf: group_example.tex svn-multi.sty
 	${RM} group_example_*.tex
 	pdflatex $<
 	pdflatex $<
+	perl svn-multi.pl group_example
+	pdflatex $<
+	pdflatex $<
+	pdflatex $<
 
 zip: package doc example ${PACKAGE}.zip
 

@@ -813,6 +813,8 @@
 \newif\if@svnmulti@pgfimages
 \newif\if@svnmulti@autoload
 \newif\if@svnmulti@table
+\newif\ifsvnfilesasgroup
+\svnfilesasgroupfalse
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -1582,8 +1584,14 @@
 \def\svngroup#1{%
 \xdef\svn@g{#1}%
 \ifx\svn@g\empty\else%
+%    \end{macrocode}
+% Only initialise the group at first usage:
+%    \begin{macrocode}
 \expandafter\ifx\csname svn@g@#1\endcsname\relax%
 \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+%    \end{macrocode}
+% If first use, init revision numbers to avoid not-a-number errors:
+%    \begin{macrocode}
 \expandafter\gdef\csname @svng@#1@rev\endcsname{0}%
 \expandafter\ifx\csname svng@#1@rev\endcsname\relax
 \expandafter\gdef\csname svng@#1@rev\endcsname{0}%
@@ -1670,7 +1678,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % The |fink| package is needed to get the current source file path. A package
 % error is generated if the loaded version doesn't provide the necessary macros.
 %    \begin{macrocode}
-\if@svnmulti@external
+\if@svnmulti@external %FIXME: this goes far to long and over other option macros.
 \RequirePackage{fink}[2008/02/27]
 \begingroup
 \def\svn@finkerror{%
@@ -1702,64 +1710,127 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svn@removedotslash}
+%    \begin{macrocode}
+% Removes leading './' from given macro. Awaits a macro as argument which is
+% redefined inside the current group!
+\def\svn@removedotslash#1{%
+    \def\svn@removedotslash@##1##2##3\relax{%
+        \begingroup
+        \def\@tempa{./}%
+        \def\@tempb{##1##2}%
+        \ifx\@tempa\@tempb%
+            \endgroup
+            \edef#1{##3}%
+        \else
+            \endgroup
+            \edef#1{##1##2##3}%
+        \fi
+    }%
+    \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \subsubsection{Auto loading of \texttt{.svx} files}
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files. The
 % macro |\fink@prepare| from the |fink| package is used as a hook to read the
 % |.svx| file direct before the \TeX\ is read. The main |.svx| is loaded here.
+% The macros \cs{svn@addfiletogroup} and \cs{svnfileasgroup} are used to do the
+% actual work.
+% FIXME: svnfileasgroup and addfiletogroup need to be executed even without
+% autoload. Restructure this macro.
 %    \begin{macrocode}
 \if@svnmulti@autoload
 \let\orig@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \orig@fink@prepare{#1}%
+  \let\svn@temp=\fink@nextdir
+  \svn@removedotslash\svn@temp
+  \if@svnmulti@groups
+  \ifsvnfilesasgroup
+     \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}%
+     \svnfileasgroup
+  \fi\fi
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
-}
-\svn@inputsvx{\jobname.svx}%
-\fi
-
-\if@svnmulti@groups
-
-\def\svnfileasgroup{%
-    \svn@checkwrite
-    \begingroup
-    \catcode`\_=12
-    \catcode`\^=12
-    \catcode`\&=12
-    \def\texext{.tex}%
-    \ifx\finkext\texext
-        \edef\filename{\finkbase}%
-    \else
-    \ifx\finkext\empty
-        \edef\filename{\finkbase}%
-    \else
-        \edef\filename{\finkbase.\finkext}%
-    \fi\fi
-
-    % write file to list of this group
-    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{\filename}%
-    \else
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
-            \csname @svng@\svn@g @files\endcsname,\filename}%
-    \fi
-
-    \immediate\write\svn@write{%
-      \@percentchar\space File '\filename'^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @rev\noexpand\endcsname{\svnfilerev}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @date\noexpand\endcsname{\svnfiledate}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @author\noexpand\endcsname{\svnfileauthor}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @year\noexpand\endcsname{\svnfileyear}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @month\noexpand\endcsname{\svnfilemonth}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @day\noexpand\endcsname{\svnfileday}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @hour\noexpand\endcsname{\svnfilehour}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @minute\noexpand\endcsname{\svnfileminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @second\noexpand\endcsname{\svnfilesecond}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname svng@\filename @timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
-    }%
-    \endgroup
 }
 \fi
 %    \end{macrocode}
 
+% \subsubsection{Files as extra groups}
+%    \begin{macrocode}
+\if@svnmulti@groups
+%    \end{macrocode}
+
+% \begin{macro}{\svnfileasgroup}
+% User level and internal macro to declare the current file as extra group.
+% It produces the current file path and calls \cs{svn@fileasgroup}.
+%    \begin{macrocode}
+\def\svnfileasgroup{%
+    \begingroup
+    \let\svn@temp\finkdir
+    \svn@removedotslash\svn@temp
+    \def\texext{.tex}%
+    \ifx\finkext\texext
+        \edef\filename{\finkbase}%
+    \else
+        \edef\filename{\fink@file\finkbase\finkext}%
+    \fi
+    \svn@fileasgroup{\svn@temp\filename}
+    \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@addfiletogroup}
+% Adds the given file to the current group. If the group list doesn't exist yet
+% it is initialised.
+% TODO: Ensure that it's only added once.
+%    \begin{macrocode}
+\def\svn@addfiletogroup#1{%
+    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{#1}%
+    \else
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
+            \csname @svng@\svn@g @files\endcsname,#1}%
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@fileasgroup}
+% Macro to write a file as group to |.svn| file. After checking if the filename was not
+% already written, the |.svn| file is checked if it is open and then the file
+% keyword information is written.
+%    \begin{macrocode}
+\def\svn@fileasgroup#1{%
+    \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+    \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+    \svn@checkwrite
+    \immediate\write\svn@write{%
+      \@percentchar\space File '#1'^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@rev\noexpand\endcsname{\svnfilerev}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@date\noexpand\endcsname{\svnfiledate}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@author\noexpand\endcsname{\svnfileauthor}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@year\noexpand\endcsname{\svnfileyear}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@month\noexpand\endcsname{\svnfilemonth}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@day\noexpand\endcsname{\svnfileday}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@hour\noexpand\endcsname{\svnfilehour}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@minute\noexpand\endcsname{\svnfileminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@second\noexpand\endcsname{\svnfilesecond}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
+    }%
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
+% \subsubsection{Keywords from External Files}
 % \begin{macro}{\svnexternal}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
@@ -1767,9 +1838,13 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \def\svnexternal#1{%
   \if@filesw
       \svn@checkwrite
+      \begingroup
+      \let\svn@temp\finkpath
+      \svn@removedotslash\svn@temp
       \immediate\write\svn@write{%
-          \noexpand\@svnexternal{\finkpath}{#1}%
+          \noexpand\@svnexternal{\svn@temp}{#1}%
       }%
+      \endgroup
   \fi
 }
 %    \end{macrocode}
@@ -1800,7 +1875,46 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 % \end{macro}
 % \end{macro}
 
+
+% \begin{macro}{\svnexternalfile}
+% This macro is generated by |svn-multi.pl| and should not be used by the user.
+% If files-as-group is enabled some special characters are disabled
+% and the \cs{svn@externalfile} is called to read the file name. Otherwise the
+% argument is simply removed.
 %    \begin{macrocode}
+\def\svnexternalfile{%
+  \ifsvnfilesasgroup
+    \begingroup
+    \catcode`\_=12
+    \catcode`\&=12
+    \catcode`\^=12
+    \catcode`\$=12
+    \catcode`\#=12
+    \expandafter\svn@externalfile
+  \else
+    \expandafter\@gobble
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@externalfile}
+% Ends group which began in \cs{svnexternalfile} and calls the appropriate
+% macros.
+%    \begin{macrocode}
+\def\svn@externalfile#1{%
+  \endgroup
+  \svn@addfiletogroup{#1}%
+  \svn@fileasgroup{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% If \op{external} option is not enabled a placeholder macro is defined which
+% simply ignores its argument.
+%    \begin{macrocode}
+\else
+\def\svnexternalfile#1{}%
 \fi
 %    \end{macrocode}
 
@@ -1890,6 +2004,7 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% TODO: write own macros
 % \begin{macro}{\tableofrevisions}
 % The |\tableofcontents| macro from standard \LaTeX\ is adapted for this macro.
 % Classes which provide chapters will get a different table then one which not.
@@ -1925,8 +2040,15 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 % \end{macro}
 %
 %    \begin{macrocode}
-\fi
+\fi % defined \tableofcontents
+%    \end{macrocode}
 
+% \begin{macro}{\svn@writerow}
+% Writes a table row by using |\svn@tab| and |\svn@tabel| defined by the
+% |\svn@writeXXXrow| macro below. First argument is row type ('group', 'file',
+% 'global') and second one is a type specific argument provided to
+% |\svntab|\meta{type}.
+%    \begin{macrocode}
 \def\svn@writerow#1#2{% #1 is row type, #2 is argument for type
   \immediate\write\svn@svtwrite{%
     \expandafter\noexpand\csname svn#1row\endcsname
@@ -1946,45 +2068,89 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
     \@backslashchar\@backslashchar
   }
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svn@writegrouprow}
+% TODO: Rename svn@tab and svn@tabel.
+%    \begin{macrocode}
 \def\svn@writegrouprow#1{% #1 is current group
   \begingroup
-  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname{\csname
-  @svng@\svn@g @##1\endcsname}}
   \def\svn@tabel##1{{\csname @svng@#1@##1\endcsname}}
+  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabel{##1}%
+  }%
   \svn@writerow{group}{#1}%
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
 
-\def\svn@writeglobalrow{%
+% \begin{macro}{\svn@writefilerow}
+%    \begin{macrocode}
+\def\svn@writefilerow#1{% #1 is file
+  \expandafter
+  \ifx\csname @svng@#1@rev\endcsname\relax\else
+  \begingroup
+  \def\svn@tabel##1{{\csname @svng@#1@##1\endcsname}}
+  \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
+    \svn@tabel{##1}%
+  }%
+  \svn@writerow{file}{#1}%
+  \endgroup
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@writeglobalrow}
+%    \begin{macrocode}
+\def\svn@writeglobalrow{% no arguments
   \begingroup
   \def\svn@tabel##1{{\csname @svn@##1\endcsname}}
   \def\svn@tab##1{\expandafter\noexpand\csname svntab##1\endcsname%
     \svn@tabel{##1}%
-  }
+  }%
   \svn@writerow{global}{}%
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
 
-\def\svntabledef{llll}
+% \subsubsection{Table Format Macros}
+% Generic format macro used in the |.svt| file. Can be redefined by the user to
+% change table format. % TODO: User documentation needed!
+%    \begin{macrocode}
+\def\svntabledef{lrll}
 \def\svntable{%
   \begin{tabular}{\svntabledef}%
     \hline
-    \strut Name & Revision & Last Author & Last Changed At \\\hline
+    \strut Name & Rev & Last Author & Last Changed At \\\hline
 }
 \def\endsvntable{\hline\end{tabular}}
 \def\svnglobalrow{}
 \def\svngrouprow{}
+\def\svnfilerow{}
 \def\svntabgroup#1{Group `#1'}
 \def\svntabglobal{Whole Document}
+\def\svntabfile{%
+  \begingroup
+  \catcode`\_=12
+  \catcode`\&=12
+  \catcode`\^=12
+  \catcode`\$=12
+  \catcode`\#=12
+  \svn@tabfile
+}
+\def\svn@tabfile#1{\endgroup\hspace*{1em}File `\texttt{#1}'}
 \def\svntabrev{}
 \def\svntabauthor#1{\svnFullAuthor{#1}}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
-    \begingroup
-        \year#1 \month#2 \day#3\relax
-        \today\ #4:#5:#6 #7#8%
-    \endgroup
+      #1-#2-#3 #4:#5:#6 #7#8%
 }
+%    \end{macrocode}
+
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 %
@@ -2076,7 +2242,15 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
       \newwrite\svn@svtwrite
       \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
       \immediate\write\svn@svtwrite{\noexpand\svntable}%
+      \begingroup
       \svn@writeglobalrow{}%
+      \ifx\@svng@@files\@undefined\else
+      \ifx\@svng@@files\relax\else
+          \@for\svn@file:=\@svng@@files\do{%
+             \svn@writefilerow{\svn@file}%
+          }%
+      \fi\fi
+      \endgroup
     \fi
     \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
 %    \end{macrocode}
@@ -2126,7 +2300,15 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
               {\csname @svng@\svn@g @files\endcsname}^^J%
         }%
         \if@svnmulti@table
+            \begingroup
             \svn@writegrouprow{\svn@g}%
+            \expandafter\let\expandafter\svn@temp\csname @svng@\svn@g @files\endcsname
+            \ifx\svn@temp\relax\else
+                \@for\svn@file:=\svn@temp\do{%
+                    \svn@writefilerow{\svn@file}%
+                }%
+            \fi
+            \endgroup
         \fi
       \fi\fi
     }%
@@ -2150,6 +2332,23 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \AtEndDocument{%
 \svn@writeaux
 }
+\if@svnmulti@external
+\svn@inputsvx{\jobname.svx}%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\if@svnmulti@external
+\if@svnmulti@groups
+\let\orig@fink@restore\fink@restore
+ %\AtBeginDocument{\svnfilesasgrouptrue}%
+\def\fink@restore{%
+    \ifsvnfilesasgroup
+       \svnfileasgroup
+    \fi
+    \orig@fink@restore
+}
+\fi
+\fi
 %    \end{macrocode}
 %
 % \subsection{Backward compatibility wrapper \texttt{svnkw.sty}}
@@ -2175,4 +2374,3 @@ Please adjust your document preamble to use the new name.}
 %
 % \Finale
 \endinput
-

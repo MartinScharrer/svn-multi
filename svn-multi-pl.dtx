@@ -325,6 +325,7 @@ sub create_svxfile ($@) {
         }
         print "% Keywords for '$file'\n";
         print svnidlong(\%info);
+        print "\\svnexternalfile{$file}\n";
         print "\n"
     }
 
