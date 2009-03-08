@@ -2051,9 +2051,19 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnignoregraphic}
+% Ignores the given graphic file by defining a special macro.
 %    \begin{macrocode}
 \def\svnignoregraphic#1{%
   \expandafter\def\csname svn@ignoregraphic@#1\endcsname{}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnconsidergraphic}
+% Deletes the special ignore macro to consider the graphic again.
+%    \begin{macrocode}
+\def\svnconsidergraphic#1{%
+  \expandafter\let\csname svn@ignoregraphic@#1\endcsname\relax%
 }
 %    \end{macrocode}
 % \end{macro}
