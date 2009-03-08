@@ -814,7 +814,7 @@
 \newif\if@svnmulti@autoload
 \newif\if@svnmulti@table
 \newif\ifsvnfilesasgroup
-\svnfilesasgroupfalse
+\newif\if@svnmulti@needinputfilename
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -827,6 +827,8 @@
   \@svnmulti@pgfimagesfalse
   \@svnmulti@autoloadfalse
   \@svnmulti@tablefalse
+  \@svnmulti@needinputfilenamefalse
+  \svnfilesasgroupfalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
@@ -836,33 +838,41 @@
   \@svnmulti@pgfimagestrue
   \@svnmulti@autoloadtrue
   \@svnmulti@tabletrue
+  \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
 \DeclareOption{groups}{\@svnmulti@groupstrue}
 \DeclareOption{nogroups}{\@svnmulti@groupsfalse}
-\DeclareOption{external}{\@svnmulti@externaltrue}
+\DeclareOption{external}{%
+    \@svnmulti@externaltrue
+    \@svnmulti@needinputfilenametrue
+}
 \DeclareOption{noexternal}{%
     \@svnmulti@externalfalse
     \@svnmulti@pgfimagesfalse
     \@svnmulti@graphicsfalse
     \@svnmulti@autoloadfalse
+    \@svnmulti@needinputfilenamefalse
 }
 \DeclareOption{graphics}{%
     \@svnmulti@graphicstrue
     \@svnmulti@externaltrue
     \@svnmulti@autoloadtrue
+    \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{nographics}{\@svnmulti@graphicsfalse}
 \DeclareOption{pgfimages}{%
     \@svnmulti@pgfimagestrue
     \@svnmulti@externaltrue
     \@svnmulti@autoloadtrue
+    \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{nopgfimages}{\@svnmulti@pgfimagesfalse}
 \DeclareOption{autoload}{%
     \@svnmulti@autoloadtrue
     \@svnmulti@externaltrue
+    \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
 \DeclareOption{table}{%
@@ -1658,46 +1668,81 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \fi
 %    \end{macrocode}
 
-% \subsection{External Files}
-% The |fink| package is needed to get the current source file path. A package
-% error is generated if the loaded version doesn't provide the necessary macros.
+% \section{Input File Name}
+% The FiNK package is used to get the input file names. AtBegin/AtEnd hooks are
+% installed which will be used later.
 %    \begin{macrocode}
-\if@svnmulti@external %FIXME: this goes far to long and over other option macros.
+\if@svnmulti@needinputfilename
+%    \end{macrocode}
+
+% Load |fink| package and check if all needed macros are provided.
+%    \begin{macrocode}
 \RequirePackage{fink}[2008/02/27]
 \begingroup
 \def\svn@finkerror{%
-\PackageError{svn-multi}{Your installed version of the 'fink' package is too
-old. Please update it to a recent version, e.g. from 2008/02/27}{}%
+\PackageError{svn-multi}{Your installed version of the 'fink' package does not
+provide the needed macros. It is either too old or too new.
+Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svn@finkerror\relax
 }
 \@ifundefined{finkpath}{\svn@finkerror}{}%
 \@ifundefined{finkdir}{\svn@finkerror}{}%
 \@ifundefined{finkbase}{\svn@finkerror}{}%
 \@ifundefined{fink@prepare}{\svn@finkerror}{}%
+\@ifundefined{fink@restore}{\svn@finkerror}{}%
 \endgroup
 %    \end{macrocode}
 
-% \begin{macro}{\svn@inputsvx}
-% Macro to load |.svx| files.  The current keyword group is saved away and restored
-% after the |.svx| file is loaded. |\IfFileExists| with |\@@input| is used
-% because |\InputIfFileExists| got redefined by the |fink| package and there is
-% no need to use |fink| for the |.svx| files.
+% \begin{macro}{\svnmulti@begininputfilehook}
+% This hook is installed in the |\fink@prepare| macro from the |fink| package
+% which will be executed at the begin of a input file. The file name and path
+% are not yet in |\finkpath| etc. but in |\fink@nextpath|.
 %    \begin{macrocode}
-\def\svn@inputsvx#1{%
-  \begingroup
-  \let\svn@temp\svn@g
-  \edef\svn@svxfile{#1}%
-  \IfFileExists{#1}{\@@input#1\relax}{}{}%
-  \global\let\svn@g\svn@temp
-  \endgroup
+\def\svnmulti@begininputfilehook{}
+\let\orig@fink@prepare\fink@prepare
+\renewcommand*{\fink@prepare}[1]{%
+  \orig@fink@prepare{#1}%
+  \svnmulti@begininputfilehook
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnmulti@endinputfilehook}
+% This hook is installed in the |\fink@restore| macro from the |fink| package
+% which will be executed at the end of a input file. The file path |\finkpath|
+% etc. is still valid.
+%    \begin{macrocode}
+\def\svnmulti@endinputfilehook{}
+\let\orig@fink@restore\fink@restore
+\def\fink@restore{%
+    \svnmulti@endinputfilehook
+    \orig@fink@restore
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnmulti@atbegininputfile}
+% This macro adds the argument to the \cs{svnmulti@begininputfilehook}.
+%    \begin{macrocode}
+\def\svnmulti@atbegininputfile{%
+    \g@addto@macro\svnmulti@begininputfilehook
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnmulti@atendinputfile}
+% This macro adds the argument to the \cs{svnmulti@endinputfilehook}.
+%    \begin{macrocode}
+\def\svnmulti@atendinputfile{%
+    \g@addto@macro\svnmulti@endinputfilehook
 }
 %    \end{macrocode}
 % \end{macro}
 
 % \begin{macro}{\svn@removedotslash}
 %    \begin{macrocode}
-% Removes leading './' from given macro. Awaits a macro as argument which is
-% redefined inside the current group!
+% Removes leading './' from given macro (holding a directory path). Awaits a
+% macro as argument which is redefined inside the current group!
 \def\svn@removedotslash#1{%
     \def\svn@removedotslash@##1##2##3\relax{%
         \begingroup
@@ -1716,19 +1761,39 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \subsubsection{Auto loading of \texttt{.svx} files}
-% Auto loading of |.svx| files at the begin of |\input| or |\include| files. The
-% macro |\fink@prepare| from the |fink| package is used as a hook to read the
-% |.svx| file direct before the \TeX\ is read. The main |.svx| is loaded here.
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
+% \subsection{FIXME: put me in the correct section}
+% \begin{macro}{\svn@inputsvx}
+% Macro to load |.svx| files.  The current keyword group is saved away and restored
+% after the |.svx| file is loaded. |\IfFileExists| with |\@@input| is used
+% because |\InputIfFileExists| got redefined by the |fink| package and there is
+% no need to use |fink| for the |.svx| files.
+%    \begin{macrocode}
+\def\svn@inputsvx#1{%
+  \begingroup
+  \let\svn@temp\svn@g
+  \edef\svn@svxfile{#1}%
+  \IfFileExists{#1}{\@@input#1\relax}{}{}%
+  \global\let\svn@g\svn@temp
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+
+% \subsection{Auto loading of \texttt{.svx} files}
+% Auto loading of |.svx| files at the begin of |\input| or |\include| files
+% using the \cs{svnmulti@atbegininputfile} macro.
 % The macros \cs{svn@addfiletogroup} and \cs{svnfileasgroup} are used to do the
 % actual work.
 % FIXME: svnfileasgroup and addfiletogroup need to be executed even without
 % autoload. Restructure this macro.
 %    \begin{macrocode}
 \if@svnmulti@autoload
-\let\orig@fink@prepare\fink@prepare
-\renewcommand*{\fink@prepare}[1]{%
-  \orig@fink@prepare{#1}%
+\svnmulti@atbegininputfile{%
   \let\svn@temp=\fink@nextdir
   \svn@removedotslash\svn@temp
   \if@svnmulti@groups
@@ -1738,6 +1803,16 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
   \fi\fi
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
 }
+%    \end{macrocode}
+
+% The main |.svx| is loaded at the end of the package.
+%    \begin{macrocode}
+\AtEndOfPackage{%
+  \svn@inputsvx{\jobname.svx}%
+}
+%    \end{macrocode}
+
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 
@@ -1814,7 +1889,12 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 \fi
 %    \end{macrocode}
 
-% \subsubsection{Keywords from External Files}
+% \subsection{External Files}
+%    \begin{macrocode}
+\if@svnmulti@external %FIXME: this goes far to long and over other option
+% macros. ?? Done ??
+%    \end{macrocode}
+
 % \begin{macro}{\svnexternal}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
@@ -2326,27 +2406,22 @@ old. Please update it to a recent version, e.g. from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 %
-% At the end of document we read the external keywords and write the values to 
-% an auxiliary file.
+% At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
 \svn@writeaux
 }
-\if@svnmulti@external
-\svn@inputsvx{\jobname.svx}%
-\fi
 %    \end{macrocode}
 %    \begin{macrocode}
 \if@svnmulti@external
 \if@svnmulti@groups
-\let\orig@fink@restore\fink@restore
- %\AtBeginDocument{\svnfilesasgrouptrue}%
-\def\fink@restore{%
-    \ifsvnfilesasgroup
-       \svnfileasgroup
-    \fi
-    \orig@fink@restore
+
+\svnmulti@atbegininputfile{%
+  \ifsvnfilesasgroup
+     \svnfileasgroup
+  \fi
 }
+
 \fi
 \fi
 %    \end{macrocode}
