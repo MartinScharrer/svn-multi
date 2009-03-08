@@ -1858,6 +1858,16 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% Check at the end of every input file if files should be extra groups and
+% declare this file as group if so.
+%    \begin{macrocode}
+\svnmulti@atendinputfile{%
+  \ifsvnfilesasgroup
+     \svnfileasgroup
+  \fi
+}
+%    \end{macrocode}
+
 %    \begin{macrocode}
 \fi
 %    \end{macrocode}
@@ -2470,19 +2480,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \AtEndDocument{%
 \svn@writeaux
 }
-%    \end{macrocode}
-%    \begin{macrocode}
-\if@svnmulti@external
-\if@svnmulti@groups
-
-\svnmulti@atbegininputfile{%
-  \ifsvnfilesasgroup
-     \svnfileasgroup
-  \fi
-}
-
-\fi
-\fi
 %    \end{macrocode}
 %
 % \subsection{Backward compatibility wrapper \texttt{svnkw.sty}}
