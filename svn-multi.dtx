@@ -2050,6 +2050,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svnignoregraphic}
+%    \begin{macrocode}
+\def\svnignoregraphic#1{%
+  \expandafter\def\csname svn@ignoregraphic@#1\endcsname{}%
+}
+%    \end{macrocode}
+% \end{macro}
+
 %    \begin{macrocode}
 \fi
 %    \end{macrocode}
@@ -2064,8 +2072,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
-    \svnexternal[\svn@graphicsgroup]{{#3}}%
-    \svn@addfiletogroup{#3}{graphics}%
+    \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
+      \svnexternal[\svn@graphicsgroup]{{#3}}%
+    \fi
     \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
 \fi
@@ -2089,13 +2098,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % included using |\pgfuseimage|.
 % \begin{macrocode}
   \ifx\pgf@filename\empty\else
-      \svn@addfiletogroup{\pgf@filename}{graphics}%
+    \expandafter\ifx\csname svn@ignoregraphic@\pgf@filename\endcsname\relax%
       \expandafter\global\expandafter%
         \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
       \expandafter\xdef\csname pgf@image@#2!\endcsname{%
         \noexpand\svnexternal[\noexpand\svn@graphicsgroup]{{\pgf@filename}}%
         \csname svnmulti@pgf@image@#2!\endcsname
       }%
+    \fi
   \fi
 }
 \fi
