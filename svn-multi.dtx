@@ -813,7 +813,6 @@
 \newif\if@svnmulti@pgfimages
 \newif\if@svnmulti@autoload
 \newif\if@svnmulti@table
-\newif\ifsvnfilesasgroup
 \newif\if@svnmulti@needinputfilename
 %    \end{macrocode}
 %
@@ -828,7 +827,6 @@
   \@svnmulti@autoloadfalse
   \@svnmulti@tablefalse
   \@svnmulti@needinputfilenamefalse
-  \svnfilesasgroupfalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
@@ -1668,7 +1666,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \fi
 %    \end{macrocode}
 
-% \section{Input File Name}
+% \subsection{Input File Name}
 % The FiNK package is used to get the input file names. AtBegin/AtEnd hooks are
 % installed which will be used later.
 %    \begin{macrocode}
@@ -1740,9 +1738,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svn@removedotslash}
-%    \begin{macrocode}
 % Removes leading './' from given macro (holding a directory path). Awaits a
 % macro as argument which is redefined inside the current group!
+%    \begin{macrocode}
 \def\svn@removedotslash#1{%
     \def\svn@removedotslash@##1##2##3\relax{%
         \begingroup
@@ -1757,6 +1755,94 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
         \fi
     }%
     \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
+}
+%    \end{macrocode}
+% \end{macro}
+
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
+% \subsection{Files as extra groups}
+% Macros which allow single files to be declared as extra groups so that their
+% keywords can be accessed in the whole document like with normal groups.
+% This special groups are not added to the list of groups.
+
+% \begin{macro}{\ifsvnfileasgroup}
+% A user-level switch is declared to enable or disable the automatic declaration
+% of every file as own group. This causes \cs{svnfileasgroup} to be called for
+% all input files.
+%    \begin{macrocode}
+\newif\ifsvnfilesasgroup
+\svnfilesasgroupfalse
+%    \end{macrocode}
+% \end{macro}
+
+% The rest of the code is only loaded if \op{groups} are activated.
+%    \begin{macrocode}
+\if@svnmulti@groups
+%    \end{macrocode}
+
+% \begin{macro}{\svnfileasgroup}
+% User level and internal macro to declare the current file as extra group.
+% It produces the current file path and calls \cs{svn@fileasgroup}.
+%    \begin{macrocode}
+\def\svnfileasgroup{%
+    \begingroup
+    \let\svn@temp\finkdir
+    \svn@removedotslash\svn@temp
+    \def\texext{.tex}%
+    \ifx\finkext\texext
+        \edef\filename{\finkbase}%
+    \else
+        \edef\filename{\fink@file\finkbase\finkext}%
+    \fi
+    \svn@fileasgroup{\svn@temp\filename}
+    \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@addfiletogroup}
+% Adds the given file to the current group. If the group list doesn't exist yet
+% it is initialised.
+% TODO: Ensure that it's only added once.
+%    \begin{macrocode}
+\def\svn@addfiletogroup#1{%
+    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{#1}%
+    \else
+        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
+            \csname @svng@\svn@g @files\endcsname,#1}%
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@fileasgroup}
+% Macro to write a file as group to |.svn| file. After checking if the filename was not
+% already written, the |.svn| file is checked if it is open and then the file
+% keyword information is written.
+%    \begin{macrocode}
+\def\svn@fileasgroup#1{%
+    \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+    \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+    \svn@checkwrite
+    \immediate\write\svn@write{%
+      \@percentchar\space File '#1'^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@rev\noexpand\endcsname{\svnfilerev}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@date\noexpand\endcsname{\svnfiledate}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@author\noexpand\endcsname{\svnfileauthor}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@year\noexpand\endcsname{\svnfileyear}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@month\noexpand\endcsname{\svnfilemonth}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@day\noexpand\endcsname{\svnfileday}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@hour\noexpand\endcsname{\svnfilehour}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@minute\noexpand\endcsname{\svnfileminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@second\noexpand\endcsname{\svnfilesecond}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
+      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
+    }%
+    \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1909,78 +1995,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \fi
 %    \end{macrocode}
 
-% \subsubsection{Files as extra groups}
-%    \begin{macrocode}
-\if@svnmulti@groups
-%    \end{macrocode}
-
-% \begin{macro}{\svnfileasgroup}
-% User level and internal macro to declare the current file as extra group.
-% It produces the current file path and calls \cs{svn@fileasgroup}.
-%    \begin{macrocode}
-\def\svnfileasgroup{%
-    \begingroup
-    \let\svn@temp\finkdir
-    \svn@removedotslash\svn@temp
-    \def\texext{.tex}%
-    \ifx\finkext\texext
-        \edef\filename{\finkbase}%
-    \else
-        \edef\filename{\fink@file\finkbase\finkext}%
-    \fi
-    \svn@fileasgroup{\svn@temp\filename}
-    \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svn@addfiletogroup}
-% Adds the given file to the current group. If the group list doesn't exist yet
-% it is initialised.
-% TODO: Ensure that it's only added once.
-%    \begin{macrocode}
-\def\svn@addfiletogroup#1{%
-    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{#1}%
-    \else
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
-            \csname @svng@\svn@g @files\endcsname,#1}%
-    \fi
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svn@fileasgroup}
-% Macro to write a file as group to |.svn| file. After checking if the filename was not
-% already written, the |.svn| file is checked if it is open and then the file
-% keyword information is written.
-%    \begin{macrocode}
-\def\svn@fileasgroup#1{%
-    \expandafter\ifx\csname svn@g@#1\endcsname\relax%
-    \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-    \svn@checkwrite
-    \immediate\write\svn@write{%
-      \@percentchar\space File '#1'^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@rev\noexpand\endcsname{\svnfilerev}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@date\noexpand\endcsname{\svnfiledate}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@author\noexpand\endcsname{\svnfileauthor}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@year\noexpand\endcsname{\svnfileyear}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@month\noexpand\endcsname{\svnfilemonth}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@day\noexpand\endcsname{\svnfileday}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@hour\noexpand\endcsname{\svnfilehour}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@minute\noexpand\endcsname{\svnfileminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@second\noexpand\endcsname{\svnfilesecond}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
-    }%
-    \fi
-}
-%    \end{macrocode}
-% \end{macro}
-
-%    \begin{macrocode}
-\fi
-%    \end{macrocode}
 
 % \subsection{Support for Graphic Packages}
 % \subsubsection{Package \texttt{graphics}}
