@@ -296,6 +296,8 @@ sub create_svxfile ($@) {
     my ($svxfile, @fgpair) = @_;
     my $lastgroup = '';
     my $fgused = 0;
+    my %seen;
+
     open(my $svxfh, '>', $svxfile) or do {
         warn "ERROR: Could not create SVX file '$svxfile'!\n";
         return;
@@ -315,6 +317,11 @@ sub create_svxfile ($@) {
 
     foreach my $file (@files) {
         $file = path_search($file);
+
+        # Only print the file once per .svx file
+        next if $seen{$file};
+        $seen{$file} = 1;
+
         open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
         my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
         close($infoh);
