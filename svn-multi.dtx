@@ -841,7 +841,10 @@
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
-\DeclareOption{groups}{\@svnmulti@groupstrue}
+\DeclareOption{groups}{%
+    \@svnmulti@groupstrue
+    \@svnmulti@needinputfilenametrue
+}
 \DeclareOption{nogroups}{\@svnmulti@groupsfalse}
 \DeclareOption{external}{%
     \@svnmulti@externaltrue
@@ -877,6 +880,7 @@
 \DeclareOption{table}{%
     \@svnmulti@tabletrue
     \@svnmulti@groupstrue
+    \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{notable}{\@svnmulti@tablefalse}
 
