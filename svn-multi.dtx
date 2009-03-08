@@ -1858,18 +1858,28 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \if@svnmulti@external
 %    \end{macrocode}
 
+% \begin{macro}{\svnexternalgroup}
+% Defines the default group of external files. The default is empty which means
+% the current group.
+%    \begin{macrocode}
+\def\svnexternalgroup#1{%
+    \def\svn@externalgroup{#1}%
+}
+\def\svn@externalgroup{}
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\svnexternal}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
-\def\svnexternal#1{%
+\newcommand*\svnexternal[2][\svn@externalgroup]{%
   \if@filesw
       \svn@checkwrite
       \begingroup
       \let\svn@temp\finkpath
       \svn@removedotslash\svn@temp
       \immediate\write\svn@write{%
-          \noexpand\@svnexternal{\svn@temp}{#1}%
+          \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
       }%
       \endgroup
   \fi
@@ -1896,7 +1906,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Discards the argument(s). These macros and their arguments are only used by
 % the external |svn-multi.pl| script.
 %    \begin{macrocode}
-\def\@svnexternal#1#2{}
+\newcommand*\@svnexternal[3][]{}
 \def\@svnexternalpath#1{}
 %    \end{macrocode}
 % \end{macro}

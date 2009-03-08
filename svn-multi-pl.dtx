@@ -99,7 +99,7 @@ use strict;
 use warnings;
 use File::Basename;
 
-my $VERSION = "0.1";
+my $VERSION = "0.2";
 my ($REV,$DATE) = 
     (split ' ','$Id$')[2,3];
 
@@ -176,7 +176,6 @@ EOT
 
 %    \begin{macrocode}
 my ($jobname, $dir, $suffix) = fileparse(shift @ARGV, qr/\.(tex|ltx|dtx|svn)$/);
-print "suffix: $suffix\n";
 if ($dir && $dir ne './') {
   printf STDOUT "Main directory is '$dir'.\n";
   chdir($dir);
@@ -196,8 +195,8 @@ if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
         if    (/^\s*\\\@svnexternalpath\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
             push @PATH, ( split /}\s*{/, $1 );
         }
-        elsif (/^\s*\\\@svnexternal\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
-            my ($name,$list) = ($1,$2||"");
+        elsif (/^\s*\\\@svnexternal\s*(?:\[([^\]]*)\])?\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+            my ($group,$name,$list) = ($1||"",$2,$3||"");
             $name =~ s/^\.\///;
             push @{$external{$name} ||= []}, ( split /}\s*{/, $list );
         }
