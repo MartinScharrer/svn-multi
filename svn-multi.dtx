@@ -814,6 +814,7 @@
 \newif\if@svnmulti@autoload
 \newif\if@svnmulti@table
 \newif\if@svnmulti@needinputfilename
+\newif\if@svnmulti@anygraphic
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -881,6 +882,16 @@
 
 \ExecuteOptions{old}
 \ProcessOptions\relax
+%    \end{macrocode}
+
+% General switch if any graphic option is enabled:
+%    \begin{macrocode}
+\if@svnmulti@graphics
+  \@svnmulti@anygraphictrue
+\fi
+\if@svnmulti@pgfimages
+  \@svnmulti@anygraphictrue
+\fi
 %    \end{macrocode}
 %
 
@@ -1804,16 +1815,16 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svn@addfiletogroup}
-% Adds the given file to the current group. If the group list doesn't exist yet
+% Adds the given file to the given group. If the group list doesn't exist yet
 % it is initialised.
 % TODO: Ensure that it's only added once.
 %    \begin{macrocode}
-\def\svn@addfiletogroup#1{%
-    \expandafter\ifx\csname @svng@\svn@g @files\endcsname\relax%
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{#1}%
+\def\svn@addfiletogroup#1#2{%
+    \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
+        \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
     \else
-        \expandafter\xdef\csname @svng@\svn@g @files\endcsname{%
-            \csname @svng@\svn@g @files\endcsname,#1}%
+        \expandafter\xdef\csname @svng@#2@files\endcsname{%
+            \csname @svng@#2@files\endcsname,#1}%
     \fi
 }
 %    \end{macrocode}
@@ -1868,6 +1879,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@externalgroup{}
 %    \end{macrocode}
 % \end{macro}
+
 % \begin{macro}{\svnexternal}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
@@ -1941,7 +1953,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@externalfile#1{%
   \endgroup
-  \svn@addfiletogroup{#1}%
+  \svn@addfiletogroup{#1}{\svn@g}%
   \svn@fileasgroup{#1}%
 }
 %    \end{macrocode}
@@ -1987,7 +1999,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@removedotslash\svn@temp
   \if@svnmulti@groups
   \ifsvnfilesasgroup
-     \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}%
+     \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
      \svnfileasgroup
   \fi\fi
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
@@ -2007,6 +2019,27 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 
 % \subsection{Support for Graphic Packages}
+
+% \subsubsection{Common Code}
+%    \begin{macrocode}
+\if@svnmulti@anygraphic
+%    \end{macrocode}
+
+% \begin{macro}{\svngraphicsgroup}
+% Defines the default group of graphics files. The default is empty which means
+% the current group.
+%    \begin{macrocode}
+\def\svngraphicsgroup#1{%
+    \def\svn@graphicsgroup{#1}%
+}
+\def\svn@graphicsgroup{}
+%    \end{macrocode}
+% \end{macro}
+
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
 % \subsubsection{Package \texttt{graphics}}
 % Automatic declaration of all images included by |\includegraphics| from the
 % |graphics| package as external files. We use the |\Gin@setfile| macro from
@@ -2017,7 +2050,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
-    \svnexternal{{#3}}%
+    \svnexternal[\svn@graphicsgroup]{{#3}}%
+    \svn@addfiletogroup{#3}{graphics}%
     \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
 \fi
@@ -2041,10 +2075,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % included using |\pgfuseimage|.
 % \begin{macrocode}
   \ifx\pgf@filename\empty\else
+      \svn@addfiletogroup{\pgf@filename}{graphics}%
       \expandafter\global\expandafter%
         \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
       \expandafter\xdef\csname pgf@image@#2!\endcsname{%
-        \noexpand\svnexternal{{\pgf@filename}}%
+        \noexpand\svnexternal[\noexpand\svn@graphicsgroup]{{\pgf@filename}}%
         \csname svnmulti@pgf@image@#2!\endcsname
       }%
   \fi
