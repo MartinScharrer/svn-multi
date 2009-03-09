@@ -1294,10 +1294,21 @@
 % These are needed to have have a common value for all alternative keyword
 % names ala |Rev|, |Revision|, |LastChangedRevision|.
 %
-% The keywords |Rev|, |Author| and |Date|
+% The keywords |Author| and |Date|
 % are just calling \cs{svnkwdef@} with a fixed first argument.
+% For the revision the value is checked if empty and then a 0 is substituted.
 %    \begin{macrocode}
-\def\svnkwdef@Rev#1{\svnkwdef@{Rev}{#1}}
+\def\svnkwdef@Rev#1{%
+    \begingroup
+    \def\svn@temp{#1}%
+    \ifx\svn@temp\empty
+      \endgroup
+      \svnkwdef@{Rev}{0}%
+    \else
+      \endgroup
+      \svnkwdef@{Rev}{#1}%
+    \fi
+}
 \def\svnkwdef@Author#1{\svnkwdef@{Author}{#1}}
 \def\svnkwdef@Date#1{\svnkwdef@{Date}{#1}}
 %    \end{macrocode}
