@@ -35,8 +35,8 @@ Test if internal group list doesn't has any empty elements.
 \def\reference{abc,def,ghi}
 
 \makeatletter
-\ifx\svn@fglist\reference\else
-    \message{List contains empty elements: '\svn@fglist'}
+\ifx\svn@glist\reference\else
+    \message{List contains empty elements: '\svn@glist'}
     \error{List contains empty elements!}
 \fi
 \makeatother

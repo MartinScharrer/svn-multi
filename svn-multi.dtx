@@ -1697,11 +1697,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % These macros implement the user interface for the keyword group functionality
 % introduced with v2.0.
 %
-% The list of keyword groups |svn@fglist| is initial set empty and will be filled
+% The list of keyword groups |svn@glist| is initial set empty and will be filled
 % by \cs{svngroup}.
 %    \begin{macrocode}
 \if@svnmulti@groups
-\let\svn@fglist=\empty
+\let\svn@glist=\empty
 %    \end{macrocode}
 
 % \begin{macro}{\svngroup}
@@ -1728,10 +1728,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Now save new group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
 %    \begin{macrocode}
-\ifx\svn@fglist\empty
-\xdef\svn@fglist{#1}%
+\ifx\svn@glist\empty
+\xdef\svn@glist{#1}%
 \else
-\xdef\svn@fglist{\svn@fglist,#1}%
+\xdef\svn@glist{\svn@glist,#1}%
 \fi
 \fi
 \fi
@@ -2440,7 +2440,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
   \if@svnmulti@groups
-  \ifx\svn@fglist\empty\else
+  \ifx\svn@glist\empty\else
     \if@svnmulti@table
       \newwrite\svn@svtwrite
       \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
@@ -2455,12 +2455,12 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
       \fi\fi
       \endgroup
     \fi
-    \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@fglist}%
+    \immediate\write\svn@write{^^J\@percentchar\space SVN File Groups: \svn@glist}%
 %    \end{macrocode}
 % For every activated keyword group check if any keywords got recorded
 % and write to the output file:
 %    \begin{macrocode}
-    \@for\svn@g:=\svn@fglist\do{%
+    \@for\svn@g:=\svn@glist\do{%
       \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
       \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
         \immediate\write\svn@write{%
