@@ -1774,10 +1774,21 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+% The input files are added to the list of the current group at their begin to
+% have them before the included graphics and other external files.
+%    \begin{macrocode}
+\svnmulti@atbegininputfile{%
+  \if@svnmulti@groups
+    \let\svn@temp=\fink@nextdir
+    \svn@removedotslash\svn@temp
+    \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
+  \fi
+}
+%    \end{macrocode}
+
 %    \begin{macrocode}
 \fi
 %    \end{macrocode}
-
 
 % \subsection{Files as extra groups}
 % Macros which allow single files to be declared as extra groups so that their
@@ -1973,7 +1984,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \def\svn@externalfile#1{%
   \endgroup
   \svn@addfiletogroup{#1}{\svn@g}%
-  \svn@fileasgroup{#1}%
+  \ifsvnfilesasgroup
+    \svn@fileasgroup{#1}%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2009,18 +2022,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % using the \cs{svnmulti@atbegininputfile} macro.
 % The macros \cs{svn@addfiletogroup} and \cs{svnfileasgroup} are used to do the
 % actual work.
-% FIXME: svnfileasgroup and addfiletogroup need to be executed even without
-% autoload. Restructure this macro.
 %    \begin{macrocode}
 \if@svnmulti@autoload
+
 \svnmulti@atbegininputfile{%
-  \let\svn@temp=\fink@nextdir
-  \svn@removedotslash\svn@temp
-  \if@svnmulti@groups
-  \ifsvnfilesasgroup
-     \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
-     \svnfileasgroup
-  \fi\fi
   \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
 }
 %    \end{macrocode}
@@ -2234,7 +2239,6 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % \end{macro}
 
 % \begin{macro}{\svn@writegrouprow}
-% TODO: Rename svn@tabcell and svn@tabcellarg.
 %    \begin{macrocode}
 \def\svn@writegrouprow#1{% #1 is current group
   \begingroup
