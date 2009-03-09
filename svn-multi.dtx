@@ -1883,13 +1883,11 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \begingroup
     \let\svn@temp\finkdir
     \svn@removedotslash\svn@temp
-    \def\texext{.tex}%
-    \ifx\finkext\texext
-        \edef\filename{\finkbase}%
-    \else
-        \edef\filename{\fink@file\finkbase\finkext}%
+    \edef\filename{\fink@file\finkbase\finkext}%
+    \def\outext{out}
+    \ifx\finkext\outext\else
+      \svn@fileasgroup{\svn@temp\filename}
     \fi
-    \svn@fileasgroup{\svn@temp\filename}
     \endgroup
 }
 %    \end{macrocode}
