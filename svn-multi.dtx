@@ -1881,13 +1881,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
 \def\svnfileasgroup{%
     \begingroup
-    \let\svn@temp\finkdir
-    \svn@removedotslash\svn@temp
-    \edef\filename{\fink@file\finkbase\finkext}%
-    \def\outext{out}
-    \ifx\finkext\outext\else
-      \svn@fileasgroup{\svn@temp\filename}
-    \fi
+    \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
+    \svn@removedotslash\svn@filename
+    \svn@fileasgroup{\svn@filename}
     \endgroup
 }
 %    \end{macrocode}
@@ -1923,13 +1919,46 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svnignoreextensions}
+% A comma separated list of file name extensions (without leading dot) to ignore
+% for automatic |\svnfileasgroup|.
+%% TODO: DescribeMacro
+%    \begin{macrocode}
+\def\svnignoreextensions#1{%
+  \@for\svn@temp:=#1\do{%
+    \expandafter\def\csname svn@ignore@ext@\svn@temp\endcsname{}%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnconsiderextensions}
+% A comma separated list of file name extensions (without leading dot) to
+% consider for automatic |\svnfileasgroup|.
+%% TODO: DescribeMacro
+%    \begin{macrocode}
+\def\svnconsiderextensions#1{%
+  \@for\svn@temp:=#1\do{%
+    \expandafter\let\csname svn@ignore@ext@\svn@temp\endcsname\relax%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% The following extensions are ignored by default.
+%    \begin{macrocode}
+\svnignoreextensions{aux,toc,out,svn,svx,cls,sty,cfg,enc}
+%    \end{macrocode}
+
 % Check at the end of every input file if files should be extra groups and
-% declare this file as group if so.
+% declare this file as group if its extension is not configured to be ignored.
 %    \begin{macrocode}
 \svnmulti@atendinputfile{%
   \if@svnmulti@filesasgroups
   \ifsvnfilesasgroup
+    \expandafter\ifx\csname svn@ignore@ext@\finkext\endcsname\relax
      \svnfileasgroup
+    \fi
   \fi
   \fi
 }
