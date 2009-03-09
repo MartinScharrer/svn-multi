@@ -294,6 +294,15 @@
 % Activate or deactivate (default) the keyword groups feature described in
 % section~\ref{sec:group}.\\[\baselineskip]
 %
+% \DescribeOption{filesasgroups}
+% \DescribeOption{nofilesasgroups}
+% Activate or deactivate (default) the declaration of all input files as
+% independent groups so that there keyword informations can be typeset inside
+% other files. The group name is the file path (`|subdir/file.tex|'). The files
+% are still added to the current group defined by \cs{svngroup}.\par
+% This can be disabled and re-enabled using \cs{svnfilesasgroupfalse} and 
+% \cs{svnfilesasgrouptrue} inside the document.
+%
 % \DescribeOption{graphics}
 % \DescribeOption{nographics}
 % This option (default: off) allows to automatically declare all images included
@@ -815,6 +824,7 @@
 \newif\if@svnmulti@table
 \newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
+\newif\if@svnmulti@filesasgroups
 %    \end{macrocode}
 %
 % \subsubsection*{Options}
@@ -828,6 +838,7 @@
   \@svnmulti@autoloadfalse
   \@svnmulti@tablefalse
   \@svnmulti@needinputfilenamefalse
+  \@svnmulti@filesasgroupsfalse
 }
 \DeclareOption{all}{%
   \@svnmulti@verbatimtrue
@@ -838,6 +849,7 @@
   \@svnmulti@autoloadtrue
   \@svnmulti@tabletrue
   \@svnmulti@needinputfilenametrue
+  \@svnmulti@filesasgroupstrue
 }
 \DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
 \DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
@@ -846,6 +858,16 @@
     \@svnmulti@needinputfilenametrue
 }
 \DeclareOption{nogroups}{\@svnmulti@groupsfalse}
+\DeclareOption{external}{%
+    \@svnmulti@externaltrue
+    \@svnmulti@needinputfilenametrue
+}
+\DeclareOption{filesasgroups}{%
+    \@svnmulti@groupstrue
+    \@svnmulti@filesasgroupstrue
+    \@svnmulti@needinputfilenametrue
+}
+\DeclareOption{nofileasgroups}{\@svnmulti@filesasgroupsfalse}
 \DeclareOption{external}{%
     \@svnmulti@externaltrue
     \@svnmulti@needinputfilenametrue
@@ -1798,6 +1820,26 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svn@addfiletogroup}
+% Adds the given file to the given group. If the group list doesn't exist yet
+% it is initialised. A extra macro for each file is used to remember that the
+% file is already in the group. This could be avoided using a list search.
+%    \begin{macrocode}
+\def\svn@addfiletogroup#1#2{%
+    \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
+      \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
+      %
+      \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
+        \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
+      \else
+        \expandafter\xdef\csname @svng@#2@files\endcsname{%
+            \csname @svng@#2@files\endcsname,#1}%
+      \fi
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
 % The input files are added to the list of the current group at their begin to
 % have them before the included graphics and other external files.
 %    \begin{macrocode}
@@ -1818,19 +1860,19 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % keywords can be accessed in the whole document like with normal groups.
 % This special groups are not added to the list of groups.
 
-% \begin{macro}{\ifsvnfileasgroup}
 % A user-level switch is declared to enable or disable the automatic declaration
 % of every file as own group. This causes \cs{svnfileasgroup} to be called for
 % all input files.
+% The if macro is defined outside the |\if@svnmulti@filesasgroups| because
+% |\newif| inside |\if| is not a good idea.
 %    \begin{macrocode}
 \newif\ifsvnfilesasgroup
 \svnfilesasgroupfalse
 %    \end{macrocode}
-% \end{macro}
 
-% The rest of the code is only loaded if \op{groups} are activated.
 %    \begin{macrocode}
-\if@svnmulti@groups
+\if@svnmulti@filesasgroups
+\svnfilesasgrouptrue
 %    \end{macrocode}
 
 % \begin{macro}{\svnfileasgroup}
@@ -1849,26 +1891,6 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \fi
     \svn@fileasgroup{\svn@temp\filename}
     \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svn@addfiletogroup}
-% Adds the given file to the given group. If the group list doesn't exist yet
-% it is initialised. A extra macro for each file is used to remember that the
-% file is already in the group. This could be avoided using a list search.
-%    \begin{macrocode}
-\def\svn@addfiletogroup#1#2{%
-    \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
-      \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
-      %
-      \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
-        \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
-      \else
-        \expandafter\xdef\csname @svng@#2@files\endcsname{%
-            \csname @svng@#2@files\endcsname,#1}%
-      \fi
-    \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1907,8 +1929,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % declare this file as group if so.
 %    \begin{macrocode}
 \svnmulti@atendinputfile{%
+  \if@svnmulti@filesasgroups
   \ifsvnfilesasgroup
      \svnfileasgroup
+  \fi
   \fi
 }
 %    \end{macrocode}
@@ -2005,8 +2029,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \def\svn@externalfile#1{%
   \endgroup
   \svn@addfiletogroup{#1}{\svn@g}%
+  \if@svnmulti@filesasgroups
   \ifsvnfilesasgroup
     \svn@fileasgroup{#1}%
+  \fi
   \fi
 }
 %    \end{macrocode}
