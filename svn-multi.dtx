@@ -902,7 +902,7 @@
 % \subsection{Definition of init values}
 %    \begin{macrocode}
 % Init values
-\def\svnrev{0}      \def\@svn@rev{0}
+\def\svnrev{-1}      \def\@svn@rev{-1}
 \def\svndate{}      \def\@svn@date{}
 \def\svnauthor{}    \def\@svn@author{}
 \def\svnyear{0}     \def\@svn@year{0}
@@ -917,7 +917,7 @@
 \def\svn@g{} \def\svn@cg{\svn@g} \def\svn@temp{}
 
 \def\svn@initfile{%
-  \gdef\svnfilerev{0}%
+  \gdef\svnfilerev{-1}%
   \gdef\svnfiledate{}%
   \gdef\svnfileauthor{}%
   \gdef\svnfileyear{0}%
@@ -1709,9 +1709,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % If first use, init revision numbers to avoid not-a-number errors:
 %    \begin{macrocode}
-\expandafter\gdef\csname @svng@#1@rev\endcsname{0}%
+\expandafter\gdef\csname @svng@#1@rev\endcsname{-1}%
 \expandafter\ifx\csname svng@#1@rev\endcsname\relax
-\expandafter\gdef\csname svng@#1@rev\endcsname{0}%
+\expandafter\gdef\csname svng@#1@rev\endcsname{-1}%
 \fi
 %    \end{macrocode}
 % Now save new group to list. The list is checked if its empty to avoid an
@@ -1868,7 +1868,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % keyword information is written.
 %    \begin{macrocode}
 \def\svn@fileasgroup#1{%
-  \ifnum\svnfilerev>0\relax
+  \ifnum\svnfilerev>-1\relax
     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
     \expandafter\gdef\csname svn@g@#1\endcsname{1}%
     \svn@checkwrite
@@ -2451,7 +2451,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
     \@for\svn@g:=\svn@fglist\do{%
       \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
-      \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname=0\else
+      \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
         \immediate\write\svn@write{%
           \@percentchar\space\svn@g^^J%
           \noexpand\expandafter\noexpand\def
