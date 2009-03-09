@@ -52,7 +52,7 @@ example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
 gexample: group_example.pdf
 	
 group_example.pdf: group_example.tex svn-multi.sty
-	${RM} $(addprefix group_example, ${TEXAUX})
+	${RM} $(addprefix group_example, ${TEXAUX}) group_example_*.tex
 	pdflatex $<
 	pdflatex $<
 	perl svn-multi.pl group_example
