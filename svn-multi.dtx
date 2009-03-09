@@ -1962,17 +1962,13 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % argument is simply removed.
 %    \begin{macrocode}
 \def\svnexternalfile{%
-  \ifsvnfilesasgroup
-    \begingroup
-    \catcode`\_=12
-    \catcode`\&=12
-    \catcode`\^=12
-    \catcode`\$=12
-    \catcode`\#=12
-    \expandafter\svn@externalfile
-  \else
-    \expandafter\@gobble
-  \fi
+  \begingroup
+  \catcode`\_=12
+  \catcode`\&=12
+  \catcode`\^=12
+  \catcode`\$=12
+  \catcode`\#=12
+  \expandafter\svn@externalfile
 }
 %    \end{macrocode}
 % \end{macro}
