@@ -1868,6 +1868,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % keyword information is written.
 %    \begin{macrocode}
 \def\svn@fileasgroup#1{%
+  \ifnum\svnfilerev>0\relax
     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
     \expandafter\gdef\csname svn@g@#1\endcsname{1}%
     \svn@checkwrite
@@ -1886,6 +1887,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
       \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
     }%
     \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
