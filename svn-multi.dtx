@@ -906,18 +906,18 @@
 % \subsection{Definition of init values}
 %    \begin{macrocode}
 % Init values
-\def\svnrev{-1}      \def\@svn@rev{-1}
-\def\svndate{}      \def\@svn@date{}
-\def\svnauthor{}    \def\@svn@author{}
-\def\svnyear{0}     \def\@svn@year{0}
-\def\svnmonth{0}    \def\@svn@month{0}
-\def\svnday{0}      \def\@svn@day{0}
-\def\svnhour{0}     \def\@svn@hour{0}
-\def\svnminute{0}   \def\@svn@minute{0}
-\def\svnsecond{0}   \def\@svn@second{0}
-\def\svntimezonehour{+00}  \def\svnfiletimezonehour{+00}  \def\@svn@timezonehour{+00}
-\def\svntimezoneminute{00} \def\svnfiletimezoneminute{00} \def\@svn@timezoneminute{00}
-\def\svnmainurl{NOT SET}\def\svnmainfilename{NOT SET}
+\def\svnrev{-1}             \def\@svn@rev{-1}
+\def\svndate{}              \def\@svn@date{}
+\def\svnauthor{}            \def\@svn@author{}
+\def\svnyear{0}             \def\@svn@year{0}
+\def\svnmonth{0}            \def\@svn@month{0}
+\def\svnday{0}              \def\@svn@day{0}
+\def\svnhour{0}             \def\@svn@hour{0}
+\def\svnminute{0}           \def\@svn@minute{0}
+\def\svnsecond{0}           \def\@svn@second{0}
+\def\svntimezonehour{+00}   \def\@svn@timezonehour{+00}
+\def\svntimezoneminute{00}  \def\@svn@timezoneminute{00}
+\def\svnmainurl{NOT SET}    \def\svnmainfilename{NOT SET}
 \def\svn@g{} \def\svn@cg{\svn@g} \def\svn@temp{}
 
 \def\svn@initfile{%
@@ -930,6 +930,8 @@
   \gdef\svnfilehour{0}%
   \gdef\svnfileminute{0}%
   \gdef\svnfilesecond{0}%
+  \def\svnfiletimezonehour{+00}%
+  \def\svnfiletimezoneminute{00}%
 }
 \svn@initfile
 %    \end{macrocode}
