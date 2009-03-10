@@ -1619,6 +1619,25 @@
 % \end{macro}
 % \end{macro}
 
+% \subsection{General Internal Macros}
+% Some internal used macro which don't fit in any other section.
+%
+% \begin{macro}{\svn@input}
+% Macro to load |.svx| and |.svt| files.  The current keyword group is saved
+% away and restored after the |.svx| file is loaded. The macro |\@input| is used
+% because |\InputIfFileExists| got redefined by the |fink| package and there is
+% no need to use |fink| for this files.
+%    \begin{macrocode}
+\def\svn@input#1{%
+  \begingroup
+  \let\svn@temp\svn@g
+  \@input{#1}%
+  \global\let\svn@g\svn@temp
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
 % \subsection{Input File Name}
 % The FiNK package is used to get the input file names. AtBegin/AtEnd hooks are
 % installed which will be used later.
@@ -2071,23 +2090,6 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@inputsvx}
-% Macro to load |.svx| files.  The current keyword group is saved away and
-% restored after the |.svx| file is loaded. |\IfFileExists| with |\@@input| is
-% used because |\InputIfFileExists| got redefined by the |fink| package and
-% there is no need to use |fink| for the |.svx| files.
-%    \begin{macrocode}
-\def\svn@inputsvx#1{%
-  \begingroup
-  \let\svn@temp\svn@g
-  \edef\svn@svxfile{#1}%
-  \IfFileExists{#1}{\@@input#1\relax}{}{}%
-  \global\let\svn@g\svn@temp
-  \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-
 % If \op{external} option is not enabled a placeholder macro is defined which
 % simply ignores its argument.
 %    \begin{macrocode}
@@ -2106,14 +2108,14 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \if@svnmulti@autoload
 
 \svnmulti@atbegininputfile{%
-  \svn@inputsvx{\fink@nextdir\fink@nextbase.svx}%
+  \svn@input{\fink@nextdir\fink@nextbase .svx}%
 }
 %    \end{macrocode}
 
 % The main |.svx| is loaded at the end of the package.
 %    \begin{macrocode}
 \AtEndOfPackage{%
-  \svn@inputsvx{\jobname.svx}%
+  \svn@input{\jobname .svx}%
 }
 %    \end{macrocode}
 
@@ -2244,15 +2246,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\svn@svt}
-% File ending for table of revision auxiliary file. A macro is used to allow
-% redefinition by the user if another package is uses the same ending.
-%    \begin{macrocode}
-\def\svn@svtwrite{\csname ft@\svn@svt\endcsname}
-%    \end{macrocode}
-% \end{macro}
 
-% TODO: write own macros
 % \begin{macro}{\tableofrevisions}
 % The |\tableofcontents| macro from standard \LaTeX\ is adapted for this macro.
 % Classes which provide chapters will get a different table then one which not.
@@ -2260,16 +2254,16 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \AtBeginDocument{%
 \ifx\chapter\@undefined
 
-%% Adapted from the \tableofcontents macro, LaTeX `article' class [2005/09/16 v1.4f]
+%% Adapted from the \tableofcontents macro, LaTeX `article' class [2005/09/16]
 \newcommand\tableofrevisions{%
   \section*{\svnrevisionsname
     \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
-  \@starttoc{\svn@svt}%
+  \svn@input{\jobname .\svn@svt}%
 }
 
 \else
 
-%% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16 v1.4f]
+%% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16]
 \newcommand\tableofrevisions{%
   \if@twocolumn
     \@restonecoltrue\onecolumn
@@ -2278,7 +2272,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
   \fi
   \chapter*{\svnrevisionsname
     \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
-  \@starttoc{\svn@svt}%
+  \svn@input{\jobname .\svn@svt}%
   \if@restonecol\twocolumn\fi
 }
 
@@ -2442,7 +2436,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %
 % Reread output from last compile run if it exists.
 %    \begin{macrocode}
-\IfFileExists{\jobname.svn}{\@@input\jobname.svn\relax}{}
+\@input{\jobname .svn}
 %    \end{macrocode}
 
 % \begin{macro}{\svn@checkwrite}
@@ -2502,6 +2496,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
   \if@svnmulti@groups
   \ifx\svn@glist\empty\else
     \begingroup
+%    \end{macrocode}
+% Write table of revisions file if \op{table} option was used.
+%    \begin{macrocode}
     \if@svnmulti@table
       \newwrite\svn@svtwrite
       \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
