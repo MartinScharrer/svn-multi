@@ -1878,26 +1878,31 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % file keyword information is written.
 %    \begin{macrocode}
 \def\svn@fileasgroup#1{%
-  \ifnum\svnfilerev>-1\relax
-    \expandafter\ifx\csname svn@g@#1\endcsname\relax%
-    \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-    \svn@checkwrite
-    \immediate\write\svn@write{%
-      \@percentchar\space File '#1'^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@rev\noexpand\endcsname{\svnfilerev}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@date\noexpand\endcsname{\svnfiledate}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@author\noexpand\endcsname{\svnfileauthor}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@year\noexpand\endcsname{\svnfileyear}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@month\noexpand\endcsname{\svnfilemonth}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@day\noexpand\endcsname{\svnfileday}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@hour\noexpand\endcsname{\svnfilehour}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@minute\noexpand\endcsname{\svnfileminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@second\noexpand\endcsname{\svnfilesecond}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezoneminute\noexpand\endcsname{\svnfiletimezoneminute}^^J%
-      \noexpand\expandafter\noexpand\def\noexpand\csname @svng@#1@timezonehour\noexpand\endcsname{\svnfiletimezonehour}^^J%
-    }%
-    \fi
-  \fi
+ \ifnum\svnfilerev>-1\relax
+   \begingroup
+   \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+   \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+   \svn@checkwrite
+   \def\svn@writekw##1{%
+     \noexpand\@namedef{@svng@#1@##1}{\csname svnfile##1\endcsname}^^J%
+   }
+   \immediate\write\svn@write{^^J%
+     \@percentchar\space File '#1'^^J%
+     \svn@writekw{rev}%
+     \svn@writekw{date}%
+     \svn@writekw{author}%
+     \svn@writekw{year}%
+     \svn@writekw{month}%
+     \svn@writekw{day}%
+     \svn@writekw{hour}%
+     \svn@writekw{minute}%
+     \svn@writekw{second}%
+     \svn@writekw{timezonehour}%
+     \svn@writekw{timezoneminute}%
+   }%
+   \fi
+   \endgroup
+ \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2478,6 +2483,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
   \if@svnmulti@groups
   \ifx\svn@glist\empty\else
+    \begingroup
     \if@svnmulti@table
       \newwrite\svn@svtwrite
       \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
@@ -2500,44 +2506,24 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \@for\svn@g:=\svn@glist\do{%
       \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
       \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
+        \def\svn@writekw##1{%
+          \noexpand\@namedef{svng@\svn@g @##1}%
+          {\csname @svng@\svn@g @##1\endcsname}^^J%
+        }
         \immediate\write\svn@write{%
           \@percentchar\space\svn@g^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @rev\noexpand\endcsname%
-              {\csname @svng@\svn@g @rev\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @date\noexpand\endcsname%
-              {\csname @svng@\svn@g @date\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @author\noexpand\endcsname%
-              {\csname @svng@\svn@g @author\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @year\noexpand\endcsname%
-              {\csname @svng@\svn@g @year\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @month\noexpand\endcsname%
-              {\csname @svng@\svn@g @month\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @day\noexpand\endcsname%
-              {\csname @svng@\svn@g @day\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @hour\noexpand\endcsname%
-              {\csname @svng@\svn@g @hour\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @minute\noexpand\endcsname%
-              {\csname @svng@\svn@g @minute\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @second\noexpand\endcsname%
-              {\csname @svng@\svn@g @second\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @timezonehour\noexpand\endcsname%
-              {\csname @svng@\svn@g @timezonehour\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @timezoneminute\noexpand\endcsname%
-              {\csname @svng@\svn@g @timezoneminute\endcsname}^^J%
-          \noexpand\expandafter\noexpand\def
-            \noexpand\csname svng@\svn@g @files\noexpand\endcsname%
-              {\csname @svng@\svn@g @files\endcsname}^^J%
+          \svn@writekw{rev}%
+          \svn@writekw{date}%
+          \svn@writekw{author}%
+          \svn@writekw{year}%
+          \svn@writekw{month}%
+          \svn@writekw{day}%
+          \svn@writekw{hour}%
+          \svn@writekw{minute}%
+          \svn@writekw{second}%
+          \svn@writekw{timezonehour}%
+          \svn@writekw{timezoneminute}%
+          \svn@writekw{files}%
         }%
         \if@svnmulti@table
             \begingroup
@@ -2556,6 +2542,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
       \immediate\write\svn@svtwrite{\noexpand\endsvntable}%
       \immediate\closeout\svn@svtwrite%
     \fi
+    \endgroup
   \fi\fi
 %    \end{macrocode}
 % Finally close output file:
