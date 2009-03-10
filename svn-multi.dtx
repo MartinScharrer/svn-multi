@@ -906,6 +906,24 @@
 %
 
 % \subsection{Definition of init values}
+% Initialisation of at least the revision to a numeric value is necessary to not
+% break the |\ifnum| tests later in this packet. The revision is initialised to
+% -1, but will be set to 0 if an unexpanded |$||Rev:$| keyword is read. This way
+% it can be tested if a file had any keyword macros or not.\par
+% Note that there a two different macros for the document global keywords:\par
+% The user level |\svn|\meta{kw} macros hold the global value and are only valid
+% after a \LaTeX\ run. They are initialised here and defined in the |.svn|
+% file which is read at the end of the package if it exists and written at the
+% end of the document.\par
+% The internal macros |\@svn@|\meta{kw} store the oldest (i.e. highest revision)
+% keywords read so far from the \cs{svnid} and \cs{svnidlong} macros. They
+% change during the document and are used to produce the values of the
+% |\svn|\meta{kw} macros when the |.svn| file is written.\par
+% Group wide macros are initialised when the group is first defined and have
+% three different macros: |\svng@|\meta{group}|@|\meta{kw} (defined in |.svn|),
+% |\@svng@|\meta{group}|@|\meta{kw} (accumulator) and also an access
+% macro |\svncg|\meta{group} which uses
+% |\svn@g|\meta{current group}|@|\meta{kw}.
 %    \begin{macrocode}
 % Init values
 \def\svnrev{-1}             \def\@svn@rev{-1}
