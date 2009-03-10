@@ -72,11 +72,15 @@
 \def\DescribeOption#1{
     \leavevmode \@bsphack
     \marginpar{%
-    \raggedleft\texttt{\strut #1}}%
+    \raggedleft\textbf{\sffamily \strut #1}}%
     \raisebox{11pt}[11pt]{\hypertarget{option@#1}{}}%
     \@esphack \ignorespaces
 }
-\let\DescribeScript\DescribeOption
+\def\DescribeScript#1{
+    \leavevmode \@bsphack
+    \marginpar{\raggedleft\texttt{\strut #1}}%
+    \@esphack \ignorespaces
+}
 
 \renewenvironment{macro}[1]{%
 \edef\macroname{\expandafter\removeslash\detokenize{#1}END}
@@ -84,9 +88,19 @@
 \origmacro{#1}}%
 {\origendmacro}
 
-\DeclareRobustCommand{\cs}[1]{\hyperlink{Desc@#1}{\texttt{\textbackslash#1}}}
+\DeclareRobustCommand{\cs}[1]{%
+    \begingroup
+    \hypersetup{linkcolor=blue}%
+    \hyperlink{Desc@#1}{\texttt{\textbackslash#1}}%
+    \endgroup
+}
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
-\DeclareRobustCommand{\op}[1]{\hyperlink{option@#1}{\texttt{#1}}}
+\DeclareRobustCommand{\op}[1]{%
+    \begingroup
+    \hypersetup{linkcolor=black}%
+    \hyperlink{Desc@#1}{\textbf{\sffamily #1}}%
+    \endgroup
+}
 
 \def\StopEventually#1{\origStopEventually{#1}%
 \DeclareRobustCommand{\cs}[1]{\hyperlink{##1}{\texttt{\textbackslash##1}}}%
