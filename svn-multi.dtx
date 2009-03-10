@@ -44,7 +44,12 @@
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
 
-\iftrue % crossreference of macros in documentation
+\iffalse
+\let\css=\cs
+\let\op=\cs
+\let\DescribeOption\DescribeMacro
+\let\DescribeScript\DescribeOption
+\else % crossreference of macros in documentation
 \begingroup
 \catcode`\*=0
 \catcode`\\=12
@@ -157,7 +162,19 @@
 % \DoNotIndex{\newcount,\noexpand,\openout,\PackageWarning,\@percentchar}
 % \DoNotIndex{\@sanitize,\@makeother,\@iwsvn,\%,\_,\&,\^,\$,\#,\ ,\\,\if@filesw}
 % \DoNotIndex{\gdef,\begingroup,\endgroup,\catcode}
-%
+% \DoNotIndex{\^,\ ,\_,\(,\),\$,\&,\#,\@ampersamchar,\AtEndOfPackage}
+% \DoNotIndex{\@backslashchar,\begin,\bgroup,\chapter,\day}
+% \DoNotIndex{\DeclareOption,\do,\dospecials,\@dottedtocline,\egroup}
+% \DoNotIndex{\end,\ExecuteOptions,\filedate,\fileversion,\@for}
+% \DoNotIndex{\futurelet,\g@addto@macro,\global,\@gobbletwo,\hline}
+% \DoNotIndex{\hspace,\if@restonecol,\if@twocolumn,\ignorespaces}
+% \DoNotIndex{\makeatletter,\MakeUppercase,\@mkboth,\month,\@namedef}
+% \DoNotIndex{\NeedsTeXFormat,\newif,\onecolumn,\orig@fink@prepare}
+% \DoNotIndex{\orig@fink@restore,\PackageError,\ProcessOptions}
+% \DoNotIndex{\ProvidesPackage,\renewcommand,\RequirePackage}
+% \DoNotIndex{\@restonecolfalse,\@restonecoltrue,\section,\strut}
+% \DoNotIndex{\tableofcontents,\tableofrevisions,\texttt,\today}
+% \DoNotIndex{\twocolumn,\@undefined,\url,\year}
 %
 % \title{The \textsf{svn-multi} package\thanks{This document
 %   corresponds to \textsf{svn-multi}~\fileversion, dated \filedate.}
