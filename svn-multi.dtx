@@ -70,11 +70,9 @@
     \SpecialUsageIndex {#1}\@esphack \ignorespaces
 }
 \def\DescribeOption#1{
-    \leavevmode \@bsphack
-    \marginpar{%
-    \raggedleft\textbf{\sffamily \strut #1}}%
-    \raisebox{11pt}[11pt]{\hypertarget{option@#1}{}}%
-    \@esphack \ignorespaces
+    \paragraph*{\textbf{\sffamily\hspace*{-2em} #1}%
+    \raisebox{11pt}[11pt]{\hypertarget{option@#1}{}}}%
+    \nopagebreak%
 }
 \def\DescribeScript#1{
     \leavevmode \@bsphack
@@ -98,7 +96,7 @@
 \DeclareRobustCommand{\op}[1]{%
     \begingroup
     \hypersetup{linkcolor=black}%
-    \hyperlink{Desc@#1}{\textbf{\sffamily #1}}%
+    \hyperlink{option@#1}{\textbf{\sffamily #1}}%
     \endgroup
 }
 
