@@ -1,5 +1,63 @@
 % \iffalse
 %<*driver>
+\iffalse
+%</driver>
+#!/usr/bin/perl
+# --------------------------------------------------------------
+#  svn-multi.pl for the svn-multi v2.0 LaTeX package
+#  version 0.1, Mar 1st, 2009
+# --------------------------------------------------------------
+#
+# Copyright (C) 2006-2009 Martin Scharrer
+# E-mail: martin@scharrer-online.de
+# WWW: http://www.scharrer-online.de/latex/svn-multi/
+#
+# $Id$
+#
+# This program works only in combination with the LaTeX package 'svn-multi' and
+# generates .svx files with '\svnidlong' macros holding Subversion keywords for
+# files declared with '\svnexternal' inside the LaTeX document.
+#
+# This program is free software under the GPL v3 and LPPL v1.3c or later.
+#
+#
+# GPL v3:
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# LPPL v1.3c:
+# This work may be distributed and/or modified under the
+# conditions of the LaTeX Project Public License, either version 1.3c
+# of this license or (at your option) any later version.
+# The latest version of this license is in
+#   http://www.latex-project.org/lppl.txt
+# and version 1.3c or later is part of all distributions of LaTeX
+# version 2008/05/04 or later.
+#
+# This work has the LPPL maintenance status `maintained'.
+#
+# The Current Maintainer of this work is Martin Scharrer.
+#
+# This work consists of the files svn-multi.dtx, svn-multi-pl.dtx and
+# svn-multi.ins and the derived files svn-multi.sty, svnkw.sty and svn-multi.pl.
+#
+# The file 'svn-multi.pl' may be renamed to 'svn-multi' for installation
+# purposes.
+#
+#
+%<*driver>
+\fi
 \def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
  \year#4\month#5\day#6\relax
  \def\filedate{#4/#5/#6}%
@@ -82,18 +140,6 @@
 % \section{Implementation}
 % The implementation description is still work in progress.
 %
-% \iffalse
-#!/usr/bin/perl
-################################################################################
-# Copyright (c) 2009 Martin Scharrer <martin@scharrer-online.de>
-# This is open source software under the GPL v3 or later.
-#
-# This script belongs to the LaTeX package 'svn-multi'.
-# Version: 2009/03/02
-#
-# $Id$
-################################################################################
-% \fi
 %    \begin{macrocode}
 use strict;
 use warnings;
