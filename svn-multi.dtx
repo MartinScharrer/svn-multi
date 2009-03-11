@@ -142,10 +142,15 @@
     \fi
 }
 \newcommand*{\aftermacroargs}{%
-    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\ignorespaces}%
+    \@ifnextchar\begin
+        {\\[-2ex]\ignorespaces}%
+        {\\[\smallskipamount]\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
-    \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\\
+    \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
+    \ifnum\c@macroargs>1
+        \newline
+    \fi
     \addtocounter{nmacroarg}{1}%
     \addtocounter{macroargs}{-1}%
     \ifnum\c@macroargs>0
