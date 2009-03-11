@@ -67,6 +67,7 @@
 \definecolor{metacolor}{rgb}{0.0,0.4,0.4}
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.4,0.4,0.1}
+%\colorlet{optioncolor}{orange}
 
 \let\macroline\\
 \newlength{\macrosep}
@@ -194,7 +195,7 @@
 % \changes{v2.0}{2009/02/29}{File groups for subversion keywords got
 % introduced.}
 %
-% \GetFileInfo{svn-multi.sty}
+% ^^A \GetFileInfo{svn-multi.dtx}
 %
 % \DoNotIndex{\newcommand,\newenvironment,\AtBeginDocument,\AtEndDocument}
 % \DoNotIndex{\def,\let,\edef,\xdef,\item,\space,\write,\jobname,\relax,\!}
@@ -218,11 +219,11 @@
 % \DoNotIndex{\tableofcontents,\tableofrevisions,\texttt,\today}
 % \DoNotIndex{\twocolumn,\@undefined,\url,\year}
 %
-% \title{The \textsf{svn-multi} package\thanks{This document
-%   corresponds to \textsf{svn-multi}~\fileversion, dated \filedate.}
-%   \\also known as \textsf{svnkw}}
+% \title{The \textsf{svn-multi} package
+%   \\previous known as \textsf{svnkw}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://www.scharrer-online.de/latex/svn-multi}}
+% \date{Version \expandafter\@gobble\fileversion\\\today}
 %
 % \ifpdf
 % \hypersetup{
@@ -543,7 +544,7 @@
 % \DescribeMacro*{svnfiletimezonehour}{}    &  \DescribeMacro*{svntimezonehour}{}\\
 % \DescribeMacro*{svnfiletimezoneminute}{}  &  \DescribeMacro*{svntimezoneminute}{}\\
 % \end{tabular}
-% \medskip\par\noindent
+% \\*[\medskipamount]
 % Whenever the date information is read, \ie by
 % \cs{svnkwsave}|{LastChangedDate}| \cs{svnkwsave}|{Date}|, \cs{svnidlong} or
 % \cs{svnid}, the following macros are set to the appropriate date parts for the
@@ -689,7 +690,7 @@
 % \DescribeMacro*{svncgmonth}{}  & \DescribeMacro*{svncgtimezonehour}{}   \\
 % \DescribeMacro*{svncgday}{}    & \DescribeMacro*{svncgtimezoneminute}{} \\
 % \end{tabular}
-% \medskip\par\noindent
+% \\*[\medskipamount]
 % These macros return keyword values of the currently selected keyword group,
 % like the \cs{svnrev}, \cs{svnfilerev}, etc., macros described in
 % sections~\ref{sec:kwaccess} do for the whole document and the current file,
