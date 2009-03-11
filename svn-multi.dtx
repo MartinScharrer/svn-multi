@@ -819,7 +819,7 @@
 % and contains a list of all input and output files. Only input files with a
 % relative path are used. A corresponding keyword group can also be specified.
 %
-% \section{Known Issues}
+% \section{Known Issues}\label{sec:issues}
 % \subsection{Packet \texttt{listings} uses \textbackslash input}
 % If a file \meta{basename}.\meta{extension} is typeset verbatim using
 % |\lstinputlisting|, which uses |\input| to read the file, an existing
@@ -830,6 +830,70 @@
 %  \lstinputlisting[options]{filename}
 %  }
 % \end{verbatim}
+%
+% \section{Package Dependencies and Acknowledgements}\label{sec:depack}
+% This package uses some features from other packages and/or patches some macros
+% of them to provide additional related features. This section is used to list
+% this packages, their internal macro which got used and acknowledge the
+% authors/maintainers of them. Please send error reports to the author of
+% |svn-multi| and not to the people listed below.\par
+% All packages (including |svn-multi|) stand under the \LaTeX\ Project Public
+% Licence (LPPL) which can be found at
+% \hbox{\url{http://www.latex-project.org/lppl/}} and can be freely downloaded
+% from the Comprehensive TeX Archive Network (CTAN) at
+% \hbox{\url{http://www.ctan.org/}}.
+%
+% \newenvironment*{DepPacket}[1]{\ignorespaces
+% \subsection*{\texttt{\textcolor{black}{#1}}}%
+% \def\thedeppacket{#1}%
+% \def\infoline##1{\par\smallskip\textbf{##1}\hspace{1em}}%
+% }
+% {\infoline{Location:} CTAN: \url%
+% {http://www.ctan.org/tex-archive/help/Catalogue/entries/\thedeppacket.html}}
+%
+% \begin{DepPacket}{hyperref}
+% The macro \cs{svnnolinkurl} is resembling the |hyperref| macro |\nolinkurl|
+% and uses some |hyperref| internal macros from the |\url| macro definition.
+% \infoline{Used internal macros:} |\hyper@normalise|, |\Hurl|
+% \infoline{Version used:} 2008/11/18 v6.78m
+% \infoline{Licence:} LPPL, any version
+% \infoline{Authors/Maintainers:} Sebastian Rahtz, Heiko Oberdiek
+% \end{DepPacket}
+%
+% \begin{DepPacket}{fink}
+% The FiNK (File Name Keeper) package is used to get the file name and path of
+% the input files. Two macros are patched to install hooks to execute own macros
+% before and after each input file. This is only done if needed for an enabled
+% option and therefore can be disabled using the option \op{old}.
+% \infoline{Used internal macros:} |\fink@file|, |\fink@nextdir|,
+% |\fink@nextext|, |\fink@nextbase|
+% \infoline{Patched internal macros:} |\fink@prepare|, |\fink@restore|
+% \infoline{Version used:} 2008/02/27 v2.1.1
+% \infoline{Licence:} LPPL, any version
+% \infoline{Author/Maintainer:} Didier Verna
+% \end{DepPacket}
+%
+% \begin{DepPacket}{graphics}
+% If the \op{graphics} option is enabled the following macro is patched to
+% record the file name and path of the included graphic.
+% \infoline{Patched internal macros:} |\Gin@setfile|
+% \infoline{Version used:} 2006/02/20 v1.0o
+% \infoline{Licence:} LPPL, any version
+% \infoline{Author/Maintainer:} David Carlisle, \LaTeX3 Project
+% \end{DepPacket}
+%
+% \begin{DepPacket}{pgf}
+% Like the |graphics| package above a macro of this package is pathed to record
+% the file names and paths of included images when the option \op{pgfimages} is
+% enabled. Because this images pre-declares images for later use the internal
+% declared `image macros' are patched as well.
+% \infoline{Patched internal macros:} |\pgf@declareimage|,
+% \hbox{|\pgf@image@|\meta{image name}|!|}
+% \infoline{Used internal macros:} |\pgf@filename|, |\pgf@image|
+% \infoline{Version used:} 2008/01/15 v2.00
+% \infoline{Licence:} LPPL v1.3c and GPL v2
+% \infoline{Author\&Maintainer:} Till Tantau
+% \end{DepPacket}
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
