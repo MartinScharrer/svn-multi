@@ -1239,7 +1239,7 @@
 %
 
 % \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (JJJJ-MM-DD}{time
-% (HH:MM:SSZ}{author (username)}
+% (HH:MM:SSZ)}{author (username)}
 % Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
 % without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
 % \cs{@svn@scandate} to extract the date informations and \cs{@svn@updateid} to
@@ -1357,7 +1357,11 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnidlong@readargsfull}
+% \begin{macro}{\svnidlong@readargsfull}[8]
+% {some text, ignored}{Keyword 1}
+% {some text, ignored}{Keyword 2}
+% {some text, ignored}{Keyword 3}
+% {some text, ignored}{Keyword 4}
 % Reads all four arguments of \cs{svnidlong} and passes them to
 % \cs{svnidlong@readargs}. The normal argument braces are changed to category
 % ``other'' and put into the macros parameter text to remove all code between
@@ -1378,7 +1382,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnidlong@readargs}[4]{kw1}{kw2}{kw3}{kw4}
+% \begin{macro}{\svnidlong@readargs}[4]{Keyword 1}{Keyword 2}{Keyword 3}
+% {Keyword 4}
 % Calls sub macro for all four arguments and ends the catcode changes made
 % by \cs{svnidlong}.
 %    \begin{macrocode}
@@ -1433,7 +1438,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwsave@read}
+% \begin{macro}{\svnkwsave@read}[1]{keyword line without surrounding \$ \$}
 % Reads the full keyword and strips the dollars.
 %    \begin{macrocode}
 \begingroup
@@ -1447,7 +1452,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwsave@parse}
+% \begin{macro}{\svnkwsave@parse}[2]{key}{value}
 % Parse the keyword and save it away.
 %    \begin{macrocode}
 \begingroup
@@ -1656,7 +1661,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\@svn@scanlongdate}
+% \begin{macro}{\@svn@scanlongdate}[8]{Year}{Month}{Day}{Hour}{Minute}{Second}
+% {Timezone}{Date description string (ignored)}
 % Scans data informations in Date keyword and saves them in macros.
 %    \begin{macrocode}
 \def\@svn@scanlongdate#1{\expandafter\@svn@scanlongdate@#1\relax}
@@ -1707,6 +1713,7 @@
 
 % \subsection{Register and FullName Macros}
 % \begin{macro}{\svnRegisterAuthor}[2]{author username}{Full Name}
+%    \begin{macrocode}
 % Saves the author's name by defining
 % |svn@author@|\meta{username} to it.
 %    \begin{macrocode}
@@ -1729,16 +1736,26 @@
 {\svnFullAuthor@normal}%
 }%
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\svnFullAuthor@star}[1]{username}
 % Both submacros are calling |svnFullAuthor@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
 \def\svnFullAuthor@star*#1{%
-\edef\svn@temp{#1}%
-\svnFullAuthor@{\svn@temp}{~(\svn@temp)}}%
+    \edef\svn@temp{#1}%
+    \svnFullAuthor@{\svn@temp}{~(\svn@temp)}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullAuthor@normal}[1]{username}
+%    \begin{macrocode}
 \def\svnFullAuthor@normal#1{%
 \edef\svn@temp{#1}%
 \svnFullAuthor@{\svn@temp}{}}%
 %    \end{macrocode}
+\end{macro}
+% \begin{macro}{\svnFullAuthor@}[2]{username}{previous defined trailing string}
 % |svnFullAuthor@| now sets the author's full name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
@@ -1747,7 +1764,6 @@
 {\csname svn@author@#1\endcsname #2}%
 }
 %    \end{macrocode}
-% \end{macro}
 % \end{macro}
 
 % \begin{macro}{\svnRegisterRevision}[2]{revision number}{tag name}
