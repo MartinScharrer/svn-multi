@@ -1,35 +1,47 @@
 \documentclass[a4paper,oneside]{scrbook}
-\usepackage[groups,table,external,graphics,autoload]{svn-multi}[2009/03/06]
+\let\ifvtex=\relax
+\usepackage[all,autoload]{svn-multi}[2009/03/06]
 \svnidlong
 {$HeadURL: svn://server/group_example.tex $}
 {$LastChangedDate: 2000-01-01 01:00:01 +0000 (Main file) $}
 {$LastChangedRevision: 98 $}
 {$LastChangedBy: author3 $}
 
-
 \svngroup{graphics}
 \svngroup{}
 
-\svnignoregraphic{tests/fish.jpg}
-\svngraphicsgroup{graphics}
+%\svnignoregraphic{tests/fish.jpg}
+%\svngraphicsgroup{graphics}
 %\svnexternalgroup{external}
 
-\let\ifvtex=\relax
-\usepackage{hyperref}
+\usepackage{fink}
 \usepackage{graphics}
+\usepackage{pgf}
+\usepackage{hyperref}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily}
 
 % This is an example document to show the group feature of svn-multi 2.0.
 % Please the notes below.
 
+\makeatletter
 % Version control information table for each chapter
 \newcommand{\chaptervctable}{%
+\par\noindent
 \textbf{Version Control Information for this chapter}\\[\bigskipamount]%
 \begin{tabular}{ll}
 Last Changed Revision & \svnfilerev\\
 Last Changed Author   & \svnfileauthor\\
 Last Changed Date     & \svnfiledate\\
 \end{tabular}
+\bigskip
+\par\noindent
+This files contains the following SVN keywords:\\*[-\baselineskip]
+{\let\input\@input
+\lstinputlisting[firstline=5,lastline=9]{\finkpath}
 }
+}
+\makeatother
 
 % This file generates some example sub files from this file to avoid a lot of small
 % example files in the CTAN directory. In real life there would be separate
@@ -44,8 +56,8 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 1a}
 \chaptervctable
-\includegraphics{tests/subdir/leaf.jpg}
-\includegraphics{tests/fish}
+%\includegraphics{tests/subdir/leaf.jpg}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1b.tex}
@@ -57,7 +69,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 1b}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1c.tex}
@@ -69,7 +81,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 1c}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2a.tex}
@@ -81,7 +93,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 2a}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2b.tex}
@@ -93,7 +105,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 2b}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3a.tex}
@@ -105,7 +117,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 3a}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3b.tex}
@@ -117,7 +129,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 3b}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4a.tex}
@@ -129,7 +141,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 4a}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4b.tex}
@@ -141,7 +153,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{Subfile 4b}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_end.tex}
@@ -153,7 +165,7 @@ Last Changed Date     & \svnfiledate\\
 
 \chapter{End credits}
 \chaptervctable
-\includegraphics{tests/fish}
+%\includegraphics{tests/fish}
 \end{filecontents}
 
 
@@ -166,6 +178,7 @@ Last Changed Date     & \svnfiledate\\
 \def\part{%
 \setpartpreamble{%
 \vspace*{5cm}
+\par\noindent
 \textbf{Version Control Information for this part:}\\[\bigskipamount]%
 \begin{tabular}{ll}
 Last Changed Revision & \svncgrev\\
@@ -175,32 +188,39 @@ Last Changed Date     & \svncgdate\\
 }\origpart
 }
 
+\listfiles
 \begin{document}
 \svnfilesasgrouptrue
 
 % Custom titlepage:
-\vspace*{4cm}
+\hbox{}%
+\vfill
 {\centering
 \Huge\texttt{svn-multi} Keyword Groups Example Document\\
 \Large Martin Scharrer\\
 \large 2009/03/01\\
 }%
-\vspace{4cm}
+\vfill
+\par\noindent
 This is an example and test document for the group feature of svn-multi 2.0.
 Please note that the revision keywords were generated manually for testing
 purposes. The dates are not consistent with the revisions and contain a debug
 name instead of the date text like `(Sat, January 1 2009)'. This doesn't
-influence the correct functionality of the svn-multi package.
-
+influence the correct functionality of the svn-multi package.\\
 \bigskip
 {\hbox{}\hfill Happy \TeX ing!}\\
 \vfill%
+\par\noindent
 {\large Version Control Information for this document:\\[\bigskipamount]}%
 \begin{tabular}{ll}
 Last Changed Revision & \svnrev\\
 Last Changed Author   & \svnauthor\\
 Last Changed Date     & \svndate\\
 \end{tabular}
+\bigskip\par\noindent
+The main file of this document contains the following SVN
+keywords:\\*[-\baselineskip]
+\lstinputlisting[firstline=4,lastline=8]{\finkpath}
 \thispagestyle{empty}
 \clearpage
 \tableofrevisions
