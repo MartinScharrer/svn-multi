@@ -126,8 +126,29 @@
     \fi
     \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
-    \\*[\smallskipamount]
+    \\*[\smallskipamount]%
+    \imacroarg
 }
+
+\newcounter{macroargs}
+\newcounter{nmacroarg}
+
+\newcommand*{\imacroarg}[1][0]{%
+    \setcounter{macroargs}{#1}%
+    \setcounter{nmacroarg}{1}%
+    \ifnum\c@macroargs>0
+        \expandafter\imacroargX
+    \fi
+}
+\newcommand*{\imacroargX}[1]{%
+    \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\\
+    \addtocounter{nmacroarg}{1}%
+    \addtocounter{macroargs}{-1}%
+    \ifnum\c@macroargs>0
+        \expandafter\imacroargX
+    \fi
+}
+
 
 \def\karg#1{\{\$\textcolor{metacolor}{#1}\$\}}
 \def\kmarg#1{\{\$\meta{#1}\$\}}
@@ -1726,7 +1747,7 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\svnRegisterRevision}
+% \begin{macro}{\svnRegisterRevision}[2]{revision number}{tag name}
 % Saves the revision's name or tag by defining
 % |svn@revision@|\meta{revisionnumber} to it.
 % \changes{v1.2}{2007/06/22}{New macro}
