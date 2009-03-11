@@ -63,13 +63,26 @@ From the .dtx file (if you don't get the .sty files directly):
 ==================
 Unpack the zip file and run 'make'.
 You also can do it manually:
-  [pdf]latex svn-multi.ins      # for the style file
+  [pdf]latex svn-multi.ins      # for the style file and perl script
   [pdf]latex svn-multi.dtx      # for the documentation
-  [pdf]latex example-main.tex   # for the example
+2x[pdf]latex example-main       # for the example
+
+For the large keyword group example document:
+  [pdf]latex group-example
+  perl svn-multi.pl group-example
+2x[pdf]latex group-example
 
 Place the two .sty files
   svn-multi.sty         # Package
   svnkw.sty             # Wrapper for backward compatibility
 into your TEXMF tree, e.g. in
   $TEXMF/tex/latex/svn-multi
+
+Make the perl script svn-multi.pl executable:
+  chmod +x svn-multi.pl
+and place it in an directory in your $PATH, e.g. under Unix/Linux in
+  /usr/bin/svn-multi.pl          or
+  /usr/local/bin/svn-multi.pl    or
+  $HOME/bin/svn-multi.pl
+Consider to rename or link it to 'svn-multi'.
 
