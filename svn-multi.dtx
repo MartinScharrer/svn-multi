@@ -819,6 +819,18 @@
 % and contains a list of all input and output files. Only input files with a
 % relative path are used. A corresponding keyword group can also be specified.
 %
+% \section{Known Issues}
+% \subsection{Packet \texttt{listings} uses \textbackslash input}
+% If a file \meta{basename}.\meta{extension} is typeset verbatim using
+% |\lstinputlisting|, which uses |\input| to read the file, an existing
+% \meta{basename}|.svx| file is also included as part of the listing. This can
+% be avoided by code like this:
+% \begin{verbatim}
+%  {\makeatletter\let\input\@input
+%  \lstinputlisting[options]{filename}
+%  }
+% \end{verbatim}
+%
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
 % the following articles:
