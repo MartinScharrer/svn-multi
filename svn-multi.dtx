@@ -90,10 +90,10 @@
 }
 \def\DescribeMacroS*#1#2{%
     \begingroup
-    \g@namedef{href@desc@#1}{}
+    \g@namedef{href@desc@#1}{}%
     \immediate\write\@mainaux{%
-      \noexpand\g@namedef{href@desc@#1}{}
-    }
+      \noexpand\g@namedef{href@desc@#1}{}%
+    }%
     \@ifundefined{href@impl@#1}%
         {\let\macrolink\relax}%
         {\def\macrolink{\hyperlink{impl@#1}}}%
@@ -104,6 +104,7 @@
     \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
     \nopagebreak
     \endgroup
+    \ignorespaces
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
@@ -128,7 +129,7 @@
 \newcounter{macrolevel}
 \renewenvironment{macro}[1]{%
     \addtocounter{macrolevel}{1}%
-    \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}
+    \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
 }{%
     \addtocounter{macrolevel}{-1}%
 }
