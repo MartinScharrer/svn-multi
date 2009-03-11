@@ -141,6 +141,9 @@
         \expandafter\imacroargX
     \fi
 }
+\newcommand*{\aftermacroargs}{%
+    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\ignorespaces}%
+}
 \newcommand*{\imacroargX}[1]{%
     \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\\
     \addtocounter{nmacroarg}{1}%
@@ -148,7 +151,7 @@
     \ifnum\c@macroargs>0
         \expandafter\imacroargX
     \else
-        \expandafter\ignorespaces
+        \expandafter\aftermacroargs
     \fi
 }
 
