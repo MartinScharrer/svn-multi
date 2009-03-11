@@ -100,7 +100,7 @@
     \hypersetup{linkcolor=macrocolor}%
     \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrocolor}%
         {\textbackslash #1}}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{macro@#1}{}}}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}}%
     \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
     \nopagebreak
     \endgroup
@@ -146,7 +146,7 @@
     }%
     \@ifundefined{href@desc@#1}%
         {\let\macrolink\relax}%
-        {\def\macrolink{\hyperlink{macro@#1}}}%
+        {\def\macrolink{\hyperlink{desc@#1}}}%
     \hspace*{\macrosep}\macrolink{\macroformat{%
         \textcolor{macrocolor}{\textbackslash #1}}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
@@ -597,7 +597,7 @@
 % over the auxiliary file. Calling it in several files will make this two macros
 % inconsistent.
 %
-% \DescribeMacro{svnkw}{\meta{keyword name}}
+% \DescribeMacro{svnkw}{\marg{keyword name}}
 % All keywords saved with \cs{svnid}, \cs{svnidlong} or \cs{svnkwsave} can be
 % typeset by this macro which is a holdover from a very early version of this
 % package when multiple files where not supported.  It takes one argument which
