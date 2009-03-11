@@ -561,17 +561,14 @@
 % \cs{svnid}, the following macros are set to the appropriate date parts for the
 % current file (the |\svnfile...| versions) and for the whole document.
 %
-% \iffalse Put here and not above to avoid 'to many floats' error. \fi
 % Please note that the hour and timezone are dependend on the keyword which
 % defines the date informations. The hour will be in UTC aka Zulu-time, \ie
 % timezone +0000, when the date comes from the |Id| keyword.
-% \iffalse Put here and not above to avoid 'to many floats' error. \fi
 % Otherwise the hour and timezone will be in local time.
 % To avoid confusion the |Id| and |Date|/|LastChangedDate| keywords, \eg
 % \cs{svnid} and \cs{svnidlong}, should not be intermixed and/or the timezone
 % should always be typeset together with the time.
 %
-% \iffalse Put here and not above to avoid 'to many floats' error. \fi
 % Starting with v1.4 of |svn-multi| the timezone macros return the full
 % timezone, \ie sign, hour and minute part, \eg |+0100|, not only the sign and
 % hour. The new macros % \cs{svntimezonehour}/\cs{svnfiletimezonehour} and
