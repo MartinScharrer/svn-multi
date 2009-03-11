@@ -1792,6 +1792,10 @@
 {\svnFullRevision@normal}%
 }
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\svnFullRevision@star}[1]{revision number}
 % Both submacros are calling |svnFullRevision@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
@@ -1799,11 +1803,18 @@
 \edef\svn@temp{#1}%
 \svnFullRevision@{\svn@temp}{~(r\svn@temp)}%
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullRevision@normal}[1]{revision number}
+%    \begin{macrocode}
 \def\svnFullRevision@normal#1{%
 \edef\svn@temp{#1}%
 \svnFullRevision@{\svn@temp}{}%
 }
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullRevision@}[2]{revision number}{previous defined trailing
+% string}
 % |svnFullRevision@| now sets the revision name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
@@ -1813,7 +1824,6 @@
 {\csname svn@revision@#1\endcsname #2}%
 }
 %    \end{macrocode}
-% \end{macro}
 % \end{macro}
 
 % \subsection{General Internal Macros}
@@ -1944,7 +1954,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svn@glist=\empty
 %    \end{macrocode}
 
-% \begin{macro}{\svngroup}
+% \begin{macro}{\svngroup}[1]{group name}
 % Saves the group to |svn@g| and initiates |svn@g@|\meta{group name}|@rev|
 % and |@svn@g@|\meta{group name}|@rev| if this is the first time the group
 % got used.
@@ -2013,12 +2023,36 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncgXXX}
+% \begin{macro}{\svncgrev}
+% \begin{macro}{\svncgdate}
+% \begin{macro}{\svncgauthor}
+% \begin{macro}{\svncgyear}
+% \begin{macro}{\svncgmonth}
+% \begin{macro}{\svncgday}
+% \begin{macro}{\svncghour}
+% \begin{macro}{\svncgminute}
+% \begin{macro}{\svncgsecond}
+% \begin{macro}{\svncgtimezonehour}
+% \begin{macro}{\svncgtimezoneminute}
 % Define all |\svncgXXX| macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
-\@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
-timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
+\@for\@tempa:=%
+    rev,author,date,year,month,day,hour,minute,second,%
+    timezonehour,timezoneminute%
+\do{%
+    \expandafter\svncg@def\expandafter{\@tempa}%
+}
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 
 % \begin{macro}{\thesvncg}
@@ -2142,9 +2176,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnignoreextensions}
-% A comma separated list of file name extensions (without leading dot) to ignore
-% for automatic |\svnfileasgroup|.
+% \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to ignore for automatic \csd{svnfileasgroup}.}
+% A special macro is defined for all extensions. The existents of this macro is
+% then tested later to check if this extension should be ignored.
 %% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnignoreextensions#1{%
@@ -2155,9 +2190,11 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsiderextensions}
-% A comma separated list of file name extensions (without leading dot) to
-% consider for automatic |\svnfileasgroup|.
+% \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to consider for automatic
+% \csd{svnfileasgroup}.}
+% The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
+% to |\relax|.
 %% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
@@ -2198,7 +2235,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \if@svnmulti@external
 %    \end{macrocode}
 
-% \begin{macro}{\svnexternalgroup}
+% \begin{macro}{\svnexternalgroup}[1]{group name}
 % Defines the default group of external files. The default is empty which means
 % the current group.
 %    \begin{macrocode}
@@ -2340,7 +2377,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnignoregraphic}
+% \begin{macro}{\svnignoregraphic}[1]{file name/path}
 % Ignores the given graphic file by defining a special macro.
 %    \begin{macrocode}
 \def\svnignoregraphic#1{%
@@ -2349,7 +2386,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsidergraphic}
+% \begin{macro}{\svnconsidergraphic}[1]{file name/path}
 % Deletes the special ignore macro to consider the graphic again.
 %    \begin{macrocode}
 \def\svnconsidergraphic#1{%
@@ -2369,7 +2406,11 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
 \if@svnmulti@graphics
 \RequirePackage{graphics}[2006/02/20]
+%    \end{macrocode}
 
+% \begin{macro}{\Gin@setfile}[3]{??, not used}{??, not used}{graphic file
+% name/path}
+%    \begin{macrocode}
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
     \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
@@ -2377,6 +2418,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \fi
     \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
+%    \end{macrocode}
+% \end{macro}
+
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 
@@ -2386,7 +2431,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
 \if@svnmulti@pgfimages
 \RequirePackage{pgf}[2008/01/15]
+%    \end{macrocode}
 
+% \begin{macro}{\pgf@declareimage}[3]{??, not used}{image label}{??, not used}
+%    \begin{macrocode}
 \let\svnmulti@pgf@declareimage\pgf@declareimage
 \renewcommand*{\pgf@declareimage}[3][]{%
   \svnmulti@pgf@declareimage[#1]{#2}{#3}%
@@ -2408,6 +2456,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \fi
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 %
@@ -2483,11 +2534,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \fi % defined \tableofcontents
 %    \end{macrocode}
 
-% \begin{macro}{\svn@writerow}
+% \begin{macro}{\svn@writerow}[2]{row type ('group', 'file', 'global', \ldots)}
+% {row type specific argument}
 % Writes a table row by using |\svn@tabcell| and |\svn@tabcellarg| defined by
-% the |\svn@writeXXXrow| macro below. First argument is row type ('group',
-% 'file', 'global') and second one is a type specific argument provided to
-% |\svntab|\meta{type}.
+% the |\svn@writeXXXrow| macro below.
 %    \begin{macrocode}
 \def\svn@writerow#1#2{%
   \immediate\write\svn@svtwrite{%
@@ -2511,9 +2561,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writegrouprow}
+% \begin{macro}{\svn@writegrouprow}[1]{current group}
 %    \begin{macrocode}
-\def\svn@writegrouprow#1{% #1 is current group
+\def\svn@writegrouprow#1{%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -2525,9 +2575,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writefilerow}
+% \begin{macro}{\svn@writefilerow}[1]{file name}
 %    \begin{macrocode}
-\def\svn@writefilerow#1{% #1 is file
+\def\svn@writefilerow#1{%
   \expandafter
   \ifx\csname @svng@#1@rev\endcsname\relax\else
   \begingroup
@@ -2544,7 +2594,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 
 % \begin{macro}{\svn@writeglobalrow}
 %    \begin{macrocode}
-\def\svn@writeglobalrow{% no arguments
+\def\svn@writeglobalrow{%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -2595,6 +2645,8 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %
 
 % \subsection{Other macros}
+% This section contains macros which don't fit in any other section.
+%
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
 % After *-testing, the intermediate macros |\svn@s| and |\svn@n| are called to
@@ -2614,7 +2666,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\svnnolinkurl}
+% \begin{macro}{\svnnolinkurl}[1]{URL}
 % This code is taken from the |hyperref| package and is the definition of
 % |\url| just without the part which creates the actual hyperlink. This needs
 % of course the |hyperref| package. A warning is given if it isn't loaded.
