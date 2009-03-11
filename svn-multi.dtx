@@ -1674,14 +1674,19 @@
 %
 % \begin{macro}{\svn@input}
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
-% away and restored after the |.svx| file is loaded. The macro |\@input| is used
-% because |\InputIfFileExists| got redefined by the |fink| package and there is
-% no need to use |fink| for this files.
+% away and restored after the |.svx| file is loaded. The macros |\IfFileExists|
+% with |\@@input| are used because |\InputIfFileExists| got redefined by the
+% |fink| package and there is no need to use |fink| for this files.
+% \paragraph{Workaround:} There is an issue with the |listings| packet which
+% uses |\input| to read files for verbatim printing with |\lstinputlisting|.
+% The input file is not read if the switch |\lst@ifprint| exists and is true.
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
   \let\svn@temp\svn@g
-  \@input{#1}%
+  \ifx\lst@ifprint\iftrue\else
+    \IfFileExists{#1}{\@@input #1\relax}{}
+  \fi
   \global\let\svn@g\svn@temp
   \endgroup
 }
