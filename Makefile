@@ -10,6 +10,8 @@ TESTARGS = -output-directory ${TESTDIR}
 INSGENERATED = ${PACKAGE}.sty svnkw.sty svn-multi.pl
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf svn-multi-pl.pdf example.pdf group_example.pdf group_example_*.tex ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 
+LATEX = pdflatex -interaction=batchmode
+
 RED   = \033[01;31m
 GREEN = \033[01;32m
 WHITE = \033[00m
@@ -24,12 +26,12 @@ doc: ${PACKAGE}.pdf svn-multi-pl.pdf
 package: ${PACKAGE}.sty
 
 %.pdf: %.dtx
-	pdflatex $*.dtx
-	pdflatex $*.dtx
+	${LATEX} $*.dtx
+	${LATEX} $*.dtx
 	-makeindex -s gind.ist -o $*.ind $*.idx
 	-makeindex -s gglo.ist -o $*.gls $*.glo
-	pdflatex $*.dtx
-	pdflatex $*.dtx
+	${LATEX} $*.dtx
+	${LATEX} $*.dtx
 
 ${INSGENERATED}: *.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
@@ -44,21 +46,21 @@ fullclean:
 example: example.pdf gexample
 
 example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
-	pdflatex $<
+	${LATEX} $<
 	perl ./svn-multi.pl $<
-	pdflatex $<
+	${LATEX} $<
 	mv example_main.pdf $@
 
 gexample: group_example.pdf
 	
 group_example.pdf: group_example.tex svn-multi.sty
 	${RM} $(addprefix group_example, ${TEXAUX}) group_example_*.tex
-	pdflatex $<
-	pdflatex $<
+	${LATEX} $<
+	${LATEX} $<
 	perl svn-multi.pl group_example
-	pdflatex $<
-	pdflatex $<
-	pdflatex $<
+	${LATEX} $<
+	${LATEX} $<
+	${LATEX} $<
 
 zip: package doc example ${PACKAGE}.zip
 
@@ -87,9 +89,9 @@ tests: package testclean
 		> /dev/null
 
 ${TESTS}: % : ${TESTDIR}/%.tex package testclean
-	@-pdflatex -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
+	@-${LATEX} -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
 	@if test -e ${TESTDIR}/$*.svn; then perl ./svn-multi.pl ${TESTDIR}/$* 1>/dev/null ; fi
-	@if (pdflatex ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
+	@if (${LATEX} ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
 		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
 		else /bin/echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
 
