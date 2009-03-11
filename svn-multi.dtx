@@ -122,12 +122,13 @@
 }
 \newcommand*{\macroX}[1]{%
     \ifnum\c@macrolevel<2
-        \par\noindent
+        \smallskip
     \fi
+    \par\noindent
     \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
     \\*[\smallskipamount]%
-    \imacroarg
+    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}
 }
 
 \newcounter{macroargs}
