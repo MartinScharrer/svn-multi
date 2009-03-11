@@ -10,6 +10,8 @@
 \svngroup{graphics}
 \svngroup{}
 
+%\svnexternal{{tests/test1.tex}}%
+%\svnexternal{{tests/fish.jpg}}%
 %\svnignoregraphic{tests/fish.jpg}
 %\svngraphicsgroup{graphics}
 %\svnexternalgroup{external}
@@ -56,8 +58,9 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1a}
 \chaptervctable
-%\includegraphics{tests/subdir/leaf.jpg}
-%\includegraphics{tests/fish}
+\includegraphics{tests/subdir/leaf.jpg}
+\includegraphics{tests/fish}
+\svnexternal{{tests/test2.tex}}%
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1b.tex}
@@ -69,7 +72,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1b}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1c.tex}
@@ -81,7 +84,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1c}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2a.tex}
@@ -93,7 +96,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 2a}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2b.tex}
@@ -105,7 +108,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 2b}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3a.tex}
@@ -117,7 +120,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 3a}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3b.tex}
@@ -129,7 +132,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 3b}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4a.tex}
@@ -141,7 +144,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 4a}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4b.tex}
@@ -153,7 +156,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 4b}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_end.tex}
@@ -165,9 +168,19 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{End credits}
 \chaptervctable
-%\includegraphics{tests/fish}
+\includegraphics{tests/fish}
 \end{filecontents}
 
+\begin{filecontents}{group_example_unexpanded.tex}
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+
+\chapter{File with unexpanded keywords}
+\chaptervctable
+\end{filecontents}
 
 \svnRegisterAuthor{author1}{Andy Author, I.}
 \svnRegisterAuthor{author2}{A. Author, II.}
@@ -190,7 +203,6 @@ Last Changed Date     & \svncgdate\\
 
 \listfiles
 \begin{document}
-\svnfilesasgrouptrue
 
 % Custom titlepage:
 \hbox{}%
@@ -268,6 +280,7 @@ keywords:\\*[-\baselineskip]
 % The rest doesn't belong to a file group:
 \svngroup{}
 \include{group_example_end}
+\include{group_example_unexpanded}
 
 \end{document}
 
