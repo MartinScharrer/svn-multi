@@ -78,6 +78,8 @@
 \newcommand{\scriptformat}[1]{\textbf{\ttfamily #1}}
 \newcommand{\macroargformat}[1]{\texttt{#1}}
 \newcommand{\scriptargformat}[1]{\textbf{#1}}
+\newcommand{\macrohlinkprefix}{desc}
+\newcommand{\macrolink}{}
 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -87,10 +89,22 @@
     \bigskip\par\noindent\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
-    \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{Desc@#1}{}}}%
+    \begingroup
+    \g@namedef{href@desc@#1}{}%
+    \immediate\write\@mainaux{%
+      \noexpand\g@namedef{href@desc@#1}{}%
+    }%
+    \@ifundefined{href@impl@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{impl@#1}}}%
+    \hypersetup{linkcolor=macrocolor}%
+    \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrocolor}%
+        {\textbackslash #1}}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}}%
     \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
     \nopagebreak
+    \endgroup
+    \ignorespaces
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
@@ -112,22 +126,93 @@
     \noindent\mbox{}\macroline*[0.2\baselineskip]%
     \nopagebreak
 }
+\newcounter{macrolevel}
+\renewenvironment{macro}[1]{%
+    \addtocounter{macrolevel}{1}%
+    \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
+}{%
+    \addtocounter{macrolevel}{-1}%
+}
+\providecommand*{\g@namedef}[1]{%
+    \expandafter\gdef\csname #1\endcsname
+}
+\newcommand*{\macroX}[1]{%
+    \ifnum\c@macrolevel<2
+        \smallskip
+    \fi
+    \par\noindent
+    \g@namedef{href@impl@#1}{}%
+    \immediate\write\@mainaux{%
+      \noexpand\g@namedef{href@impl@#1}{}%
+    }%
+    \@ifundefined{href@desc@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{desc@#1}}}%
+    \hspace*{\macrosep}\macrolink{\macroformat{%
+        \textcolor{macrocolor}{\textbackslash #1}}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
+    \\*[\smallskipamount]%
+    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
+}
+
+\newcounter{macroargs}
+\newcounter{nmacroarg}
+
+\newcommand*{\imacroarg}[1][0]{%
+    \setcounter{macroargs}{#1}%
+    \setcounter{nmacroarg}{1}%
+    \ifnum\c@macroargs>0
+        \expandafter\imacroargX
+    \fi
+}
+\newcommand*{\aftermacroargs}{%
+    \@ifnextchar\begin
+        {\\[-2ex]\ignorespaces}%
+        {\\[\smallskipamount]\ignorespaces}%
+}
+\newcommand*{\imacroargX}[1]{%
+    \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
+    \ifnum\c@macroargs>1
+        \newline
+    \fi
+    \addtocounter{nmacroarg}{1}%
+    \addtocounter{macroargs}{-1}%
+    \ifnum\c@macroargs>0
+        \expandafter\imacroargX
+    \else
+        \expandafter\aftermacroargs
+    \fi
+}
+
 
 \def\karg#1{\{\$\textcolor{metacolor}{#1}\$\}}
 \def\kmarg#1{\{\$\meta{#1}\$\}}
 
-\renewenvironment{macro}[1]{%
-\edef\macroname{\expandafter\removeslash\detokenize{#1}END}
-\hypertarget{\macroname}{}%
-\origmacro{#1}}%
-{\origendmacro}
-
-\DeclareRobustCommand{\cs}[1]{%
+\DeclareRobustCommand{\csi}[1]{%
     \begingroup
-    \hypersetup{linkcolor=blue}%
-    \hyperlink{Desc@#1}{\texttt{\textbackslash#1}}%
+    \renewcommand{\macrohlinkprefix}{impl}%
+    \@ifundefined{href@impl@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{impl@#1}}}%
+    \csX{#1}%
     \endgroup
 }
+\DeclareRobustCommand{\csd}[1]{%
+    \begingroup
+    \renewcommand{\macrohlinkprefix}{macro}%
+    \@ifundefined{href@desc@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{desc@#1}}}%
+    \csX{#1}%
+    \endgroup
+}
+\DeclareRobustCommand{\csX}[1]{%
+    \begingroup
+    \hypersetup{linkcolor=macrocolor}%
+    \macrolink{\texttt{\textbackslash#1}}%
+    \endgroup
+}
+\let\cs\csd
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
 \DeclareRobustCommand{\op}[1]{%
     \begingroup
@@ -143,7 +228,7 @@
 }
 
 \def\StopEventually#1{\origStopEventually{#1}%
-\DeclareRobustCommand{\cs}[1]{\hyperlink{##1}{\texttt{\textbackslash##1}}}%
+\let\cs\csi
 }
 
 \fi
@@ -157,7 +242,7 @@
 \begin{document}
   \DocInput{svn-multi.dtx}%
   \PrintChanges
-  %\clearpage
+  \clearpage
   \PrintIndex
 \end{document}
 %</driver>
@@ -513,7 +598,7 @@
 % over the auxiliary file. Calling it in several files will make this two macros
 % inconsistent.
 %
-% \DescribeMacro{svnkw}{\meta{keyword name}}
+% \DescribeMacro{svnkw}{\marg{keyword name}}
 % All keywords saved with \cs{svnid}, \cs{svnidlong} or \cs{svnkwsave} can be
 % typeset by this macro which is a holdover from a very early version of this
 % package when multiple files where not supported.  It takes one argument which
@@ -901,6 +986,16 @@
 % \infoline{Author\&Maintainer:} Till Tantau
 % \end{DepPacket}
 %
+% \begin{DepPacket}{latex}
+% Parts of the macro definitions of the |\tableofcontents| macros from the
+% |article| and |book| class of standard \LaTeX\ were used to define a similar
+% \csi{tableofrevisions} macro for both this classes and other similar classes.
+% \infoline{Version used:} 2005/09/16 v1.4f
+% \infoline{Licence:} LPPL v1.3c
+% \infoline{Authors/Maintainers:} \LaTeX3 Project
+% \end{DepPacket}
+%
+%
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
 % the following articles:
@@ -1192,15 +1287,14 @@
 % \end{macro}
 %
 
-% \begin{macro}{\svn@scanId}
+% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (JJJJ-MM-DD}{time
+% (HH:MM:SSZ)}{author (username)}
 % Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
 % without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
 % \cs{@svn@scandate} to extract the date informations and \cs{@svn@updateid} to
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
 \def\svn@scanId#1 #2 #3 #4 #5\relax{%
-% #1 is filename, #2 is revision, #3 is date (JJJJ-MM-DD),
-% #4 is time (HH:MM:SST), #5 is author (username)
 \@svn@scandate{#3 #4}%
 \@svn@updateid{#2}{#3 #4}{#5}%
 \svnkwdef{Filename}{#1}%
@@ -1212,12 +1306,12 @@
 % \end{macro}
 %
 
-% \begin{macro}{\@svn@updateid}
+% \begin{macro}{\@svn@updateid}[3]{rev}{date}{author (username)}
 % We first define the expanded arguments to variables for the user.  The
 % expansion is needed because the arguments content is mostly generic like
 % |\svn@value| which can change very soon after this macro.
 %    \begin{macrocode}
-\def\@svn@updateid#1#2#3{% #1 = rev, #2 date, #3 author (username)
+\def\@svn@updateid#1#2#3{%
 \xdef\svnfilerev{#1}%
 \xdef\svnfiledate{#2}%
 \xdef\svnfileauthor{#3}%
@@ -1312,7 +1406,11 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnidlong@readargsfull}
+% \begin{macro}{\svnidlong@readargsfull}[8]
+% {some text, ignored}{Keyword 1}
+% {some text, ignored}{Keyword 2}
+% {some text, ignored}{Keyword 3}
+% {some text, ignored}{Keyword 4}
 % Reads all four arguments of \cs{svnidlong} and passes them to
 % \cs{svnidlong@readargs}. The normal argument braces are changed to category
 % ``other'' and put into the macros parameter text to remove all code between
@@ -1333,7 +1431,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnidlong@readargs}
+% \begin{macro}{\svnidlong@readargs}[4]{Keyword 1}{Keyword 2}{Keyword 3}
+% {Keyword 4}
 % Calls sub macro for all four arguments and ends the catcode changes made
 % by \cs{svnidlong}.
 %    \begin{macrocode}
@@ -1367,7 +1466,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwsave@readargs}
+% \begin{macro}{\svnkwsave@readargs}[1]{\$kw: value\$}
 % Reads full argument, calls parse submacro and ends catcode changes.
 % If \cs{svnkwsave} was called by \cs{svnid} scans the id keyword by calling the
 % scan macro.
@@ -1388,7 +1487,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwsave@read}
+% \begin{macro}{\svnkwsave@read}[1]{keyword line without surrounding \$ \$}
 % Reads the full keyword and strips the dollars.
 %    \begin{macrocode}
 \begingroup
@@ -1402,7 +1501,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwsave@parse}
+% \begin{macro}{\svnkwsave@parse}[2]{key}{value}
 % Parse the keyword and save it away.
 %    \begin{macrocode}
 \begingroup
@@ -1413,7 +1512,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwdef}
+% \begin{macro}{\svnkwdef}[2]{key}{value}
 % First we check if there is a `setter'-macro for the keyword called
 % \cs{svnkwdef@}\meta{keyword}.
 %    \begin{macrocode}
@@ -1431,7 +1530,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnkwdef@}
+% \begin{macro}{\svnkwdef@}[2]{key}{value}
 % This macro defines the second argument under \cs{svnkw}\meta{1st argument}.
 % The |\xdef| is used to expand the content first (needed for internal use) and
 % make the definition globally.
@@ -1444,7 +1543,7 @@
 
 % \begin{macro}{\svnkwdef@Rev}
 % \begin{macro}{\svnkwdef@Author}
-% \begin{macro}{\svnkwdef@Date}
+% \begin{macro}{\svnkwdef@Date}[1]{value}
 % `Setter'-macros for single keywords, used by \cs{svnkwdef}.\\ These are needed
 % to have have a common value for all alternative keyword names ala |Rev|,
 % |Revision|, |LastChangedRevision|.
@@ -1498,7 +1597,7 @@
 \svnkwdef{HeadURL}{}
 %    \end{macrocode}
 
-% \begin{macro}{\svnkw}
+% \begin{macro}{\svnkw}[1]{keyword name}
 % Macro to get keyword value. Just calls \cs{svnkw}\meta{ARGUMENT} where
 % the argument interpreted as text. So \eg |\svnkw{Date}| is the same as
 % |svnkwDate| but this could be changed later so always use this interface
@@ -1524,7 +1623,7 @@
 % checked by the following macros. Unexpanded keywords result in an empty value.
 % Also leading and trailing spaces are removed.
 %
-% \begin{macro}{\svn@checkcolon}
+% \begin{macro}{\svn@checkcolon}[2]{key}{potential value, might be empty}
 % Checks if the keyword contains a colon. It is called by \cs{svnkwsave@read}
 % with a trailing |:\relax| so that \#2 will be empty if there is no earlier
 % colon or will hold the value with this trailing colon otherwise.
@@ -1545,7 +1644,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@stripcolon}
+% \begin{macro}{\svn@stripcolon}[1]{potential value}
 % Strips the previous added colon (for \cs{svn@checkcolon}).
 % The remaining argument is checked if it's empty (case b) or only a space
 % (case c). Otherwise the keyword is expanded and \cs{svn@stripspace} is
@@ -1567,7 +1666,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@stripspace}
+% \begin{macro}{\svn@stripspace}[2]{first character}{rest of string}
 % Strips leading space if present and calls \cs{svn@striptrailingspace} to
 % strip the trailing space.
 %    \begin{macrocode}
@@ -1582,7 +1681,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@striptrailingspace}
+% \begin{macro}{\svn@striptrailingspace}[1]{string}
 % Strips trailing space using the macros parameter text. Must be called with
 % |\relax| as end marker.
 %    \begin{macrocode}
@@ -1593,7 +1692,7 @@
 % \end{macro}
 
 % \subsection{Date Macros}
-% \begin{macro}{\@svn@scandate}
+% \begin{macro}{\@svn@scandate}[1]{date}
 % Scans data informations in Id keyword and saves them in macros.
 %    \begin{macrocode}
 \def\@svn@scandate#1{\@svn@scandate@#1\relax}
@@ -1611,7 +1710,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\@svn@scanlongdate}
+% \begin{macro}{\@svn@scanlongdate}[8]{Year}{Month}{Day}{Hour}{Minute}{Second}
+% {Timezone}{Date description string (ignored)}
 % Scans data informations in Date keyword and saves them in macros.
 %    \begin{macrocode}
 \def\@svn@scanlongdate#1{\expandafter\@svn@scanlongdate@#1\relax}
@@ -1628,7 +1728,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\@svn@parsetimezone}
+% \begin{macro}{\@svn@parsetimezone}[5]{sign (+/-)}{hour first digit}{hour
+% second digit}{minute first digit}{minute second digit}
 % Scans timezone and splits hour and minute part.
 %    \begin{macrocode}
 \def\@svn@parsetimezone#1#2#3#4#5\relax{%
@@ -1660,7 +1761,8 @@
 % \end{macro}
 
 % \subsection{Register and FullName Macros}
-% \begin{macro}{\svnRegisterAuthor}
+% \begin{macro}{\svnRegisterAuthor}[2]{author username}{Full Name}
+%    \begin{macrocode}
 % Saves the author's name by defining
 % |svn@author@|\meta{username} to it.
 %    \begin{macrocode}
@@ -1683,16 +1785,26 @@
 {\svnFullAuthor@normal}%
 }%
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\svnFullAuthor@star}[1]{username}
 % Both submacros are calling |svnFullAuthor@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
 \def\svnFullAuthor@star*#1{%
-\edef\svn@temp{#1}%
-\svnFullAuthor@{\svn@temp}{~(\svn@temp)}}%
+    \edef\svn@temp{#1}%
+    \svnFullAuthor@{\svn@temp}{~(\svn@temp)}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullAuthor@normal}[1]{username}
+%    \begin{macrocode}
 \def\svnFullAuthor@normal#1{%
 \edef\svn@temp{#1}%
 \svnFullAuthor@{\svn@temp}{}}%
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullAuthor@}[2]{username}{previous defined trailing string}
 % |svnFullAuthor@| now sets the author's full name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
@@ -1702,9 +1814,8 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \end{macro}
 
-% \begin{macro}{\svnRegisterRevision}
+% \begin{macro}{\svnRegisterRevision}[2]{revision number}{tag name}
 % Saves the revision's name or tag by defining
 % |svn@revision@|\meta{revisionnumber} to it.
 % \changes{v1.2}{2007/06/22}{New macro}
@@ -1727,6 +1838,10 @@
 {\svnFullRevision@normal}%
 }
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\svnFullRevision@star}[1]{revision number}
 % Both submacros are calling |svnFullRevision@| but with different arguments.
 % The star macro also removes the star of course.
 %    \begin{macrocode}
@@ -1734,11 +1849,18 @@
 \edef\svn@temp{#1}%
 \svnFullRevision@{\svn@temp}{~(r\svn@temp)}%
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullRevision@normal}[1]{revision number}
+%    \begin{macrocode}
 \def\svnFullRevision@normal#1{%
 \edef\svn@temp{#1}%
 \svnFullRevision@{\svn@temp}{}%
 }
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnFullRevision@}[2]{revision number}{previous defined trailing
+% string}
 % |svnFullRevision@| now sets the revision name. Note that |#2| is empty
 % when the normal version is called.
 %    \begin{macrocode}
@@ -1749,12 +1871,11 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \end{macro}
 
 % \subsection{General Internal Macros}
 % Some internal used macro which don't fit in any other section.
 %
-% \begin{macro}{\svn@input}
+% \begin{macro}{\svn@input}[1]{file name/path}
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
 % with |\@@input| are used because |\InputIfFileExists| got redefined by the
@@ -1841,7 +1962,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@removedotslash}
+% \begin{macro}{\svn@removedotslash}[1]{string (\eg file path) which might start
+% with \texttt{./}}
 % Removes leading './' from given macro (holding a directory path). Awaits a
 % macro as argument which is redefined inside the current group!
 %    \begin{macrocode}
@@ -1878,7 +2000,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svn@glist=\empty
 %    \end{macrocode}
 
-% \begin{macro}{\svngroup}
+% \begin{macro}{\svngroup}[1]{group name}
 % Saves the group to |svn@g| and initiates |svn@g@|\meta{group name}|@rev|
 % and |@svn@g@|\meta{group name}|@rev| if this is the first time the group
 % got used.
@@ -1920,7 +2042,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnsetcg}
+% \begin{macro}{\svnsetcg}[1]{group name}
 % Defines |svn@cg| to the given argument or to |svn@g| if the argument was
 % empty.
 %    \begin{macrocode}
@@ -1935,7 +2057,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncg@def}
+% \begin{macro}{\svncg@def}[1]{key name, \eg `rev', `date'}
 % Defines a |\svncgXXX| macro, \eg |svncgrev|, which returns the
 % requested keyword values of the current keyword group.
 %    \begin{macrocode}
@@ -1947,12 +2069,36 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svncgXXX}
+% \begin{macro}{\svncgrev}
+% \begin{macro}{\svncgdate}
+% \begin{macro}{\svncgauthor}
+% \begin{macro}{\svncgyear}
+% \begin{macro}{\svncgmonth}
+% \begin{macro}{\svncgday}
+% \begin{macro}{\svncghour}
+% \begin{macro}{\svncgminute}
+% \begin{macro}{\svncgsecond}
+% \begin{macro}{\svncgtimezonehour}
+% \begin{macro}{\svncgtimezoneminute}
 % Define all |\svncgXXX| macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
-\@for\@tempa:=rev,author,date,year,month,day,hour,minute,second,%
-timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
+\@for\@tempa:=%
+    rev,author,date,year,month,day,hour,minute,second,%
+    timezonehour,timezoneminute%
+\do{%
+    \expandafter\svncg@def\expandafter{\@tempa}%
+}
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 
 % \begin{macro}{\thesvncg}
@@ -1962,7 +2108,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svng}
+% \begin{macro}{\svng}[2]{group name}{keyword name}
 % Simply returns |svng@#1@#2| if defined, '??' otherwise.
 %    \begin{macrocode}
 \def\svng#1#2{%
@@ -1972,7 +2118,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@addfiletogroup}
+% \begin{macro}{\svn@addfiletogroup}[2]{file name}{group name}
 % Adds the given file to the given group. If the group list doesn't exist yet
 % it is initialised. A extra macro for each file is used to remember that the
 % file is already in the group. This could be avoided using a list search.
@@ -2041,7 +2187,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@fileasgroup}
+% \begin{macro}{\svn@fileasgroup}[1]{file name}
 % Macro to write a file as group to |.svn| file. After checking if the filename
 % was not already written, the |.svn| file is checked if it is open and then the
 % file keyword information is written.
@@ -2076,9 +2222,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnignoreextensions}
-% A comma separated list of file name extensions (without leading dot) to ignore
-% for automatic |\svnfileasgroup|.
+% \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to ignore for automatic \csd{svnfileasgroup}.}
+% A special macro is defined for all extensions. The existents of this macro is
+% then tested later to check if this extension should be ignored.
 %% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnignoreextensions#1{%
@@ -2089,9 +2236,11 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsiderextensions}
-% A comma separated list of file name extensions (without leading dot) to
-% consider for automatic |\svnfileasgroup|.
+% \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to consider for automatic
+% \csd{svnfileasgroup}.}
+% The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
+% to |\relax|.
 %% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
@@ -2132,7 +2281,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \if@svnmulti@external
 %    \end{macrocode}
 
-% \begin{macro}{\svnexternalgroup}
+% \begin{macro}{\svnexternalgroup}[1]{group name}
 % Defines the default group of external files. The default is empty which means
 % the current group.
 %    \begin{macrocode}
@@ -2143,7 +2292,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternal}
+% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \{ \}}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
@@ -2162,7 +2311,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternalpath}
+% \begin{macro}{\svnexternalpath}[1]{list of paths in \{ \}}
 % Writes its argument as argument of \cs{@svnexternalpath} into the |.svn| file.
 %    \begin{macrocode}
 \def\svnexternalpath#1{%
@@ -2206,7 +2355,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@externalfile}
+% \begin{macro}{\svn@externalfile}[1]{file name}
 % Ends group which began in \cs{svnexternalfile} and calls the appropriate
 % macros.
 %    \begin{macrocode}
@@ -2263,7 +2412,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \if@svnmulti@anygraphic
 %    \end{macrocode}
 
-% \begin{macro}{\svngraphicsgroup}
+% \begin{macro}{\svngraphicsgroup}[1]{graphic group name}
 % Defines the default group of graphics files. The default is empty which means
 % the current group.
 %    \begin{macrocode}
@@ -2274,7 +2423,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnignoregraphic}
+% \begin{macro}{\svnignoregraphic}[1]{file name/path}
 % Ignores the given graphic file by defining a special macro.
 %    \begin{macrocode}
 \def\svnignoregraphic#1{%
@@ -2283,7 +2432,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsidergraphic}
+% \begin{macro}{\svnconsidergraphic}[1]{file name/path}
 % Deletes the special ignore macro to consider the graphic again.
 %    \begin{macrocode}
 \def\svnconsidergraphic#1{%
@@ -2303,7 +2452,11 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
 \if@svnmulti@graphics
 \RequirePackage{graphics}[2006/02/20]
+%    \end{macrocode}
 
+% \begin{macro}{\Gin@setfile}[3]{??, not used}{??, not used}{graphic file
+% name/path}
+%    \begin{macrocode}
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
     \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
@@ -2311,6 +2464,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \fi
     \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
+%    \end{macrocode}
+% \end{macro}
+
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 
@@ -2320,7 +2477,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \begin{macrocode}
 \if@svnmulti@pgfimages
 \RequirePackage{pgf}[2008/01/15]
+%    \end{macrocode}
 
+% \begin{macro}{\pgf@declareimage}[3]{??, not used}{image label}{??, not used}
+%    \begin{macrocode}
 \let\svnmulti@pgf@declareimage\pgf@declareimage
 \renewcommand*{\pgf@declareimage}[3][]{%
   \svnmulti@pgf@declareimage[#1]{#2}{#3}%
@@ -2342,6 +2502,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
     \fi
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 %
@@ -2417,11 +2580,10 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 \fi % defined \tableofcontents
 %    \end{macrocode}
 
-% \begin{macro}{\svn@writerow}
+% \begin{macro}{\svn@writerow}[2]{row type ('group', 'file', 'global', \ldots)}
+% {row type specific argument}
 % Writes a table row by using |\svn@tabcell| and |\svn@tabcellarg| defined by
-% the |\svn@writeXXXrow| macro below. First argument is row type ('group',
-% 'file', 'global') and second one is a type specific argument provided to
-% |\svntab|\meta{type}.
+% the |\svn@writeXXXrow| macro below.
 %    \begin{macrocode}
 \def\svn@writerow#1#2{%
   \immediate\write\svn@svtwrite{%
@@ -2445,9 +2607,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writegrouprow}
+% \begin{macro}{\svn@writegrouprow}[1]{current group}
 %    \begin{macrocode}
-\def\svn@writegrouprow#1{% #1 is current group
+\def\svn@writegrouprow#1{%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -2459,9 +2621,9 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writefilerow}
+% \begin{macro}{\svn@writefilerow}[1]{file name}
 %    \begin{macrocode}
-\def\svn@writefilerow#1{% #1 is file
+\def\svn@writefilerow#1{%
   \expandafter
   \ifx\csname @svng@#1@rev\endcsname\relax\else
   \begingroup
@@ -2478,7 +2640,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 
 % \begin{macro}{\svn@writeglobalrow}
 %    \begin{macrocode}
-\def\svn@writeglobalrow{% no arguments
+\def\svn@writeglobalrow{%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -2529,6 +2691,8 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 %
 
 % \subsection{Other macros}
+% This section contains macros which don't fit in any other section.
+%
 % \begin{macro}{\svn}
 % \begin{macro}{\svn*}
 % After *-testing, the intermediate macros |\svn@s| and |\svn@n| are called to
@@ -2548,7 +2712,7 @@ timezonehour,timezoneminute\do{\expandafter\svncg@def\expandafter{\@tempa}}
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\svnnolinkurl}
+% \begin{macro}{\svnnolinkurl}[1]{URL}
 % This code is taken from the |hyperref| package and is the definition of
 % |\url| just without the part which creates the actual hyperlink. This needs
 % of course the |hyperref| package. A warning is given if it isn't loaded.
