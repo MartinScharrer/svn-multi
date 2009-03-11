@@ -79,6 +79,7 @@
 \newcommand{\macroargformat}[1]{\texttt{#1}}
 \newcommand{\scriptargformat}[1]{\textbf{#1}}
 \newcommand{\macrohlinkprefix}{desc}
+\newcommand{\macrolink}{}
 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -88,10 +89,21 @@
     \bigskip\par\noindent\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
-    \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
+    \begingroup
+    \g@namedef{href@desc@#1}{}
+    \immediate\write\@mainaux{%
+      \noexpand\g@namedef{href@desc@#1}{}
+    }
+    \@ifundefined{href@impl@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{impl@#1}}}%
+    \hypersetup{linkcolor=macrocolor}%
+    \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrocolor}%
+        {\textbackslash #1}}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{macro@#1}{}}}%
     \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
     \nopagebreak
+    \endgroup
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
@@ -120,15 +132,26 @@
 }{%
     \addtocounter{macrolevel}{-1}%
 }
+\providecommand*{\g@namedef}[1]{%
+    \expandafter\gdef\csname #1\endcsname
+}
 \newcommand*{\macroX}[1]{%
     \ifnum\c@macrolevel<2
         \smallskip
     \fi
     \par\noindent
-    \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
+    \g@namedef{href@impl@#1}{}%
+    \immediate\write\@mainaux{%
+      \noexpand\g@namedef{href@impl@#1}{}%
+    }%
+    \@ifundefined{href@desc@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{macro@#1}}}%
+    \hspace*{\macrosep}\macrolink{\macroformat{%
+        \textcolor{macrocolor}{\textbackslash #1}}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
     \\*[\smallskipamount]%
-    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}
+    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
 
 \newcounter{macroargs}
@@ -167,21 +190,28 @@
 \DeclareRobustCommand{\csi}[1]{%
     \begingroup
     \renewcommand{\macrohlinkprefix}{impl}%
-    \cs{#1}%
+    \@ifundefined{href@impl@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{impl@#1}}}%
+    \csX{#1}%
     \endgroup
 }
 \DeclareRobustCommand{\csd}[1]{%
     \begingroup
     \renewcommand{\macrohlinkprefix}{macro}%
-    \cs{#1}%
+    \@ifundefined{href@desc@#1}%
+        {\let\macrolink\relax}%
+        {\def\macrolink{\hyperlink{desc@#1}}}%
+    \csX{#1}%
     \endgroup
 }
-\DeclareRobustCommand{\cs}[1]{%
+\DeclareRobustCommand{\csX}[1]{%
     \begingroup
-    \hypersetup{linkcolor=blue}%
-    \hyperlink{\macrohlinkprefix @#1}{\texttt{\textbackslash#1}}%
+    \hypersetup{linkcolor=macrocolor}%
+    \macrolink{\texttt{\textbackslash#1}}%
     \endgroup
 }
+\let\cs\csd
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
 \DeclareRobustCommand{\op}[1]{%
     \begingroup
@@ -197,7 +227,7 @@
 }
 
 \def\StopEventually#1{\origStopEventually{#1}%
-\renewcommand{\macrohlinkprefix}{impl}
+\let\cs\csi
 }
 
 \fi
