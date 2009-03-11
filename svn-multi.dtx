@@ -73,6 +73,11 @@
 \newlength{\macrosep}
 \setlength{\macrosep}{-3em}
 \renewcommand{\meta@font@select}{\color{metacolor}\itshape}
+\newcommand{\macroformat}[1]{\textbf{\ttfamily #1}}
+\newcommand{\optionformat}[1]{\textbf{\sffamily #1}}
+\newcommand{\scriptformat}[1]{\textbf{\ttfamily #1}}
+\newcommand{\macroargformat}[1]{\texttt{#1}}
+\newcommand{\scriptargformat}[1]{\textbf{#1}}
 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -82,9 +87,9 @@
     \bigskip\par\noindent\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
-    \hspace*{\macrosep}\textbf{\ttfamily\textcolor{macrocolor}{\textbackslash #1}%
+    \hspace*{\macrosep}\macroformat{\textcolor{macrocolor}{\textbackslash #1}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{Desc@#1}{}}}%
-    \noindent\mbox{}\texttt{#2}\macroline*[0.2\baselineskip]%
+    \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
     \nopagebreak
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
@@ -92,9 +97,9 @@
     \bigskip\par\noindent\DescribeScriptS*%
 }
 \def\DescribeScriptS*#1#2{%
-    \hspace*{\macrosep}\textbf{\ttfamily\textcolor{scriptcolor}{#1}%
+    \hspace*{\macrosep}\scriptformat{\textcolor{scriptcolor}{#1}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}}%
-    \noindent\mbox{}\texttt{\ {#2}}\macroline*[0.2\baselineskip]%
+    \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
     \nopagebreak
 }
 \def\DescribeOption{\@ifnextchar*{\DescribeOptionS}{\DescribeOptionN}}
@@ -102,7 +107,7 @@
     \bigskip\par\noindent\DescribeOptionS*%
 }
 \def\DescribeOptionS*#1{%
-    \hspace*{\macrosep}\textbf{\sffamily\textcolor{optioncolor}{#1}%
+    \hspace*{\macrosep}\optionformat{\textcolor{optioncolor}{#1}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}}%
     \noindent\mbox{}\macroline*[0.2\baselineskip]%
     \nopagebreak
@@ -128,6 +133,12 @@
     \begingroup
     \hypersetup{linkcolor=optioncolor}%
     \hyperlink{option@#1}{\textbf{\sffamily #1}}%
+    \endgroup
+}
+\DeclareRobustCommand{\scr}[1]{%
+    \begingroup
+    \hypersetup{linkcolor=scriptcolor}%
+    \hyperlink{option@#1}{\scriptformat{#1}}%
     \endgroup
 }
 
