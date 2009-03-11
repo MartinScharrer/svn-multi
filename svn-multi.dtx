@@ -513,7 +513,7 @@
 % be written like above. Spaces, newlines or comments between |\svnid| and the
 % \{ will lead to \TeX{} parse errors.
 %
-% \DescribeMacro{svnidlong}{\karg{HeadURL}\karg{LastChangedDate}%
+% \DescribeMacro{svnidlong}{\karg{HeadURL}\karg{LastChangedDate}\ignorespaces
 % \karg{LastChangedRevision}\karg{LastChangedBy}}
 % Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the
 % above four keywords. The usage of \cs{svnid} or |\svnidlong| is a matter
@@ -826,7 +826,7 @@
 % note that this macro can not be used inside macros like \cs{svnFullAuthor}.
 %
 % \section{Including Keywords of External Files}\label{sec:external}
-% \DescribeMacro{svnexternal}{\{\{\meta{filea}\}\{\meta{fileb}\}%
+% \DescribeMacro{svnexternal}{\{\{\meta{filea}\}\{\meta{fileb}\}\ignorespaces
 % \ldots\{\meta{filex}\}\}}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
 % even directories) can be included using this macro which awaits a list of
@@ -844,7 +844,7 @@
 % higher than the one of the source file. This makes sense if the included
 % graphics are taken as logical part of a source file.
 %
-% \DescribeMacro{svnexternal}{\{\{\meta{patha}\}\{\meta{fileb}\}%
+% \DescribeMacro{svnexternal}{\{\{\meta{patha}\}\{\meta{fileb}\}\ignorespaces
 % \ldots\{\meta{pathx}\}\}}
 % This macro can be used in the document preamble to declare a set of paths to
 % be scanned for files specified with \cs{svnexternal}. This avoids the need to
@@ -1287,7 +1287,7 @@
 % \end{macro}
 %
 
-% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (JJJJ-MM-DD}{time
+% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
 % (HH:MM:SSZ)}{author (username)}
 % Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
 % without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
