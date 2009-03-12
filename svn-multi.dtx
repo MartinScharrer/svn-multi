@@ -273,7 +273,7 @@
 % }
 % \changes{v1.0}{2006/05/27}{Initial version}
 % \changes{v1.1}{2006/06/08}{Added macros to extract and typeset date/time
-% informations. Added macros to set and typeset main URL or filename.}
+% information. Added macros to set and typeset main URL or filename.}
 % \changes{v1.2}{2007/06/22}{Renamed packet from \texttt{svnkw} to
 % \texttt{svn-multi} to match CTAN directory. Wrapper file
 % \texttt{svnkw.sty} is provided for backward compatibility.}
@@ -366,17 +366,17 @@
 %
 % \subsubsection*{Document global}
 % The normal macros, \eg \cs{svnrev}, return the latest version control
-% informations (keyword data) for the whole multi-file document, \ie the
+% information (keyword data) for the whole multi-file document, \ie the
 % information of the latest changed file of the document. To collect, sort and
-% provide this informations is the main functionality of this package.
+% provide this information is the main functionality of this package.
 %
 % \subsubsection*{Local to current file}
 % There are also other macros, \eg \cs{svnfilerev}, which return the version
-% control informations of the current file, \ie the file they are used in. It is
+% control information of the current file, \ie the file they are used in. It is
 % assumed here that every file using this macros calls first either a \cs{svnid}
 % or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} for more
 % details about the id macros.  Please note that the file-local macros
-% technically actually return the \emph{last registered} informations from the
+% technically actually return the \emph{last registered} information from the
 % last \cs{svnid} or \cs{svnidlong} (or \cs{svnkwsave}) even when these were in
 % a different, previous file.  This will cause wrong results if they are used in
 % a file before or without any id macros.
@@ -384,7 +384,7 @@
 % \subsubsection*{Groups}
 % Version 2.0 introduces the concept of groups. Several files\footnote{actually
 % several id macros} of a multi-file \LaTeX\ document can be grouped together
-% and the latest version control informations of all files of a group is
+% and the latest version control information of all files of a group is
 % provided by macros. This works in the same way as the global macros mentioned
 % above but only with the files in the group. It can also be seen from the other
 % side: the macros are local like the file-local macros mentioned above but for
@@ -400,7 +400,7 @@
 % There is no limitation (besides internal \LaTeX\ resource limits) for the
 % number of different groups. The files of one group do not have to be included
 % in a row but can be included everywhere in the document. The version control
-% informations of the current group can be typeset with macros like
+% information of the current group can be typeset with macros like
 % \cs{svncgrev}.  Also, a general but less robust macro \cs{svng} is provided to
 % access others groups by name everywhere in the document. To avoid some macro
 % robustness problems the current group can be changed locally for the output
@@ -409,7 +409,7 @@
 % See section~\ref{sec:group} for further details and usage instructions on
 % group macros.
 %
-% \section{Basic Usage} The version control informations are provided by
+% \section{Basic Usage} The version control information are provided by
 % Subversion keywords which first need to be read in by dedicated macros and can
 % then be typeset using different macros.
 %
@@ -453,7 +453,7 @@
 %
 % \DescribeOption{filesasgroups}
 % Controls the automatic declaration of all input files as
-% independent groups so that there keyword informations can be typeset inside
+% independent groups so that there keyword information can be typeset inside
 % other files. The group name is the file path (`|subdir/file.tex|'). The files
 % are still added to the current group defined by \cs{svngroup}.\par This can be
 % disabled and re-enabled using \cs{svnfilesasgroupfalse} and
@@ -499,7 +499,7 @@
 % the \cs{tableofrevisions} macro. This table shows the
 % revisions of all files and groups. This needs \op{groups} to work which is
 % activated with \op{table}. Enable \op{filesasgroup} to include a list of all
-% files per group. See the section~\ref{sec:table} for more informations.
+% files per group. See the section~\ref{sec:table} for more information.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -655,7 +655,7 @@
 % current file (the |\svnfile...| versions) and for the whole document.
 %
 % Please note that the hour and timezone are dependend on the keyword which
-% defines the date informations. The hour will be in UTC aka Zulu-time, \ie
+% defines the date information. The hour will be in UTC aka Zulu-time, \ie
 % timezone +0000, when the date comes from the |Id| keyword.
 % Otherwise the hour and timezone will be in local time.
 % To avoid confusion the |Id| and |Date|/|LastChangedDate| keywords, \eg
@@ -1347,7 +1347,7 @@
 % (HH:MM:SSZ)}{author (username)}
 % Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
 % without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
-% \cs{@svn@scandate} to extract the date informations and \cs{@svn@updateid} to
+% \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
 \def\svn@scanId#1 #2 #3 #4 #5\relax{%
@@ -1749,7 +1749,7 @@
 
 % \subsection{Date Macros}
 % \begin{macro}{\@svn@scandate}[1]{date}
-% Scans data informations in Id keyword and saves them in macros.
+% Scans data information in Id keyword and saves them in macros.
 %    \begin{macrocode}
 \def\@svn@scandate#1{\@svn@scandate@#1\relax}
 
@@ -1768,7 +1768,7 @@
 
 % \begin{macro}{\@svn@scanlongdate}[8]{Year}{Month}{Day}{Hour}{Minute}{Second}
 % {Timezone}{Date description string (ignored)}
-% Scans data informations in Date keyword and saves them in macros.
+% Scans date information in Date keyword and saves them in macros.
 %    \begin{macrocode}
 \def\@svn@scanlongdate#1{\expandafter\@svn@scanlongdate@#1\relax}
 %
