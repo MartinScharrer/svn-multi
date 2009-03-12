@@ -732,9 +732,9 @@
 %
 % \DescribeMacro{svnFullRevision}{\marg{revision number or macro}}
 % \DescribeMacro*{svnFullRevision*}{\marg{revision number or macro}}
-% Takes a \marg{revision number} (\ie \cs{svnrev}, \cs{svnfilerev} or a number)
-% as argument and returns the full name if it was registered first with
-% \cs{svnRegisterRevision}, otherwise it returns ``Revision \meta{revision
+% Takes a revision number coming from a macro like \cs{svnrev}, \cs{svnfilerev}
+% or a number as argument and returns the full name if it was registered first
+% with \cs{svnRegisterRevision}, otherwise it returns ``Revision \meta{revision
 % number}''.  The star version returns also the revision number leaded by `r' in
 % parentheses after the tag name, \eg |Name (r123)|.
 %
