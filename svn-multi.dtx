@@ -2652,17 +2652,18 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
-% \subsubsection{Table Format Macros}
+% \subsubsection{Table Format Macros}\label{sec:impl:table}
 % Generic format macro used in the |.svt| file. Can be redefined by the user to
 % change table format. % TODO: User documentation needed!
 %    \begin{macrocode}
-\def\svntabledef{lrll}
 \def\svntable{%
-  \begin{tabular}{\svntabledef}%
+  \begin{tabular}{lrll}
     \hline
     \strut Name & Rev & Last Author & Last Changed At \\\hline
 }
 \def\endsvntable{\hline\end{tabular}}
+\def\svnbeforetable{}
+\def\svnaftertable{}
 \def\svnglobalrow{}
 \def\svngrouprow{}
 \def\svnfilerow{}
@@ -2799,7 +2800,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     \if@svnmulti@table
       \newwrite\svn@svtwrite
       \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
-      \immediate\write\svn@svtwrite{\noexpand\svntable}%
+      \immediate\write\svn@svtwrite{%
+      \noexpand\svnbeforetable^^J%
+      \noexpand\svntable}%
       \begingroup
       \svn@writeglobalrow{}%
       \ifx\@svng@@files\@undefined\else
@@ -2853,7 +2856,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
       \fi\fi
     }%
     \if@svnmulti@table
-      \immediate\write\svn@svtwrite{\noexpand\endsvntable}%
+      \immediate\write\svn@svtwrite{%
+        \noexpand\endsvntable^^J%
+        \noexpand\svnaftertable
+      }%
       \immediate\closeout\svn@svtwrite%
     \fi
     \endgroup
