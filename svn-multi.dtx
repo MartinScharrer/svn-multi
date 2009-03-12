@@ -419,36 +419,40 @@
 % to pre-2.0 package versions all old features are active by default and all new
 % features are deactivated to save a little of \TeX\ memory.
 %
+% All options except the first two are boolean key=value options (so far) and
+% await either `|true|' or `|false|' as value. A missing value means `|true|'.
+% So \eg |[groups=true,verbatim=false,external]|, enables the \op{external} and
+% \op{groups} options but disables the \op{verbatim} option.
+%
 % The available options are:\par
 %
 % \DescribeOption{old}
-% Activate only pre-v2.0 features.\medskip
+% Only pre-v2.0 features are active. This enables \op{verbatim} and disables all
+% other options below. This is the default for reasons mentioned above.
 %
 % \DescribeOption{all}
-% Activate all features of the package.\medskip
+% Activates all features of the package.
 %
 % \DescribeOption{verbatim}
-% Activate (default) or deactivate the verbatim mode of the keyword parser
+% Controls the verbatim mode of the keyword parser
 % macros. Normally verbatim mode is very much wanted to support strange
-% filenames of URLs, but This options gives the user a possibility to disable
+% filenames of URLs, but this options gives the user a possibility to disable
 % verbatim, \eg for trouble shooting.  Please note that verbatim mode is needed
 % in order to make |svn-multi| work with some packages, like |babel| with the
 % |french| option.
-% \medskip
 %
 % \DescribeOption{external}
-% Activate or deactivate (default) the support for keywords from external files
+% Controls the support for keywords from external files
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
 % caused by macros placed there by this feature.
-% \medskip
 %
 % \DescribeOption{groups}
-% Activate or deactivate (default) the keyword groups feature described in
-% section~\ref{sec:group}.\\[\baselineskip]
+% Controls the keyword groups feature described in
+% section~\ref{sec:group}.
 %
 % \DescribeOption{filesasgroups}
-% Activate or deactivate (default) the declaration of all input files as
+% Controls the automatic declaration of all input files as
 % independent groups so that there keyword informations can be typeset inside
 % other files. The group name is the file path (`|subdir/file.tex|'). The files
 % are still added to the current group defined by \cs{svngroup}.\par This can be
@@ -456,8 +460,8 @@
 % \cs{svnfilesasgrouptrue} inside the document.
 %
 % \DescribeOption{graphics}
-% This option (default: off) allows to automatically declare all images included
-% using |\includegraphics| from the |graphics|/|graphicx| package as external
+% This option allows to automatically declare all images included using the
+% macro |\includegraphics| from the |graphics|/|graphicx| package as external
 % files (see section~\ref{sec:external}). The options \op{external} and
 % \op{autoload} are activated by the |graphics| option so that the produced
 % |.svx| files are loaded automatically.  An \op{autoload}|=false| option after
@@ -468,26 +472,25 @@
 % \LaTeX\ document before |svn-multi|.  Please note that this feature needs to
 % tie itself into the |graphics| package and might fail if the internal
 % structure of this package changes in future versions.
-% \medskip
 %
 % \DescribeOption{pgfimages}
 % Same like the \op{graphics} option but for the |pgf| package (2008/01/15 or
 % later) with the |pgfuseimage| and |pgfimage| macros. Please also see the notes
 % about package loading and ties mentioned above.
-% \medskip
 %
 % \DescribeOption{autoload}
-% Activate or deactivate (default) automatic loading of corresponding |.svx|
+% Controls automatic loading of corresponding |.svx|
 % files at the begin of files included using |\input| or |\import|. This avoids
 % the need of putting an \cs{svnexternal} macro in every file just to load the
 % |.svx| files created automatically by the \op{graphics} option. The option
 % \op{external} is activated by \op{autoload}.
-% \medskip
 %
 % \DescribeOption{table}
-% Activate or deactivate (default) a \cs{tableofrevisions} macro which shows the
+% Controls the generation of a table of revisions which can be included using
+% the \cs{tableofrevisions} macro. This table shows the
 % revisions of all files and groups. This needs \op{groups} to work which is
-% activated with \op{table}.
+% activated with \op{table}. Enable \op{filesasgroup} to include a list of all
+% files per group. See the section~\ref{sec:table} for more informations.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
