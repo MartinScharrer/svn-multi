@@ -437,8 +437,7 @@
 % Activate or deactivate (default) the support for keywords from external files
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
-% caused by macros placed there by this feature.  Please note that the
-% \op{noexternal} option causes \op{nographics} and \op{nopgfimages}.
+% caused by macros placed there by this feature.
 % \medskip
 %
 % \DescribeOption{groups}
@@ -458,7 +457,7 @@
 % using |\includegraphics| from the |graphics|/|graphicx| package as external
 % files (see section~\ref{sec:external}). The options \op{external} and
 % \op{autoload} are activated by the |graphics| option so that the produced
-% |.svx| files are loaded automatically.  An \op{noautoload} option after
+% |.svx| files are loaded automatically.  An \op{autoload}|=false| option after
 % |graphics| will deactivate this, but then an \cs{svnexternal} macro must be
 % included in all \LaTeX\ files which should take the image revisions into
 % account.\par The |graphics| package is loaded if this option is active. If
@@ -1022,7 +1021,7 @@
 
 \SetupKeyvalOptions{%
     family = svn-multi,
-    prefix = @svnmulti
+    prefix = @svnmulti@
 }
 \newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
