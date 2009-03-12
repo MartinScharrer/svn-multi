@@ -63,11 +63,13 @@
 \let\origStopEventually\StopEventually
 \let\origPrintDescribeMacro\PrintDescribeMacro
 \usepackage{xcolor}
-\definecolor{macrocolor}{rgb}{0.0,0.0,1}
+\definecolor{darkred}{rgb}{0.333.0.0,0.0}
+\hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
+\definecolor{macrodesccolor}{rgb}{0.0,0.0,0.8}
+\definecolor{macroimplcolor}{rgb}{0.0,0.0,0.4}
 \definecolor{metacolor}{rgb}{0.0,0.4,0.4}
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.3.0.2,0}
-%\colorlet{optioncolor}{orange}
 
 \let\macroline\\
 \newlength{\macrosep}
@@ -97,8 +99,8 @@
     \@ifundefined{href@impl@#1}%
         {\let\macrolink\relax}%
         {\def\macrolink{\hyperlink{impl@#1}}}%
-    \hypersetup{linkcolor=macrocolor}%
-    \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrocolor}%
+    \hypersetup{linkcolor=macrodesccolor}%
+    \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrodesccolor}%
         {\textbackslash #1}}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}}%
     \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
@@ -149,7 +151,7 @@
         {\let\macrolink\relax}%
         {\def\macrolink{\hyperlink{desc@#1}}}%
     \hspace*{\macrosep}\macrolink{\macroformat{%
-        \textcolor{macrocolor}{\textbackslash #1}}%
+        \textcolor{macroimplcolor}{\textbackslash #1}}%
     \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
     \\*[\smallskipamount]%
     \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
@@ -190,6 +192,7 @@
 
 \DeclareRobustCommand{\csi}[1]{%
     \begingroup
+    \hypersetup{linkcolor=macroimplcolor}%
     \renewcommand{\macrohlinkprefix}{impl}%
     \@ifundefined{href@impl@#1}%
         {\let\macrolink\relax}%
@@ -199,6 +202,7 @@
 }
 \DeclareRobustCommand{\csd}[1]{%
     \begingroup
+    \hypersetup{linkcolor=macrodesccolor}%
     \renewcommand{\macrohlinkprefix}{macro}%
     \@ifundefined{href@desc@#1}%
         {\let\macrolink\relax}%
@@ -208,7 +212,6 @@
 }
 \DeclareRobustCommand{\csX}[1]{%
     \begingroup
-    \hypersetup{linkcolor=macrocolor}%
     \macrolink{\texttt{\textbackslash#1}}%
     \endgroup
 }
