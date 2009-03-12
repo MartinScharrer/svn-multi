@@ -1048,7 +1048,7 @@
   \@svnmulti@needinputfilenametrue
   \@svnmulti@filesasgroupstrue
 }
-\DeclareBoolOption[false]{verbatim}
+\DeclareBoolOption[true]{verbatim}
 \DeclareBoolOption[false]{groups}
 \DeclareBoolOption[false]{external}
 \DeclareBoolOption[false]{filesasgroups}
@@ -1067,7 +1067,7 @@
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@external
-  \@svnmulti@needinputfilenamefalse
+  \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@filesasgroups
   \@svnmulti@groupstrue
