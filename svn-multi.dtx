@@ -470,9 +470,17 @@
 % included in all \LaTeX\ files which should take the image revisions into
 % account.\par The |graphics| package is loaded if this option is active. If
 % this package is needed with some special options it should be loaded by the
-% \LaTeX\ document before |svn-multi|.  Please note that this feature needs to
-% tie itself into the |graphics| package and might fail if the internal
-% structure of this package changes in future versions.
+% \LaTeX\ document before |svn-multi|.\par  Please note that this feature needs
+% to tie itself into the |graphics| package and might fail if the internal
+% structure of this package changes in future versions.\par
+% The macro \cs{svngraphicsgroup}\marg{group name} can be used to declare a own
+% group which is used for all the graphic files (also for pgf images, see
+% below). Normally they are placed in the current active group.\par
+% Some graphics like logos can appear frequently in a document. Do not count
+% them as part of each chapter they can be ignored using
+% \cs{svnignoregraphics}\marg{file path}. The macro
+% \cs{svnconsidergraphic}\marg{file path} disables this again. Such graphics can
+% be then included manually using an explicit \cs{svnexternal} macro.
 %
 % \DescribeOption{pgfimages}
 % Same like the \op{graphics} option but for the |pgf| package (2008/01/15 or
@@ -2274,7 +2282,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % extensions (without leading dot) to ignore for automatic \csd{svnfileasgroup}.}
 % A special macro is defined for all extensions. The existents of this macro is
 % then tested later to check if this extension should be ignored.
-%% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnignoreextensions#1{%
   \@for\svn@temp:=#1\do{%
@@ -2289,7 +2296,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \csd{svnfileasgroup}.}
 % The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
 % to |\relax|.
-%% TODO: DescribeMacro
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
   \@for\svn@temp:=#1\do{%
