@@ -10,7 +10,8 @@ TESTARGS = -output-directory ${TESTDIR}
 INSGENERATED = ${PACKAGE}.sty svnkw.sty svn-multi.pl
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf svn-multi-pl.pdf example.pdf group_example.pdf group_example_*.tex ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 
-LATEX = pdflatex -interaction=batchmode
+LATEX_OPTIONS = -interaction=batchmode
+LATEX = pdflatex ${LATEX_OPTIONS}
 
 RED   = \033[01;31m
 GREEN = \033[01;32m
@@ -77,6 +78,7 @@ ${PACKAGE}.tar.gz:
 
 # Make sure TeX finds the input files in TESTDIR
 tests ${TESTS}: export TEXINPUTS:=${TEXINPUTS}:${TESTDIR}
+tests ${TESTS}: LATEX_OPTIONS=
 
 testclean:
 	@${RM} $(foreach ext, aux log out pdf svn svx, tests/test*.${ext})
