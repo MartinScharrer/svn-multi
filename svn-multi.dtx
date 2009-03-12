@@ -1025,6 +1025,7 @@
 }
 \newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
+\newif\if@svnmulti@autoload
 
 \DeclareVoidOption{old}{%
   \@svnmulti@verbatimtrue
@@ -1054,7 +1055,7 @@
 \DeclareBoolOption[false]{filesasgroups}
 \DeclareBoolOption[false]{graphics}
 \DeclareBoolOption[false]{pgfimages}
-\DeclareBoolOption[false]{autoload}
+\DeclareStringOption{autoload}[true]
 \DeclareBoolOption[false]{table}
 
 \ExecuteOptions{old}
@@ -1091,6 +1092,26 @@
   \@svnmulti@groupstrue
   \@svnmulti@needinputfilenametrue
 \fi
+%    \end{macrocode}
+%
+% Check if \op{autoload} was set explicitly and obey the value.
+%    \begin{macrocode}
+\ifx\@svnmulti@autoload\@undefined
+\else
+\ifx\@svnmulti@autoload\empty
+\else
+\def\svn@temp{true}
+\ifx\@svnmulti@autoload\svn@temp
+  \@svnmulti@autoloadtrue
+\else
+\def\svn@temp{false}
+\ifx\@svnmulti@autoload\svn@temp
+  \@svnmulti@autoloadfalse
+\else
+  \PackageError{svn-multi}%
+  {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
+   ! Only 'true','false' or empty (='true') are allowed!}
+\fi\fi\fi\fi
 %    \end{macrocode}
 
 % General switch if any graphic option is enabled:
