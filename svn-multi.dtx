@@ -457,7 +457,8 @@
 % other files. The group name is the file path (`|subdir/file.tex|'). The files
 % are still added to the current group defined by \cs{svngroup}.\par This can be
 % disabled and re-enabled using \cs{svnfilesasgroupfalse} and
-% \cs{svnfilesasgrouptrue} inside the document.
+% \cs{svnfilesasgrouptrue} inside the document. See
+% section~\ref{sec:filesasgroups} for additional information.
 %
 % \DescribeOption{graphics}
 % This option allows to automatically declare all images included using the
@@ -754,7 +755,7 @@
 % Please note that you can't use |hyperref|s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
-% \subsection{File Groups}\label{sec:group}
+% \subsection{Groups}\label{sec:group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
 % latest revision of a group can be accessed. Use the |groups| option to
 % activate these macros.
@@ -822,7 +823,74 @@
 % requested keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please
 % note that this macro can not be used inside macros like \cs{svnFullAuthor}.
 %
-% \section{Including Keywords of External Files}\label{sec:external}
+% \subsubsection{Files as Own Groups}\label{sec:filesasgroups}
+% The group feature could be used to access the version control information of
+% single files anywhere in the document when these are defined as own groups for
+% themselves. Because a file can only be in one group this would not be compatible
+% with the normal usage of the group feature. Therefore a special feature was
+% introduced to automatically or manually define a file as \emph{extra} group
+% for itself which doesn't influence its membership in a real group. This means
+% that a set of (internal) group macros is produced for the file like for a
+% normal group but neither is the current group changed nor is it included in
+% the (internal) list of groups.\par
+% \paragraph{Declaration:}
+% This feature is enabled by the \op{filesasgroups} option. All files of the
+% document are then automatically declared as extra groups. This can be disabled
+% for parts of the document using \csi{svnfilesasgroupsfalse} and re-enabled
+% using \cs{svnfilesasgroupstrue} macros. The current file can be manually
+% declared as extra group with the \cs{svnfileasgroup} macro.\par
+% \paragraph{Exclude/Consider files extensions:}
+% The above mentioned automatically group declaration uses an hook which is
+% triggered every time another file is read by the document. This unfortunately
+% includes other packages, some auxiliary files and font, config and other files
+% read in by this packages. An internal filter is in place to ignore this files
+% by their file extension. This filter can by modified by the two following
+% macros.
+% \DescribeMacro{svnignoreextensions}{comma separated list of extension without
+% leading dot}
+% Tells |svn-multi| to ignore the following file extension and never declare
+% files with them as extra groups.
+% \DescribeMacro{svnconsiderextensions}{comma separated list of extension without
+% leading dot}
+% Tells |svn-multi| to (re-)consider the following file extension and declare
+% files with them as extra groups if read in.
+%
+% \paragraph{Typesetting:}
+% The keyword information of the files can be typeset with the normal group
+% typeset macro where the filename (including extension) is the group name.\\
+% \emph{Example:} |\svnsetcg{some_file.tex}\svncgauthor| would typeset the
+% author of the file |some_file.tex|
+%
+% \subsection{Table of Revisions}\label{sec:table}
+% Version 2.0 introduces this new feature which is not yet fully documented and
+% might change a little in future versions.
+%
+% \DescribeMacro{tableofrevisions}{}
+% If the \op{table} is enabled a table of revision is written into a file called
+% \meta{main \LaTeX\ file}|.svt| (|t| for table) which can be included using the
+% \cs{tableofrevisions} macro. The table contains the revision information of
+% the complete document and of all defined groups.
+% If the \op{filesasgroups} option is set the table will also include the single
+% files sorted by group.\par
+% The |.svt| file is in an general format which uses a lot of macros to format
+% the table and the different cells. This macros are called |\svntab...| or
+% similar and can be redefined to produce a different look.  Please see the
+% macro implementation in section~\ref{sec:impl:table}, the package example
+% files and/or the |.svt| file itself to learn which macros exists and how to
+% redefine them.\par
+% \textbf{Note:} The generic table is wrapped in
+% \csi{svntable}/\csi{endsvntable} macros which are by default
+% defined to use a |tabular| table environment. This macros can (in theory) be
+% redefined to use other table environments. However, \TeX\ processes the tables
+% in quite a special way (which is the reason why an auxiliary file is used in
+% the first place), so most alternative table packages like |tabularx| seem to
+% read the content in an verbatim like way which doesn't work (yet) with the
+% current format of the |.svt| file. Future versions of the package might produce
+% a pre-processed version of the |.svt| file on user request containing \eg
+% a |tabularx| table which simply has to be read using |\input| (this is done
+% inside the \cs{tableofrevisions} macro).
+%
+% \subsection{Including Keywords of External Files}\label{sec:external}
 % \DescribeMacro{svnexternal}{\{\{\meta{filea}\}\{\meta{fileb}\}\ignorespaces
 % \ldots\{\meta{filex}\}\}}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
@@ -2632,7 +2700,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \subsubsection{Table Format Macros}\label{sec:impl:table}
 % Generic format macro used in the |.svt| file. Can be redefined by the user to
-% change table format. % TODO: User documentation needed!
+% change table format. % TODO: More documentation needed!
 %    \begin{macrocode}
 \def\svntable{%
   \begin{tabular}{lrll}
