@@ -22,6 +22,7 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily}
+\usepackage{booktabs}
 
 % This is an example document to show the group feature of svn-multi 2.0.
 % Please the notes below.
@@ -237,26 +238,39 @@ keywords:\\*[-\baselineskip]
 \lstinputlisting[firstline=4,lastline=8]{\finkpath}
 \thispagestyle{empty}
 \clearpage
+
+% Default in Engish
+\renewcommand{\svnbeforetable}{%
+This is an automatic generated table using the \textbf{\sffamily table} option.
+\bigskip\par\noindent
+}
 \tableofrevisions
 
-\chapter*{Version Control Overview}
-
-\begin{tabular}{lllll}
-   \hline
-   Group & Revision & Author & Date \\ \hline
-   Global & \svnrev & \svnFullAuthor{\svnauthor} & \svntoday\ \svntime\ \svntimezone \\
-   \svngroup{abc}abc &
-   \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
-   \svngroup{def}def &
-   \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
-   \svngroup{ghi}ghi &
-   \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
-   \svngroup{jkl}jkl &
-   \svncgrev & \svnFullAuthor{\svncgauthor} & \svncgtoday\ \svncgtime\ \svntimezone \\
-   \hline
+% Redefined to German
+% Uses booktabs for nicer table
+\renewcommand{\svnbeforetable}{%
+Can be redefined to another format and language: Verstehen Sie Deutsch?
+\bigskip\par\noindent
+}
+\renewenvironment{svntable}{%
+\begin{tabular}
+    {p{5.5cm}rll}
+\toprule
+    Name & Rev & Autor & \"Anderungszeitpunkt \\
+\midrule
+}
+%\renewcommand{\endsvntable}
+{%
+\bottomrule
 \end{tabular}
-\svngroup{}
-\clearpage
+}
+\renewcommand{\svnrevisionsname}{Revisionen}
+\renewcommand{\svntabgroup}[1]{Gruppe `#1'}
+\renewcommand{\svntabfile}[1]{\ Datei `{\scriptsize\svnnolinkurl{#1}}'}
+\renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
+\renewcommand{\svntabdate}[8]{#3.#2.#1\ #4:#5:#6}
+\tableofrevisions
+
 
 \svngroup{abc}
 \part{Abc}
