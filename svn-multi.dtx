@@ -832,7 +832,8 @@
 % for itself which doesn't influence its membership in a real group. This means
 % that a set of (internal) group macros is produced for the file like for a
 % normal group but neither is the current group changed nor is it included in
-% the (internal) list of groups.\par
+% the (internal) list of groups. The file will still be part of the current
+% group.\par
 % \paragraph{Declaration:}
 % This feature is enabled by the \op{filesasgroups} option. All files of the
 % document are then automatically declared as extra groups. This can be disabled
@@ -846,12 +847,12 @@
 % read in by this packages. An internal filter is in place to ignore this files
 % by their file extension. This filter can by modified by the two following
 % macros.
-% \DescribeMacro{svnignoreextensions}{comma separated list of extension without
-% leading dot}
+% \DescribeMacro{svnignoreextensions}{\marg{comma separated list of extension without
+% leading dot}}
 % Tells |svn-multi| to ignore the following file extension and never declare
 % files with them as extra groups.
-% \DescribeMacro{svnconsiderextensions}{comma separated list of extension without
-% leading dot}
+% \DescribeMacro{svnconsiderextensions}{\marg{comma separated list of extension without
+% leading dot}}
 % Tells |svn-multi| to (re-)consider the following file extension and declare
 % files with them as extra groups if read in.
 %
@@ -891,8 +892,8 @@
 % inside the \cs{tableofrevisions} macro).
 %
 % \subsection{Including Keywords of External Files}\label{sec:external}
-% \DescribeMacro{svnexternal}{\{\{\meta{filea}\}\{\meta{fileb}\}\ignorespaces
-% \ldots\{\meta{filex}\}\}}
+% \DescribeMacro{svnexternal}{\oarg{group name}\{\{\meta{filea}\}\ignorespaces
+% \{\meta{fileb}\}\ldots\{\meta{filex}\}\}}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
 % even directories) can be included using this macro which awaits a list of
 % files, each with the full path relative to the main \LaTeX\ file and each
@@ -902,15 +903,16 @@
 % then processed by the external script \scr{svn-multi.pl} which must be
 % executed like described below. The appropriate keywords are then written in
 % \meta{source file}|.svx| files (|x| like eXternal) which are read in by the
-% \cs{svnexternal} macro at the next \LaTeX\ run. Therefore the keywords are
-% processed at the location \eg in the same keyword group as this macro. The
+% same \cs{svnexternal} macro at the next \LaTeX\ run. If no group name for the
+% external files is specified using the optional argument the keywords are
+% in the same keyword group as this macro. The
 % file local macros like \cs{svnfilerev} which appear in a source file after
 % \cs{svnexternal} are affected, \ie updated if one of the external revision is
-% higher than the one of the source file. This makes sense if the included
+% higher than the one of the source file. This makes sense if \eg the included
 % graphics are taken as logical part of a source file.
 %
-% \DescribeMacro{svnexternal}{\{\{\meta{patha}\}\{\meta{fileb}\}\ignorespaces
-% \ldots\{\meta{pathx}\}\}}
+% \DescribeMacro{svnexternal}{\{\{\meta{patha}\}\ignorespaces
+% \{\meta{fileb}\}\ldots\{\meta{pathx}\}\}}
 % This macro can be used in the document preamble to declare a set of paths to
 % be scanned for files specified with \cs{svnexternal}. This avoids the need to
 % provide the path again and again for every file.
