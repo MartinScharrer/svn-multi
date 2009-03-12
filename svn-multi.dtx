@@ -252,7 +252,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{1723}
+% \CheckSum{0}
 %
 % {\makeatother
 % \CharacterTable
@@ -1148,6 +1148,13 @@
 %
 % Enable dependent options:
 %    \begin{macrocode}
+\def\svn@depoption#1{%
+  \csname if@svnmulti@#1\endcsname\else
+  \message{svn-multi: Required option '#1' enabled.}
+  \csname @svnmulti@#1true\endcsname
+  \fi
+}
+
 \if@svnmulti@groups
   \@svnmulti@needinputfilenametrue
 \fi
@@ -1155,25 +1162,25 @@
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@filesasgroups
-  \@svnmulti@groupstrue
+  \svn@depoption{groups}
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@graphics
-  \@svnmulti@externaltrue
-  \@svnmulti@autoloadtrue
+  \svn@depoption{external}
+  \svn@depoption{autoload}
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@pgfimages
-  \@svnmulti@externaltrue
-  \@svnmulti@autoloadtrue
+  \svn@depoption{external}
+  \svn@depoption{autoload}
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@autoload
-  \@svnmulti@externaltrue
+  \svn@depoption{external}
   \@svnmulti@needinputfilenametrue
 \fi
 \if@svnmulti@table
-  \@svnmulti@groupstrue
+  \svn@depoption{groups}
   \@svnmulti@needinputfilenametrue
 \fi
 %    \end{macrocode}
@@ -1187,9 +1194,14 @@
 \def\svn@temp{true}
 \ifx\@svnmulti@autoload\svn@temp
   \@svnmulti@autoloadtrue
+  \svn@depoption{external}
+  \@svnmulti@needinputfilenametrue
 \else
 \def\svn@temp{false}
 \ifx\@svnmulti@autoload\svn@temp
+  \if@svnmulti@autoload
+  \PackageWarning{svn-multi}{Option 'autoload' disabled.}
+  \fi
   \@svnmulti@autoloadfalse
 \else
   \PackageError{svn-multi}%
