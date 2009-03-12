@@ -425,7 +425,6 @@
 % Activate all features of the package.\medskip
 %
 % \DescribeOption{verbatim}
-% \DescribeOption*{noverbatim}
 % Activate (default) or deactivate the verbatim mode of the keyword parser
 % macros. Normally verbatim mode is very much wanted to support strange
 % filenames of URLs, but This options gives the user a possibility to disable
@@ -435,21 +434,17 @@
 % \medskip
 %
 % \DescribeOption{external}
-% \DescribeOption*{noexternal}
 % Activate or deactivate (default) the support for keywords from external files
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
-% caused by macros placed there by this feature.  Please note that the
-% \op{noexternal} option causes \op{nographics} and \op{nopgfimages}.
+% caused by macros placed there by this feature.
 % \medskip
 %
 % \DescribeOption{groups}
-% \DescribeOption*{nogroups}
 % Activate or deactivate (default) the keyword groups feature described in
 % section~\ref{sec:group}.\\[\baselineskip]
 %
 % \DescribeOption{filesasgroups}
-% \DescribeOption*{nofilesasgroups}
 % Activate or deactivate (default) the declaration of all input files as
 % independent groups so that there keyword informations can be typeset inside
 % other files. The group name is the file path (`|subdir/file.tex|'). The files
@@ -458,12 +453,11 @@
 % \cs{svnfilesasgrouptrue} inside the document.
 %
 % \DescribeOption{graphics}
-% \DescribeOption*{nographics}
 % This option (default: off) allows to automatically declare all images included
 % using |\includegraphics| from the |graphics|/|graphicx| package as external
 % files (see section~\ref{sec:external}). The options \op{external} and
 % \op{autoload} are activated by the |graphics| option so that the produced
-% |.svx| files are loaded automatically.  An \op{noautoload} option after
+% |.svx| files are loaded automatically.  An \op{autoload}|=false| option after
 % |graphics| will deactivate this, but then an \cs{svnexternal} macro must be
 % included in all \LaTeX\ files which should take the image revisions into
 % account.\par The |graphics| package is loaded if this option is active. If
@@ -474,14 +468,12 @@
 % \medskip
 %
 % \DescribeOption{pgfimages}
-% \DescribeOption*{nopgfimages}
 % Same like the \op{graphics} option but for the |pgf| package (2008/01/15 or
 % later) with the |pgfuseimage| and |pgfimage| macros. Please also see the notes
 % about package loading and ties mentioned above.
 % \medskip
 %
 % \DescribeOption{autoload}
-% \DescribeOption*{noautoload}
 % Activate or deactivate (default) automatic loading of corresponding |.svx|
 % files at the begin of files included using |\input| or |\import|. This avoids
 % the need of putting an \cs{svnexternal} macro in every file just to load the
@@ -490,7 +482,6 @@
 % \medskip
 %
 % \DescribeOption{table}
-% \DescribeOption*{notable}
 % Activate or deactivate (default) a \cs{tableofrevisions} macro which shows the
 % revisions of all files and groups. This needs \op{groups} to work which is
 % activated with \op{table}.
@@ -1023,24 +1014,19 @@
  [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
 %    \end{macrocode}
 
-% \subsubsection*{Preliminary Declarations}
-% Declaration of feature switches.
+% \subsubsection*{Options}
+% Declaration of options and internal switches.
 %    \begin{macrocode}
-\newif\if@svnmulti@verbatim
-\newif\if@svnmulti@groups
-\newif\if@svnmulti@external
-\newif\if@svnmulti@graphics
-\newif\if@svnmulti@pgfimages
-\newif\if@svnmulti@autoload
-\newif\if@svnmulti@table
+\RequirePackage{kvoptions}
+
+\SetupKeyvalOptions{%
+    family = svn-multi,
+    prefix = @svnmulti@
+}
 \newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
-\newif\if@svnmulti@filesasgroups
-%    \end{macrocode}
-%
-% \subsubsection*{Options}
-%    \begin{macrocode}
-\DeclareOption{old}{%
+
+\DeclareVoidOption{old}{%
   \@svnmulti@verbatimtrue
   \@svnmulti@groupsfalse
   \@svnmulti@externalfalse
@@ -1051,7 +1037,7 @@
   \@svnmulti@needinputfilenamefalse
   \@svnmulti@filesasgroupsfalse
 }
-\DeclareOption{all}{%
+\DeclareVoidOption{all}{%
   \@svnmulti@verbatimtrue
   \@svnmulti@groupstrue
   \@svnmulti@externaltrue
@@ -1062,63 +1048,49 @@
   \@svnmulti@needinputfilenametrue
   \@svnmulti@filesasgroupstrue
 }
-\DeclareOption{verbatim}{\@svnmulti@verbatimtrue}
-\DeclareOption{noverbatim}{\@svnmulti@verbatimfalse}
-\DeclareOption{groups}{%
-    \@svnmulti@groupstrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{nogroups}{\@svnmulti@groupsfalse}
-\DeclareOption{external}{%
-    \@svnmulti@externaltrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{filesasgroups}{%
-    \@svnmulti@groupstrue
-    \@svnmulti@filesasgroupstrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{nofileasgroups}{\@svnmulti@filesasgroupsfalse}
-\DeclareOption{external}{%
-    \@svnmulti@externaltrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{noexternal}{%
-    \@svnmulti@externalfalse
-    \@svnmulti@pgfimagesfalse
-    \@svnmulti@graphicsfalse
-    \@svnmulti@autoloadfalse
-    \@svnmulti@needinputfilenamefalse
-}
-\DeclareOption{graphics}{%
-    \@svnmulti@graphicstrue
-    \@svnmulti@externaltrue
-    \@svnmulti@autoloadtrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{nographics}{\@svnmulti@graphicsfalse}
-\DeclareOption{pgfimages}{%
-    \@svnmulti@pgfimagestrue
-    \@svnmulti@externaltrue
-    \@svnmulti@autoloadtrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{nopgfimages}{\@svnmulti@pgfimagesfalse}
-\DeclareOption{autoload}{%
-    \@svnmulti@autoloadtrue
-    \@svnmulti@externaltrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{noautoload}{\@svnmulti@autoloadfalse}
-\DeclareOption{table}{%
-    \@svnmulti@tabletrue
-    \@svnmulti@groupstrue
-    \@svnmulti@needinputfilenametrue
-}
-\DeclareOption{notable}{\@svnmulti@tablefalse}
+\DeclareBoolOption[true]{verbatim}
+\DeclareBoolOption[false]{groups}
+\DeclareBoolOption[false]{external}
+\DeclareBoolOption[false]{filesasgroups}
+\DeclareBoolOption[false]{graphics}
+\DeclareBoolOption[false]{pgfimages}
+\DeclareBoolOption[false]{autoload}
+\DeclareBoolOption[false]{table}
 
 \ExecuteOptions{old}
-\ProcessOptions\relax
+\ProcessKeyvalOptions{svn-multi}
+%    \end{macrocode}
+%
+% Enable dependent options:
+%    \begin{macrocode}
+\if@svnmulti@groups
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@external
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@filesasgroups
+  \@svnmulti@groupstrue
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@graphics
+  \@svnmulti@externaltrue
+  \@svnmulti@autoloadtrue
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@pgfimages
+  \@svnmulti@externaltrue
+  \@svnmulti@autoloadtrue
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@autoload
+  \@svnmulti@externaltrue
+  \@svnmulti@needinputfilenametrue
+\fi
+\if@svnmulti@table
+  \@svnmulti@groupstrue
+  \@svnmulti@needinputfilenametrue
+\fi
 %    \end{macrocode}
 
 % General switch if any graphic option is enabled:
