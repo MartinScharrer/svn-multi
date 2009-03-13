@@ -88,7 +88,7 @@
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
-    \bigskip\par\noindent\pagebreak[2]\DescribeMacroS*%
+    \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
     \begingroup
@@ -543,16 +543,16 @@
 % and the file name from the short id macro can be accessed. Please note that
 % all features from the 2.0 version load the |fink| package which lets you
 % typeset the current file name anyway using |\finkbase.\finkext|\footnote{The
-% file name in \${}Id\$ is always the original Subversion file name while the
-% one given by the \texttt{fink} package is the current file name. Both
-% could differ if the file got renamed.}.
+% file name in \texttt{\${}Id\$} is always the original Subversion file name
+% while the one given by the \texttt{fink} package is the current file name.
+% Both could differ if the file got renamed.}.
 %
 % Write this macro like this (order of arguments not meaningfull)\\[2ex]
-% |\svnidlong|\\
-% |{$||HeadURL$}|\\
-% |{$||LastChangedDate$}|\\
-% |{$||LastChangedRevision$}|\\
-% |{$||LastChangedBy$}|\\[2ex]
+% |      \svnidlong|\\
+% |      {$||HeadURL$}|\\
+% |      {$||LastChangedDate$}|\\
+% |      {$||LastChangedRevision$}|\\
+% |      {$||LastChangedBy$}|\\[2ex]
 % in your files and set the subversion property |svn:keywords| of them
 % to\\`|HeadURL LastChangedDate LastChangedRevision LastChangedBy|'.
 %
