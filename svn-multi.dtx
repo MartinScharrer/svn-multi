@@ -88,7 +88,7 @@
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
-    \bigskip\par\noindent\DescribeMacroS*%
+    \bigskip\par\noindent\pagebreak[2]\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
     \begingroup
@@ -100,21 +100,23 @@
         {\let\macrolink\relax}%
         {\def\macrolink{\hyperlink{impl@#1}}}%
     \hypersetup{linkcolor=macrodesccolor}%
-    \hspace*{\macrosep}\macrolink{\macroformat{\textcolor{macrodesccolor}%
-        {\textbackslash #1}}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}}%
-    \noindent\mbox{}\macroargformat{#2}\macroline*[0.2\baselineskip]%
-    \nopagebreak
+    \hspace*{\macrosep}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
+    \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
+    \noindent\mbox{}\macroargformat{#2}\nopagebreak
+    \macroline*[0.2\baselineskip]%
     \endgroup
+    \nopagebreak
     \ignorespaces
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
-    \bigskip\par\noindent\DescribeScriptS*%
+    \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
 }
 \def\DescribeScriptS*#1#2{%
-    \hspace*{\macrosep}\scriptformat{\textcolor{scriptcolor}{#1}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}}%
+    \hspace*{\macrosep}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}%
+    \scriptformat{\textcolor{scriptcolor}{#1}}%
     \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
     \nopagebreak
 }
@@ -123,8 +125,9 @@
     \bigskip\par\noindent\DescribeOptionS*%
 }
 \def\DescribeOptionS*#1{%
-    \hspace*{\macrosep}\optionformat{\textcolor{optioncolor}{#1}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}}%
+    \hspace*{\macrosep}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}%
+    \optionformat{\textcolor{optioncolor}{#1}}%
     \noindent\mbox{}\macroline*[0.2\baselineskip]%
     \nopagebreak
 }
@@ -150,9 +153,10 @@
     \@ifundefined{href@desc@#1}%
         {\let\macrolink\relax}%
         {\def\macrolink{\hyperlink{desc@#1}}}%
-    \hspace*{\macrosep}\macrolink{\macroformat{%
-        \textcolor{macroimplcolor}{\textbackslash #1}}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}}%
+    \hspace*{\macrosep}%
+    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}%
+    \macrolink{\macroformat{%
+        \textcolor{macroimplcolor}{\textbackslash #1}}}%
     \\*[\smallskipamount]%
     \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
@@ -169,8 +173,8 @@
 }
 \newcommand*{\aftermacroargs}{%
     \@ifnextchar\begin
-        {\\[-2ex]\ignorespaces}%
-        {\\[\smallskipamount]\ignorespaces}%
+        {\\*[-2ex]\ignorespaces}%
+        {\\*[\smallskipamount]\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
     \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
@@ -354,7 +358,7 @@
 % multiple files for one \LaTeX{} document is well supported. The package
 % acquires the keywords of the last changed file and provides them to the user
 % through macros. The package has to read all keywords of all files first and
-% writes the most recent values in an auxiliary file with an `|.svn|' extension.
+% writes the most recent values in an auxiliary file with a `|.svn|' extension.
 % This file is read back at the next \LaTeX{} run which introduces a delay like
 % by the table of contents. The standard \LaTeX{} switch |\nofiles| can be used
 % to suppress the file generation. Macros to typeset the keywords of the current
@@ -377,9 +381,9 @@
 % or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} for more
 % details about the id macros.  Please note that the file-local macros
 % technically actually return the \emph{last registered} information from the
-% last \cs{svnid} or \cs{svnidlong} (or \cs{svnkwsave}) even when these were in
-% a different, previous file.  This will cause wrong results if they are used in
-% a file before or without any id macros.
+% last \cs{svnid} or \cs{svnidlong} even when these were in a different,
+% previous file.  This will cause wrong results if they are used in a file
+% before or without any id macros.
 %
 % \subsubsection*{Groups}
 % Version 2.0 introduces the concept of groups. Several files\footnote{actually
@@ -401,10 +405,11 @@
 % number of different groups. The files of one group do not have to be included
 % in a row but can be included everywhere in the document. The version control
 % information of the current group can be typeset with macros like
-% \cs{svncgrev}.  Also, a general but less robust macro \cs{svng} is provided to
-% access others groups by name everywhere in the document. To avoid some macro
-% robustness problems the current group can be changed locally for the output
-% macros using \cs{svnsetcg}.
+% \cs{svncgrev} (|cg| for \emph{current group}).  Also, a general but less
+% robust macro \cs{svng}\marg{group name}\marg{key} is provided to access others
+% groups by name everywhere in the document. To avoid some macro robustness
+% problems the current group can be changed locally for the output macros using
+% \cs{svnsetcg}\marg{group name}.
 %
 % See section~\ref{sec:group} for further details and usage instructions on
 % group macros.
@@ -413,11 +418,11 @@
 % Subversion keywords which first need to be read in by dedicated macros and can
 % then be typeset using different macros.
 %
-% \subsection{Package Options} Since v2.0 this package provides some options to
-% allow to activate only a certain subset of its functionality, \eg to avoid
-% problems with other packages or save \TeX\ memory. For backwards compatibility
-% to pre-2.0 package versions all old features are active by default and all new
-% features are deactivated to save a little of \TeX\ memory.
+% \subsection{Package Options} Since v2.0 this package provides options to
+% enable only a needed features, \eg to avoid problems with other packages or
+% save \TeX\ memory. For backwards compatibility to pre-2.0 package versions all
+% old features are enabled by default and all new features are disabled to
+% save a little of \TeX\ memory.
 %
 % All options except the first two are boolean key=value options (so far) and
 % await either `|true|' or `|false|' as value. A missing value means `|true|'.
@@ -436,10 +441,10 @@
 % \DescribeOption{verbatim}
 % Controls the verbatim mode of the keyword parser
 % macros. Normally verbatim mode is very much wanted to support strange
-% filenames of URLs, but this options gives the user a possibility to disable
-% verbatim, \eg for trouble shooting.  Please note that verbatim mode is needed
-% in order to make |svn-multi| work with some packages, like |babel| with the
-% |french| option.
+% characters in URLs and file names, but this options gives the user a
+% possibility to disable verbatim, \eg for trouble shooting.  Please note that
+% verbatim mode is needed in order to make |svn-multi| work with some packages,
+% like |babel| with the |french| option.
 %
 % \DescribeOption{external}
 % Controls the support for keywords from external files
@@ -464,8 +469,8 @@
 % This option allows to automatically declare all images included using the
 % macro |\includegraphics| from the |graphics|/|graphicx| package as external
 % files (see section~\ref{sec:external}). The options \op{external} and
-% \op{autoload} are activated by the |graphics| option so that the produced
-% |.svx| files are loaded automatically.  An \op{autoload}|=false| option after
+% \op{autoload} are activated by this option so that the produced
+% |.svx| files are loaded automatically.  An |autoload=false| option after
 % |graphics| will deactivate this, but then an \cs{svnexternal} macro must be
 % included in all \LaTeX\ files which should take the image revisions into
 % account.\par The |graphics| package is loaded if this option is active. If
@@ -473,19 +478,20 @@
 % \LaTeX\ document before |svn-multi|.\par  Please note that this feature needs
 % to tie itself into the |graphics| package and might fail if the internal
 % structure of this package changes in future versions.\par
-% The macro \cs{svngraphicsgroup}\marg{group name} can be used to declare a own
+% The macro \csi{svngraphicsgroup}\marg{group name} can be used to declare a own
 % group which is used for all the graphic files (also for pgf images, see
-% below). Normally they are placed in the current active group.\par
+% below). Otherwise they are placed in the current active group.\par
 % Some graphics like logos can appear frequently in a document. Do not count
 % them as part of each chapter they can be ignored using
-% \cs{svnignoregraphics}\marg{file path}. The macro
-% \cs{svnconsidergraphic}\marg{file path} disables this again. Such graphics can
-% be then included manually using an explicit \cs{svnexternal} macro.
+% \csi{svnignoregraphic}\marg{file path}. The macro
+% \csi{svnconsidergraphic}\marg{file path} disables this again. Such graphics
+% can be then included manually using an explicit \cs{svnexternal} macro.
 %
 % \DescribeOption{pgfimages}
-% Same like the \op{graphics} option but for the |pgf| package (2008/01/15 or
-% later) with the |pgfuseimage| and |pgfimage| macros. Please also see the notes
-% about package loading and ties mentioned above.
+% Identical to like the \op{graphics} option but for the |pgf| package
+% (implemented against the version from 2008/01/15) with the |\pgfuseimage| and
+% |\pgfimage| macros.  Please also see the notes about package loading and ties
+% mentioned above.
 %
 % \DescribeOption{autoload}
 % Controls automatic loading of corresponding |.svx|
@@ -500,6 +506,12 @@
 % revisions of all files and groups. This needs \op{groups} to work which is
 % activated with \op{table}. Enable \op{filesasgroup} to include a list of all
 % files per group. See the section~\ref{sec:table} for more information.
+%
+% \DescribeOption{<<inputfilehooks>>}
+% This is not really an option but an internal switch which loads the |fink|
+% package and installs at-begin-input-file and at-end-input-file hooks which are
+% needed for many of the options above. These options enable this switch
+% automatically.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -522,9 +534,18 @@
 % \DescribeMacro{svnidlong}{\karg{HeadURL}\karg{LastChangedDate}\ignorespaces
 % \karg{LastChangedRevision}\karg{LastChangedBy}}
 % Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the
-% above four keywords. The usage of \cs{svnid} or |\svnidlong| is a matter
+% above four keywords. The usage of \cs{svnid} or \cs{svnidlong} is a matter
 % of taste. The second is more readable inside the code and results in a nicer
 % date and a full URL, not only the filename. Both can also be used together.
+% In this case the \cs{svnid} macro should be come last. Because its revision is
+% not higher (but identical) than the revision of the \cs{svnidlong} macro it
+% does not override its values. This way both the full time zone from the long
+% and the file name from the short id macro can be accessed. Please note that
+% all features from the 2.0 version load the |fink| package which lets you
+% typeset the current file name anyway using |\finkbase.\finkext|\footnote{The
+% file name in \${}Id\$ is always the original Subversion file name while the
+% one given by the \texttt{fink} package is the current file name. Both
+% could differ if the file got renamed.}.
 %
 % Write this macro like this (order of arguments not meaningfull)\\[2ex]
 % |\svnidlong|\\
@@ -540,15 +561,13 @@
 % each of the four arguments, just in case someone need this.  In fact
 % everything not inside braces \{ \} is ignored.
 %
-% The two macros above are sufficient for the operation of |svn-multi| but the
-% following macros are provided for additional or alternative keyword handling.
-%
+% \noindent\parbox{\linewidth}{%
 % \DescribeMacro{svn}{\kmarg{keyword}}
 % \DescribeMacro*{svn*}{\kmarg{keyword}}
 % This macro let you typeset svn keywords directly. The dollars will be stripped
 % and the rest is typeset as normal text. The star version strips also the space
 % before the last dollar.  This macro alone was the very first version of
-% |svnkw| and is still included for fast and simple keyword typesetting.
+% |svnkw| and is still included for fast and simple keyword typesetting.}
 %
 % \DescribeMacro{svnkwsave}{\kmarg{keyword}}
 % This macro lets you include and save any keyword you like. The keyword can be
@@ -559,16 +578,18 @@
 %
 % \subsection{Typesetting the keyword values}\label{sec:kwaccess}
 % The following macros can be used to typeset the keyword values anywhere in the
-% document. Please note that note all \LaTeX{} fonts have all special
+% document. Please note that not all \LaTeX{} fonts have all special
 % characters, \eg `\_' is not provided in the standard roman font. To proper
-% typeset filename and URL containing these letters you can use either texttyper
-% font (|\texttt|) or use |{\urlstyle{rm}\svnnolinkurl{...}}| which needs the
-% |hyperref| package.
+% typeset file names and URLs containing these letters you can use either
+% teletype font (|\texttt|) or use |{\urlstyle{rm}\svnnolinkurl{...}}| which
+% requires the |hyperref| package.
 %
-% Like already mentioned |svn-multi| knows two groups of keywords. The first
-% group contains of the keywords for the whole document which hold the values of
-% the most recent committed file, the second contains of the \emph{current} or
-% \emph{file local} keywords, \eg the keywords of the current file.
+% Like already mentioned |svn-multi| knows three scopes of keywords. The first
+% contains of the keywords for the complete document which hold the values of
+% the most recent committed file and the second contains of the \emph{current}
+% or \emph{file local} keywords, \eg the keywords of the current file. Only this
+% two are described here while the third scope is described in
+% section~\ref{sec:group}.
 %
 % \DescribeMacro{svnrev}{}
 % \DescribeMacro*{svndate}{}
@@ -583,8 +604,10 @@
 % \DescribeMacro*{svnfileauthor}{}
 % These macros hold the keyword values of the current \LaTeX{} file, but only if
 % it contains a \cs{svnid} or \cs{svnidlong} macro. Otherwise the macros hold
-% still the values of the last file. Please see section~\ref{sec:date} how to
-% typeset parts of the date. See \cs{svnkw} below for all other keywords.
+% either zero values or the values of the last file dependent on whether an
+% option is enabled which enabled the |fink| package. Please see
+% section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
+% for all other keywords.
 %
 % \DescribeMacro{svnmainurl}{}
 % \DescribeMacro*{svnmainfilename}{}
@@ -919,7 +942,7 @@
 % higher than the one of the source file. This makes sense if \eg the included
 % graphics are taken as logical part of a source file.
 %
-% \DescribeMacro{svnexternal}{\{\{\meta{patha}\}\ignorespaces
+% \DescribeMacro{svnexternalpath}{\{\{\meta{patha}\}\ignorespaces
 % \{\meta{fileb}\}\ldots\{\meta{pathx}\}\}}
 % This macro can be used in the document preamble to declare a set of paths to
 % be scanned for files specified with \cs{svnexternal}. This avoids the need to
