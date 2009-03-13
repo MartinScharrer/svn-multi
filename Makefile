@@ -9,6 +9,7 @@ TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex 
 TESTARGS = -output-directory ${TESTDIR}
 INSGENERATED = ${PACKAGE}.sty svnkw.sty svn-multi.pl
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf svn-multi-pl.pdf example.pdf group_example.pdf group_example_*.tex ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
+ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
 
 LATEX_OPTIONS = -interaction=batchmode
 LATEX = pdflatex ${LATEX_OPTIONS}
@@ -63,14 +64,18 @@ group_example.pdf: group_example.tex svn-multi.sty
 	${LATEX} $<
 	${LATEX} $<
 
-zip: package doc example ${PACKAGE}.zip
+zip: package doc example ${ZIPFILE}
+${PACKAGE}.zip: zip
 
-${PACKAGE}.zip: ${PACKFILES}
+zip: ZIPVERSION=$(shell grep '\\def\\fileversion{.*}' svn-multi.dtx | sed -e 's/\\def\\fileversion{\(.*\)}/\1/' -e 's/\s\+//g')
+
+${ZIPFILE}: ${PACKFILES}
 	grep -q '\* Checksum passed \*' svn-multi.log
 	grep -q '\* Checksum passed \*' svn-multi-pl.log
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	zip $@ ${PACKFILES}
-	#cd .. && zip ${PACKAGE}/$@ $(addprefix ${PACKAGE}/, ${PACKFILES})
+	@echo
+	@echo "ZIP file ${ZIPFILE} created!"
 
 tar.gz: ${PACKAGE}.tar.gz
 
