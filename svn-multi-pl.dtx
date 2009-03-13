@@ -79,6 +79,12 @@
 \newcommand{\eg}{e.g.\@\xspace}
 
 \newenvironment{sub}{\begin{macro}}{\end{macro}}
+\newcommand{\parni}{\par\noindent}
+\newlength{\origparindent}
+\setlength{\origparindent}{\parindent}
+\setlength{\parindent}{0pt}
+\let\origpar=\par
+\def\par{\parindent=\origparindent\origpar\parindent=0pt}
 
 %\EnableCrossrefs
 \DisableCrossrefs
@@ -124,108 +130,77 @@
 %
 % \ifpdf
 % \hypersetup{
-%	pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
-%	pdftitle={The svn-multi.pl script},
-%	pdfsubject={Documentation of Perl script svn-multi.pl which allows the
-%	typesetting of external Subversion keywords in multi-file LaTeX documents},
-%	pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
-%	Control, Id, script}
+%   pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
+%   pdftitle={The svn-multi.pl script},
+%   pdfsubject={Documentation of Perl script svn-multi.pl which allows the
+%   typesetting of external Subversion keywords in multi-file LaTeX documents},
+%   pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
+%   Control, Id, script}
 % }
 % \fi
 % \maketitle
+% 
+% \textbf{Note:} This document is work in progress.\par
 % \section{Usage}
-% See the section in the |svn-multi| package manual.
+% See the section in the |svn-multi| package manual or the
+% \hyperlink{usage}{\texttt{usage}} function below.
 %
 % \StopEventually{}
 % \section{Implementation}
-% The implementation description is still work in progress.
 %
+% \subsection{Script Head}
+% Loading of required Modules.
 %    \begin{macrocode}
 use strict;
 use warnings;
 use File::Basename;
-
+%    \end{macrocode}
+% Declaration of constants VERSION, REV and DATE for script info output:
+%    \begin{macrocode}
 my $VERSION = "0.2";
 my ($REV,$DATE) = 
     (split ' ','$Id$')[2,3];
+%    \end{macrocode}
 
+% Declaration of other global constants and variables:
+%    \begin{macrocode}
 my $dollar  = '$';
-
-my %EXCLUDE = map { $_ => 1 } qw(sty tex aux log out toc fff ttt svn svx);
 my @PATH;
+my %EXCLUDE = map { $_ => 1 } qw(sty tex aux log out toc fff ttt svn svx);
+%    \end{macrocode}
 
+% Subfunction prototypes:
+%    \begin{macrocode}
 sub create_svxfile ($@);
+sub usage;
+%    \end{macrocode}
 
-if (!@ARGV or $ARGV[0] eq '--help' or $ARGV[0] eq '-h') {
+% Check if help was requested:
+%    \begin{macrocode}
+if (!@ARGV or grep { $_ eq '--help' or $_ eq '-h' } @ARGV) {
     usage();
 }
+%    \end{macrocode}
 
+% Print identification line like other TeX related programs:
+%    \begin{macrocode}
 print STDOUT "This is svn-multi.pl, Version $VERSION-$REV, $DATE\n";
 %    \end{macrocode}
 
-% \begin{sub}{usage}
-% Prints usage information.
-%    \begin{macrocode}
-sub usage {
-    print STDOUT <<'EOT';
-Usage:
- svn-multi.pl jobname[.tex] [--fls] [--group|-g <group name>] [input_files] ...
- ... [--group|-g <group name>] [input_files] ...
-
-Description:
- This LaTeX helper script collects Subversion keywords from non-(La)TeX files
- and provides it to the 'svn-multi' package using '.svx' files.  It will first
- scan the file '<jobname>.svn' for files declared by the '\svnextern' macro but
- also allows to provide additional files including the corresponding
- groups. The keywords for the additional files will be written in the file
- '<jobname>.svx'.
-
-Options:
- jobname[.tex] : The LaTeX `jobname`, i.e. the basename of your main LaTeX file.
- --group <GN>  : Use given group name <GN> for all following files,
- or -g <GN>      including the one read by a '--fls' option, until the next
-                 group is specified.
- --fls  : Read list of (additional) files from the file '<jobname>.fls'. This
-          file is produced by LaTeX when run with the '--recorder' option and
-          contains a list of all input and output files used by the LaTeX main
-          file. Only input files with a relative path will be used.
-          A previously selected group will be honoured.
-
-Examples:
-The main LaTeX file here is 'mymainlatexfile.tex'.
-
- svn-multi.pl mymainlatexfile
-    Creates Subversion keywords for all files declared by '\svnextern' inside
-    the LaTeX code.
-
- svn-multi.pl mymainlatexfile --group=FLS --fls
-    Creates Subversion keywords for all files declared by '\svnextern' inside
-    the LaTeX code. In addition it does the same for all relative input files
-    mentioned in the .fls file which are placed in the 'FLS' group.
-
- svn-multi.pl mymainlatexfile a b c --group=B e d f
-    In addition to the '\svnextern' declared files the keywords for the files
-    'a', 'b' and 'c' will be added without a specific group, i.e. the last
-    group specified in the LaTeX file before the '\svnextern' macro will
-    be used. The keywords for 'e', 'd', 'f' will be part of group 'B'.
-
- svn-multi.pl mymainlatexfile --group=A a --group=B b --group='' c
-    File 'a' is in group 'A', 'b' is in 'B' and 'c' is not in any group.
-
-Further Information:
-See the svn-multi package manual for more information about this script.
-EOT
-    exit(0);
-}
-%    \end{macrocode}
-% \end{sub}
-
+% The first argument is taken as the jobname. To be more userfriendly the name
+% can include some standard extension and a path which are stripped.
 %    \begin{macrocode}
 my ($jobname, $dir, $suffix) = fileparse(shift @ARGV, qr/\.(tex|ltx|dtx|svn)$/);
+%    \end{macrocode}
+% If a directory was specified this program is changing into it because the
+% file paths in the |.svn| file are relative to it.
+%    \begin{macrocode}
 if ($dir && $dir ne './') {
   printf STDOUT "Main directory is '$dir'.\n";
   chdir($dir);
 }
+%    \end{macrocode}
+%    \begin{macrocode}
 
 if ($jobname =~ /^-/) {
     usage();
@@ -281,8 +256,10 @@ foreach my $file (keys %external) {
 }
 %    \end{macrocode}
 
+% \subsection{Functions}
+
 % \begin{sub}{parse args}
-% Parses the arguments and builds a list of (group,files) pairs
+% Parses the arguments and builds a list of (group,(files)) pairs.
 %    \begin{macrocode}
 sub parse_args {
     my @args = @_;
@@ -318,11 +295,12 @@ sub parse_args {
     push @pairs, [ $group, [ @files ] ] if @files;
     return @pairs;
 }
-
 %    \end{macrocode}
 % \end{sub}
 
-% \begin{sub}{read fls}
+% \begin{sub}{path search}
+% Search all directories in |PATH| to find the given file and return the first
+% own found.
 %    \begin{macrocode}
 sub path_search {
     my $file = shift;
@@ -341,18 +319,20 @@ sub path_search {
 % \end{sub}
 
 % \begin{sub}{ceate svxfile}
+% Creates the |.svx| file named by the first argument. The second argument is a
+% list of (group name/files) pairs.
 %    \begin{macrocode}
 sub create_svxfile ($@) {
     my ($svxfile, @fgpair) = @_;
     my $lastgroup = '';
     my $fgused = 0;
     my %seen;
+    return if not @fgpair or not $svxfile;
 
     open(my $svxfh, '>', $svxfile) or do {
         warn "ERROR: Could not create SVX file '$svxfile'!\n";
         return;
     };
-    return if not @fgpair;
     print STDOUT "Generating .svx file '$svxfile'.\n";
     select $svxfh;
     print "% Generated by svn-multi.pl v$VERSION\n\n";
@@ -395,7 +375,10 @@ sub create_svxfile ($@) {
 % \end{sub}
 
 % \begin{sub}{svnid}
-% Generates a svnid macro line.
+% Generates \cs{svnid} macro lines. Awaits a hash with the information
+% received from |svn|. The |$| sign is masked to avoid keyword extension by
+% Subversion inside this source file.
+% Additional modules are needed to produce the date format used by |$||Id$|.
 %    \begin{macrocode}
 sub svnid {
     use Date::Parse;
@@ -411,7 +394,9 @@ EOT
 % \end{sub}
 
 % \begin{sub}{svnidlong}
-% Generates svnidlong macro lines.
+% Generates \cs{svnidlong} macro lines. Awaits a hash with the information
+% received from |svn|. The |$| sign is masked to avoid keyword extension by
+% Subversion inside this source file.
 %    \begin{macrocode}
 sub svnidlong {
     my $href = shift;
@@ -427,6 +412,8 @@ EOT
 % \end{sub}
 
 % \begin{sub}{read fls}
+% Reads the |.fls| file and looks for |INPUT relativedir/file| lines.
+% The file is ignored if it's extension is in the |EXCLUDE| list.
 %    \begin{macrocode}
 sub read_fls {
     my $fls = shift;
@@ -445,7 +432,72 @@ sub read_fls {
 }
 %    \end{macrocode}
 % \end{sub}
+
+% \begin{sub}{usage}
+% \hypertarget{usage}{}%
+% Prints usage information.
+%    \begin{macrocode}
+sub usage {
+    print STDOUT <<'EOT';
+Usage:
+ svn-multi.pl jobname[.tex] [--fls] [--group|-g <group name>] [input_files] ...
+ ... [--group|-g <group name>] [input_files] ...
+
+Description:
+ This LaTeX helper script collects Subversion keywords from non-(La)TeX files
+ and provides it to the 'svn-multi' package using '.svx' files.  It will first
+ scan the file '<jobname>.svn' for files declared by the '\svnextern' macro but
+ also allows to provide additional files including the corresponding groups. The
+ keywords for the additional files will be written in the file '<jobname>.svx'.
+
+Options:
+ jobname[.tex] : The LaTeX `jobname`, i.e. the basename of your main LaTeX file.
+ --group <GN>  : Use given group name <GN> for all following files,
+ or -g <GN>      including the one read by a '--fls' option, until the next
+                 group is specified.
+ --fls  : Read list of (additional) files from the file '<jobname>.fls'. This
+          file is produced by LaTeX when run with the '--recorder' option and
+          contains a list of all input and output files used by the LaTeX main
+          file. Only input files with a relative path will be used.  A
+          previously selected group will be honoured.
+
+Examples:
+The main LaTeX file here is 'mymainlatexfile.tex'.
+
+ svn-multi.pl mymainlatexfile
+    Creates Subversion keywords for all files declared by '\svnextern' inside
+    the LaTeX code.
+
+ svn-multi.pl mymainlatexfile --group=FLS --fls
+    Creates Subversion keywords for all files declared by '\svnextern' inside
+    the LaTeX code. In addition it does the same for all relative input files
+    mentioned in the .fls file which are placed in the 'FLS' group.
+
+ svn-multi.pl mymainlatexfile a b c --group=B e d f
+    In addition to the '\svnextern' declared files the keywords for the files
+    'a', 'b' and 'c' will be added without a specific group, i.e. the last group
+    specified in the LaTeX file before the '\svnextern' macro will be used. The
+    keywords for 'e', 'd', 'f' will be part of group 'B'.
+
+ svn-multi.pl mymainlatexfile --group=A a --group=B b --group='' c
+    File 'a' is in group 'A', 'b' is in 'B' and 'c' is not in any group.
+
+Further Information:
+See the svn-multi package manual for more information about this script.
+EOT
+    exit(0);
+}
+%    \end{macrocode}
+% \end{sub}
+
+% End of File
+%    \begin{macrocode}
+__END__
+%    \end{macrocode}
+%
 % \Finale
 % \iffalse
 %</script>
 % \fi
+% ^^A \iffalse vim: ft=perl
+% ^^A \fi
