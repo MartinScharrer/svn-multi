@@ -50,13 +50,21 @@
 \let\DescribeOption\DescribeMacro
 \let\DescribeScript\DescribeOption
 \else % crossreference of macros in documentation
-\begingroup
-\catcode`\*=0
-\catcode`\\=12
-*gdef*removeslash\#1 #2END{#1#2}
-*endgroup
-
 \makeatletter
+
+\usepackage{xspace}
+\newcommand*{\pkg}[1]{%
+  \href{http://tug.ctan.org/pkg/#1}{#1}%
+  % URL footnote (for print-out) on first appearance:
+  \@ifundefined{seen@package@#1}{%
+    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
+    \@namedef{seen@package@#1}{1}}{}%
+  \xspace
+}
+\newcommand*{\svnmulti}{%
+  \texttt{svn-multi}\xspace%
+}
+
 % link \cs to macro definitions
 \let\origmacro\macro
 \let\origendmacro\endmacro
@@ -278,7 +286,7 @@
 % \changes{v1.0}{2006/05/27}{Initial version}
 % \changes{v1.1}{2006/06/08}{Added macros to extract and typeset date/time
 % information. Added macros to set and typeset main URL or filename.}
-% \changes{v1.2}{2007/06/22}{Renamed packet from \texttt{svnkw} to
+% \changes{v1.2}{2007/06/22}{Renamed package from \texttt{svnkw} to
 % \texttt{svn-multi} to match CTAN directory. Wrapper file
 % \texttt{svnkw.sty} is provided for backward compatibility.}
 % \changes{v1.3}{2007/07/01}{Added verbatim support. Keywords can now contain
@@ -325,7 +333,8 @@
 % \title{The \textsf{svn-multi} package
 %   \\formerly known as \textsf{svnkw}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
-% \url{http://www.scharrer-online.de/latex/svn-multi}}
+% \url{http://www.scharrer-online.de/latex/svn-multi}\\
+% CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
 % \date{Version \expandafter\@gobble\fileversion\\\today}
 %
 % \ifpdf
@@ -343,9 +352,9 @@
 % \section{Package naming}
 % The authors first choice for this package was |svnkw| but the CTAN
 % maintainer suggested a more descriptive name and put the package in the
-% |svn-multi|\footnote{CTAN:
+% \svnmulti\footnote{CTAN:
 % \url{http://www.ctan.org/tex-archive/macros/latex/contrib/svn-multi/}}
-% directory. Therefore the style file got renamed to |svn-multi|, but a
+% directory. Therefore the style file got renamed to \svnmulti, but a
 % |svnkw| dummy style file which loads the new package is still provided
 % for backward compatibility.
 %
@@ -353,8 +362,7 @@
 % This package lets you typeset keywords of the version control system
 % Subversion\footnote {Subversion homepage: \url{http://subversion.tigris.org/}}
 % (svn), which is the successor of the popular CVS, inside your \LaTeX{} files
-% anywhere you like.  Unlike the package |svn|\footnote{CTAN:
-% \url{http://www.ctan.org/tex-archive/macros/latex/contrib/svn/}} the usage of
+% anywhere you like.  Unlike the package \pkg{svn} the usage of
 % multiple files for one \LaTeX{} document is well supported. The package
 % acquires the keywords of the last changed file and provides them to the user
 % through macros. The package has to read all keywords of all files first and
@@ -443,8 +451,8 @@
 % macros. Normally verbatim mode is very much wanted to support strange
 % characters in URLs and file names, but this options gives the user a
 % possibility to disable verbatim, \eg for trouble shooting.  Please note that
-% verbatim mode is needed in order to make |svn-multi| work with some packages,
-% like |babel| with the |french| option.
+% verbatim mode is needed in order to make \svnmulti work with some packages,
+% like \pkg{babel} with the |french| option.
 %
 % \DescribeOption{external}
 % Controls the support for keywords from external files
@@ -467,16 +475,16 @@
 %
 % \DescribeOption{graphics}
 % This option allows to automatically declare all images included using the
-% macro |\includegraphics| from the |graphics|/|graphicx| package as external
+% macro |\includegraphics| from the \pkg{graphics}/\pkg{graphicx} package as external
 % files (see section~\ref{sec:external}). The options \op{external} and
 % \op{autoload} are activated by this option so that the produced
 % |.svx| files are loaded automatically.  An |autoload=false| option after
-% |graphics| will deactivate this, but then an \cs{svnexternal} macro must be
+% \pkg{graphics} will deactivate this, but then an \cs{svnexternal} macro must be
 % included in all \LaTeX\ files which should take the image revisions into
-% account.\par The |graphics| package is loaded if this option is active. If
+% account.\par The \pkg{graphics} package is loaded if this option is active. If
 % this package is needed with some special options it should be loaded by the
-% \LaTeX\ document before |svn-multi|.\par  Please note that this feature needs
-% to tie itself into the |graphics| package and might fail if the internal
+% \LaTeX\ document before \svnmulti.\par  Please note that this feature needs
+% to tie itself into the \pkg{graphics} package and might fail if the internal
 % structure of this package changes in future versions.\par
 % The macro \csi{svngraphicsgroup}\marg{group name} can be used to declare a own
 % group which is used for all the graphic files (also for pgf images, see
@@ -488,7 +496,7 @@
 % can be then included manually using an explicit \cs{svnexternal} macro.
 %
 % \DescribeOption{pgfimages}
-% Identical to like the \op{graphics} option but for the |pgf| package
+% Identical to like the \op{graphics} option but for the \pkg{pgf} package
 % (implemented against the version from 2008/01/15) with the |\pgfuseimage| and
 % |\pgfimage| macros.  Please also see the notes about package loading and ties
 % mentioned above.
@@ -508,7 +516,7 @@
 % files per group. See the section~\ref{sec:table} for more information.
 %
 % \DescribeOption{<<inputfilehooks>>}
-% This is not really an option but an internal switch which loads the |fink|
+% This is not really an option but an internal switch which loads the \pkg{fink}
 % package and installs at-begin-input-file and at-end-input-file hooks which are
 % needed for many of the options above. These options enable this switch
 % automatically.
@@ -541,7 +549,7 @@
 % not higher (but identical) than the revision of the \cs{svnidlong} macro it
 % does not override its values. This way both the full time zone from the long
 % and the file name from the short id macro can be accessed. Please note that
-% all features from the 2.0 version load the |fink| package which lets you
+% all features from the 2.0 version load the \pkg{fink} package which lets you
 % typeset the current file name anyway using |\finkbase.\finkext|\footnote{The
 % file name in \texttt{\${}Id\$} is always the original Subversion file name
 % while the one given by the \texttt{fink} package is the current file name.
@@ -582,9 +590,9 @@
 % characters, \eg `\_' is not provided in the standard roman font. To proper
 % typeset file names and URLs containing these letters you can use either
 % teletype font (|\texttt|) or use |{\urlstyle{rm}\svnnolinkurl{...}}| which
-% requires the |hyperref| package.
+% requires the \pkg{hyperref} package.
 %
-% Like already mentioned |svn-multi| knows three scopes of keywords. The first
+% Like already mentioned \svnmulti knows three scopes of keywords. The first
 % contains of the keywords for the complete document which hold the values of
 % the most recent committed file and the second contains of the \emph{current}
 % or \emph{file local} keywords, \eg the keywords of the current file. Only this
@@ -605,7 +613,7 @@
 % These macros hold the keyword values of the current \LaTeX{} file, but only if
 % it contains a \cs{svnid} or \cs{svnidlong} macro. Otherwise the macros hold
 % either zero values or the values of the last file dependent on whether an
-% option is enabled which enabled the |fink| package. Please see
+% option is enabled which enabled the \pkg{fink} package. Please see
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
 %
@@ -636,8 +644,8 @@
 % Examples:\\
 % \indent\indent |\textsl{Revision: \svnkw{Revision}}|\\
 % \indent\indent |URL: \url{\svnkw{HeadURL}}|\\
-% In the second example |\url| (|hyperref| package) is used to add a hyperlink
-% and to avoid problems with underscores (|_|) inside the URL.  |svn-multi| is
+% In the second example |\url| (\pkg{hyperref} package) is used to add a hyperlink
+% and to avoid problems with underscores (|_|) inside the URL.  \svnmulti is
 % also providing a macro \cs{svnnolinkurl} which works like |\url| but doesn't
 % adds an hyperlink. See the description of this macro for more details.
 %
@@ -685,7 +693,7 @@
 % \cs{svnid} and \cs{svnidlong}, should not be intermixed and/or the timezone
 % should always be typeset together with the time.
 %
-% Starting with v1.4 of |svn-multi| the timezone macros return the full
+% Starting with v1.4 of \svnmulti the timezone macros return the full
 % timezone, \ie sign, hour and minute part, \eg |+0100|, not only the sign and
 % hour. The new macros % \cs{svntimezonehour}/\cs{svnfiletimezonehour} and
 % \cs{svntimezoneminute}/\linebreak[3]\cs{svnfiletimezoneminute} can be used to
@@ -727,7 +735,7 @@
 % \DescribeMacro*{svncgtoday}{}
 % These macros typeset the document-global, current-file or current-group date,
 % respectively, using the format of |\today| which depends on the used language.
-% To adjust the language of your document use the |babel| package.
+% To adjust the language of your document use the \pkg{babel} package.
 %
 % \subsection{Using full author names}
 % If you like to have the full author\footnote{This means subversion authors,
@@ -773,22 +781,22 @@
 % \subsection{Verbatim URLs with and without hyperlinks}
 % \DescribeMacro{svnnolinkurl}{\marg{macro with returns special text}}
 % This macro allows you to write |\svnnolinkurl{\svnkw{HeadURL}}| and get the
-% Head URL typeset verbatim. However |\url{|\cs{svnkw}|{HeadURL}}| (|hyperref|
-% package) gives you the same result with hyperlinked. Both macros require the
-% |hyperref| package which is not automatically loaded by |svn-multi|.  Please
-% load it manually when you like to use \cs{svnnolinkurl}.
+% Head URL typeset verbatim. However |\url{|\cs{svnkw}|{HeadURL}}|
+% (\pkg{hyperref} package) gives you the same result with hyperlinked. Both
+% macros require the \pkg{hyperref} package which is not automatically loaded by
+% \svnmulti.  Please load it manually when you like to use \cs{svnnolinkurl}.
 %
 % Since v1.3 all keywords are read and typeset verbatim so this macro isn't this
-% important anymore. However together with |hyperref|s |urlstyle| macro it can
-% be used to have keyword values with special characters in roman font, which
-% normally doesn't hold letters like `\_'.
+% important anymore. However together with \pkg{hyperref}s |\urlstyle| macro it
+% can be used to have keyword values with special characters in roman font,
+% which normally doesn't hold letters like `\_'.
 %
-% Please note that you can't use |hyperref|s |\nolinkurl| because it won't
+% Please note that you can't use \pkg{hyperref}s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
 % \subsection{Groups}\label{sec:group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
-% latest revision of a group can be accessed. Use the |groups| option to
+% latest revision of a group can be accessed. Use the \op{groups} option to
 % activate these macros.
 %
 % \DescribeMacro{svngroup}{\marg{group name}}
@@ -880,11 +888,11 @@
 % macros.
 % \DescribeMacro{svnignoreextensions}{\marg{comma separated list of extension without
 % leading dot}}
-% Tells |svn-multi| to ignore the following file extension and never declare
+% Tells \svnmulti to ignore the following file extension and never declare
 % files with them as extra groups.
 % \DescribeMacro{svnconsiderextensions}{\marg{comma separated list of extension without
 % leading dot}}
-% Tells |svn-multi| to (re-)consider the following file extension and declare
+% Tells \svnmulti to (re-)consider the following file extension and declare
 % files with them as extra groups if read in.
 %
 % \paragraph{Typesetting:}
@@ -915,11 +923,11 @@
 % defined to use a |tabular| table environment. This macros can (in theory) be
 % redefined to use other table environments. However, \TeX\ processes the tables
 % in quite a special way (which is the reason why an auxiliary file is used in
-% the first place), so most alternative table packages like |tabularx| seem to
+% the first place), so most alternative table packages like \pkg{tabularx} seem to
 % read the content in an verbatim like way which doesn't work (yet) with the
 % current format of the |.svt| file. Future versions of the package might produce
 % a pre-processed version of the |.svt| file on user request containing \eg
-% a |tabularx| table which simply has to be read using |\input| (this is done
+% a \pkg{tabularx} table which simply has to be read using |\input| (this is done
 % inside the \cs{tableofrevisions} macro).
 %
 % \subsection{Including Keywords of External Files}\label{sec:external}
@@ -952,7 +960,7 @@
 % just replace all `|\|' with `|/|', \eg `|C:\My dir|' gets `|{C:/My dir/}|'.
 %
 % \subsection*{Script \texttt{svn-multi.pl}}
-% The file \scr{svn-multi.pl} which comes with the |svn-multi| package is an
+% The file \scr{svn-multi.pl} which comes with the \svnmulti package is an
 % external Perl script which has to be run in the command line or by a \LaTeX\
 % development environment/editor like other tools like |Bib|\TeX\ or
 % |Makeindex|. A Perl interpreter and a Subversion command line client (|svn|)
@@ -1005,8 +1013,8 @@
 % relative path are used. A corresponding keyword group can also be specified.
 %
 % \section{Known Issues}\label{sec:issues}
-% This section lists some known issues of the |svn-multi| package and tries to
-% provide some workaround. Please feel free to write |svn-multi| author if you
+% This section lists some known issues of the \svnmulti package and tries to
+% provide some workaround. Please feel free to write \svnmulti author if you
 % detect any side effects or other issues causes by this package.
 %
 % \subsection{Packet \texttt{listings} uses \textbackslash input}
@@ -1025,31 +1033,32 @@
 % of them to provide additional related features. This section is used to list
 % this packages, their internal macro which got used and acknowledge the
 % authors/maintainers of them. Please send error reports to the author of
-% |svn-multi| and not to the people listed below.\par
-% All packages (including |svn-multi|) stand under the \LaTeX\ Project Public
+% \svnmulti and not to the people listed below.\par
+% All packages (including \svnmulti) stand under the \LaTeX\ Project Public
 % Licence (LPPL) which can be found at
 % \hbox{\url{http://www.latex-project.org/lppl/}} and can be freely downloaded
 % from the Comprehensive TeX Archive Network (CTAN) at
 % \hbox{\url{http://www.ctan.org/}}.
 %
-% \newenvironment*{DepPacket}[1]{\ignorespaces
+% \newenvironment*{DepPackage}[1]{\ignorespaces
 % \subsection*{\texttt{\textcolor{black}{#1}}}%
-% \def\thedeppacket{#1}%
+% \def\thedeppackage{#1}%
 % \def\infoline##1{\par\smallskip\textbf{##1}\hspace{1em}}%
 % }
 % {\infoline{Location:} CTAN: \url%
-% {http://www.ctan.org/tex-archive/help/Catalogue/entries/\thedeppacket.html}}
+% {http://tug.ctan.org/pkg/\thedeppackage}}
 %
-% \begin{DepPacket}{hyperref}
-% The macro \cs{svnnolinkurl} is resembling the |hyperref| macro |\nolinkurl|
-% and uses some |hyperref| internal macros from the |\url| macro definition.
+% \begin{DepPackage}{hyperref}
+% The macro \cs{svnnolinkurl} is resembling the \pkg{hyperref} macro
+% |\nolinkurl| and uses some its internal macros from the |\url| macro
+% definition.
 % \infoline{Used internal macros:} |\hyper@normalise|, |\Hurl|
 % \infoline{Version used:} 2008/11/18 v6.78m
 % \infoline{Licence:} LPPL, any version
 % \infoline{Authors/Maintainers:} Sebastian Rahtz, Heiko Oberdiek
-% \end{DepPacket}
+% \end{DepPackage}
 %
-% \begin{DepPacket}{fink}
+% \begin{DepPackage}{fink}
 % The FiNK (File Name Keeper) package is used to get the file name and path of
 % the input files. Two macros are patched to install hooks to execute own macros
 % before and after each input file. This is only done if needed for an enabled
@@ -1060,38 +1069,38 @@
 % \infoline{Version used:} 2008/02/27 v2.1.1
 % \infoline{Licence:} LPPL, any version
 % \infoline{Author/Maintainer:} Didier Verna
-% \end{DepPacket}
+% \end{DepPackage}
 %
-% \begin{DepPacket}{graphics}
+% \begin{DepPackage}{graphics}
 % If the \op{graphics} option is enabled the following macro is patched to
 % record the file name and path of the included graphic.
 % \infoline{Patched internal macros:} |\Gin@setfile|
 % \infoline{Version used:} 2006/02/20 v1.0o
 % \infoline{Licence:} LPPL, any version
 % \infoline{Author/Maintainer:} David Carlisle, \LaTeX3 Project
-% \end{DepPacket}
+% \end{DepPackage}
 %
-% \begin{DepPacket}{pgf}
-% Like the |graphics| package above a macro of this package is pathed to record
-% the file names and paths of included images when the option \op{pgfimages} is
-% enabled. Because this images pre-declares images for later use the internal
-% declared `image macros' are patched as well.
+% \begin{DepPackage}{pgf}
+% Like the \pkg{graphics} package above a macro of this package is pathed to
+% record the file names and paths of included images when the option
+% \op{pgfimages} is enabled. Because this images pre-declares images for later
+% use the internal declared `image macros' are patched as well.
 % \infoline{Patched internal macros:} |\pgf@declareimage|,
 % \hbox{|\pgf@image@|\meta{image name}|!|}
 % \infoline{Used internal macros:} |\pgf@filename|, |\pgf@image|
 % \infoline{Version used:} 2008/01/15 v2.00
 % \infoline{Licence:} LPPL v1.3c and GPL v2
 % \infoline{Author\&Maintainer:} Till Tantau
-% \end{DepPacket}
+% \end{DepPackage}
 %
-% \begin{DepPacket}{latex}
+% \begin{DepPackage}{latex}
 % Parts of the macro definitions of the |\tableofcontents| macros from the
 % |article| and |book| class of standard \LaTeX\ were used to define a similar
 % \csi{tableofrevisions} macro for both this classes and other similar classes.
 % \infoline{Version used:} 2005/09/16 v1.4f
 % \infoline{Licence:} LPPL v1.3c
 % \infoline{Authors/Maintainers:} \LaTeX3 Project
-% \end{DepPacket}
+% \end{DepPackage}
 %
 %
 % \section{Further Reading}
@@ -1246,7 +1255,7 @@
 
 % \subsection{Definition of init values}
 % Initialisation of at least the revision to a numeric value is necessary to not
-% break the |\ifnum| tests later in this packet. The revision is initialised to
+% break the |\ifnum| tests later in this package. The revision is initialised to
 % -1, but will be set to 0 if an unexpanded |$||Rev:$| keyword is read. This way
 % it can be tested if a file had any keyword macros or not.\par
 % Note that there a two different macros for the document global keywords:\par
@@ -1991,7 +2000,7 @@
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
 % with |\@@input| are used because |\InputIfFileExists| got redefined by the
-% |fink| package and there is no need to use |fink| for this files.
+% \pkg{fink} package and there is no need to use \pkg{fink} for this files.
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
@@ -2010,7 +2019,7 @@
 \if@svnmulti@needinputfilename
 %    \end{macrocode}
 
-% Load |fink| package and check if all needed macros are provided.
+% Load \pkg{fink} package and check if all needed macros are provided.
 %    \begin{macrocode}
 \RequirePackage{fink}[2008/02/27]
 \begingroup
@@ -2029,7 +2038,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnmulti@begininputfilehook}
-% This hook is installed in the |\fink@prepare| macro from the |fink| package
+% This hook is installed in the |\fink@prepare| macro from the \pkg{fink} package
 % which will be executed at the begin of a input file. The file name and path
 % are not yet in |\finkpath| etc. but in |\fink@nextpath|.
 %    \begin{macrocode}
@@ -2043,7 +2052,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnmulti@endinputfilehook}
-% This hook is installed in the |\fink@restore| macro from the |fink| package
+% This hook is installed in the |\fink@restore| macro from the \pkg{fink} package
 % which will be executed at the end of a input file. The file path |\finkpath|
 % etc. is still valid.
 %    \begin{macrocode}
@@ -2557,7 +2566,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \subsubsection{Package \texttt{graphics}}
 % Automatic declaration of all images included by |\includegraphics| from the
-% |graphics| package as external files. We use the |\Gin@setfile| macro from
+% \pkg{graphics} package as external files. We use the |\Gin@setfile| macro from
 % that package which receives the image file name as third argument.
 %    \begin{macrocode}
 \if@svnmulti@graphics
@@ -2582,7 +2591,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \subsubsection{Package \texttt{pgf}}
-% The |pgf| macro |\pgf@declareimage| which is called by the user macro
+% The \pkg{pgf} macro |\pgf@declareimage| which is called by the user macro
 % |\pgfdeclareimage| is used.
 %    \begin{macrocode}
 \if@svnmulti@pgfimages
@@ -2824,9 +2833,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnnolinkurl}[1]{URL}
-% This code is taken from the |hyperref| package and is the definition of
+% This code is taken from the \pkg{hyperref} package and is the definition of
 % |\url| just without the part which creates the actual hyperlink. This needs
-% of course the |hyperref| package. A warning is given if it isn't loaded.
+% of course the \pkg{hyperref} package. A warning is given if it isn't loaded.
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
 %% Adapted from the \url macro of the `hyperref` package.
@@ -2992,7 +3001,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %
 % \subsection{Backward compatibility wrapper \texttt{svnkw.sty}}
 % For backward compatibility a wrapper file with the old package name |svnkw| is
-% provided. Newer documents should use the name |svn-multi|.
+% provided. Newer documents should use the name \svnmulti.
 % \setcounter{CodelineNo}{0}
 % \iffalse
 %</package>
