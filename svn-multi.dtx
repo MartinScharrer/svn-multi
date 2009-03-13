@@ -788,7 +788,7 @@
 % \svnmulti.  Please load it manually when you like to use \cs{svnnolinkurl}.
 %
 % Since v1.3 all keywords are read and typeset verbatim so this macro isn't this
-% important anymore. However together with \pkg{hyperref}s |\urlstyle| macro it
+% important anymore. However together with \pkg{hyperref}'s |\urlstyle| macro it
 % can be used to have keyword values with special characters in roman font,
 % which normally doesn't hold letters like `\_'.
 %
@@ -931,6 +931,7 @@
 % a \pkg{tabularx} table which simply has to be read using |\input| (this is done
 % inside the \cs{tableofrevisions} macro).
 %
+% \pagebreak[4]
 % \subsection{Including Keywords of External Files}\label{sec:external}
 % \DescribeMacro{svnexternal}{\oarg{group name}\{\{\meta{filea}\}\ignorespaces
 % \{\meta{fileb}\}\ldots\{\meta{filex}\}\}}
@@ -1042,7 +1043,7 @@
 % \hbox{\url{http://www.ctan.org/}}.
 %
 % \newenvironment*{DepPackage}[1]{\ignorespaces
-% \subsection*{\texttt{\textcolor{black}{#1}}}%
+% \subsection*{\pkg{#1}}%
 % \def\thedeppackage{#1}%
 % \def\infoline##1{\par\smallskip\textbf{##1}\hspace{1em}}%
 % }
