@@ -2038,29 +2038,33 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnmulti@begininputfilehook}
-% This hook is installed in the |\fink@prepare| macro from the \pkg{fink} package
-% which will be executed at the begin of a input file. The file name and path
-% are not yet in |\finkpath| etc. but in |\fink@nextpath|.
+% This hook is installed in the |\fink@prepare| macro from the \pkg{fink}
+% package which will be executed at the begin of a input file. The file name and
+% path are not yet in |\finkpath| etc. but in |\fink@nextpath|.
 %    \begin{macrocode}
+\message{Package svn-multi: patching macro '\string\fink@prepare' from the
+'fink' package!}%
 \def\svnmulti@begininputfilehook{}
-\let\orig@fink@prepare\fink@prepare
+\let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
-  \orig@fink@prepare{#1}%
+  \svnmulti@fink@prepare{#1}%
   \svnmulti@begininputfilehook
 }
 %    \end{macrocode}
 % \end{macro}
 
 % \begin{macro}{\svnmulti@endinputfilehook}
-% This hook is installed in the |\fink@restore| macro from the \pkg{fink} package
-% which will be executed at the end of a input file. The file path |\finkpath|
-% etc. is still valid.
+% This hook is installed in the |\fink@restore| macro from the \pkg{fink}
+% package which will be executed at the end of a input file. The file path
+% |\finkpath| etc. is still valid.
 %    \begin{macrocode}
+\message{Package svn-multi: patching macro '\string\fink@restore' from the
+'fink' package!}%
 \def\svnmulti@endinputfilehook{}
-\let\orig@fink@restore\fink@restore
+\let\svnmulti@fink@restore\fink@restore
 \def\fink@restore{%
     \svnmulti@endinputfilehook
-    \orig@fink@restore
+    \svnmulti@fink@restore
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2576,6 +2580,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \begin{macro}{\Gin@setfile}[3]{??, not used}{??, not used}{graphic file
 % name/path}
 %    \begin{macrocode}
+\message{Package svn-multi: patching macro '\string\Gin@setfile' from the
+'graphics' package!}%
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
     \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
@@ -2600,6 +2606,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\pgf@declareimage}[3]{??, not used}{image label}{??, not used}
 %    \begin{macrocode}
+\message{Package svn-multi: patching macro '\string\pgf@declareimage' and the
+generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \let\svnmulti@pgf@declareimage\pgf@declareimage
 \renewcommand*{\pgf@declareimage}[3][]{%
   \svnmulti@pgf@declareimage[#1]{#2}{#3}%
