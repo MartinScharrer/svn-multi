@@ -37,8 +37,9 @@
 \usepackage{ifpdf}
 \ifpdf
     % use hypdoc if you have it, hyperref else
-    %\usepackage[hyperfootnotes=false]{hyperref}
+    %\usepackage{hyperref}
     \usepackage{hypdoc}
+    \urlstyle{tt}
 \else\let\url=\texttt\fi
 \usepackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
@@ -54,7 +55,7 @@
 
 \usepackage{xspace}
 \newcommand*{\pkg}[1]{%
-  \href{http://tug.ctan.org/pkg/#1}{#1}%
+  \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
     \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
@@ -552,7 +553,7 @@
 % all features from the 2.0 version load the \pkg{fink} package which lets you
 % typeset the current file name anyway using |\finkbase.\finkext|\footnote{The
 % file name in \texttt{\${}Id\$} is always the original Subversion file name
-% while the one given by the \texttt{fink} package is the current file name.
+% while the one given by the \pkg{fink} package is the current file name.
 % Both could differ if the file got renamed.}.
 %
 % Write this macro like this (order of arguments not meaningfull)\\[2ex]
