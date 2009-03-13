@@ -24,6 +24,7 @@
 \def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
  \year#4\month#5\day#6\relax
  \def\filedate{#4/#5/#6}%
+ \def\filerev{#3}%
 }
 \filedate$Id$
 \def\fileversion{v2.0 beta 1}
@@ -256,6 +257,8 @@
 %\PageIndex
 \RecordChanges
 %\OnlyDescription
+\widowpenalty=500
+\clubpenalty=500
 \begin{document}
   \DocInput{svn-multi.dtx}%
   \PrintChanges
@@ -337,20 +340,21 @@
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://www.scharrer-online.de/latex/svn-multi}\\
 % CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
-% \date{Version \expandafter\@gobble\fileversion\\\today}
+% \date{Version \expandafter\@gobble\fileversion\\[0.5ex]\today}
 %
 % \ifpdf
 % \hypersetup{
 %   pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle={The svn-multi package also known as svnkw},
+%   pdftitle={The svn-multi package, \fileversion, r\filerev},
 %   pdfsubject={Documentation of LaTeX package svn-multi which allows the
 %   typesetting of Subversion keywords in multi-file LaTeX documents},
 %   pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
-%   Control, Id}
+%   Control, Id, Table Of Revisions}
 % }
 % \fi
 % \maketitle
 %
+% \vspace{3\baselineskip}
 % \section{Package naming}
 % The authors first choice for this package was |svnkw| but the CTAN
 % maintainer suggested a more descriptive name and put the package in the
@@ -374,6 +378,7 @@
 % to suppress the file generation. Macros to typeset the keywords of the current
 % |\include|-d or |\input|-ed \LaTeX{} file are also provided.
 %
+% \newpage
 % \subsection{Scope of Keywords}
 % This package provides the Subversion keyword data in several different scopes:
 % document-global, file-local and, new with v2.0, by group.
@@ -391,9 +396,9 @@
 % or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} for more
 % details about the id macros.  Please note that the file-local macros
 % technically actually return the \emph{last registered} information from the
-% last \cs{svnid} or \cs{svnidlong} even when these were in a different,
-% previous file.  This will cause wrong results if they are used in a file
-% before or without any id macros.
+% last \cs{svnid} or \cs{svnidlong} even when these were in a previous file. 
+% This will cause wrong results if they are used in a file before or without any
+% id macros.
 %
 % \subsubsection*{Groups}
 % Version 2.0 introduces the concept of groups. Several files\footnote{actually
@@ -424,9 +429,10 @@
 % See section~\ref{sec:group} for further details and usage instructions on
 % group macros.
 %
-% \section{Basic Usage} The version control information are provided by
-% Subversion keywords which first need to be read in by dedicated macros and can
-% then be typeset using different macros.
+% \section{Usage}
+% The version control information are provided by Subversion keywords which
+% first need to be read in by dedicated macros and can then be typeset using
+% different macros.
 %
 % \subsection{Package Options} Since v2.0 this package provides options to
 % enable only a needed features, \eg to avoid problems with other packages or
@@ -571,13 +577,12 @@
 % each of the four arguments, just in case someone need this.  In fact
 % everything not inside braces \{ \} is ignored.
 %
-% \noindent\parbox{\linewidth}{%
 % \DescribeMacro{svn}{\kmarg{keyword}}
 % \DescribeMacro*{svn*}{\kmarg{keyword}}
 % This macro let you typeset svn keywords directly. The dollars will be stripped
 % and the rest is typeset as normal text. The star version strips also the space
 % before the last dollar.  This macro alone was the very first version of
-% |svnkw| and is still included for fast and simple keyword typesetting.}
+% |svnkw| and is still included for fast and simple keyword typesetting.
 %
 % \DescribeMacro{svnkwsave}{\kmarg{keyword}}
 % This macro lets you include and save any keyword you like. The keyword can be
@@ -781,6 +786,7 @@
 % parentheses after the tag name, \eg |Name (r123)|.
 %
 % \subsection{Verbatim URLs with and without hyperlinks}
+% \vspace{-\baselineskip}
 % \DescribeMacro{svnnolinkurl}{\marg{macro with returns special text}}
 % This macro allows you to write |\svnnolinkurl{\svnkw{HeadURL}}| and get the
 % Head URL typeset verbatim. However |\url{|\cs{svnkw}|{HeadURL}}|
@@ -932,8 +938,9 @@
 % a \pkg{tabularx} table which simply has to be read using |\input| (this is done
 % inside the \cs{tableofrevisions} macro).
 %
-% \pagebreak[4]
 % \subsection{Including Keywords of External Files}\label{sec:external}
+% Version 2.0 now supports the inclusion of keywords of external files using the
+% following macros and the Perl script \scr{svn-multi.pl}.
 % \DescribeMacro{svnexternal}{\oarg{group name}\{\{\meta{filea}\}\ignorespaces
 % \{\meta{fileb}\}\ldots\{\meta{filex}\}\}}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
@@ -962,7 +969,7 @@
 % `|/|' as directory separator and should end with a `|/|'. Windows users should
 % just replace all `|\|' with `|/|', \eg `|C:\My dir|' gets `|{C:/My dir/}|'.
 %
-% \subsection*{Script \texttt{svn-multi.pl}}
+% \subsection*{Script \hypertarget{script@svn-multi.pl}{\texttt{svn-multi.pl}}}
 % The file \scr{svn-multi.pl} which comes with the \svnmulti package is an
 % external Perl script which has to be run in the command line or by a \LaTeX\
 % development environment/editor like other tools like |Bib|\TeX\ or
