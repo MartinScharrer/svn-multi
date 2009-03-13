@@ -70,9 +70,9 @@
 \documentclass{ltxdoc}
 \usepackage{ifpdf}
 \ifpdf
-    % use hypdoc if you have it, hyperref else
-    %\usepackage[hyperfootnotes=false]{hyperref}
-    \usepackage{hypdoc}
+  % use hypdoc if you have it, hyperref else
+  %\usepackage[hyperfootnotes=false]{hyperref}
+  \usepackage{hypdoc}
 \else\let\url=\texttt\fi
 \usepackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
@@ -159,7 +159,7 @@ use File::Basename;
 %    \begin{macrocode}
 my $VERSION = "0.2";
 my ($REV,$DATE) = 
-    (split ' ','$Id$')[2,3];
+  (split ' ','$Id$')[2,3];
 %    \end{macrocode}
 
 % Declaration of other global constants and variables:
@@ -178,7 +178,7 @@ sub usage;
 % Check if help was requested:
 %    \begin{macrocode}
 if (!@ARGV or grep { $_ eq '--help' or $_ eq '-h' } @ARGV) {
-    usage();
+  usage();
 }
 %    \end{macrocode}
 
@@ -203,7 +203,7 @@ if ($dir && $dir ne './') {
 %    \begin{macrocode}
 
 if ($jobname =~ /^-/) {
-    usage();
+  usage();
 }
 my $outfile = "$jobname.svx";
 
@@ -269,47 +269,47 @@ my $resvnexternal = qr/
 
 %    \begin{macrocode}
 if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
-    print STDOUT "Reading '$jobname.svn'.\n";
-    while (<$svnfh>) {
-        chomp;
-        if    (/$resvnexternalpath/) {
-            push @PATH, ( split /}\s*{/, $1 );
-        }
-        elsif (/$resvnexternal/) {
-            my ($group,$file,$list) = ($1||"",$2,$3||"");
-            $file =~ s/^\.\///;
-            push @{$external{$file}{$group} ||= []}, ( split /}\s*{/, $list );
-        }
+  print STDOUT "Reading '$jobname.svn'.\n";
+  while (<$svnfh>) {
+    chomp;
+    if  (/$resvnexternalpath/) {
+      push @PATH, ( split /}\s*{/, $1 );
     }
-    close ($svnfh);
+    elsif (/$resvnexternal/) {
+      my ($group,$file,$list) = ($1||"",$2,$3||"");
+      $file =~ s/^\.\///;
+      push @{$external{$file}{$group} ||= []}, ( split /}\s*{/, $list );
+    }
+  }
+  close ($svnfh);
 }
 else {
-    warn "No .svn file found for '$jobname'!\n";
+  warn "No .svn file found for '$jobname'!\n";
 }
 
 # Add TEXINPUTS to path
 push @PATH, map { $_ =~ s/(?<!\/)$/\//; $_ } grep { $_ } 
-                split(':', $ENV{'TEXINPUTS'}||"");
+        split(':', $ENV{'TEXINPUTS'}||"");
 
 my @mainfilepairs;
 my $maintex = "$jobname.tex";
 if (exists $external{$maintex}) {
   while ( my ($group,$list) = each %{$external{$maintex}} ) {
-    push @mainfilepairs, [ $group, [ @$list ] ];
+  push @mainfilepairs, [ $group, [ @$list ] ];
   }
   delete $external{$maintex};
 }
 
 push @mainfilepairs, parse_args(@ARGV);
 create_svxfile("$jobname.svx", @mainfilepairs )
-    if @mainfilepairs;
+  if @mainfilepairs;
 
 foreach my $file (keys %external) {
   my @pairs;
   my $svxfile = $file;
   $svxfile =~ s/\.(tex|ltx)$/.svx/;
   while ( my ($group,$list) = each %{$external{$file}} ) {
-    push @pairs, [ $group, [ @$list ] ];
+  push @pairs, [ $group, [ @$list ] ];
   }
   create_svxfile($svxfile, @pairs);
 }
@@ -321,38 +321,38 @@ foreach my $file (keys %external) {
 % Parses the arguments and builds a list of (group,(files)) pairs.
 %    \begin{macrocode}
 sub parse_args {
-    my @args = @_;
-    my $group = '';
-    my @files;
-    my $readfg;
-    my @pairs;
+  my @args = @_;
+  my $group = '';
+  my @files;
+  my $readfg;
+  my @pairs;
 
-    foreach my $arg (@args) {
-        if ($readfg) {
-            $readfg    = 0;
-            $group = $arg;
-            $group =~ s/^["']|["']$//; # '
-        }
-        elsif ($arg =~ /^--group|^-?-fg/) {
-            push @pairs, [ $group, [ @files ] ];
-            @files = ();
-            if ($arg =~ /^--group=(.*)/) {
-                $group = $1;
-                $group =~ s/^["']|["']$//; # '
-            }
-            else {
-                $readfg = 1;
-            }
-        }
-        elsif ($arg =~ /^--fls/) {
-            push @files, read_fls("$jobname.fls");
-        }
-        else {
-            push @files, $arg;
-        }
+  foreach my $arg (@args) {
+    if ($readfg) {
+      $readfg = 0;
+      $group = $arg;
+      $group =~ s/^["']|["']$//; # '
     }
-    push @pairs, [ $group, [ @files ] ] if @files;
-    return @pairs;
+    elsif ($arg =~ /^--group|^-?-fg/) {
+      push @pairs, [ $group, [ @files ] ];
+      @files = ();
+      if ($arg =~ /^--group=(.*)/) {
+        $group = $1;
+        $group =~ s/^["']|["']$//; # '
+      }
+      else {
+        $readfg = 1;
+      }
+    }
+    elsif ($arg =~ /^--fls/) {
+      push @files, read_fls("$jobname.fls");
+    }
+    else {
+      push @files, $arg;
+    }
+  }
+  push @pairs, [ $group, [ @files ] ] if @files;
+  return @pairs;
 }
 %    \end{macrocode}
 % \end{sub}
@@ -362,17 +362,17 @@ sub parse_args {
 % own found.
 %    \begin{macrocode}
 sub path_search {
-    my $file = shift;
-    $file =~ s/##/#/g;
-    return $file if not $file or -e $file or not @PATH;
+  my $file = shift;
+  $file =~ s/##/#/g;
+  return $file if not $file or -e $file or not @PATH;
 
-    foreach my $dir (@PATH) {
-        if (-e "$dir$file") {
-            return "$dir$file";
-        }
+  foreach my $dir (@PATH) {
+    if (-e "$dir$file") {
+      return "$dir$file";
     }
+  }
 
-    return $file;
+  return $file;
 }
 %    \end{macrocode}
 % \end{sub}
@@ -382,53 +382,53 @@ sub path_search {
 % list of (group name/files) pairs.
 %    \begin{macrocode}
 sub create_svxfile ($@) {
-    my ($svxfile, @fgpair) = @_;
-    my $lastgroup = '';
-    my $fgused = 0;
-    my %seen;
-    return if not @fgpair or not $svxfile;
+  my ($svxfile, @fgpair) = @_;
+  my $lastgroup = '';
+  my $fgused = 0;
+  my %seen;
+  return if not @fgpair or not $svxfile;
 
-    open(my $svxfh, '>', $svxfile) or do {
-        warn "ERROR: Could not create SVX file '$svxfile'!\n";
-        return;
-    };
-    print STDOUT "Generating .svx file '$svxfile'.\n";
-    select $svxfh;
-    print "% Generated by svn-multi.pl v$VERSION\n\n";
+  open(my $svxfh, '>', $svxfile) or do {
+    warn "ERROR: Could not create SVX file '$svxfile'!\n";
+    return;
+  };
+  print STDOUT "Generating .svx file '$svxfile'.\n";
+  select $svxfh;
+  print "% Generated by svn-multi.pl v$VERSION\n\n";
 
-    while ( my ($group, $files) = @{shift @fgpair||[]}) {
+  while ( my ($group, $files) = @{shift @fgpair||[]}) {
     if ($group ne $lastgroup) {
-        print "\\svngroup{$group}\n";
+      print "\\svngroup{$group}\n";
     }
     if ($group) {
-        $fgused = 1;
+      $fgused = 1;
     }
 
     foreach my $file (@$files) {
-        $file = path_search($file);
+      $file = path_search($file);
 
-        # Only print the file once per .svx file
-        next if $seen{$file};
-        $seen{$file} = 1;
+      # Only print the file once per .svx file
+      next if $seen{$file};
+      $seen{$file} = 1;
 
-        open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
-        my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
-        close($infoh);
-        if (not keys %info) {
-            print "% Could not receive keywords for '$file'!\n\n";
-            next;
-        }
-        print "% Keywords for '$file'\n";
-        print svnidlong(\%info);
-        print "\\svnexternalfile{$file}\n";
-        print "\n"
+      open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
+      my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
+      close($infoh);
+      if (not keys %info) {
+        print "% Could not receive keywords for '$file'!\n\n";
+        next;
+      }
+      print "% Keywords for '$file'\n";
+      print svnidlong(\%info);
+      print "\\svnexternalfile{$file}\n";
+      print "\n"
     }
 
     $lastgroup = $group;
-    }
-    print "\\svngroup{}\n" if $fgused and $lastgroup ne '';
-    print "\n";
-    close ($svxfh);
+  }
+  print "\\svngroup{}\n" if $fgused and $lastgroup ne '';
+  print "\n";
+  close ($svxfh);
 }
 %    \end{macrocode}
 % \end{sub}
@@ -440,12 +440,12 @@ sub create_svxfile ($@) {
 % Additional modules are needed to produce the date format used by |$||Id$|.
 %    \begin{macrocode}
 sub svnid {
-    use Date::Parse;
-    use Date::Format;
-    my $href = shift;
-    return "" if (not defined $href->{Name});
-    my $date = time2str("%Y-%m-%d %XZ", str2time($href->{'Last Changed Date'}), 'Z');
-    return <<"EOT";
+  use Date::Parse;
+  use Date::Format;
+  my $href = shift;
+  return "" if (not defined $href->{Name});
+  my $date = time2str("%Y-%m-%d %XZ", str2time($href->{'Last Changed Date'}), 'Z');
+  return <<"EOT";
 \\svnid{${dollar}Id: $href->{Name} $href->{'Last Changed Rev'} $date $href->{'Last Changed Author'} \$}
 EOT
 }
@@ -458,8 +458,8 @@ EOT
 % Subversion inside this source file.
 %    \begin{macrocode}
 sub svnidlong {
-    my $href = shift;
-    return <<"EOT";
+  my $href = shift;
+  return <<"EOT";
 \\svnidlong
 {${dollar}HeadURL: $href->{URL} \$}
 {${dollar}LastChangedDate: $href->{'Last Changed Date'} \$}
@@ -475,19 +475,19 @@ EOT
 % The file is ignored if it's extension is in the |EXCLUDE| list.
 %    \begin{macrocode}
 sub read_fls {
-    my $fls = shift;
-    my %stack;
-    open (my $fh, '<', $fls) or return;
-    while (<$fh>) {
-        chomp;
-        if (/^INPUT ([^\/].*)$/) {
-            my $file = $1;
-            my $ext = substr($file, rindex($file,'.')+1);
-            $stack{$1} = 1 if not exists $EXCLUDE{$ext};
-        }
+  my $fls = shift;
+  my %stack;
+  open (my $fh, '<', $fls) or return;
+  while (<$fh>) {
+    chomp;
+    if (/^INPUT ([^\/].*)$/) {
+      my $file = $1;
+      my $ext = substr($file, rindex($file,'.')+1);
+      $stack{$1} = 1 if not exists $EXCLUDE{$ext};
     }
-    close($fh);
-    return keys %stack;
+  }
+  close($fh);
+  return keys %stack;
 }
 %    \end{macrocode}
 % \end{sub}
@@ -497,7 +497,7 @@ sub read_fls {
 % Prints usage information.
 %    \begin{macrocode}
 sub usage {
-    print STDOUT <<'EOT';
+  print STDOUT <<'EOT';
 Usage:
  svn-multi.pl jobname[.tex] [--fls] [--group|-g <group name>] [input_files] ...
  ... [--group|-g <group name>] [input_files] ...
@@ -544,7 +544,7 @@ The main LaTeX file here is 'mymainlatexfile.tex'.
 Further Information:
 See the svn-multi package manual for more information about this script.
 EOT
-    exit(0);
+  exit(0);
 }
 %    \end{macrocode}
 % \end{sub}
@@ -558,5 +558,5 @@ __END__
 % \iffalse
 %</script>
 % \fi
-% ^^A \iffalse vim: ft=perl
+% ^^A \iffalse vim: ft=perl,sw=2,ts=2
 % ^^A \fi
