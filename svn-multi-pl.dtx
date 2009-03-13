@@ -209,14 +209,73 @@ my $outfile = "$jobname.svx";
 
 my %external;
 
+%    \end{macrocode}
+% Regular expressions to read the |.svn| file:
+% \paragraph{svnexternalpath:} The format is:\\
+% \hspace*{2em}|\@svnexternalpath{{patha}{pathb}{...}{pathd}}|
+%    \begin{macrocode}
+my $resvnexternalpath = qr/
+        ^                   # at begin of line
+   \s*                      # allow for spaces
+      \\\@svnexternalpath   # the macro name
+   \s*
+        {                   # begin token group
+   \s*
+        (?:                 # paths:
+            {               # { of first path
+              (.*)          # everything else, e.g: 'patha}{pathb}{pathc'
+            }               # } of last path
+            |               # or nothing
+        )
+   \s*
+        }                   # end token group
+   \s*
+        $                   # end of line
+   /x;
+%    \end{macrocode}
+
+% \paragraph{svnexternal:} The format is:\\
+% \hspace*{2em}|\@svnexternal[group name]{{filea}{fileb}{...}{filed}}|
+%    \begin{macrocode}
+my $resvnexternal = qr/
+        ^                   # at begin of line
+   \s*                      # allow for spaces
+      \\\@svnexternal       # the macro name
+   \s*
+        (?:                 # optional:
+            \[              # opening [
+                ([^\]]*)    # group name (everything until ])
+            \]              # closing ]
+        )?
+   \s*
+        {                   # begin token group
+            ([^}]+)         # file name (everything until })
+        }                   # end token group
+   \s*
+        {                   # begin token group
+   \s*
+        (?:                 # paths:
+            {               # { of first file
+              (.*)          # everything else, e.g: 'filea}{fileb}{filec'
+            }               # } of last file
+            |               # or nothing
+        )
+   \s*
+        }                   # end token group
+   \s*
+        $                   # end of line
+   /x;
+%    \end{macrocode}
+
+%    \begin{macrocode}
 if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
     print STDOUT "Reading '$jobname.svn'.\n";
     while (<$svnfh>) {
         chomp;
-        if    (/^\s*\\\@svnexternalpath\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+        if    (/$resvnexternalpath/) {
             push @PATH, ( split /}\s*{/, $1 );
         }
-        elsif (/^\s*\\\@svnexternal\s*(?:\[([^\]]*)\])?\s*{([^}]+)}\s*{\s*(?:{(.*)}|)\s*}\s*$/) {
+        elsif (/$resvnexternal/) {
             my ($group,$file,$list) = ($1||"",$2,$3||"");
             $file =~ s/^\.\///;
             push @{$external{$file}{$group} ||= []}, ( split /}\s*{/, $list );
