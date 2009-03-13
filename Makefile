@@ -68,6 +68,7 @@ zip: package doc example ${PACKAGE}.zip
 ${PACKAGE}.zip: ${PACKFILES}
 	grep -q '\* Checksum passed \*' svn-multi.log
 	grep -q '\* Checksum passed \*' svn-multi-pl.log
+	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	zip $@ ${PACKFILES}
 	#cd .. && zip ${PACKAGE}/$@ $(addprefix ${PACKAGE}/, ${PACKFILES})
 
