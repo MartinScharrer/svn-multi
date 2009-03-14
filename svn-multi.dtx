@@ -2419,9 +2419,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the current group.
 %    \begin{macrocode}
 \def\svnexternalgroup#1{%
+  \begingroup
+  \def\svn@temp{#1}
+  \ifx\svn@temp\empty
+    \endgroup
     \def\svn@externalgroup{#1}%
+  \else
+    \endgroup
+    \def\svn@externalgroup{\svn@g}%
+  \fi
 }
-\def\svn@externalgroup{}
+\def\svn@externalgroup{\svn@g}
 %    \end{macrocode}
 % \end{macro}
 
