@@ -2307,12 +2307,21 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % The input files are added to the list of the current group at their begin to
 % have them before the included graphics and other external files.
+% Special care is taken to not re-initialise the main file which could happen in
+% some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-    \svn@initfile
+  \begingroup
     \let\svn@temp=\fink@nextdir
     \svn@removedotslash\svn@temp
+    \svn@ifempty{\svn@temp}%
+      {\svn@ifequal{\fink@nextext}{\fnk@mainext}%
+        {}%
+        {\svn@initfile}%
+      }%
+      {\svn@initfile}%
     \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
+  \endgroup
 }
 %    \end{macrocode}
 
