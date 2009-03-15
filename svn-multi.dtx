@@ -1532,6 +1532,7 @@
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \else\fi
 
+\if@svnmulti@groups
 \ifx\svn@g\empty\else
 \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
 \@svncg@save{rev}{\svnfilerev}%
@@ -1545,6 +1546,7 @@
 \@svncg@save{second}{\svnfilesecond}%
 \@svncg@save{timezonehour}{\svnfiletimezonehour}%
 \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
+\fi
 \fi
 \fi
 
@@ -2448,12 +2450,16 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Defines the default group of external files. The default is empty which means
 % the current group.
 %    \begin{macrocode}
+\if@svnmulti@groups
 \def\svnexternalgroup#1{%
   \svn@ifempty{#1}%
     {\def\svn@externalgroup{#1}}%
     {\def\svn@externalgroup{\svn@g}}%
 }
 \def\svn@externalgroup{\svn@g}
+\else
+\def\svn@externalgroup{}
+\fi
 %    \end{macrocode}
 % \end{macro}
 
@@ -2930,6 +2936,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Remove all files which do not have a revision number from list:
 %    \begin{macrocode}
+  \if@svnmulti@groups
   \ifx\@svng@@files\empty\else
     \begingroup
       \def\svn@tmplist{}%
@@ -2940,6 +2947,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       }
       \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
     \endgroup
+  \fi
   \fi
 %    \end{macrocode}
 % Write document global values:
@@ -2958,9 +2966,14 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
     \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
-    \noexpand\def\noexpand\svng@@files{\@svng@@files}%
-    ^^J%
+  }
+  \if@svnmulti@groups
+  \immediate\write\svn@write{%
+    \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
   }%
+  \else
+  \immediate\write\svn@write{^^J}%
+  \fi
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
