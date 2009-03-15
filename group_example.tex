@@ -266,6 +266,11 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 }
 \renewcommand{\svnrevisionsname}{Revisionen}
 \renewcommand{\svntabgroup}[1]{Gruppe `#1'}
+
+% Print highest revision bold:
+\renewcommand{\svntabrev}[1]{\ifnum#1=\svnrev\textbf{#1}\else#1\fi}
+% Saver: \ifthenelse from the 'ifthen' package!
+
 \renewcommand{\svntabfile}[1]{\ Datei `{\scriptsize\svnnolinkurl{#1}}'}
 \renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
 \renewcommand{\svntabdate}[8]{#3.#2.#1\ #4:#5:#6}
