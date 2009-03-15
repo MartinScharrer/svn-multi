@@ -2298,6 +2298,82 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+
+% \begin{macro}{\svn@sortlist}[1]{list macro to sort}
+% This macro and some sub-macros are used to sort list, \eg after revision
+% number.
+%    \begin{macrocode}
+\def\svn@remtrailcomma#1,\empty{%
+  \def\svn@tmplist{#1}%
+}
+
+\def\svn@getfirst#1,#2\empty{%
+  \def\svn@lastname{#1}%
+  \edef\svn@last{\csname @svng@#1@rev\endcsname}%
+  \ifx\empty#2\empty
+    \def\svn@tmplist{}%
+  \else
+    \svn@remtrailcomma#2\empty%
+  \fi
+}
+
+\def\svn@cleanlist#1{%
+  \def\svn@cleanedlist{}%
+  \edef\svn@tmplist{#1}
+  \@for\svn@currname:=\svn@tmplist\do{%
+    \expandafter
+    \ifx\csname @svng@\svn@currname @rev\endcsname\relax\else
+      \edef\svn@cleanedlist{\svn@cleanedlist,\svn@currname}%
+    \fi
+  }%
+  \ifx\svn@cleanedlist\empty\else
+    \edef\svn@cleanedlist{\expandafter\@gobble\svn@cleanedlist}%
+  \fi
+}
+
+\def\@svn@sortlist#1{%
+  \message{list: '#1'^^J}%
+  \def\svn@newlist{}%
+  \expandafter\svn@getfirst#1,\empty\empty
+
+  \@for\svn@currname:=\svn@tmplist\do{%
+    \edef\svn@current{\csname @svng@\svn@currname @rev\endcsname}%
+    \ifnum\svn@current>\svn@last
+      \edef\svn@newlist{\svn@newlist,\svn@currname}%
+    \else
+      \edef\svn@newlist{\svn@newlist,\svn@lastname}%
+      \let\svn@last\svn@current
+      \let\svn@lastname\svn@currname
+    \fi
+  }%
+  \edef\svn@newlist{\expandafter\@gobble\svn@newlist,\svn@lastname}%
+  \ifx\svn@newlist\svn@lastlist
+    \def\svn@lastlist{}%
+    \let\svn@next\relax
+  \else
+    \let\svn@lastlist\svn@newlist
+    \def\svn@next{%
+      \expandafter\@svn@sortlist\expandafter{\svn@newlist}%
+    }%
+  \fi
+  \svn@next
+}
+
+\def\svn@sortlist#1{%
+  \ifx\empty#1\empty\else
+    \def\svn@lastlist{}%
+    \svn@cleanlist{#1}%
+    \@svn@sortlist{\svn@cleanedlist}%
+    \let#1\svn@newlist
+    \let\svn@cleanedlist\empty
+    \let\svn@newlist\empty
+  \fi
+}
+
+%    \end{macrocode}
+% \end{macro}
+
+
 % The input files are added to the list of the current group at their begin to
 % have them before the included graphics and other external files.
 %    \begin{macrocode}
@@ -2411,7 +2487,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % The following extensions are ignored by default.
 %    \begin{macrocode}
-\svnignoreextensions{aux,toc,out,svn,svx,cls,sty,cfg,enc}
+\svnignoreextensions{aux,toc,out,svn,svx,cls,sty,cfg,enc,fd,bbl}
 %    \end{macrocode}
 
 % Check at the end of every input file if files should be extra groups and
@@ -2961,6 +3037,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \svn@writeglobalrow{}%
       \ifx\@svng@@files\@undefined\else
       \ifx\@svng@@files\relax\else
+          \svn@sortlist\@svng@@files
           \@for\svn@file:=\@svng@@files\do{%
              \svn@writefilerow{\svn@file}%
           }%
@@ -3001,6 +3078,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
             \expandafter\let\expandafter
                 \svn@temp\csname @svng@\svn@g @files\endcsname
             \ifx\svn@temp\relax\else
+                \svn@sortlist\svn@temp
                 \@for\svn@file:=\svn@temp\do{%
                     \svn@writefilerow{\svn@file}%
                 }%
