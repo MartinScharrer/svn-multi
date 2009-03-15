@@ -1357,7 +1357,12 @@
 \def\svntimezonehour{+00}   \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00}  \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}    \def\svnmainfilename{NOT SET}
-\def\svn@g{} \def\svn@cg{\svn@g} \def\svn@temp{}
+\def\svn@temp{}
+
+\if@svnmulti@groups
+\def\svn@g{} \def\svn@cg{\svn@g}
+\def\@svng@@files{}
+\fi
 
 \def\svn@initfile{%
   \gdef\svnfilerev{-1}%
@@ -2923,6 +2928,20 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \if@filesw \ifx\@svn@rev\empty\else \ifnum\@svn@rev=0\else
   \ifx\@svn@date\empty\else \ifx\@svn@author\empty\else
 %    \end{macrocode}
+% Remove all files which do not have a revision number from list:
+%    \begin{macrocode}
+  \ifx\@svng@@files\empty\else
+    \begingroup
+      \def\svn@tmplist{}%
+      \@for\svn@temp:=\@svng@@files\do{%
+        \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
+          \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
+        \fi
+      }
+      \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
+    \endgroup
+  \fi
+%    \end{macrocode}
 % Write document global values:
 %    \begin{macrocode}
   \svn@checkwrite
@@ -2939,7 +2958,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
     \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
     \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
-    \noexpand\def\noexpand\svng@@files{\csname @svng@\svn@g @files\endcsname}%
+    \noexpand\def\noexpand\svng@@files{\@svng@@files}%
     ^^J%
   }%
 %    \end{macrocode}
