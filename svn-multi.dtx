@@ -1283,7 +1283,27 @@
     \@secondoftwo
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
 %
+% \begin{macro}{\svn@ifequal}[2]{string a}{string b}
+% Tests if the given arguments are identical, \eg same strings. If so the first
+% of the next two token will be expanded, the second one otherwise.
+%    \begin{macrocode}
+\def\svn@ifequal#1#2{%
+  \begingroup
+  \def\svn@stringa{#1}%
+  \def\svn@stringb{#2}%
+  \ifx\svn@stringa\svn@stringb
+    \endgroup
+    \expandafter
+    \@firstoftwo
+  \else
+    \endgroup
+    \expandafter
+    \@secondoftwo
+  \fi
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1725,15 +1745,9 @@
 % is substituted.
 %    \begin{macrocode}
 \def\svnkwdef@Rev#1{%
-    \begingroup
-    \def\svn@temp{#1}%
-    \ifx\svn@temp\empty
-      \endgroup
-      \svnkwdef@{Rev}{0}%
-    \else
-      \endgroup
-      \svnkwdef@{Rev}{#1}%
-    \fi
+  \svn@ifempty{#1}%
+    {\svnkwdef@{Rev}{0}}%
+    {\svnkwdef@{Rev}{#1}}%
 }
 \def\svnkwdef@Author#1{\svnkwdef@{Author}{#1}}
 \def\svnkwdef@Date#1{\svnkwdef@{Date}{#1}}
@@ -1805,13 +1819,9 @@
 % returned by |\svn@value|.
 %    \begin{macrocode}
 \def\svn@checkcolon#1:#2\relax{%
-    \def\svn@temp{#2}%
-    \ifx\svn@temp\empty
-    \svnkwdef{#1}{}%
-    \else
-      \svn@stripcolon#2\relax
-      \svnkwdef{#1}{\svn@value}%
-    \fi
+  \svn@ifempty{#2}%
+    {\svnkwdef{#1}{}}%
+    {\svn@stripcolon#2\relax\svnkwdef{#1}{\svn@value}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1823,15 +1833,12 @@
 % called to strip the spaces.
 %    \begin{macrocode}
 \def\svn@stripcolon#1:\relax{%
-    \def\svn@temp{#1}%
-    \ifx\svn@temp\empty
-      \gdef\svn@value{}%
-    \else
-    \ifx\svn@temp\svn@spaceonly
-      \gdef\svn@value{}%
-    \else
-     \svn@stripspace#1\relax\relax
-    \fi\fi
+  \svn@ifempty{#1}
+    {\gdef\svn@value{}}%
+    {\svn@ifequal{#1}{ }%
+      {\gdef\svn@value{}}%
+      {\svn@stripspace#1\relax\relax}%
+    }%
 }
 
 \def\svn@spaceonly{ }
@@ -1843,12 +1850,9 @@
 % strip the trailing space.
 %    \begin{macrocode}
 \def\svn@stripspace#1#2\relax{%
-    \def\svn@temp{#1}%
-    \ifx\svn@temp\svn@spaceonly
-      \gdef\svn@value{#2}%
-    \else
-      \svn@striptrailingspace#1#2\relax
-    \fi
+  \svn@ifequal{#1}{ }%
+    {\gdef\svn@value{#2}}%
+    {\svn@striptrailingspace#1#2\relax}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1858,7 +1862,7 @@
 % |\relax| as end marker.
 %    \begin{macrocode}
 \def\svn@striptrailingspace#1 \relax{%
-    \gdef\svn@value{#1}%
+  \gdef\svn@value{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2204,12 +2208,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % empty.
 %    \begin{macrocode}
 \def\svnsetcg#1{%
-\def\svn@temp{#1}%
-\ifx\svn@temp\empty
-\def\svn@cg{\svn@g}%
-\else
-\def\svn@cg{#1}%
-\fi
+  \svn@ifempty{#1}%
+    {\def\svn@cg{\svn@g}}%
+    {\def\svn@cg{#1}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2219,10 +2220,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % requested keyword values of the current keyword group.
 %    \begin{macrocode}
 \def\svncg@def#1{%
-\expandafter\def\csname svncg#1\endcsname{%
-\@ifundefined{svng@\svn@cg @#1}{??}{%
-\csname svng@\svn@cg @#1\endcsname}%
-}}
+  \expandafter
+  \def\csname svncg#1\endcsname{%
+    \@ifundefined{svng@\svn@cg @#1}{??}{%
+    \csname svng@\svn@cg @#1\endcsname}%
+  }
+}
 %    \end{macrocode}
 % \end{macro}
 
@@ -2441,15 +2444,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the current group.
 %    \begin{macrocode}
 \def\svnexternalgroup#1{%
-  \begingroup
-  \def\svn@temp{#1}
-  \ifx\svn@temp\empty
-    \endgroup
-    \def\svn@externalgroup{#1}%
-  \else
-    \endgroup
-    \def\svn@externalgroup{\svn@g}%
-  \fi
+  \svn@ifempty{#1}%
+    {\def\svn@externalgroup{#1}}%
+    {\def\svn@externalgroup{\svn@g}}%
 }
 \def\svn@externalgroup{\svn@g}
 %    \end{macrocode}
