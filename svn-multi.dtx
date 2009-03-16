@@ -2766,9 +2766,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the current group.
 %    \begin{macrocode}
 \def\svngraphicsgroup#1{%
-  \def\svn@graphicsgroup{#1}%
+  \svn@ifempty{#1}%
+    {\def\svn@graphicsgroup{\svn@g}}%
+    {\def\svn@graphicsgroup{#1}}%
 }
-\def\svn@graphicsgroup{}
+\def\svn@graphicsgroup{\svn@g}
 %    \end{macrocode}
 % \end{macro}
 
