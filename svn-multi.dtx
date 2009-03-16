@@ -1531,6 +1531,9 @@
 \xdef\@svn@second{\svnfilesecond}%
 \xdef\@svn@timezonehour{\svnfiletimezonehour}%
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
+\@ifundefined{svnkwHeadURL}%
+  {\xdef\@svn@url{}}%
+  {\xdef\@svn@url{\svnkwHeadURL}}%
 \else\fi
 
 \if@svnmulti@groups
@@ -1547,6 +1550,9 @@
 \@svncg@save{second}{\svnfilesecond}%
 \@svncg@save{timezonehour}{\svnfiletimezonehour}%
 \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
+\@ifundefined{svnkwHeadURL}%
+  {\@svncg@save{url}{}}%
+  {\@svncg@save{url}{\svnkwHeadURL}}%
 \fi
 \fi
 \fi
@@ -1743,7 +1749,8 @@
 
 % \begin{macro}{\svnkwdef@Rev}
 % \begin{macro}{\svnkwdef@Author}
-% \begin{macro}{\svnkwdef@Date}[1]{value}
+% \begin{macro}{\svnkwdef@Date}
+% \begin{macro}{\svnkwdef@URL}[1]{value}
 % `Setter'-macros for single keywords, used by \cs{svnkwdef}.\\ These are needed
 % to have have a common value for all alternative keyword names ala |Rev|,
 % |Revision|, |LastChangedRevision|.
@@ -1759,6 +1766,7 @@
 }
 \def\svnkwdef@Author#1{\svnkwdef@{Author}{#1}}
 \def\svnkwdef@Date#1{\svnkwdef@{Date}{#1}}
+\def\svnkwdef@URL#1{\svnkwdef@{HeadURL}{#1}}
 %    \end{macrocode}
 % The long keywords are defined then as aliases of the short,\\
 % first for writing
@@ -1774,9 +1782,11 @@
 \def\svnkwLastChangedRevision{\svnkwRev}
 \def\svnkwLastChangedBy{\svnkwAuthor}
 \def\svnkwLastChangedAt{\svnkwDate}
+\def\svnkwURL{\svnkwHeadURL}
 %    \end{macrocode}
 % So \eg |\svnkw{LastChangedRevision}| is always be the
 % same as |\svnkw{Rev}|.
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -1874,6 +1884,31 @@
 }
 %    \end{macrocode}
 % \end{macro}
+
+% \begin{macro}{\svn@gdefverb}[1]{macro name}
+%    \begin{macrocode}
+\def\svn@gdefverb#1{%
+  \begingroup
+    \def\svn@temp{#1}%
+    \begingroup
+      \if@svnmulti@verbatim
+        \svn@catcodes
+      \fi
+      \svn@gdefverb@
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@defverb@}[1]{macro name}
+%    \begin{macrocode}
+\def\svn@gdefverb@#1{%
+    \endgroup
+    \expandafter\gdef\svn@temp{#1}%
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
 
 % \subsection{Date Macros}
 % \begin{macro}{\@svn@scandate}[1]{date}
@@ -3063,6 +3098,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
       \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
       \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
+      \noexpand\svn@gdefverb\noexpand\svnurl{\@svn@url}^^J%
     }
     \if@svnmulti@groups
       \immediate\write\svn@write{%
@@ -3125,6 +3161,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \svn@writekw{second}%
               \svn@writekw{timezonehour}%
               \svn@writekw{timezoneminute}%
+              \svn@writekw{url}%
               \svn@writekw{files}%
             }%
             \if@svnmulti@table
