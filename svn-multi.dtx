@@ -60,8 +60,9 @@
   \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
-  \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
-  \@namedef{seen@package@#1}{1}}{}%
+    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
+    \@namedef{seen@package@#1}{1}%
+  }{}%
   \xspace
 }
 \newcommand*{\svnmulti}{%
@@ -2237,8 +2238,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svncg@def#1{%
   \expandafter
   \def\csname svncg#1\endcsname{%
-  \@ifundefined{svng@\svn@cg @#1}{??}{%
-  \csname svng@\svn@cg @#1\endcsname}%
+    \@ifundefined{svng@\svn@cg @#1}{??}{%
+    \csname svng@\svn@cg @#1\endcsname}%
   }
 }
 %    \end{macrocode}
@@ -2287,8 +2288,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Simply returns |svng@#1@#2| if defined, '??' otherwise.
 %    \begin{macrocode}
 \def\svng#1#2{%
-\@ifundefined{svng@#1@#2}{??}{%
-\csname svng@#1@#2\endcsname}%
+  \@ifundefined{svng@#1@#2}{??}{%
+    \csname svng@#1@#2\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2303,10 +2304,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
     %
     \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
-    \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
+      \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
     \else
-    \expandafter\xdef\csname @svng@#2@files\endcsname{%
-      \csname @svng@#2@files\endcsname,#1}%
+      \expandafter\xdef\csname @svng@#2@files\endcsname{%
+        \csname @svng@#2@files\endcsname,#1%
+      }%
     \fi
   \fi
 }
@@ -2754,12 +2756,12 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16]
 \newcommand\tableofrevisions{%
   \if@twocolumn
-  \@restonecoltrue\onecolumn
+    \@restonecoltrue\onecolumn
   \else
-  \@restonecolfalse
+    \@restonecolfalse
   \fi
   \chapter*{\svnrevisionsname
-  \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
+    \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
   \svn@input{\jobname .\svn@svt}%
   \if@restonecol\twocolumn\fi
 }
@@ -2780,22 +2782,22 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@writerow#1#2{%
   \immediate\write\svn@svtwrite{%
-  \expandafter\noexpand\csname svn#1row\endcsname
-  \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
-  \@ampersamchar\space
-  \svn@tabcell{rev}\space\@ampersamchar\space
-  \svn@tabcell{author}\space\@ampersamchar\space
-  \noexpand\svntabdate%
-  \svn@tabcellarg{year}%
-  \svn@tabcellarg{month}%
-  \svn@tabcellarg{day}%
-  \svn@tabcellarg{hour}%
-  \svn@tabcellarg{minute}%
-  \svn@tabcellarg{second}%
-  \svn@tabcellarg{timezonehour}%
-  \svn@tabcellarg{timezoneminute}%
-  \@backslashchar\@backslashchar
-  }
+    \expandafter\noexpand\csname svn#1row\endcsname
+    \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
+    \@ampersamchar\space
+    \svn@tabcell{rev}\space\@ampersamchar\space
+    \svn@tabcell{author}\space\@ampersamchar\space
+    \noexpand\svntabdate%
+    \svn@tabcellarg{year}%
+    \svn@tabcellarg{month}%
+    \svn@tabcellarg{day}%
+    \svn@tabcellarg{hour}%
+    \svn@tabcellarg{minute}%
+    \svn@tabcellarg{second}%
+    \svn@tabcellarg{timezonehour}%
+    \svn@tabcellarg{timezoneminute}%
+    \@backslashchar\@backslashchar
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2806,7 +2808,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-  \svn@tabcellarg{##1}%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{group}{#1}%
   \endgroup
@@ -2822,7 +2824,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-  \svn@tabcellarg{##1}%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{file}{#1}%
   \endgroup
@@ -2837,7 +2839,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-  \svn@tabcellarg{##1}%
+    \svn@tabcellarg{##1}%
   }%
   \svn@writerow{global}{}%
   \endgroup
@@ -2851,8 +2853,8 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svntable{%
   \begin{tabular}{lrll}
-  \hline
-  \strut Name & Rev & Last Author & Last Changed At \\\hline
+    \hline
+    \strut Name & Rev & Last Author & Last Changed At \\\hline
 }
 \def\endsvntable{\hline\end{tabular}}
 \def\svnbeforetable{}
