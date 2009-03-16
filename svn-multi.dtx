@@ -2144,10 +2144,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@indent{}
 
 \def\svn@pushfilestack{%
-  \def\svn@tempp{\fink@nextdir\fink@file\fink@nextbase\fink@nextext}%
-  \svn@removedotslash\svn@tempp
-  \svn@removedotslash\svn@tempp
-  \message{^^Jsvn-multi: \svn@indent file '\svn@tempp' push '\svnfilerev','\svnfiledate'^^J}%
   \edef\svn@indent{.\svn@indent}%
   \xdef\svn@filestack{{%
     {\svnfilerev}%
@@ -2169,9 +2165,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 }
 
 \def\svn@restorefilekws#1#2\relax{%
-  \expandafter\svn@indentit\svn@indent\empty\empty
-  \svn@removedotslash\finkpath
-  \message{^^Jsvn-multi: \svn@indent file '\finkpath' pop: '#1'^^J}%
   \svn@restorefilekws@#1\empty
   \empty \empty \empty
   \empty \empty \empty
@@ -2200,10 +2193,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 \def\svn@popfilestack{%
   \ifx\svn@filestack\empty
-    \PackageError{svn-multi}{Underflow of file keyword stack!}
+    \PackageWarning{svn-multi}{Underflow of file keyword stack!}
   \else
     \svn@ifequal{\svn@filestack}{{}}%
-      {\PackageError{svn-multi}{Underflow of file keyword stack!}}%
+      {\PackageWarning{svn-multi}{Underflow of file keyword stack!}}%
       {\expandafter\svn@restorefilekws\svn@filestack\relax}%
   \fi
 }
