@@ -386,8 +386,6 @@ sub create_svxfile ($@) {
   my $lastgroup = '%^&$#\\__INVALID_GROUP__INIT';
   my $fgused = 0;
   my %seen;
-  use Data::Dumper;
-  print STDERR Dumper \@fgpair;
   return if not @fgpair or not $svxfile;
 
   open(my $svxfh, '>', $svxfile) or do {
