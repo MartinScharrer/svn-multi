@@ -2113,7 +2113,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnmulti@atbegininputfile}
-% This macro adds the argument to the \cs{svnmulti@begininputfilehook}.
+% This macro adds the argument to the end of the \cs{svnmulti@begininputfilehook}.
 %    \begin{macrocode}
 \def\svnmulti@atbegininputfile{%
     \g@addto@macro\svnmulti@begininputfilehook
@@ -2122,10 +2122,18 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnmulti@atendinputfile}
-% This macro adds the argument to the \cs{svnmulti@endinputfilehook}.
+% This macro adds the argument to the \emph{begin} of the
+% \cs{svnmulti@endinputfilehook}. This ensures that code added first is more at
+% the end than code added later.
+% The code below was adapted from the definition of the \LaTeX2e macro
+% |\g@addto@macro| which was used above.
 %    \begin{macrocode}
-\def\svnmulti@atendinputfile{%
-    \g@addto@macro\svnmulti@endinputfilehook
+\long\def\svnmulti@atendinputfile#1{%
+  \begingroup
+    \@temptokena\expandafter{\svnmulti@endinputfilehook}%
+    \toks@{#1}%
+    \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
