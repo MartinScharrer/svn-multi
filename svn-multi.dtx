@@ -1193,7 +1193,7 @@
 %    \begin{macrocode}
 \def\svn@depoption#1{%
   \csname if@svnmulti@#1\endcsname\else
-  \message{svn-multi: Required option '#1' enabled.}
+  \message{svn-multi: Required option '#1' enabled.}%
   \csname @svnmulti@#1true\endcsname
   \fi
 }
@@ -1862,7 +1862,7 @@
 % called to strip the spaces.
 %    \begin{macrocode}
 \def\svn@stripcolon#1:\relax{%
-  \svn@ifempty{#1}
+  \svn@ifempty{#1}%
     {\gdef\svn@value{}}%
     {\svn@ifequal{#1}{ }%
       {\gdef\svn@value{}}%
@@ -2262,7 +2262,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 \def\svn@popfilestack{%
   \ifx\svn@filestack\empty
-    \PackageWarning{svn-multi}{Underflow of file keyword stack!}
+    \PackageWarning{svn-multi}{Underflow of file keyword stack!}%
   \else
     \svn@ifequal{\svn@filestack}{{}}%
       {\PackageWarning{svn-multi}{Underflow of file keyword stack!}}%
@@ -2377,7 +2377,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \def\csname svncg#1\endcsname{%
     \@ifundefined{svng@\svn@cg @#1}{??}{%
     \csname svng@\svn@cg @#1\endcsname}%
-  }
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2511,7 +2511,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \begingroup
     \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
     \svn@removedotslash\svn@filename
-    \svn@fileasgroup{\svn@filename}
+    \svn@fileasgroup{\svn@filename}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2530,7 +2530,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
        \svn@checkwrite
        \def\svn@writekw##1{%
          \noexpand\@namedef{@svng@#1@##1}{\csname svnfile##1\endcsname}^^J%
-       }
+       }%
        \immediate\write\svn@write{^^J%
          \@percentchar\space File '#1'^^J%
          \svn@writekw{rev}%
@@ -2954,11 +2954,11 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@writegrouprow#1{%
   \begingroup
-  \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
-  \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabcellarg{##1}%
-  }%
-  \svn@writerow{group}{#1}%
+    \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}%
+    \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
+      \svn@tabcellarg{##1}%
+    }%
+    \svn@writerow{group}{#1}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2970,11 +2970,11 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \expandafter
   \ifx\csname @svng@#1@rev\endcsname\relax\else
   \begingroup
-  \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
-  \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabcellarg{##1}%
-  }%
-  \svn@writerow{file}{#1}%
+    \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}%
+    \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
+      \svn@tabcellarg{##1}%
+    }%
+    \svn@writerow{file}{#1}%
   \endgroup
   \fi
 }
@@ -2985,7 +2985,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@writeglobalrow{%
   \begingroup
-  \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
+  \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}%
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
     \svn@tabcellarg{##1}%
   }%
@@ -3000,7 +3000,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % change table format. % TODO: More documentation needed!
 %    \begin{macrocode}
 \def\svntable{%
-  \begin{tabular}{lrll}
+  \begin{tabular}{lrll}%
     \hline
     \strut Name & Rev & Last Author & Last Changed At \\\hline
 }
@@ -3152,7 +3152,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
         \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
           \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
         \fi
-        }
+        }%
         \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
       \endgroup
       \fi
@@ -3176,7 +3176,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
       \noexpand\svn@gdefverb\noexpand\svnurl{\@svn@url}^^J%
       \noexpand\svn@gdefverb\noexpand\svnfname{\@svn@fname}^^J%
-    }
+    }%
     \if@svnmulti@groups
       \immediate\write\svn@write{%
         \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
@@ -3224,7 +3224,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
             \def\svn@writekw##1{%
               \noexpand\@namedef{svng@\svn@g @##1}%
               {\csname @svng@\svn@g @##1\endcsname}^^J%
-            }
+            }%
             \immediate\write\svn@write{%
               \@percentchar\space\svn@g^^J%
               \svn@writekw{rev}%
