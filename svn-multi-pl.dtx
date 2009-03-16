@@ -426,7 +426,6 @@ sub create_svxfile ($@) {
 
     $lastgroup = $group;
   }
-  print "\\svngroup{}\n" if $fgused and $lastgroup ne '';
   print "\n";
   close ($svxfh);
 }
