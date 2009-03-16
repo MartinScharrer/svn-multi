@@ -2445,17 +2445,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\svng}[2]{group name}{keyword name}
 % Simply returns |svng@#1@#2| if defined, '??' otherwise.
-% If |#1| is '*' then the current group is substituted.
 %    \begin{macrocode}
 \def\svng#1#2{%
-  \begingroup
-    \svn@ifequal{#1}{*}%
-      {\def\svn@temp{\svn@g}}%
-      {\def\svn@temp{#1}}%
-    \@ifundefined{svng@\svn@temp @#2}%
-      {??}%
-      {\csname svng@\svn@temp @#2\endcsname}%
-  \endgroup
+  \@ifundefined{svng@\svn@temp @#2}%
+    {??}%
+    {\csname svng@\svn@temp @#2\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
