@@ -2207,6 +2207,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     {\svnfilesecond}%
     {\svnfiletimezonehour}%
     {\svnfiletimezoneminute}%
+    {\svnfileurl}%
   }\svn@filestack}%
 }
 
@@ -2236,9 +2237,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@restorefilekws@@
 }
 
-\def\svn@restorefilekws@@#1#2{%
+\def\svn@restorefilekws@@#1#2#3{%
   \gdef\svnfiletimezonehour{#1}%
   \gdef\svnfiletimezoneminute{#2}%
+  \gdef\svnfileurl{#3}%
 }
 
 \def\svn@popfilestack{%
@@ -2518,6 +2520,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
          \svn@writekw{second}%
          \svn@writekw{timezonehour}%
          \svn@writekw{timezoneminute}%
+         \noexpand
+         \svn@namegdefverb{@svng@#1@url}{\csname svnfileurl\endcsname}^^J%
        }%
      \fi
    \endgroup
