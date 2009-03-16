@@ -1358,6 +1358,7 @@
 \def\svntimezonehour{+00}   \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00}  \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}    \def\svnmainfilename{NOT SET}
+\def\svnurl{}
 \def\svn@temp{}
 
 \if@svnmulti@groups
@@ -1377,6 +1378,7 @@
   \gdef\svnfilesecond{00}%
   \gdef\svnfiletimezonehour{+00}%
   \gdef\svnfiletimezoneminute{00}%
+  \gdef\svnfileurl{}%
 }
 \svn@initfile
 %    \end{macrocode}
@@ -1494,7 +1496,7 @@
 %    \begin{macrocode}
 \def\svn@scanId#1 #2 #3 #4 #5\relax{%
 \@svn@scandate{#3 #4}%
-\@svn@updateid{#2}{#3 #4}{#5}%
+\@svn@updateid{#2}{#3 #4}{#5}{#1}%
 \svnkwdef{Filename}{#1}%
 \svnkwdef{Date}{#3 #4}%
 \svnkwdef{Revision}{#2}%
@@ -1504,15 +1506,16 @@
 % \end{macro}
 %
 
-% \begin{macro}{\@svn@updateid}[3]{rev}{date}{author (username)}
+% \begin{macro}{\@svn@updateid}[4]{rev}{date}{author (username)}{url}
 % We first define the expanded arguments to variables for the user.  The
 % expansion is needed because the arguments content is mostly generic like
 % |\svn@value| which can change very soon after this macro.
 %    \begin{macrocode}
-\def\@svn@updateid#1#2#3{%
+\def\@svn@updateid#1#2#3#4{%
 \xdef\svnfilerev{#1}%
 \xdef\svnfiledate{#2}%
 \xdef\svnfileauthor{#3}%
+\xdef\svnfileurl{#4}%
 %    \end{macrocode}
 % Then we check if the revision is non-empty (not yet expanded by subversion?)
 % and larger then the current maximum value |\@svn@rev|.  If yes we save all
@@ -1531,9 +1534,7 @@
 \xdef\@svn@second{\svnfilesecond}%
 \xdef\@svn@timezonehour{\svnfiletimezonehour}%
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
-\@ifundefined{svnkwHeadURL}%
-  {\xdef\@svn@url{}}%
-  {\xdef\@svn@url{\svnkwHeadURL}}%
+\xdef\@svn@url{\svnfileurl}%
 \else\fi
 
 \if@svnmulti@groups
@@ -1550,9 +1551,7 @@
 \@svncg@save{second}{\svnfilesecond}%
 \@svncg@save{timezonehour}{\svnfiletimezonehour}%
 \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
-\@ifundefined{svnkwHeadURL}%
-  {\@svncg@save{url}{}}%
-  {\@svncg@save{url}{\svnkwHeadURL}}%
+\@svncg@save{url}{\svnfileurl}%
 \fi
 \fi
 \fi
@@ -1654,7 +1653,7 @@
 \ifx\svnkwLastChangedDate\empty
 \else\@svn@scanlongdate{\svnkwLastChangedDate}\fi
 \@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}%
-{\svnkw{LastChangedBy}}%
+{\svnkw{LastChangedBy}}{\svnkw{HeadURL}}%
 \ignorespaces
 }%
 %    \end{macrocode}
@@ -1885,7 +1884,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@gdefverb}[1]{macro name}
+% \begin{macro}{\svn@gdefverb}[1]{macro}
 %    \begin{macrocode}
 \def\svn@gdefverb#1{%
   \begingroup
@@ -1899,12 +1898,28 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@defverb@}[1]{macro name}
+% \begin{macro}{\svn@defverb@}[1]{verbatim stuff}
 %    \begin{macrocode}
 \def\svn@gdefverb@#1{%
     \endgroup
     \expandafter\gdef\svn@temp{#1}%
   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@namegdefverb}[1]{macro name}
+%    \begin{macrocode}
+\def\svn@namegdefverb#1{%
+  \begingroup
+    \expandafter\def
+    \expandafter\svn@temp
+    \expandafter{\csname #1\endcsname}%
+    \begingroup
+      \if@svnmulti@verbatim
+        \svn@catcodes
+      \fi
+      \svn@gdefverb@
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2357,15 +2372,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \begin{macro}{\svncgsecond}
 % \begin{macro}{\svncgtimezonehour}
 % \begin{macro}{\svncgtimezoneminute}
+% \begin{macro}{\svncgurl}
 % Define all |\svncgXXX| macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
 \@for\@tempa:=%
   rev,author,date,year,month,day,hour,minute,second,%
-  timezonehour,timezoneminute%
+  timezonehour,timezoneminute,url%
 \do{%
   \expandafter\svncg@def\expandafter{\@tempa}%
 }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -3161,8 +3178,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \svn@writekw{second}%
               \svn@writekw{timezonehour}%
               \svn@writekw{timezoneminute}%
-              \svn@writekw{url}%
               \svn@writekw{files}%
+              \noexpand\svn@namegdefverb{svng@\svn@g @url}%
+                  {\csname @svng@\svn@g @url\endcsname}^^J%
             }%
             \if@svnmulti@table
               \begingroup
