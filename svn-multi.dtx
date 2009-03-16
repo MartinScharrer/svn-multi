@@ -2139,6 +2139,85 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+%    \begin{macrocode}
+\def\svn@filestack{{}}
+\def\svn@indent{}
+
+\def\svn@pushfilestack{%
+  \def\svn@tempp{\fink@nextdir\fink@file\fink@nextbase\fink@nextext}%
+  \svn@removedotslash\svn@tempp
+  \svn@removedotslash\svn@tempp
+  \message{^^Jsvn-multi: \svn@indent file '\svn@tempp' push '\svnfilerev','\svnfiledate'^^J}%
+  \edef\svn@indent{.\svn@indent}%
+  \xdef\svn@filestack{{%
+    {\svnfilerev}%
+    {\svnfiledate}%
+    {\svnfileauthor}%
+    {\svnfileyear}%
+    {\svnfilemonth}%
+    {\svnfileday}%
+    {\svnfilehour}%
+    {\svnfileminute}%
+    {\svnfilesecond}%
+    {\svnfiletimezonehour}%
+    {\svnfiletimezoneminute}%
+  }\svn@filestack}%
+}
+
+\def\svn@indentit#1#2\empty{%
+  \xdef\svn@indent{#2}%
+}
+
+\def\svn@restorefilekws#1#2\relax{%
+  \expandafter\svn@indentit\svn@indent\empty\empty
+  \svn@removedotslash\finkpath
+  \message{^^Jsvn-multi: \svn@indent file '\finkpath' pop: '#1'^^J}%
+  \svn@restorefilekws@#1\empty
+  \empty \empty \empty
+  \empty \empty \empty
+  \empty \empty \empty \empty
+  \svn@ifempty{#2}%
+    {\gdef\svn@filestack{{}}}%
+    {\gdef\svn@filestack{#2}}%
+}
+\def\svn@restorefilekws@#1#2#3#4#5#6#7#8#9{%
+  \gdef\svnfilerev{#1}%
+  \gdef\svnfiledate{#2}%
+  \gdef\svnfileauthor{#3}%
+  \gdef\svnfileyear{#4}%
+  \gdef\svnfilemonth{#5}%
+  \gdef\svnfileday{#6}%
+  \gdef\svnfilehour{#7}%
+  \gdef\svnfileminute{#8}%
+  \gdef\svnfilesecond{#9}%
+  \svn@restorefilekws@@
+}
+
+\def\svn@restorefilekws@@#1#2{%
+  \gdef\svnfiletimezonehour{#1}%
+  \gdef\svnfiletimezoneminute{#2}%
+}
+
+\def\svn@popfilestack{%
+  \ifx\svn@filestack\empty
+    \PackageError{svn-multi}{Underflow of file keyword stack!}
+  \else
+    \svn@ifequal{\svn@filestack}{{}}%
+      {\PackageError{svn-multi}{Underflow of file keyword stack!}}%
+      {\expandafter\svn@restorefilekws\svn@filestack\relax}%
+  \fi
+}
+
+\svnmulti@atbegininputfile{%
+  \svn@pushfilestack
+}
+
+\svnmulti@atendinputfile{%
+  \svn@popfilestack
+}%
+%
+%    \end{macrocode}
+
 % \begin{macro}{\svn@removedotslash}[1]{string (\eg file path) which might start
 % with \texttt{./}}
 % Removes leading './' from given macro (holding a directory path). Awaits a
