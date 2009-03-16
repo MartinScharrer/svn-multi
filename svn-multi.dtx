@@ -2146,16 +2146,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@removedotslash#1{%
   \def\svn@removedotslash@##1##2##3\relax{%
-    \begingroup
-    \def\@tempa{./}%
-    \def\@tempb{##1##2}%
-    \ifx\@tempa\@tempb%
-      \endgroup
-      \edef#1{##3}%
-    \else
-      \endgroup
-      \edef#1{##1##2##3}%
-    \fi
+    \svn@ifequal{./}{##1##2}%
+      {\edef#1{##3}\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
+      {\edef#1{##1##2##3}\let\next\relax}%
+    \next
   }%
   \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
 }
