@@ -1991,9 +1991,10 @@
 % Will be called automatically in the preamble.
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
-\newcommand{\svnsetmainfile}%
-{\edef\svnmainurl{\svnkw{HeadURL}}%
-\edef\svnmainfilename{\svnkw{Filename}}}
+\newcommand{\svnsetmainfile}{%
+  \xdef\svnmainurl{\svnfileurl}%
+  \xdef\svnmainfilename{\svnfilefname}%
+}
 \AtBeginDocument{\svnsetmainfile}
 %    \end{macrocode}
 % \end{macro}
