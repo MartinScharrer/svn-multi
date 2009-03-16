@@ -3047,6 +3047,35 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svngetfilename}[1]{URL}
+% This macro expands the content using the temporary macro and sets it in front
+% of the \csi{svn@getfilename} sub-macro together with |/{}| to make sure the
+% macro does not break at values without directories. A |\relax| is used as
+% end marker.
+%    \begin{macrocode}
+\gdef\svngetfilename#1{%
+  \begingroup
+    \edef\svn@temp{#1}%
+    \expandafter\svn@getfilename\svn@temp/{}\relax
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svngetfilename}[2]{URL part before first slash}{URL part after
+% first slash}
+% Splits the content at the first slash (|/|) and checks if the remainder is
+% empty. If so the end marker got reached and the part before the slash is the
+% filename which is returned. Otherwise the macro recursively calls itself to
+% split the remainder.
+%    \begin{macrocode}
+\gdef\svn@getfilename#1/#2\relax{%
+    \svn@ifempty{#2}%
+      {\endgroup#1}%
+      {\svn@getfilename#2\relax}%
+}%
+%    \end{macrocode}
+% \end{macro}
+
 % \subsection{Auxiliary file generation and read-back}
 %
 % Reread output from last compile run if it exists.
