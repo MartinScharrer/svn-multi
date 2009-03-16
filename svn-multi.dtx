@@ -2305,19 +2305,25 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % These macros implement the user interface for the keyword group functionality
 % introduced with v2.0.
 %
-% The list of keyword groups |svn@glist| is initial set empty and will be filled
-% by \cs{svngroup}.
+% The list of keyword groups |\svn@glist| is initial set empty and will be
+% filled by \cs{svngroup}.
 %    \begin{macrocode}
 \if@svnmulti@groups
 \let\svn@glist=\empty
 %    \end{macrocode}
 
 % \begin{macro}{\svngroup}[1]{group name}
-% Saves the group to |svn@g| and initiates |svn@g@|\meta{group name}|@rev|
-% and |@svn@g@|\meta{group name}|@rev| if this is the first time the group
-% got used.
+% Saves the group to |\svn@g| and initiates |\svn@g@|\meta{group name}|@rev|
+% and |\@svn@g@|\meta{group name}|@rev| if this is the first time the group
+% got used.\par
+% The current group symbol `|*|' is invalid here because there is no way to
+% change to a current group.
 %    \begin{macrocode}
 \def\svngroup#1{%
+  \svn@ifequal{#1}{*}%
+    {\PackageError{svn-multi}%
+      {The group name '*' is invalid for '\string\svngroup'}{}{}%
+    }{}%
   \xdef\svn@g{#1}%
   \ifx\svn@g\empty\else%
 %    \end{macrocode}
@@ -2357,11 +2363,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnsetcg}[1]{group name}
-% Defines |svn@cg| to the given argument or to |svn@g| if the argument was
-% empty.
+% Defines |\svn@cg| to the given argument or to |\svn@g| if the argument was
+% `|*|'.
 %    \begin{macrocode}
 \def\svnsetcg#1{%
-  \svn@ifempty{#1}%
+  \svn@ifequal{#1}{*}%
     {\def\svn@cg{\svn@g}}%
     {\def\svn@cg{#1}}%
 }
@@ -2427,11 +2433,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\svng}[2]{group name}{keyword name}
 % Simply returns |svng@#1@#2| if defined, '??' otherwise.
+% If |#1| is '*' then the current group is substituted.
 %    \begin{macrocode}
 \def\svng#1#2{%
-  \@ifundefined{svng@#1@#2}%
-    {??}%
-    {\csname svng@#1@#2\endcsname}%
+  \begingroup
+    \svn@ifequal{#1}{*}%
+      {\def\svn@temp{\svn@g}}%
+      {\def\svn@temp{#1}}%
+    \@ifundefined{svng@\svn@temp @#2}%
+      {??}%
+      {\csname svng@\svn@temp @#2\endcsname}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2439,7 +2451,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \begin{macro}{\svn@addfiletogroup}[2]{file name}{group name}
 % Adds the given file to the given group. If the group list doesn't exist yet
 % it is initialised. A extra macro for each file is used to remember that the
-% file is already in the group. This could be avoided using a list search.
+% file is already in the group. This could be avoided using a list search.\par
+% This is an internal macro so no '*' substitution for the group name.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
   \expandafter
@@ -2625,12 +2638,13 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnexternalgroup}[1]{group name}
-% Defines the default group of external files. The default is empty which means
-% the current group.
+% Defines the default group of external files. The default is to always use the
+% current group.  An empty argument puts the external files in no group. A `|*|'
+% switches back to always use the current group.
 %    \begin{macrocode}
 \if@svnmulti@groups
 \def\svnexternalgroup#1{%
-  \svn@ifempty{#1}%
+  \svn@ifequal{#1}{*}%
     {\def\svn@externalgroup{#1}}%
     {\def\svn@externalgroup{\svn@g}}%
 }
@@ -2649,10 +2663,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \if@filesw
     \svn@checkwrite
     \begingroup
-      \let\svn@temp\finkpath
-      \svn@removedotslash\svn@temp
+      \svn@ifequal{#1}{*}%
+        {\def\svn@temp{\svn@g}}%
+        {\def\svn@temp{#1}}%
+      \svn@removedotslash\finkpath
       \immediate\write\svn@write{%
-        \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
+        \noexpand\@svnexternal[\svn@temp]{\finkpath}{#2}%
       }%
     \endgroup
   \fi
@@ -2766,7 +2782,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the current group.
 %    \begin{macrocode}
 \def\svngraphicsgroup#1{%
-  \svn@ifempty{#1}%
+  \svn@ifequal{#1}{*}%
     {\def\svn@graphicsgroup{\svn@g}}%
     {\def\svn@graphicsgroup{#1}}%
 }
