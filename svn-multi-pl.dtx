@@ -383,9 +383,11 @@ sub path_search {
 %    \begin{macrocode}
 sub create_svxfile ($@) {
   my ($svxfile, @fgpair) = @_;
-  my $lastgroup = '';
+  my $lastgroup = '%^&$#\\__INVALID_GROUP__INIT';
   my $fgused = 0;
   my %seen;
+  use Data::Dumper;
+  print STDERR Dumper \@fgpair;
   return if not @fgpair or not $svxfile;
 
   open(my $svxfh, '>', $svxfile) or do {
@@ -407,9 +409,9 @@ sub create_svxfile ($@) {
     foreach my $file (@$files) {
       $file = path_search($file);
 
-      # Only print the file once per .svx file
-      next if $seen{$file};
-      $seen{$file} = 1;
+      # Only print the file once per group and .svx file
+      next if $seen{$group}{$file};
+      $seen{$group}{$file} = 1;
 
       open(my $infoh, '-|', "svn info '$file' 2>/dev/null") or next;
       my %info = map { chomp; split /\s*:\s*/, $_, 2 } <$infoh>;
@@ -472,7 +474,7 @@ EOT
 
 % \begin{sub}{read fls}
 % Reads the |.fls| file and looks for |INPUT relativedir/file| lines.
-% The file is ignored if it's extension is in the |EXCLUDE| list.
+% The file is ignored if its extension is in the |EXCLUDE| list.
 %    \begin{macrocode}
 sub read_fls {
   my $fls = shift;
