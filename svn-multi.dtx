@@ -37,10 +37,10 @@
 \usepackage{svn-multi}
 \usepackage{ifpdf}
 \ifpdf
-    % use hypdoc if you have it, hyperref else
-    %\usepackage{hyperref}
-    \usepackage{hypdoc}
-    \urlstyle{tt}
+  % use hypdoc if you have it, hyperref else
+  %\usepackage{hyperref}
+  \usepackage{hypdoc}
+  \urlstyle{tt}
 \else\let\url=\texttt\fi
 \usepackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
@@ -60,8 +60,8 @@
   \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
-    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
-    \@namedef{seen@package@#1}{1}}{}%
+  \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
+  \@namedef{seen@package@#1}{1}}{}%
   \xspace
 }
 \newcommand*{\svnmulti}{%
@@ -99,106 +99,106 @@
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
-    \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
+  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
 }
 \def\DescribeMacroS*#1#2{%
-    \begingroup
-    \g@namedef{href@desc@#1}{}%
-    \immediate\write\@mainaux{%
-      \noexpand\g@namedef{href@desc@#1}{}%
-    }%
-    \@ifundefined{href@impl@#1}%
-        {\let\macrolink\relax}%
-        {\def\macrolink{\hyperlink{impl@#1}}}%
-    \hypersetup{linkcolor=macrodesccolor}%
-    \hspace*{\macrosep}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
-    \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
-    \noindent\mbox{}\macroargformat{#2}\nopagebreak
-    \macroline*[0.2\baselineskip]%
-    \endgroup
-    \nopagebreak
-    \ignorespaces
+  \begingroup
+  \g@namedef{href@desc@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@desc@#1}{}%
+  }%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \hypersetup{linkcolor=macrodesccolor}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
+  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
+  \noindent\mbox{}\macroargformat{#2}\nopagebreak
+  \macroline*[0.2\baselineskip]%
+  \endgroup
+  \nopagebreak
+  \ignorespaces
 }
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
-    \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
+  \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
 }
 \def\DescribeScriptS*#1#2{%
-    \hspace*{\macrosep}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}%
-    \scriptformat{\textcolor{scriptcolor}{#1}}%
-    \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
-    \nopagebreak
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}%
+  \scriptformat{\textcolor{scriptcolor}{#1}}%
+  \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
+  \nopagebreak
 }
 \def\DescribeOption{\@ifnextchar*{\DescribeOptionS}{\DescribeOptionN}}
 \def\DescribeOptionN{%
-    \bigskip\par\noindent\DescribeOptionS*%
+  \bigskip\par\noindent\DescribeOptionS*%
 }
 \def\DescribeOptionS*#1{%
-    \hspace*{\macrosep}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}%
-    \optionformat{\textcolor{optioncolor}{#1}}%
-    \noindent\mbox{}\macroline*[0.2\baselineskip]%
-    \nopagebreak
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}%
+  \optionformat{\textcolor{optioncolor}{#1}}%
+  \noindent\mbox{}\macroline*[0.2\baselineskip]%
+  \nopagebreak
 }
 \newcounter{macrolevel}
 \renewenvironment{macro}[1]{%
-    \addtocounter{macrolevel}{1}%
-    \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
+  \addtocounter{macrolevel}{1}%
+  \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
 }{%
-    \addtocounter{macrolevel}{-1}%
+  \addtocounter{macrolevel}{-1}%
 }
 \providecommand*{\g@namedef}[1]{%
-    \expandafter\gdef\csname #1\endcsname
+  \expandafter\gdef\csname #1\endcsname
 }
 \newcommand*{\macroX}[1]{%
-    \ifnum\c@macrolevel<2
-        \smallskip
-    \fi
-    \par\noindent
-    \g@namedef{href@impl@#1}{}%
-    \immediate\write\@mainaux{%
-      \noexpand\g@namedef{href@impl@#1}{}%
-    }%
-    \@ifundefined{href@desc@#1}%
-        {\let\macrolink\relax}%
-        {\def\macrolink{\hyperlink{desc@#1}}}%
-    \hspace*{\macrosep}%
-    \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}%
-    \macrolink{\macroformat{%
-        \textcolor{macroimplcolor}{\textbackslash #1}}}%
-    \\*[\smallskipamount]%
-    \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
+  \ifnum\c@macrolevel<2
+    \smallskip
+  \fi
+  \par\noindent
+  \g@namedef{href@impl@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@impl@#1}{}%
+  }%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1}}}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}%
+  \macrolink{\macroformat{%
+    \textcolor{macroimplcolor}{\textbackslash #1}}}%
+  \\*[\smallskipamount]%
+  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
 
 \newcounter{macroargs}
 \newcounter{nmacroarg}
 
 \newcommand*{\imacroarg}[1][0]{%
-    \setcounter{macroargs}{#1}%
-    \setcounter{nmacroarg}{1}%
-    \ifnum\c@macroargs>0
-        \expandafter\imacroargX
-    \fi
+  \setcounter{macroargs}{#1}%
+  \setcounter{nmacroarg}{1}%
+  \ifnum\c@macroargs>0
+    \expandafter\imacroargX
+  \fi
 }
 \newcommand*{\aftermacroargs}{%
-    \@ifnextchar\begin
-        {\\*[-2ex]\ignorespaces}%
-        {\\*[\smallskipamount]\ignorespaces}%
+  \@ifnextchar\begin
+    {\\*[-2ex]\ignorespaces}%
+    {\\*[\smallskipamount]\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
-    \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
-    \ifnum\c@macroargs>1
-        \newline
-    \fi
-    \addtocounter{nmacroarg}{1}%
-    \addtocounter{macroargs}{-1}%
-    \ifnum\c@macroargs>0
-        \expandafter\imacroargX
-    \else
-        \expandafter\aftermacroargs
-    \fi
+  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
+  \ifnum\c@macroargs>1
+    \newline
+  \fi
+  \addtocounter{nmacroarg}{1}%
+  \addtocounter{macroargs}{-1}%
+  \ifnum\c@macroargs>0
+    \expandafter\imacroargX
+  \else
+    \expandafter\aftermacroargs
+  \fi
 }
 
 
@@ -206,43 +206,43 @@
 \def\kmarg#1{\{\$\meta{#1}\$\}}
 
 \DeclareRobustCommand{\csi}[1]{%
-    \begingroup
-    \hypersetup{linkcolor=macroimplcolor}%
-    \renewcommand{\macrohlinkprefix}{impl}%
-    \@ifundefined{href@impl@#1}%
-        {\let\macrolink\relax}%
-        {\def\macrolink{\hyperlink{impl@#1}}}%
-    \csX{#1}%
-    \endgroup
+  \begingroup
+  \hypersetup{linkcolor=macroimplcolor}%
+  \renewcommand{\macrohlinkprefix}{impl}%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \csX{#1}%
+  \endgroup
 }
 \DeclareRobustCommand{\csd}[1]{%
-    \begingroup
-    \hypersetup{linkcolor=macrodesccolor}%
-    \renewcommand{\macrohlinkprefix}{macro}%
-    \@ifundefined{href@desc@#1}%
-        {\let\macrolink\relax}%
-        {\def\macrolink{\hyperlink{desc@#1}}}%
-    \csX{#1}%
-    \endgroup
+  \begingroup
+  \hypersetup{linkcolor=macrodesccolor}%
+  \renewcommand{\macrohlinkprefix}{macro}%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1}}}%
+  \csX{#1}%
+  \endgroup
 }
 \DeclareRobustCommand{\csX}[1]{%
-    \begingroup
-    \macrolink{\texttt{\textbackslash#1}}%
-    \endgroup
+  \begingroup
+  \macrolink{\texttt{\textbackslash#1}}%
+  \endgroup
 }
 \let\cs\csd
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
 \DeclareRobustCommand{\op}[1]{%
-    \begingroup
-    \hypersetup{linkcolor=optioncolor}%
-    \hyperlink{option@#1}{\textbf{\sffamily #1}}%
-    \endgroup
+  \begingroup
+  \hypersetup{linkcolor=optioncolor}%
+  \hyperlink{option@#1}{\textbf{\sffamily #1}}%
+  \endgroup
 }
 \DeclareRobustCommand{\scr}[1]{%
-    \begingroup
-    \hypersetup{linkcolor=scriptcolor}%
-    \hyperlink{script@#1}{\scriptformat{#1}}%
-    \endgroup
+  \begingroup
+  \hypersetup{linkcolor=scriptcolor}%
+  \hyperlink{script@#1}{\scriptformat{#1}}%
+  \endgroup
 }
 
 \def\StopEventually#1{\origStopEventually{#1}%
@@ -1146,8 +1146,8 @@
 \RequirePackage{kvoptions}
 
 \SetupKeyvalOptions{%
-    family = svn-multi,
-    prefix = @svnmulti@
+  family = svn-multi,
+  prefix = @svnmulti@
 }
 \newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
@@ -1247,8 +1247,8 @@
   \@svnmulti@autoloadfalse
 \else
   \PackageError{svn-multi}%
-  {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
-   ! Only 'true','false' or empty (='true') are allowed!}
+    {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
+     ! Only 'true','false' or empty (='true') are allowed!}
 \fi\fi\fi\fi
 %    \end{macrocode}
 
@@ -1676,9 +1676,9 @@
 \if@svnidsw
   \ifx\svnkwId\empty
   \else
-    \expandafter
-    \svn@scanId\svnkwId\relax
-    \@svnidswfalse
+  \expandafter
+  \svn@scanId\svnkwId\relax
+  \@svnidswfalse
   \fi
 \fi
 \ignorespaces
@@ -1694,7 +1694,7 @@
 \catcode`\$=12
 \fi
 \gdef\svnkwsave@read $#1$\relax{%
-    \svn@checkcolon#1:\relax
+  \svn@checkcolon#1:\relax
 }
 \endgroup
 %    \end{macrocode}
@@ -1975,8 +1975,8 @@
 % The star macro also removes the star of course.
 %    \begin{macrocode}
 \def\svnFullAuthor@star*#1{%
-    \edef\svn@temp{#1}%
-    \svnFullAuthor@{\svn@temp}{~(\svn@temp)}%
+  \edef\svn@temp{#1}%
+  \svnFullAuthor@{\svn@temp}{~(\svn@temp)}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -2106,8 +2106,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svnmulti@endinputfilehook{}
 \let\svnmulti@fink@restore\fink@restore
 \def\fink@restore{%
-    \svnmulti@endinputfilehook
-    \svnmulti@fink@restore
+  \svnmulti@endinputfilehook
+  \svnmulti@fink@restore
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2116,7 +2116,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % This macro adds the argument to the end of the \cs{svnmulti@begininputfilehook}.
 %    \begin{macrocode}
 \def\svnmulti@atbegininputfile{%
-    \g@addto@macro\svnmulti@begininputfilehook
+  \g@addto@macro\svnmulti@begininputfilehook
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2130,9 +2130,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \long\def\svnmulti@atendinputfile#1{%
   \begingroup
-    \@temptokena\expandafter{\svnmulti@endinputfilehook}%
-    \toks@{#1}%
-    \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
+  \@temptokena\expandafter{\svnmulti@endinputfilehook}%
+  \toks@{#1}%
+  \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2144,19 +2144,19 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % macro as argument which is redefined inside the current group!
 %    \begin{macrocode}
 \def\svn@removedotslash#1{%
-    \def\svn@removedotslash@##1##2##3\relax{%
-        \begingroup
-        \def\@tempa{./}%
-        \def\@tempb{##1##2}%
-        \ifx\@tempa\@tempb%
-            \endgroup
-            \edef#1{##3}%
-        \else
-            \endgroup
-            \edef#1{##1##2##3}%
-        \fi
-    }%
-    \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
+  \def\svn@removedotslash@##1##2##3\relax{%
+    \begingroup
+    \def\@tempa{./}%
+    \def\@tempb{##1##2}%
+    \ifx\@tempa\@tempb%
+      \endgroup
+      \edef#1{##3}%
+    \else
+      \endgroup
+      \edef#1{##1##2##3}%
+    \fi
+  }%
+  \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2237,8 +2237,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svncg@def#1{%
   \expandafter
   \def\csname svncg#1\endcsname{%
-    \@ifundefined{svng@\svn@cg @#1}{??}{%
-    \csname svng@\svn@cg @#1\endcsname}%
+  \@ifundefined{svng@\svn@cg @#1}{??}{%
+  \csname svng@\svn@cg @#1\endcsname}%
   }
 }
 %    \end{macrocode}
@@ -2258,10 +2258,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Define all |\svncgXXX| macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
 \@for\@tempa:=%
-    rev,author,date,year,month,day,hour,minute,second,%
-    timezonehour,timezoneminute%
+  rev,author,date,year,month,day,hour,minute,second,%
+  timezonehour,timezoneminute%
 \do{%
-    \expandafter\svncg@def\expandafter{\@tempa}%
+  \expandafter\svncg@def\expandafter{\@tempa}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2299,16 +2299,16 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % file is already in the group. This could be avoided using a list search.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
-    \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
-      \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
-      %
-      \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
-        \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
-      \else
-        \expandafter\xdef\csname @svng@#2@files\endcsname{%
-            \csname @svng@#2@files\endcsname,#1}%
-      \fi
+  \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
+    \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
+    %
+    \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
+    \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
+    \else
+    \expandafter\xdef\csname @svng@#2@files\endcsname{%
+      \csname @svng@#2@files\endcsname,#1}%
     \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2320,15 +2320,15 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
   \begingroup
-    \let\svn@temp=\fink@nextdir
-    \svn@removedotslash\svn@temp
-    \svn@ifempty{\svn@temp}%
-      {\svn@ifequal{\fink@nextext}{\fnk@mainext}%
-        {}%
-        {\svn@initfile}%
-      }%
+  \let\svn@temp=\fink@nextdir
+  \svn@removedotslash\svn@temp
+  \svn@ifempty{\svn@temp}%
+    {\svn@ifequal{\fink@nextext}{\fnk@mainext}%
+      {}%
       {\svn@initfile}%
-    \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
+    }%
+    {\svn@initfile}%
+  \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2362,11 +2362,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % It produces the current file path and calls \cs{svn@fileasgroup}.
 %    \begin{macrocode}
 \def\svnfileasgroup{%
-    \begingroup
-    \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
-    \svn@removedotslash\svn@filename
-    \svn@fileasgroup{\svn@filename}
-    \endgroup
+  \begingroup
+  \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
+  \svn@removedotslash\svn@filename
+  \svn@fileasgroup{\svn@filename}
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2379,27 +2379,27 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@fileasgroup#1{%
  \ifnum\svnfilerev>-1\relax
    \begingroup
-   \expandafter\ifx\csname svn@g@#1\endcsname\relax%
-   \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-   \svn@checkwrite
-   \def\svn@writekw##1{%
-     \noexpand\@namedef{@svng@#1@##1}{\csname svnfile##1\endcsname}^^J%
-   }
-   \immediate\write\svn@write{^^J%
-     \@percentchar\space File '#1'^^J%
-     \svn@writekw{rev}%
-     \svn@writekw{date}%
-     \svn@writekw{author}%
-     \svn@writekw{year}%
-     \svn@writekw{month}%
-     \svn@writekw{day}%
-     \svn@writekw{hour}%
-     \svn@writekw{minute}%
-     \svn@writekw{second}%
-     \svn@writekw{timezonehour}%
-     \svn@writekw{timezoneminute}%
-   }%
-   \fi
+     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+       \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+       \svn@checkwrite
+       \def\svn@writekw##1{%
+         \noexpand\@namedef{@svng@#1@##1}{\csname svnfile##1\endcsname}^^J%
+       }
+       \immediate\write\svn@write{^^J%
+         \@percentchar\space File '#1'^^J%
+         \svn@writekw{rev}%
+         \svn@writekw{date}%
+         \svn@writekw{author}%
+         \svn@writekw{year}%
+         \svn@writekw{month}%
+         \svn@writekw{day}%
+         \svn@writekw{hour}%
+         \svn@writekw{minute}%
+         \svn@writekw{second}%
+         \svn@writekw{timezonehour}%
+         \svn@writekw{timezoneminute}%
+       }%
+     \fi
    \endgroup
  \fi
 }
@@ -2427,7 +2427,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
   \@for\svn@temp:=#1\do{%
-    \expandafter\let\csname svn@ignore@ext@\svn@temp\endcsname\relax%
+  \expandafter\let\csname svn@ignore@ext@\svn@temp\endcsname\relax%
   }%
 }
 %    \end{macrocode}
@@ -2445,7 +2445,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \if@svnmulti@filesasgroups
   \ifsvnfilesasgroup
     \expandafter\ifx\csname svn@ignore@ext@\finkext\endcsname\relax
-     \svnfileasgroup
+    \svnfileasgroup
     \fi
   \fi
   \fi
@@ -2497,14 +2497,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \newcommand*\svnexternal[2][\svn@externalgroup]{%
   \if@filesw
-      \svn@checkwrite
-      \begingroup
-      \let\svn@temp\finkpath
-      \svn@removedotslash\svn@temp
-      \immediate\write\svn@write{%
-          \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
-      }%
-      \endgroup
+  \svn@checkwrite
+  \begingroup
+  \let\svn@temp\finkpath
+  \svn@removedotslash\svn@temp
+  \immediate\write\svn@write{%
+    \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
+  }%
+  \endgroup
   \fi
 }
 %    \end{macrocode}
@@ -2515,10 +2515,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnexternalpath#1{%
   \if@filesw
-      \svn@checkwrite
-      \immediate\write\svn@write{%
-          \noexpand\@svnexternalpath{#1}%
-      }%
+    \svn@checkwrite
+    \immediate\write\svn@write{%
+      \noexpand\@svnexternalpath{#1}%
+    }%
   \fi
 }
 %    \end{macrocode}
@@ -2563,7 +2563,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@addfiletogroup{#1}{\svn@g}%
   \if@svnmulti@filesasgroups
   \ifsvnfilesasgroup
-    \svn@fileasgroup{#1}%
+  \svn@fileasgroup{#1}%
   \fi
   \fi
 }
@@ -2616,7 +2616,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the current group.
 %    \begin{macrocode}
 \def\svngraphicsgroup#1{%
-    \def\svn@graphicsgroup{#1}%
+  \def\svn@graphicsgroup{#1}%
 }
 \def\svn@graphicsgroup{}
 %    \end{macrocode}
@@ -2660,10 +2660,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 'graphics' package!}%
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
-    \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
-      \svnexternal[\svn@graphicsgroup]{{#3}}%
-    \fi
-    \svnmulti@Gin@setfile{#1}{#2}{#3}%
+  \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
+    \svnexternal[\svn@graphicsgroup]{{#3}}%
+  \fi
+  \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2697,7 +2697,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \ifx\pgf@filename\empty\else
     \expandafter\ifx\csname svn@ignoregraphic@\pgf@filename\endcsname\relax%
       \expandafter\global\expandafter%
-        \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
+      \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
       \expandafter\xdef\csname pgf@image@#2!\endcsname{%
         \noexpand\svnexternal[\noexpand\svn@graphicsgroup]{{\pgf@filename}}%
         \csname svnmulti@pgf@image@#2!\endcsname
@@ -2745,7 +2745,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %% Adapted from the \tableofcontents macro, LaTeX `article' class [2005/09/16]
 \newcommand\tableofrevisions{%
   \section*{\svnrevisionsname
-    \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
+  \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
   \svn@input{\jobname .\svn@svt}%
 }
 
@@ -2754,12 +2754,12 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16]
 \newcommand\tableofrevisions{%
   \if@twocolumn
-    \@restonecoltrue\onecolumn
+  \@restonecoltrue\onecolumn
   \else
-    \@restonecolfalse
+  \@restonecolfalse
   \fi
   \chapter*{\svnrevisionsname
-    \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
+  \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
   \svn@input{\jobname .\svn@svt}%
   \if@restonecol\twocolumn\fi
 }
@@ -2780,21 +2780,21 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@writerow#1#2{%
   \immediate\write\svn@svtwrite{%
-    \expandafter\noexpand\csname svn#1row\endcsname
-    \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
-    \@ampersamchar\space
-    \svn@tabcell{rev}\space\@ampersamchar\space
-    \svn@tabcell{author}\space\@ampersamchar\space
-    \noexpand\svntabdate%
-    \svn@tabcellarg{year}%
-    \svn@tabcellarg{month}%
-    \svn@tabcellarg{day}%
-    \svn@tabcellarg{hour}%
-    \svn@tabcellarg{minute}%
-    \svn@tabcellarg{second}%
-    \svn@tabcellarg{timezonehour}%
-    \svn@tabcellarg{timezoneminute}%
-    \@backslashchar\@backslashchar
+  \expandafter\noexpand\csname svn#1row\endcsname
+  \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
+  \@ampersamchar\space
+  \svn@tabcell{rev}\space\@ampersamchar\space
+  \svn@tabcell{author}\space\@ampersamchar\space
+  \noexpand\svntabdate%
+  \svn@tabcellarg{year}%
+  \svn@tabcellarg{month}%
+  \svn@tabcellarg{day}%
+  \svn@tabcellarg{hour}%
+  \svn@tabcellarg{minute}%
+  \svn@tabcellarg{second}%
+  \svn@tabcellarg{timezonehour}%
+  \svn@tabcellarg{timezoneminute}%
+  \@backslashchar\@backslashchar
   }
 }
 %    \end{macrocode}
@@ -2806,7 +2806,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabcellarg{##1}%
+  \svn@tabcellarg{##1}%
   }%
   \svn@writerow{group}{#1}%
   \endgroup
@@ -2822,7 +2822,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabcellarg{##1}%
+  \svn@tabcellarg{##1}%
   }%
   \svn@writerow{file}{#1}%
   \endgroup
@@ -2837,7 +2837,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \begingroup
   \def\svn@tabcellarg##1{{\csname @svn@##1\endcsname}}
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
-    \svn@tabcellarg{##1}%
+  \svn@tabcellarg{##1}%
   }%
   \svn@writerow{global}{}%
   \endgroup
@@ -2851,8 +2851,8 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svntable{%
   \begin{tabular}{lrll}
-    \hline
-    \strut Name & Rev & Last Author & Last Changed At \\\hline
+  \hline
+  \strut Name & Rev & Last Author & Last Changed At \\\hline
 }
 \def\endsvntable{\hline\end{tabular}}
 \def\svnbeforetable{}
@@ -2875,7 +2875,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \def\svntabrev{}
 \def\svntabauthor#1{\svnFullAuthor{#1}}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
-      #1-#2-#3 #4:#5:#6 #7#8%
+    #1-#2-#3 #4:#5:#6 #7#8%
 }
 %    \end{macrocode}
 
@@ -2914,11 +2914,12 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 %% Adapted from the \url macro of the `hyperref` package.
 \DeclareRobustCommand*{\svnnolinkurl}{%
-    \@ifundefined{hyper@normalise}%
+  \@ifundefined{hyper@normalise}%
     {\PackageWarning{svn-multi}{Package hyperref is needed for \noexpand
-    \svnnolinkurl.}}%
-    {\hyper@normalise\svnnolinkurl@}}%
-\def\svnnolinkurl@#1{\Hurl{#1}}
+     \svnnolinkurl.}}%
+    {\hyper@normalise\svnnolinkurl@}%
+}%
+\def\svnnolinkurl@#1{\Hurl{#1}}%
 %    \end{macrocode}
 % \end{macro}
 
@@ -2964,125 +2965,129 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Remove all files which do not have a revision number from list:
 %    \begin{macrocode}
-  \if@svnmulti@groups
-  \ifx\@svng@@files\empty\else
-    \begingroup
-      \def\svn@tmplist{}%
-      \@for\svn@temp:=\@svng@@files\do{%
+    \if@svnmulti@groups
+      \ifx\@svng@@files\empty\else
+      \begingroup
+        \def\svn@tmplist{}%
+        \@for\svn@temp:=\@svng@@files\do{%
         \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
           \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
         \fi
-      }
-      \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
-    \endgroup
-  \fi
-  \fi
+        }
+        \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
+      \endgroup
+      \fi
+    \fi
 %    \end{macrocode}
 % Write document global values:
 %    \begin{macrocode}
-  \svn@checkwrite
-  \immediate\write\svn@write{^^J%
-    \@percentchar\space Global values:^^J%
-    \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
-    \noexpand\def\noexpand\svndate{\@svn@date}^^J%
-    \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
-    \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
-    \noexpand\def\noexpand\svnmonth{\@svn@month}^^J%
-    \noexpand\def\noexpand\svnday{\@svn@day}^^J%
-    \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
-    \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
-    \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
-    \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
-    \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
-  }
-  \if@svnmulti@groups
-  \immediate\write\svn@write{%
-    \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
-  }%
-  \else
-  \immediate\write\svn@write{^^J}%
-  \fi
+    \svn@checkwrite
+    \immediate\write\svn@write{^^J%
+      \@percentchar\space Global values:^^J%
+      \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
+      \noexpand\def\noexpand\svndate{\@svn@date}^^J%
+      \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
+      \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
+      \noexpand\def\noexpand\svnmonth{\@svn@month}^^J%
+      \noexpand\def\noexpand\svnday{\@svn@day}^^J%
+      \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
+      \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
+      \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
+      \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
+      \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
+    }
+    \if@svnmulti@groups
+      \immediate\write\svn@write{%
+        \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
+      }%
+    \else
+      \immediate\write\svn@write{^^J}%
+    \fi
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
-  \if@svnmulti@groups
-  \ifx\svn@glist\empty\else
-    \begingroup
+    \if@svnmulti@groups
+      \ifx\svn@glist\empty\else
+        \begingroup
 %    \end{macrocode}
 % Write table of revisions file if \op{table} option was used.
 %    \begin{macrocode}
-    \if@svnmulti@table
-      \newwrite\svn@svtwrite
-      \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
-      \immediate\write\svn@svtwrite{%
-      \noexpand\svnbeforetable^^J%
-      \noexpand\svntable}%
-      \begingroup
-      \svn@writeglobalrow{}%
-      \ifx\@svng@@files\@undefined\else
-      \ifx\@svng@@files\relax\else
-          \@for\svn@file:=\@svng@@files\do{%
-             \svn@writefilerow{\svn@file}%
+          \if@svnmulti@table
+            \newwrite\svn@svtwrite
+            \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
+            \immediate\write\svn@svtwrite{%
+              \noexpand\svnbeforetable^^J%
+              \noexpand\svntable%
+            }%
+            \begingroup
+              \svn@writeglobalrow{}%
+              \ifx\@svng@@files\@undefined\else
+                \ifx\@svng@@files\relax\else
+                  \@for\svn@file:=\@svng@@files\do{%
+                    \svn@writefilerow{\svn@file}%
+                  }%
+                \fi
+              \fi
+            \endgroup
+          \fi
+          \immediate\write\svn@write{^^J%
+            \@percentchar\space SVN File Groups: \svn@glist
           }%
-      \fi\fi
-      \endgroup
-    \fi
-    \immediate\write\svn@write{^^J%
-        \@percentchar\space SVN File Groups: \svn@glist}%
 %    \end{macrocode}
 % For every activated keyword group check if any keywords got recorded
 % and write to the output file:
 %    \begin{macrocode}
-    \@for\svn@g:=\svn@glist\do{%
-      \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
-      \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
-        \def\svn@writekw##1{%
-          \noexpand\@namedef{svng@\svn@g @##1}%
-          {\csname @svng@\svn@g @##1\endcsname}^^J%
-        }
-        \immediate\write\svn@write{%
-          \@percentchar\space\svn@g^^J%
-          \svn@writekw{rev}%
-          \svn@writekw{date}%
-          \svn@writekw{author}%
-          \svn@writekw{year}%
-          \svn@writekw{month}%
-          \svn@writekw{day}%
-          \svn@writekw{hour}%
-          \svn@writekw{minute}%
-          \svn@writekw{second}%
-          \svn@writekw{timezonehour}%
-          \svn@writekw{timezoneminute}%
-          \svn@writekw{files}%
-        }%
-        \if@svnmulti@table
-            \begingroup
-            \svn@writegrouprow{\svn@g}%
-            \expandafter\let\expandafter
+          \@for\svn@g:=\svn@glist\do{%
+            \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
+            \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
+            \def\svn@writekw##1{%
+              \noexpand\@namedef{svng@\svn@g @##1}%
+              {\csname @svng@\svn@g @##1\endcsname}^^J%
+            }
+            \immediate\write\svn@write{%
+              \@percentchar\space\svn@g^^J%
+              \svn@writekw{rev}%
+              \svn@writekw{date}%
+              \svn@writekw{author}%
+              \svn@writekw{year}%
+              \svn@writekw{month}%
+              \svn@writekw{day}%
+              \svn@writekw{hour}%
+              \svn@writekw{minute}%
+              \svn@writekw{second}%
+              \svn@writekw{timezonehour}%
+              \svn@writekw{timezoneminute}%
+              \svn@writekw{files}%
+            }%
+            \if@svnmulti@table
+              \begingroup
+              \svn@writegrouprow{\svn@g}%
+              \expandafter\let\expandafter
                 \svn@temp\csname @svng@\svn@g @files\endcsname
-            \ifx\svn@temp\relax\else
+              \ifx\svn@temp\relax\else
                 \@for\svn@file:=\svn@temp\do{%
-                    \svn@writefilerow{\svn@file}%
+                  \svn@writefilerow{\svn@file}%
                 }%
+              \fi
+              \endgroup
             \fi
-            \endgroup
-        \fi
-      \fi\fi
-    }%
-    \if@svnmulti@table
-      \immediate\write\svn@svtwrite{%
-        \noexpand\endsvntable^^J%
-        \noexpand\svnaftertable
-      }%
-      \immediate\closeout\svn@svtwrite%
+            \fi\fi
+          }%
+          \if@svnmulti@table
+            \immediate\write\svn@svtwrite{%
+              \noexpand\endsvntable^^J%
+              \noexpand\svnaftertable
+            }%
+            \immediate\closeout\svn@svtwrite%
+          \fi
+        \endgroup
+      \fi
     \fi
-    \endgroup
-  \fi\fi
 %    \end{macrocode}
 % Finally close output file:
 %    \begin{macrocode}
-  \immediate\closeout\svn@write%
- \fi\fi\fi\fi\fi
+    \immediate\closeout\svn@write%
+  \fi\fi\fi\fi\fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3090,7 +3095,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
-\svn@writeaux
+  \svn@writeaux
 }
 %    \end{macrocode}
 %
