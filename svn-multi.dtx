@@ -1358,7 +1358,7 @@
 \def\svntimezonehour{+00}   \def\@svn@timezonehour{+00}
 \def\svntimezoneminute{00}  \def\@svn@timezoneminute{00}
 \def\svnmainurl{NOT SET}    \def\svnmainfilename{NOT SET}
-\def\svnurl{}
+\def\svnurl{} \def\svnfname{}
 \def\svn@temp{}
 
 \if@svnmulti@groups
@@ -1379,6 +1379,7 @@
   \gdef\svnfiletimezonehour{+00}%
   \gdef\svnfiletimezoneminute{00}%
   \gdef\svnfileurl{}%
+  \gdef\svnfilefname{}%
 }
 \svn@initfile
 %    \end{macrocode}
@@ -1516,6 +1517,7 @@
 \xdef\svnfiledate{#2}%
 \xdef\svnfileauthor{#3}%
 \xdef\svnfileurl{#4}%
+\svn@getfilename\svnfileurl%
 %    \end{macrocode}
 % Then we check if the revision is non-empty (not yet expanded by subversion?)
 % and larger then the current maximum value |\@svn@rev|.  If yes we save all
@@ -1535,6 +1537,7 @@
 \xdef\@svn@timezonehour{\svnfiletimezonehour}%
 \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
 \xdef\@svn@url{\svnfileurl}%
+\xdef\@svn@fname{\svnfilefname}%
 \else\fi
 
 \if@svnmulti@groups
@@ -1552,6 +1555,7 @@
 \@svncg@save{timezonehour}{\svnfiletimezonehour}%
 \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
 \@svncg@save{url}{\svnfileurl}%
+\@svncg@save{fname}{\svnfilefname}%
 \fi
 \fi
 \fi
@@ -2208,6 +2212,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     {\svnfiletimezonehour}%
     {\svnfiletimezoneminute}%
     {\svnfileurl}%
+    {\svnfilefname}%
   }\svn@filestack}%
 }
 
@@ -2237,10 +2242,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@restorefilekws@@
 }
 
-\def\svn@restorefilekws@@#1#2#3{%
+\def\svn@restorefilekws@@#1#2#3#4{%
   \gdef\svnfiletimezonehour{#1}%
   \gdef\svnfiletimezoneminute{#2}%
   \gdef\svnfileurl{#3}%
+  \gdef\svnfilefname{#4}%
 }
 
 \def\svn@popfilestack{%
@@ -2375,15 +2381,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \begin{macro}{\svncgtimezonehour}
 % \begin{macro}{\svncgtimezoneminute}
 % \begin{macro}{\svncgurl}
+% \begin{macro}{\svncgfname}
 % Define all |\svncgXXX| macros by calling \cs{svncg@def} in a for loop.
 %    \begin{macrocode}
 \@for\@tempa:=%
   rev,author,date,year,month,day,hour,minute,second,%
-  timezonehour,timezoneminute,url%
+  timezonehour,timezoneminute,url,fname%
 \do{%
   \expandafter\svncg@def\expandafter{\@tempa}%
 }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -2522,6 +2530,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
          \svn@writekw{timezoneminute}%
          \noexpand
          \svn@namegdefverb{@svng@#1@url}{\csname svnfileurl\endcsname}^^J%
+         \noexpand
+         \svn@namegdefverb{@svng@#1@fname}{\csname svnfilefname\endcsname}^^J%
        }%
      \fi
    \endgroup
@@ -3047,31 +3057,31 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svngetfilename}[1]{URL}
+% \begin{macro}{\svn@getfilename}[1]{URL}
 % This macro expands the content using the temporary macro and sets it in front
 % of the \csi{svn@getfilename} sub-macro together with |/{}| to make sure the
 % macro does not break at values without directories. A |\relax| is used as
 % end marker.
 %    \begin{macrocode}
-\gdef\svngetfilename#1{%
+\def\svn@getfilename#1{%
   \begingroup
     \edef\svn@temp{#1}%
-    \expandafter\svn@getfilename\svn@temp/{}\relax
+    \expandafter\@svn@getfilename\svn@temp/{}\relax
 }%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svngetfilename}[2]{URL part before first slash}{URL part after
+% \begin{macro}{\@svn@getfilename}[2]{URL part before first slash}{URL part after
 % first slash}
 % Splits the content at the first slash (|/|) and checks if the remainder is
 % empty. If so the end marker got reached and the part before the slash is the
 % filename which is returned. Otherwise the macro recursively calls itself to
 % split the remainder.
 %    \begin{macrocode}
-\gdef\svn@getfilename#1/#2\relax{%
+\def\@svn@getfilename#1/#2\relax{%
     \svn@ifempty{#2}%
-      {\endgroup#1}%
-      {\svn@getfilename#2\relax}%
+      {\endgroup\gdef\svnfilefname{#1}}%
+      {\@svn@getfilename#2\relax}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -3149,6 +3159,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
       \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
       \noexpand\svn@gdefverb\noexpand\svnurl{\@svn@url}^^J%
+      \noexpand\svn@gdefverb\noexpand\svnfname{\@svn@fname}^^J%
     }
     \if@svnmulti@groups
       \immediate\write\svn@write{%
@@ -3214,6 +3225,8 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \svn@writekw{files}%
               \noexpand\svn@namegdefverb{svng@\svn@g @url}%
                   {\csname @svng@\svn@g @url\endcsname}^^J%
+              \noexpand\svn@namegdefverb{svng@\svn@g @fname}%
+                  {\csname @svng@\svn@g @fname\endcsname}^^J%
             }%
             \if@svnmulti@table
               \begingroup
