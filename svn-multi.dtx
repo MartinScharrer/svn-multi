@@ -1316,9 +1316,9 @@
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
-  \let\svn@temp\svn@g
-  \IfFileExists{#1}{\@@input #1\relax}{}
-  \global\let\svn@g\svn@temp
+    \let\svn@temp\svn@g
+    \IfFileExists{#1}{\@@input #1\relax}{}
+    \global\let\svn@g\svn@temp
   \endgroup
 }
 %    \end{macrocode}
@@ -1408,15 +1408,15 @@
 % \cs{svnfiletimezone} and \cs{svntimezone}.
 %    \begin{macrocode}
 \def\svn@gobblezeros{%
-\futurelet\svn@nextchar\svn@gobblezeros@
+  \futurelet\svn@nextchar\svn@gobblezeros@
 }
 \def\svn@gobblezeros@{%
-\let\@tempa=\relax
-\def\@tempb{0}%
-\ifx0\svn@nextchar
-\let\@tempa=\@gobbletwo
-\fi
-\@tempa
+  \let\@tempa=\relax
+  \def\@tempb{0}%
+  \ifx0\svn@nextchar
+    \let\@tempa=\@gobbletwo
+  \fi
+  \@tempa
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1442,32 +1442,34 @@
 % \begin{macro}{\svntoday}
 %    \begin{macrocode}
 \newcommand*{\svntoday}{%
-\begingroup
-\year\svnyear \month\svnmonth \day\svnday
-\relax \today
-\endgroup}
+  \begingroup
+    \year\svnyear \month\svnmonth \day\svnday
+    \relax \today
+  \endgroup
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\svnfiletoday}
 %    \begin{macrocode}
 \newcommand*{\svnfiletoday}{%
-\begingroup
-\year\svnfileyear \month\svnfilemonth \day\svnfileday
-\relax \today
-\endgroup}
+  \begingroup
+    \year\svnfileyear \month\svnfilemonth \day\svnfileday
+    \relax \today
+  \endgroup
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\svncgtoday}
 %    \begin{macrocode}
 \newcommand*{\svncgtoday}{%
-\@ifundefined{svng@\svn@cg @year}{??}{%
-\begingroup
-\year\svncgyear \month\svncgmonth \day\svncgday
-\relax \today
-\endgroup
-}%
+  \@ifundefined{svng@\svn@cg @year}{??}{%
+    \begingroup
+      \year\svncgyear \month\svncgmonth \day\svncgday
+      \relax \today
+    \endgroup
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -1479,8 +1481,8 @@
 % parsed at the end of \cs{svnkwsave}.
 %    \begin{macrocode}
 \newcommand*{\svnid}{%
-\@svnidswtrue
-\svnkwsave
+  \@svnidswtrue
+  \svnkwsave
 }
 \newif\if@svnidsw
 \@svnidswfalse
@@ -1496,12 +1498,12 @@
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
 \def\svn@scanId#1 #2 #3 #4 #5\relax{%
-\@svn@scandate{#3 #4}%
-\@svn@updateid{#2}{#3 #4}{#5}{#1}%
-\svnkwdef{Filename}{#1}%
-\svnkwdef{Date}{#3 #4}%
-\svnkwdef{Revision}{#2}%
-\svnkwdef{Author}{#5}%
+  \@svn@scandate{#3 #4}%
+  \@svn@updateid{#2}{#3 #4}{#5}{#1}%
+  \svnkwdef{Filename}{#1}%
+  \svnkwdef{Date}{#3 #4}%
+  \svnkwdef{Revision}{#2}%
+  \svnkwdef{Author}{#5}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1513,58 +1515,58 @@
 % |\svn@value| which can change very soon after this macro.
 %    \begin{macrocode}
 \def\@svn@updateid#1#2#3#4{%
-\xdef\svnfilerev{#1}%
-\xdef\svnfiledate{#2}%
-\xdef\svnfileauthor{#3}%
-\xdef\svnfileurl{#4}%
-\svn@getfilename\svnfileurl%
+  \xdef\svnfilerev{#1}%
+  \xdef\svnfiledate{#2}%
+  \xdef\svnfileauthor{#3}%
+  \xdef\svnfileurl{#4}%
+  \svn@getfilename\svnfileurl%
 %    \end{macrocode}
 % Then we check if the revision is non-empty (not yet expanded by subversion?)
 % and larger then the current maximum value |\@svn@rev|.  If yes we save all
 % value to save them in the .svn-file later.
 %    \begin{macrocode}
-\ifx\svnfilerev\empty\else
-\ifnum\@svn@rev<\svnfilerev
-\xdef\@svn@rev{\svnfilerev}%
-\xdef\@svn@date{\svnfiledate}%
-\xdef\@svn@author{\svnfileauthor}%
-\xdef\@svn@year{\svnfileyear}%
-\xdef\@svn@month{\svnfilemonth}%
-\xdef\@svn@day{\svnfileday}%
-\xdef\@svn@hour{\svnfilehour}%
-\xdef\@svn@minute{\svnfileminute}%
-\xdef\@svn@second{\svnfilesecond}%
-\xdef\@svn@timezonehour{\svnfiletimezonehour}%
-\xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
-\xdef\@svn@url{\svnfileurl}%
-\xdef\@svn@fname{\svnfilefname}%
-\else\fi
+  \ifx\svnfilerev\empty\else
+    \ifnum\@svn@rev<\svnfilerev
+      \xdef\@svn@rev{\svnfilerev}%
+      \xdef\@svn@date{\svnfiledate}%
+      \xdef\@svn@author{\svnfileauthor}%
+      \xdef\@svn@year{\svnfileyear}%
+      \xdef\@svn@month{\svnfilemonth}%
+      \xdef\@svn@day{\svnfileday}%
+      \xdef\@svn@hour{\svnfilehour}%
+      \xdef\@svn@minute{\svnfileminute}%
+      \xdef\@svn@second{\svnfilesecond}%
+      \xdef\@svn@timezonehour{\svnfiletimezonehour}%
+      \xdef\@svn@timezoneminute{\svnfiletimezoneminute}%
+      \xdef\@svn@url{\svnfileurl}%
+      \xdef\@svn@fname{\svnfilefname}%
+    \fi
 
-\if@svnmulti@groups
-\ifx\svn@g\empty\else
-\expandafter\ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
-\@svncg@save{rev}{\svnfilerev}%
-\@svncg@save{date}{\svnfiledate}%
-\@svncg@save{author}{\svnfileauthor}%
-\@svncg@save{year}{\svnfileyear}%
-\@svncg@save{month}{\svnfilemonth}%
-\@svncg@save{day}{\svnfileday}%
-\@svncg@save{hour}{\svnfilehour}%
-\@svncg@save{minute}{\svnfileminute}%
-\@svncg@save{second}{\svnfilesecond}%
-\@svncg@save{timezonehour}{\svnfiletimezonehour}%
-\@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
-\@svncg@save{url}{\svnfileurl}%
-\@svncg@save{fname}{\svnfilefname}%
-\fi
-\fi
-\fi
-
-\fi
+    \if@svnmulti@groups
+      \ifx\svn@g\empty\else
+        \expandafter
+        \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
+          \@svncg@save{rev}{\svnfilerev}%
+          \@svncg@save{date}{\svnfiledate}%
+          \@svncg@save{author}{\svnfileauthor}%
+          \@svncg@save{year}{\svnfileyear}%
+          \@svncg@save{month}{\svnfilemonth}%
+          \@svncg@save{day}{\svnfileday}%
+          \@svncg@save{hour}{\svnfilehour}%
+          \@svncg@save{minute}{\svnfileminute}%
+          \@svncg@save{second}{\svnfilesecond}%
+          \@svncg@save{timezonehour}{\svnfiletimezonehour}%
+          \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
+          \@svncg@save{url}{\svnfileurl}%
+          \@svncg@save{fname}{\svnfilefname}%
+        \fi
+      \fi
+    \fi
+  \fi
 }
 
 \def\@svncg@save#1#2{%
-\expandafter\xdef\csname @svng@\svn@g @#1\endcsname{#2}%
+  \expandafter\xdef\csname @svng@\svn@g @#1\endcsname{#2}%
 }
 
 %    \end{macrocode}
@@ -1576,24 +1578,24 @@
 % We clear the keyword value first to reduce the risk though bad user input.
 %    \begin{macrocode}
 \newcommand{\svnidlong}{%
-\svnkwdef{HeadURL}{}%
-\svnkwdef{LastChangedDate}{}%
-\svnkwdef{LastChangedRevision}{0}%
-\svnkwdef{LastChangedBy}{}%
+  \svnkwdef{HeadURL}{}%
+  \svnkwdef{LastChangedDate}{}%
+  \svnkwdef{LastChangedRevision}{0}%
+  \svnkwdef{LastChangedBy}{}%
 %    \end{macrocode}
 % The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters
 % inside the keywords.  The braces \{ \} are changed to allow comments between
 % the arguments.  \cs{svnidlong@readargsfull} is called to read the arguments.
 %    \begin{macrocode}
-\begingroup
-\if@svnmulti@verbatim
-\svn@catcodes
-\catcode`\{=12
-\catcode`\}=12
-\else
-\def\svnidlong@readargsfull{\svnidlong@readargs}%
-\fi
-\svnidlong@readargsfull
+  \begingroup
+    \if@svnmulti@verbatim
+      \svn@catcodes
+      \catcode`\{=12
+      \catcode`\}=12
+    \else
+      \def\svnidlong@readargsfull{\svnidlong@readargs}%
+    \fi
+    \svnidlong@readargsfull
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1605,12 +1607,15 @@
 %    \begin{macrocode}
 \if@svnmulti@verbatim
 \def\svn@catcodes{%
-\let\do\@makeother \dospecials
-\catcode`\^^M9 \catcode`\ 10
-\catcode`\{1 \catcode`\}2
+  \let\do\@makeother
+  \dospecials
+  \catcode`\^^M9
+  \catcode`\ 10
+  \catcode`\{1
+  \catcode`\}2
 }
 \else
-\def\svn@catcodes{}
+  \def\svn@catcodes{}
 \fi
 %    \end{macrocode}
 % \end{macro}
@@ -1646,19 +1651,20 @@
 % by \cs{svnidlong}.
 %    \begin{macrocode}
 \def\svnidlong@readargs#1#2#3#4{%
-\svnkwsave@read #1\relax
-\svnkwsave@read #2\relax
-\svnkwsave@read #3\relax
-\svnkwsave@read #4\relax
-\endgroup
+    \svnkwsave@read #1\relax
+    \svnkwsave@read #2\relax
+    \svnkwsave@read #3\relax
+    \svnkwsave@read #4\relax
+  \endgroup
 %    \end{macrocode}
 % Now the update macros for date and id are called.
 %    \begin{macrocode}
-\ifx\svnkwLastChangedDate\empty
-\else\@svn@scanlongdate{\svnkwLastChangedDate}\fi
-\@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}%
-{\svnkw{LastChangedBy}}{\svnkw{HeadURL}}%
-\ignorespaces
+  \ifx\svnkwLastChangedDate\empty\else
+    \@svn@scanlongdate{\svnkwLastChangedDate}%
+  \fi
+  \@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}%
+  {\svnkw{LastChangedBy}}{\svnkw{HeadURL}}%
+  \ignorespaces
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -1668,9 +1674,9 @@
 % Enabled verbatim mode and uses a sub macro to read the arguments afterwards.
 %    \begin{macrocode}
 \def\svnkwsave{%
-\begingroup
-\svn@catcodes
-\svnkwsave@readargs
+  \begingroup
+    \svn@catcodes
+    \svnkwsave@readargs
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1681,17 +1687,16 @@
 % scan macro.
 %    \begin{macrocode}
 \gdef\svnkwsave@readargs#1{%
-\svnkwsave@read#1\relax
-\endgroup
-\if@svnidsw
-  \ifx\svnkwId\empty
-  \else
-  \expandafter
-  \svn@scanId\svnkwId\relax
-  \@svnidswfalse
+    \svnkwsave@read#1\relax
+  \endgroup
+  \if@svnidsw
+    \ifx\svnkwId\empty\else
+      \expandafter
+      \svn@scanId\svnkwId\relax
+      \@svnidswfalse
+    \fi
   \fi
-\fi
-\ignorespaces
+  \ignorespaces
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1716,7 +1721,8 @@
 \begingroup
 \catcode`\$=11
 \gdef\svnkwsave@parse$#1:#2${%
-\expandafter\xdef\csname svnkw#1\endcsname{#2}}%
+  \expandafter\xdef\csname svnkw#1\endcsname{#2}%
+}%
 \endgroup
 %    \end{macrocode}
 % \end{macro}
@@ -1726,15 +1732,15 @@
 % \cs{svnkwdef@}\meta{keyword}.
 %    \begin{macrocode}
 \newcommand{\svnkwdef}[2]{%
-\@ifundefined{svnkwdef@#1}%
+  \@ifundefined{svnkwdef@#1}%
 %    \end{macrocode}
 % If not we call the general macro \cs{svnkwdef@}.
 %    \begin{macrocode}
-{\svnkwdef@{#1}{#2}}%
+    {\svnkwdef@{#1}{#2}}%
 %    \end{macrocode}
 % If yes we just call it with the value as argument.
 %    \begin{macrocode}
-{\csname svnkwdef@#1\endcsname{#2}}%
+    {\csname svnkwdef@#1\endcsname{#2}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1744,8 +1750,9 @@
 % The |\xdef| is used to expand the content first (needed for internal use) and
 % make the definition globally.
 %    \begin{macrocode}
-\newcommand{\svnkwdef@}[2]%
-{\expandafter\xdef\csname svnkw#1\endcsname{#2}}
+\newcommand{\svnkwdef@}[2]{%
+  \expandafter\xdef\csname svnkw#1\endcsname{#2}%
+}
 %    \end{macrocode}
 % Example: |\svnkwdef{Revision}{23}| will define |\svnkwRevision| as 23.
 % \end{macro}
@@ -1814,9 +1821,10 @@
 % misspelled, keyword is given.}
 %    \begin{macrocode}
 \newcommand{\svnkw}[1]{%
-\@ifundefined{svnkw#1}%
-{\PackageWarning{svn-multi}{SVN keyword '#1' not defined (typo?)}}%
-{\csname svnkw#1\endcsname}}%
+  \@ifundefined{svnkw#1}%
+    {\PackageWarning{svn-multi}{SVN keyword '#1' not defined (typo?)}}%
+    {\csname svnkw#1\endcsname}%
+}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1861,8 +1869,6 @@
       {\svn@stripspace#1\relax\relax}%
     }%
 }
-
-\def\svn@spaceonly{ }
 %    \end{macrocode}
 % \end{macro}
 
@@ -1936,14 +1942,14 @@
 \def\@svn@scandate#1{\@svn@scandate@#1\relax}
 
 \def\@svn@scandate@#1-#2-#3 #4:#5:#6#7#8\relax{%
-\gdef\svnfileyear{#1}%
-\gdef\svnfilemonth{#2}%
-\gdef\svnfileday{#3}%
-\gdef\svnfilehour{#4}%
-\gdef\svnfileminute{#5}%
-\gdef\svnfilesecond{#6#7}%
-\gdef\svnfiletimezonehour{+00}%
-\gdef\svnfiletimezoneminute{00}% #8 always 'Z' for Zulu-time (UTC)
+  \gdef\svnfileyear{#1}%
+  \gdef\svnfilemonth{#2}%
+  \gdef\svnfileday{#3}%
+  \gdef\svnfilehour{#4}%
+  \gdef\svnfileminute{#5}%
+  \gdef\svnfilesecond{#6#7}%
+  \gdef\svnfiletimezonehour{+00}%
+  \gdef\svnfiletimezoneminute{00}% #8 always 'Z' for Zulu-time (UTC)
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1955,13 +1961,13 @@
 \def\@svn@scanlongdate#1{\expandafter\@svn@scanlongdate@#1\relax}
 %
 \def\@svn@scanlongdate@#1-#2-#3 #4:#5:#6 #7 #8\relax{%
-\gdef\svnfileyear{#1}%
-\gdef\svnfilemonth{#2}%
-\gdef\svnfileday{#3}%
-\gdef\svnfilehour{#4}%
-\gdef\svnfileminute{#5}%
-\gdef\svnfilesecond{#6}%
-\@svn@parsetimezone#7\relax%
+  \gdef\svnfileyear{#1}%
+  \gdef\svnfilemonth{#2}%
+  \gdef\svnfileday{#3}%
+  \gdef\svnfilehour{#4}%
+  \gdef\svnfileminute{#5}%
+  \gdef\svnfilesecond{#6}%
+  \@svn@parsetimezone#7\relax%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1971,8 +1977,8 @@
 % Scans timezone and splits hour and minute part.
 %    \begin{macrocode}
 \def\@svn@parsetimezone#1#2#3#4#5\relax{%
-\gdef\svnfiletimezonehour{#1#2#3}%
-\gdef\svnfiletimezoneminute{#4#5}%
+  \gdef\svnfiletimezonehour{#1#2#3}%
+  \gdef\svnfiletimezoneminute{#4#5}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1980,8 +1986,10 @@
 % \begin{macro}{\svnpdfdate}
 % Returns date in a format needed for |\pdfinfo|.
 %    \begin{macrocode}
-\def\svnpdfdate{\svnyear\svnmonth\svnday
-\svnhour\svnminute\svnsecond\svntimezonehour'\svntimezoneminute'}
+\def\svnpdfdate{%
+  \svnyear\svnmonth\svnday
+  \svnhour\svnminute\svnsecond\svntimezonehour'\svntimezoneminute'%
+}
 %    \end{macrocode}
 % \end{macro}
 
@@ -2006,7 +2014,7 @@
 % |svn@author@|\meta{username} to it.
 %    \begin{macrocode}
 \newcommand{\svnRegisterAuthor}[2]{%
-\expandafter\def\csname svn@author@#1\endcsname{#2}%
+  \expandafter\def\csname svn@author@#1\endcsname{#2}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2019,9 +2027,9 @@
 % was not registered.}
 %    \begin{macrocode}
 \newcommand{\svnFullAuthor}{%
-\@ifnextchar{*}%
-{\svnFullAuthor@star}%
-{\svnFullAuthor@normal}%
+  \@ifnextchar{*}%
+    {\svnFullAuthor@star}%
+    {\svnFullAuthor@normal}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -2039,8 +2047,9 @@
 % \begin{macro}{\svnFullAuthor@normal}[1]{username}
 %    \begin{macrocode}
 \def\svnFullAuthor@normal#1{%
-\edef\svn@temp{#1}%
-\svnFullAuthor@{\svn@temp}{}}%
+  \edef\svn@temp{#1}%
+  \svnFullAuthor@{\svn@temp}{}%
+}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\svnFullAuthor@}[2]{username}{previous defined trailing string}
@@ -2048,8 +2057,9 @@
 % when the normal version is called.
 %    \begin{macrocode}
 \def\svnFullAuthor@#1#2{%
-\@ifundefined{svn@author@#1}{#1}%
-{\csname svn@author@#1\endcsname #2}%
+  \@ifundefined{svn@author@#1}%
+    {#1}%
+    {\csname svn@author@#1\endcsname #2}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2060,7 +2070,7 @@
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
 \newcommand{\svnRegisterRevision}[2]{%
-\expandafter\def\csname svn@revision@#1\endcsname{#2}%
+  \expandafter\def\csname svn@revision@#1\endcsname{#2}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2072,9 +2082,9 @@
 % \changes{v1.2}{2007/06/22}{New macro}
 %    \begin{macrocode}
 \newcommand{\svnFullRevision}{%
-\@ifnextchar{*}%
-{\svnFullRevision@star}%
-{\svnFullRevision@normal}%
+  \@ifnextchar{*}%
+    {\svnFullRevision@star}%
+    {\svnFullRevision@normal}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2085,16 +2095,16 @@
 % The star macro also removes the star of course.
 %    \begin{macrocode}
 \def\svnFullRevision@star*#1{%
-\edef\svn@temp{#1}%
-\svnFullRevision@{\svn@temp}{~(r\svn@temp)}%
+  \edef\svn@temp{#1}%
+  \svnFullRevision@{\svn@temp}{~(r\svn@temp)}%
 }
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\svnFullRevision@normal}[1]{revision number}
 %    \begin{macrocode}
 \def\svnFullRevision@normal#1{%
-\edef\svn@temp{#1}%
-\svnFullRevision@{\svn@temp}{}%
+  \edef\svn@temp{#1}%
+  \svnFullRevision@{\svn@temp}{}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2104,9 +2114,9 @@
 % when the normal version is called.
 %    \begin{macrocode}
 \def\svnFullRevision@#1#2{%
-\@ifundefined{svn@revision@#1}%
-{Revision #1}%
-{\csname svn@revision@#1\endcsname #2}%
+  \@ifundefined{svn@revision@#1}%
+    {Revision #1}%
+    {\csname svn@revision@#1\endcsname #2}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2186,9 +2196,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \long\def\svnmulti@atendinputfile#1{%
   \begingroup
-  \@temptokena\expandafter{\svnmulti@endinputfilehook}%
-  \toks@{#1}%
-  \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
+    \@temptokena\expandafter{\svnmulti@endinputfilehook}%
+    \toks@{#1}%
+    \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2308,31 +2318,33 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % got used.
 %    \begin{macrocode}
 \def\svngroup#1{%
-\xdef\svn@g{#1}%
-\ifx\svn@g\empty\else%
+  \xdef\svn@g{#1}%
+  \ifx\svn@g\empty\else%
 %    \end{macrocode}
 % Only initialise the group at first usage:
 %    \begin{macrocode}
-\expandafter\ifx\csname svn@g@#1\endcsname\relax%
-\expandafter\gdef\csname svn@g@#1\endcsname{1}%
+    \expandafter
+    \ifx\csname svn@g@#1\endcsname\relax%
+      \expandafter\gdef\csname svn@g@#1\endcsname{1}%
 %    \end{macrocode}
 % If first use, init revision numbers to avoid not-a-number errors:
 %    \begin{macrocode}
-\expandafter\gdef\csname @svng@#1@rev\endcsname{-1}%
-\expandafter\ifx\csname svng@#1@rev\endcsname\relax
-\expandafter\gdef\csname svng@#1@rev\endcsname{-1}%
-\fi
+      \expandafter\gdef\csname @svng@#1@rev\endcsname{-1}%
+      \expandafter
+      \ifx\csname svng@#1@rev\endcsname\relax
+        \expandafter\gdef\csname svng@#1@rev\endcsname{-1}%
+      \fi
 %    \end{macrocode}
 % Now save new group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
 %    \begin{macrocode}
-\ifx\svn@glist\empty
-\xdef\svn@glist{#1}%
-\else
-\xdef\svn@glist{\svn@glist,#1}%
-\fi
-\fi
-\fi
+      \ifx\svn@glist\empty
+        \xdef\svn@glist{#1}%
+      \else
+        \xdef\svn@glist{\svn@glist,#1}%
+      \fi
+    \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2417,8 +2429,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Simply returns |svng@#1@#2| if defined, '??' otherwise.
 %    \begin{macrocode}
 \def\svng#1#2{%
-  \@ifundefined{svng@#1@#2}{??}{%
-    \csname svng@#1@#2\endcsname}%
+  \@ifundefined{svng@#1@#2}%
+    {??}%
+    {\csname svng@#1@#2\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2429,10 +2442,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % file is already in the group. This could be avoided using a list search.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
-  \expandafter\ifx\csname @svng@#2@files@#1\endcsname\relax%
+  \expandafter
+  \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
     %
-    \expandafter\ifx\csname @svng@#2@files\endcsname\relax%
+    \expandafter
+    \ifx\csname @svng@#2@files\endcsname\relax%
       \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
     \else
       \expandafter\xdef\csname @svng@#2@files\endcsname{%
@@ -2494,9 +2509,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnfileasgroup{%
   \begingroup
-  \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
-  \svn@removedotslash\svn@filename
-  \svn@fileasgroup{\svn@filename}
+    \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
+    \svn@removedotslash\svn@filename
+    \svn@fileasgroup{\svn@filename}
   \endgroup
 }
 %    \end{macrocode}
@@ -2578,11 +2593,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \svnmulti@atendinputfile{%
   \if@svnmulti@filesasgroups
-  \ifsvnfilesasgroup
-    \expandafter\ifx\csname svn@ignore@ext@\finkext\endcsname\relax
-    \svnfileasgroup
+    \ifsvnfilesasgroup
+      \expandafter\ifx\csname svn@ignore@ext@\finkext\endcsname\relax
+      \svnfileasgroup
+      \fi
     \fi
-  \fi
   \fi
 }
 %    \end{macrocode}
@@ -2632,14 +2647,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \newcommand*\svnexternal[2][\svn@externalgroup]{%
   \if@filesw
-  \svn@checkwrite
-  \begingroup
-  \let\svn@temp\finkpath
-  \svn@removedotslash\svn@temp
-  \immediate\write\svn@write{%
-    \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
-  }%
-  \endgroup
+    \svn@checkwrite
+    \begingroup
+      \let\svn@temp\finkpath
+      \svn@removedotslash\svn@temp
+      \immediate\write\svn@write{%
+        \noexpand\@svnexternal[#1]{\svn@temp}{#2}%
+      }%
+    \endgroup
   \fi
 }
 %    \end{macrocode}
@@ -2679,12 +2694,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnexternalfile{%
   \begingroup
-  \catcode`\_=12
-  \catcode`\&=12
-  \catcode`\^=12
-  \catcode`\$=12
-  \catcode`\#=12
-  \expandafter\svn@externalfile
+    \catcode`\_=12
+    \catcode`\&=12
+    \catcode`\^=12
+    \catcode`\$=12
+    \catcode`\#=12
+    \expandafter\svn@externalfile
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2697,9 +2712,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \endgroup
   \svn@addfiletogroup{#1}{\svn@g}%
   \if@svnmulti@filesasgroups
-  \ifsvnfilesasgroup
-  \svn@fileasgroup{#1}%
-  \fi
+    \ifsvnfilesasgroup
+      \svn@fileasgroup{#1}%
+    \fi
   \fi
 }
 %    \end{macrocode}
@@ -2709,7 +2724,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % simply ignores its argument.
 %    \begin{macrocode}
 \else
-\def\svnexternalfile#1{}%
+  \def\svnexternalfile#1{}%
 \fi
 %    \end{macrocode}
 
