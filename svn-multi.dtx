@@ -1040,7 +1040,7 @@
 % \section{Compile Guide}\label{sec:compileguide}
 % A document which uses \svnmulti\ needs to be compiled by \LaTeX\ in the
 % following ways depending on the used features. The Figure~\ref{fig:compi}
-% below shows the compilation cycle.
+% below shows the complete compilation cycle.
 %
 % \subsection*{Basic Features -- Global and Group Keywords}
 % \begin{enumerate}
@@ -1048,6 +1048,18 @@
 %     global and group keyword macros are not valid yet.
 %   \item Compile document again with \LaTeX. The |.svn| file is read by
 %     \svnmulti. Document global and group keyword macros are now valid.
+% \end{enumerate}
+%
+% \subsection*{Table of Revisions}
+% \begin{enumerate}
+%   \item Compile document with \LaTeX. The |.svn| file is generated. Document
+%     global and group keyword macros are not valid yet which also affects the
+%     table.
+%   \item Compile document again with \LaTeX. The |.svn| file is read by
+%     \svnmulti. Document global and group keyword macros are now valid and the
+%     |.svt| file is generated with the correct values.
+%   \item Compile document again with \LaTeX. The |.svt| file is read by the
+%     \cs{tableofrevisions} macro.
 % \end{enumerate}
 %
 % \subsection*{External Files}
@@ -1068,9 +1080,10 @@
 % \end{enumerate}
 %
 % \begin{figure}
-% \centerline{\includegraphics[width=.8\textwidth]{images/compilation.pdf}}
-% \caption{Compilation cycle of documents using \cs{svn-multi}}\label{fig:compi}
+%   \centerline{\includegraphics[width=.8\textwidth]{images/compilation.pdf}}
+%   \caption{Compilation cycle of documents which use \svnmulti}\label{fig:compi}
 % \end{figure}
+%
 %
 % \section{Known Issues}\label{sec:issues}
 % This section lists some known issues of the \svnmulti package and tries to
