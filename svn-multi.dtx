@@ -467,13 +467,7 @@
 % Controls the support for keywords from external files
 % described in section~\ref{sec:external}. An old |.svn| file should be removed
 % when this feature is deactivated to avoid \textit{undefined macro} errors
-% caused by macros placed there by this feature.\par
-% If the \op{groups} option is enabled the macro
-% \csi{svnexternalgroup}\marg{group name} can be used to declare a own group
-% which is used for all the external files.  Otherwise they are placed in the
-% currently active group.  This macro can be used several times during the
-% document where an empty argument means \emph{no group} and a `|*|' means
-% \emph{current group}.\par
+% caused by macros placed there by this feature.
 %
 % \DescribeOption{groups}
 % Controls the keyword groups feature described in
@@ -501,15 +495,9 @@
 % \LaTeX\ document before \svnmulti.\par  Please note that this feature needs
 % to tie itself into the \pkg{graphics} package and might fail if the internal
 % structure of this package changes in future versions.\par
-% If the \op{groups} option is enabled the macro
-% \csi{svngraphicsgroup}\marg{group name} can be used to declare a own group
-% which is used for all the graphic files (also for pgf images, see below).
-% Otherwise they are placed in the group specified by \cs{svnexternalgroup}
-% which defaults to the currently active group.  This macro can be used several
-% times during the document where an empty argument means \emph{no group} and a
-% `|*|' means \emph{current group}.\par Some graphics like logos can appear
-% frequently in a document. Do not count them as part of each chapter they can
-% be ignored using \csi{svnignoregraphic}\marg{file path}. The macro
+% Some graphics like logos can appear frequently in a document. Do not count
+% them as part of each chapter they can be ignored using
+% \csi{svnignoregraphic}\marg{file path}. The macro
 % \csi{svnconsidergraphic}\marg{file path} disables this again. Such graphics
 % can be then included manually using an explicit \cs{svnexternal} macro.
 %
@@ -916,7 +904,7 @@
 %
 % \paragraph{Typesetting:}
 % The keyword information of the files can be typeset with the normal group
-% typeset macro where the filename (including extension) is the group name.\\
+% typeset macro with the filename (including extension) as group name.\\
 % \emph{Example:} |\svnsetcg{some_file.tex}\svncgauthor| would typeset the
 % author of the file |some_file.tex|
 %
@@ -953,7 +941,7 @@
 % Version 2.0 now supports the inclusion of keywords of external files using the
 % following macros and the Perl script \scr{svn-multi.pl}.
 %
-% \DescribeMacro{svnexternal}{\oarg{group name}\{\{\meta{filea}\}\ignorespaces
+% \DescribeMacro{svnexternal}{\{\{\meta{filea}\}\ignorespaces
 % \{\meta{fileb}\}\ldots\{\meta{filex}\}\}}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
 % even directories) can be included using this macro which awaits a list of
@@ -965,12 +953,10 @@
 % external script \scr{svn-multi.pl} which must be executed like described
 % below. The appropriate keywords are then written in \meta{source file}|.svx|
 % files (|x| like eXternal) which are read in by the same \cs{svnexternal} macro
-% at the next \LaTeX\ run. If a group name of `|*|' for the external files is
-% specified using the optional argument the keywords will be placed in the same
-% keyword group as this macro. The file local macros like \cs{svnfilerev} which
+% at the next \LaTeX\ run.  The file local macros like \cs{svnfilerev} which
 % appear in a source file after \cs{svnexternal} are affected, \ie updated if
 % one of the external revision is higher than the one of the source file. This
-% makes sense if \eg the included graphics are taken as logical part of a source
+% makes sense if the included graphics are taken as logical part of a source
 % file.
 %
 % \DescribeMacro{svnexternalpath}{\{\{\meta{patha}\}\ignorespaces
@@ -1329,7 +1315,7 @@
 \def\svn@input#1{%
   \begingroup
     \let\svn@temp\svn@g
-    \IfFileExists{#1}{\@@input #1\relax}{}
+    \IfFileExists{#1}{\@@input #1\relax}{}%
     \global\let\svn@g\svn@temp
   \endgroup
 }
@@ -2643,38 +2629,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \if@svnmulti@external
 %    \end{macrocode}
 
-% \begin{macro}{\svnexternalgroup}[1]{group name}
-% Defines the default group of external files. The default is to always use the
-% current group.  An empty argument puts the external files in no group. A `|*|'
-% switches back to always use the current group.
-%    \begin{macrocode}
-\if@svnmulti@groups
-\def\svnexternalgroup#1{%
-  \svn@ifequal{#1}{*}%
-    {\def\svn@externalgroup{#1}}%
-    {\def\svn@externalgroup{\svn@g}}%
-}
-\def\svn@externalgroup{\svn@g}
-\else
-\def\svn@externalgroup{}
-\fi
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \{ \}}
+% \begin{macro}{\svnexternal}[1]{list of filenames in \{ \}}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
-\newcommand*\svnexternal[2][\svn@externalgroup]{%
+\newcommand*\svnexternal[1]{%
   \if@filesw
     \svn@checkwrite
     \begingroup
-      \svn@ifequal{#1}{*}%
-        {\def\svn@temp{\svn@g}}%
-        {\def\svn@temp{#1}}%
       \svn@removedotslash\finkpath
       \immediate\write\svn@write{%
-        \noexpand\@svnexternal[\svn@temp]{\finkpath}{#2}%
+        \noexpand\@svnexternal{\finkpath}{#1}%
       }%
     \endgroup
   \fi
@@ -2702,7 +2667,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Discards the argument(s). These macros and their arguments are only used by
 % the external \scr{svn-multi.pl} script.
 %    \begin{macrocode}
-\newcommand*\@svnexternal[3][]{}
+\newcommand*\@svnexternal[2]{}
 \def\@svnexternalpath#1{}
 %    \end{macrocode}
 % \end{macro}
@@ -2784,19 +2749,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \if@svnmulti@anygraphic
 %    \end{macrocode}
 
-% \begin{macro}{\svngraphicsgroup}[1]{graphic group name}
-% Defines the default group of graphics files. The default is empty which means
-% the current group.
-%    \begin{macrocode}
-\def\svngraphicsgroup#1{%
-  \svn@ifequal{#1}{*}%
-    {\def\svn@graphicsgroup{\svn@g}}%
-    {\def\svn@graphicsgroup{#1}}%
-}
-\def\svn@graphicsgroup{\svn@externalgroup}
-%    \end{macrocode}
-% \end{macro}
-
 % \begin{macro}{\svnignoregraphic}[1]{file name/path}
 % Ignores the given graphic file by defining a special macro.
 %    \begin{macrocode}
@@ -2836,7 +2788,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svnmulti@Gin@setfile\Gin@setfile
 \renewcommand*{\Gin@setfile}[3]{%
   \expandafter\ifx\csname svn@ignoregraphic@#3\endcsname\relax%
-    \svnexternal[\svn@graphicsgroup]{{#3}}%
+    \svnexternal{{#3}}%
   \fi
   \svnmulti@Gin@setfile{#1}{#2}{#3}%
 }
@@ -2874,7 +2826,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \expandafter\global\expandafter%
       \let\csname svnmulti@pgf@image@#2!\endcsname=\pgf@image%
       \expandafter\xdef\csname pgf@image@#2!\endcsname{%
-        \noexpand\svnexternal[\noexpand\svn@graphicsgroup]{{\pgf@filename}}%
+        \noexpand\svnexternal{{\pgf@filename}}%
         \csname svnmulti@pgf@image@#2!\endcsname
       }%
     \fi
