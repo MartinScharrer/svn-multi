@@ -35,6 +35,14 @@ package: ${PACKAGE}.sty
 	${LATEX} $*.dtx
 	${LATEX} $*.dtx
 
+%.pdf: %.eps
+	epstopdf $<
+
+%.eps: %.dia
+	dia -t eps -e $@ $<
+
+${PACKAGE}.pdf: images/*.pdf
+
 ${INSGENERATED}: *.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
 	@-chmod +x *.pl

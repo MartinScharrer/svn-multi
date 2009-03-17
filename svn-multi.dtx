@@ -252,6 +252,8 @@
 
 \fi
 
+\usepackage{graphicx}
+
 \EnableCrossrefs
 %\DisableCrossrefs
 \CodelineIndex
@@ -1034,6 +1036,41 @@
 % file is produced by the \LaTeX\ compiler when run with the |--recorder| option
 % and contains a list of all input and output files. Only input files with a
 % relative path are used. A corresponding keyword group can also be specified.
+%
+% \section{Compile Guide}\label{sec:compileguide}
+% A document which uses \svnmulti\ needs to be compiled by \LaTeX\ in the
+% following ways depending on the used features. The Figure~\ref{fig:compi}
+% below shows the compilation cycle.
+%
+% \subsection*{Basic Features -- Global and Group Keywords}
+% \begin{enumerate}
+%   \item Compile document with \LaTeX. The |.svn| file is generated. Document
+%     global and group keyword macros are not valid yet.
+%   \item Compile document again with \LaTeX. The |.svn| file is read by
+%     \svnmulti. Document global and group keyword macros are now valid.
+% \end{enumerate}
+%
+% \subsection*{External Files}
+% \begin{enumerate}
+%   \item Compile document with \LaTeX. The |.svn| file is generated with
+%     references to the external files. Document global and group keyword macros
+%     are not valid yet. External files are not taken into account.
+%   \item Run \scr{svn-multi.pl} with the main base name (main file name without
+%     extension) as argument. This generates |.svx| files for each |.tex| file
+%     which used \cs{svnexternal}. This files contain the keywords of the
+%     external files.
+%   \item Compile document again with \LaTeX. The |.svx| files are read by
+%     \svnmulti and the |.svn| file is updated to take the new keywords into
+%     account. Document global and group keywords macros only hold
+%     internal values.
+%   \item Compile document again with \LaTeX. The |.svn| file is read by
+%     \svnmulti. Document global and group keyword macros are now fully valid.
+% \end{enumerate}
+%
+% \begin{figure}
+% \centerline{\includegraphics[width=.8\textwidth]{images/compilation.pdf}}
+% \caption{Compilation cycle of documents using \cs{svn-multi}}\label{fig:compi}
+% \end{figure}
 %
 % \section{Known Issues}\label{sec:issues}
 % This section lists some known issues of the \svnmulti package and tries to
