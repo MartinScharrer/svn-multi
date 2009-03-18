@@ -2271,9 +2271,13 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 'fink' package!}%
 \def\svnmulti@endinputfilehook{}
 \let\svnmulti@fink@restore\fink@restore
-\def\fink@restore{%
+\def\fink@restore#1{%
   \svnmulti@endinputfilehook
-  \svnmulti@fink@restore
+  \svnmulti@fink@restore{#1}%
+  \xdef\svn@filebase{\finkbase}%
+  \xdef\svn@fileext{\finkext}%
+  \xdef\svn@filedir{\finkdir}%
+  \svn@removedotslash\svn@filedir
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2683,7 +2687,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@gkwset#1#2#3{%
   \expandafter
-  \gdef\csname @svng@#1@#2\endcsname{#3}%
+  \xdef\csname @svng@#1@#2\endcsname{#3}%
 }
 %    \end{macrocode}
 % \end{macro}
