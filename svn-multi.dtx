@@ -2440,16 +2440,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Only initialise the group at first usage:
 %    \begin{macrocode}
     \expandafter
-    \ifx\csname svn@g@#1\endcsname\relax%
-      \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-%    \end{macrocode}
-% If first use, init revision numbers to avoid not-a-number errors:
-%    \begin{macrocode}
-      \expandafter\gdef\csname @svng@#1@rev\endcsname{-1}%
-      \expandafter
-      \ifx\csname svng@#1@rev\endcsname\relax
-        \expandafter\gdef\csname svng@#1@rev\endcsname{-1}%
-      \fi
+    \ifx\csname @svng@\svn@g @rev\endcsname\relax%
+      \svn@initgroup{\svn@g}%
 %    \end{macrocode}
 % Now save new group to list. The list is checked if its empty to avoid an
 % unwanted leading comma.
@@ -2596,6 +2588,63 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \endgroup
 }
 %    \end{macrocode}
+
+% \begin{macro}{\svn@writegroup}[1]{group name}
+% Writes group to |\svn@write| file.
+%    \begin{macrocode}
+\def\svn@writegroup#1{%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@updategroup}[1]{group name}
+% Updates group with |\svnfile...| macro values.
+%    \begin{macrocode}
+\def\svn@updategroup#1{%
+  \svn@gkwdef{#1}{rev}{\svnfilerev}%
+  \svn@gkwdef{#1}{date}{\svnfiledate}%
+  \svn@gkwdef{#1}{author}{\svnfileauthor}%
+  \svn@gkwdef{#1}{year}{\svnfileyear}%
+  \svn@gkwdef{#1}{month}{\svnfilemonth}%
+  \svn@gkwdef{#1}{day}{\svnfileday}%
+  \svn@gkwdef{#1}{hour}{\svnfilehour}%
+  \svn@gkwdef{#1}{minute}{\svnfileminute}%
+  \svn@gkwdef{#1}{second}{\svnfilesecond}%
+  \svn@gkwdef{#1}{timezonehour}{\svnfiletimezonehour}%
+  \svn@gkwdef{#1}{timezoneminute}{\svnfiletimezoneminute}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@initgroup}[1]{group name}
+% Initialises group.
+%    \begin{macrocode}
+\def\svn@initgroup#1{%
+  \svn@gkwdef{#1}{rev}{-1}%
+  \svn@gkwdef{#1}{date}{}%
+  \svn@gkwdef{#1}{author}{}%
+  \svn@gkwdef{#1}{year}{0000}%
+  \svn@gkwdef{#1}{month}{00}%
+  \svn@gkwdef{#1}{day}{00}%
+  \svn@gkwdef{#1}{hour}{00}%
+  \svn@gkwdef{#1}{minute}{00}%
+  \svn@gkwdef{#1}{second}{00}%
+  \svn@gkwdef{#1}{timezonehour}{+00}%
+  \svn@gkwdef{#1}{timezoneminute}{00}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+
+% \begin{macro}{\svn@gkwdef}[3]{group name}{keyword name}{value}
+% Defines \meta{value} for \meta{keyword} in \meta{group}.
+%    \begin{macrocode}
+\def\svn@gkwdef#1#2#3{%
+  \expandafter
+  \gdef\csname @svng@#1@#2\endcsname{#3}%
+}
+%    \end{macrocode}
+% \end{macro}
 
 %    \begin{macrocode}
 \fi
