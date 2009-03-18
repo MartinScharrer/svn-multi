@@ -2593,6 +2593,31 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Writes group to |\svn@write| file.
 %    \begin{macrocode}
 \def\svn@writegroup#1{%
+  \def\svn@writekw##1{%
+   \immediate\write\svn@write{%
+     \noexpand\@namedef{svng@#1@##1}{\csname @svng@#1@##1\endcsname}%
+   }%
+  }%
+  \immediate\write\svn@write{^^J%
+   \@percentchar\space File '#1'^^J%
+  }%
+  \svn@writekw{rev}%
+  \svn@writekw{date}%
+  \svn@writekw{author}%
+  \svn@writekw{year}%
+  \svn@writekw{month}%
+  \svn@writekw{day}%
+  \svn@writekw{hour}%
+  \svn@writekw{minute}%
+  \svn@writekw{second}%
+  \svn@writekw{timezonehour}%
+  \svn@writekw{timezoneminute}%
+  \immediate\write\svn@write{%
+    \noexpand
+    \svn@namegdefverb{svng@#1@url}{\csname @svng@#1@url\endcsname}^^J%
+    \noexpand
+    \svn@namegdefverb{svng@#1@fname}{\csname @svng@#1@fname\endcsname}^^J%
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2601,17 +2626,43 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Updates group with |\svnfile...| macro values.
 %    \begin{macrocode}
 \def\svn@updategroup#1{%
-  \svn@gkwdef{#1}{rev}{\svnfilerev}%
-  \svn@gkwdef{#1}{date}{\svnfiledate}%
-  \svn@gkwdef{#1}{author}{\svnfileauthor}%
-  \svn@gkwdef{#1}{year}{\svnfileyear}%
-  \svn@gkwdef{#1}{month}{\svnfilemonth}%
-  \svn@gkwdef{#1}{day}{\svnfileday}%
-  \svn@gkwdef{#1}{hour}{\svnfilehour}%
-  \svn@gkwdef{#1}{minute}{\svnfileminute}%
-  \svn@gkwdef{#1}{second}{\svnfilesecond}%
-  \svn@gkwdef{#1}{timezonehour}{\svnfiletimezonehour}%
-  \svn@gkwdef{#1}{timezoneminute}{\svnfiletimezoneminute}%
+  \svn@gkwset{#1}{rev}{\svnfilerev}%
+  \svn@gkwset{#1}{date}{\svnfiledate}%
+  \svn@gkwset{#1}{author}{\svnfileauthor}%
+  \svn@gkwset{#1}{year}{\svnfileyear}%
+  \svn@gkwset{#1}{month}{\svnfilemonth}%
+  \svn@gkwset{#1}{day}{\svnfileday}%
+  \svn@gkwset{#1}{hour}{\svnfilehour}%
+  \svn@gkwset{#1}{minute}{\svnfileminute}%
+  \svn@gkwset{#1}{second}{\svnfilesecond}%
+  \svn@gkwset{#1}{timezonehour}{\svnfiletimezonehour}%
+  \svn@gkwset{#1}{timezoneminute}{\svnfiletimezoneminute}%
+  \svn@gkwset{#1}{url}{\svnfileurl}%
+  \svn@gkwset{#1}{fname}{\svnfilefname}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@definegroup}[1]{group name}
+% Defines group value so that they are available for the user, e.g. instead of
+% the internal |@svng@...| macros it sets the |svng@...| macros.
+% This is done by calling \cs{svn@updategroup} with a modified version of
+% \cs{svn@gkwset}.
+%    \begin{macrocode}
+\def\svn@definegroup#1{%
+  \svn@gkwdef{#1}{rev}%
+  \svn@gkwdef{#1}{date}%
+  \svn@gkwdef{#1}{author}%
+  \svn@gkwdef{#1}{year}%
+  \svn@gkwdef{#1}{month}%
+  \svn@gkwdef{#1}{day}%
+  \svn@gkwdef{#1}{hour}%
+  \svn@gkwdef{#1}{minute}%
+  \svn@gkwdef{#1}{second}%
+  \svn@gkwdef{#1}{timezonehour}%
+  \svn@gkwdef{#1}{timezoneminute}%
+  \svn@gkwdef{#1}{url}%
+  \svn@gkwdef{#1}{fname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2620,28 +2671,41 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Initialises group.
 %    \begin{macrocode}
 \def\svn@initgroup#1{%
-  \svn@gkwdef{#1}{rev}{-1}%
-  \svn@gkwdef{#1}{date}{}%
-  \svn@gkwdef{#1}{author}{}%
-  \svn@gkwdef{#1}{year}{0000}%
-  \svn@gkwdef{#1}{month}{00}%
-  \svn@gkwdef{#1}{day}{00}%
-  \svn@gkwdef{#1}{hour}{00}%
-  \svn@gkwdef{#1}{minute}{00}%
-  \svn@gkwdef{#1}{second}{00}%
-  \svn@gkwdef{#1}{timezonehour}{+00}%
-  \svn@gkwdef{#1}{timezoneminute}{00}%
+  \svn@gkwset{#1}{rev}{-1}%
+  \svn@gkwset{#1}{date}{}%
+  \svn@gkwset{#1}{author}{}%
+  \svn@gkwset{#1}{year}{0000}%
+  \svn@gkwset{#1}{month}{00}%
+  \svn@gkwset{#1}{day}{00}%
+  \svn@gkwset{#1}{hour}{00}%
+  \svn@gkwset{#1}{minute}{00}%
+  \svn@gkwset{#1}{second}{00}%
+  \svn@gkwset{#1}{timezonehour}{+00}%
+  \svn@gkwset{#1}{timezoneminute}{00}%
+  \svn@gkwset{#1}{url}{}%
+  \svn@gkwset{#1}{fname}{}%
 }
 %    \end{macrocode}
 % \end{macro}
 
 
-% \begin{macro}{\svn@gkwdef}[3]{group name}{keyword name}{value}
-% Defines \meta{value} for \meta{keyword} in \meta{group}.
+% \begin{macro}{\svn@gkwset}[3]{group name}{keyword name}{value}
+% Sets \meta{value} for \meta{keyword} in \meta{group}.
 %    \begin{macrocode}
-\def\svn@gkwdef#1#2#3{%
+\def\svn@gkwset#1#2#3{%
   \expandafter
   \gdef\csname @svng@#1@#2\endcsname{#3}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@gkwdef}[2]{group name}{keyword name}
+% Defines |svng@...| macros used by the user macros to the value of the
+% internal |@svng@...| macros.
+%    \begin{macrocode}
+\def\svn@gkwdef#1#2{%
+  \expandafter
+  \xdef\csname svng@#1@#2\endcsname{\csname @svng@#1@#2\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2698,34 +2762,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
      \expandafter\ifx\csname svn@g@#1\endcsname\relax%
        \expandafter\gdef\csname svn@g@#1\endcsname{1}%
        \svn@checkwrite
-       \def\svn@writekw##1{%
-         \@namexdef{@svng@#1@##1}{\csname svnfile##1\endcsname}%
-         \immediate\write\svn@write{%
-           \noexpand\@namedef{svng@#1@##1}{\csname svnfile##1\endcsname}%
-         }%
-       }%
-       \immediate\write\svn@write{^^J%
-         \@percentchar\space File '#1'^^J%
-       }%
-       \svn@writekw{rev}%
-       \svn@writekw{date}%
-       \svn@writekw{author}%
-       \svn@writekw{year}%
-       \svn@writekw{month}%
-       \svn@writekw{day}%
-       \svn@writekw{hour}%
-       \svn@writekw{minute}%
-       \svn@writekw{second}%
-       \svn@writekw{timezonehour}%
-       \svn@writekw{timezoneminute}%
-       \@namexdef{@svng@#1@url}{\svnfileurl}%
-       \@namexdef{@svng@#1@fname}{\svnfilefname}%
-       \immediate\write\svn@write{%
-         \noexpand
-         \svn@namegdefverb{svng@#1@url}{\svnfileurl}^^J%
-         \noexpand
-         \svn@namegdefverb{svng@#1@fname}{\svnfilefname}^^J%
-       }%
+       \svn@updategroup{#1}%
+       \svn@definegroup{#1}%
+       \svn@writegroup{#1}%
      \fi
    \endgroup
  \fi
