@@ -1,18 +1,22 @@
 \documentclass[a4paper,oneside]{scrbook}
 \let\ifvtex=\relax
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
 \usepackage[all,autoload]{svn-multi}[2009/03/06]
 \svnidlong
 {$HeadURL: svn://server/group_example.tex $}
-{$LastChangedDate: 2000-01-01 01:00:01 +0000 (Main file) $}
+{$LastChangedDate: 2000-01-01 01:44:01 +0000 (Main file) $}
 {$LastChangedRevision: 98 $}
 {$LastChangedBy: author3 $}
 
+\svngroup{notused}
+\svngroup{}
 \svngroup{graphics}
 \svngroup{}
 
 %\svnexternal{{tests/test1.tex}}%
-%\svnexternal{{tests/fish.jpg}}%
-%\svnignoregraphic{tests/fish.jpg}
+\svnexternal{{tests/fish.jpg}}%
+\svnignoregraphic{tests/fish.jpg}
 %\svngraphicsgroup{graphics}
 %\svnexternalgroup{external}
 
@@ -22,7 +26,13 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily}
+\makeatletter
+\newcommand*{\svnlstinputlisting}[2][]{%
+  {\let\input\@input\lstinputlisting[#1]{#2}}%
+}
+\makeatother
 \usepackage{booktabs}
+\usepackage{varioref}
 
 % This is an example document to show the group feature of svn-multi 2.0.
 % Please the notes below.
@@ -43,7 +53,7 @@ Last Changed Date     & \svnfiledate\\
 \par\noindent
 This files contains the following SVN keywords:\\*[-\baselineskip]
 {\let\input\@input
-\lstinputlisting[firstline=5,lastline=9]{\finkpath}
+\svnlstinputlisting[firstline=5,lastline=9]{\finkpath}
 }
 }
 \makeatother
@@ -241,7 +251,7 @@ Last Changed Date     & \svndate\\
 \bigskip\par\noindent
 The main file of this document contains the following SVN
 keywords:\\*[-\baselineskip]
-\lstinputlisting[firstline=4,lastline=8]{\finkpath}
+\svnlstinputlisting[firstline=4,lastline=8]{\finkpath}
 \thispagestyle{empty}
 \clearpage
 
@@ -277,9 +287,11 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 \renewcommand{\svntabrev}[1]{\ifnum#1=\svnrev\textbf{#1}\else#1\fi}
 % Saver: \ifthenelse from the 'ifthen' package!
 
-\renewcommand{\svntabfile}[1]{\ Datei `{\scriptsize\svnnolinkurl{#1}}'}
+\renewcommand{\svntabfile}[2]{\hspace*{#1\medskipamount}Datei `{\scriptsize\svnnolinkurl{#2}}'}
+\renewcommand{\svntabsubgroup}[1]{\ `{\scriptsize\svnnolinkurl{#1}}'}
 \renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
-\renewcommand{\svntabdate}[8]{#3.#2.#1\ #4:#5:#6}
+\renewcommand{\svntabdate}[8]{\small #3.#2.#1\ #4:#5:#6}
+\renewcommand{\svngrouprow}{\midrule}
 \tableofrevisions
 
 
@@ -300,7 +312,7 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 \include{group_example_part3b}
 
 \svngroup{jkl}
-\part{Jkl}
+\part{jkl}
 \include{group_example_part4a}
 \include{group_example_part4b}
 
