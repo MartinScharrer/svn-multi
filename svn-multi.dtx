@@ -2556,11 +2556,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-  \svn@ifempty{\svn@filedir}%
-    {\svn@ifequal{\svn@fileext}{\fnk@mainext}%
-      {}%
-      {\svn@initfile}%
-    }%
+  \svn@ifequal{./\svn@filepath}{\fnk@maindir\jobname.\fnk@mainext}%
+    {}%
     {\svn@initfile}%
   \svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@g}%
   \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
