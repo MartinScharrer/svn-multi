@@ -1628,47 +1628,20 @@
       \ifx\svn@g\empty\else
         \expandafter
         \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
-          \@svncg@save{rev}{\svnfilerev}%
-          \@svncg@save{date}{\svnfiledate}%
-          \@svncg@save{author}{\svnfileauthor}%
-          \@svncg@save{year}{\svnfileyear}%
-          \@svncg@save{month}{\svnfilemonth}%
-          \@svncg@save{day}{\svnfileday}%
-          \@svncg@save{hour}{\svnfilehour}%
-          \@svncg@save{minute}{\svnfileminute}%
-          \@svncg@save{second}{\svnfilesecond}%
-          \@svncg@save{timezonehour}{\svnfiletimezonehour}%
-          \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
-          \@svncg@save{url}{\svnfileurl}%
-          \@svncg@save{fname}{\svnfilefname}%
+          \svn@updategroup{\svn@g}%
         \fi
       \fi
       \if@svnmulti@filesasgroups
         \begingroup
-          \tracingmacros=1
           \edef\svn@g{\finkdir\finkbase}%
           \svn@removedotslash\svn@g%
           \@ifundefined{@svng@\svn@g @rev}%
-            {\expandafter\def\csname @svng@\svn@g @rev\endcsname{0}}%
+            {\svn@initgroup{\svn@g}}%
             {}%
           \expandafter
           \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
-            \message{DEBUG: \svn@g - \svnfilerev - \svnfiledate - \svnfilefname}%
-            \@svncg@save{rev}{\svnfilerev}%
-            \@svncg@save{date}{\svnfiledate}%
-            \@svncg@save{author}{\svnfileauthor}%
-            \@svncg@save{year}{\svnfileyear}%
-            \@svncg@save{month}{\svnfilemonth}%
-            \@svncg@save{day}{\svnfileday}%
-            \@svncg@save{hour}{\svnfilehour}%
-            \@svncg@save{minute}{\svnfileminute}%
-            \@svncg@save{second}{\svnfilesecond}%
-            \@svncg@save{timezonehour}{\svnfiletimezonehour}%
-            \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
-            \@svncg@save{url}{\svnfileurl}%
-            \@svncg@save{fname}{\svnfilefname}%
+            \svn@updategroup{\svn@g}%
           \fi
-          \tracingmacros=0
         \endgroup
       \fi
     \fi
