@@ -2598,9 +2598,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
      \noexpand\@namedef{svng@#1@##1}{\csname @svng@#1@##1\endcsname}%
    }%
   }%
-  \immediate\write\svn@write{^^J%
-   \@percentchar\space File '#1'^^J%
-  }%
   \svn@writekw{rev}%
   \svn@writekw{date}%
   \svn@writekw{author}%
@@ -2757,17 +2754,18 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % file keyword information is written.
 %    \begin{macrocode}
 \def\svn@fileasgroup#1{%
- \ifnum\svnfilerev>-1\relax
-   \begingroup
-     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
-       \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-       \svn@checkwrite
-       \svn@updategroup{#1}%
-       \svn@definegroup{#1}%
-       \svn@writegroup{#1}%
-     \fi
-   \endgroup
- \fi
+  \ifnum\svnfilerev>-1\relax
+    \begingroup
+      \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+        \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+        \svn@checkwrite
+        \svn@updategroup{#1}%
+        \svn@definegroup{#1}%
+        \immediate\write\svn@write{^^J\@percentchar\space File '#1'}%
+        \svn@writegroup{#1}%
+      \fi
+    \endgroup
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3461,30 +3459,11 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
           \@for\svn@g:=\svn@glist\do{%
             \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
             \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
-            \def\svn@writekw##1{%
-              \noexpand\@namedef{svng@\svn@g @##1}%
-              {\csname @svng@\svn@g @##1\endcsname}^^J%
-            }%
-            % TODO: add writegroup macro
-            \immediate\write\svn@write{%
-              \@percentchar\space\svn@g^^J%
-              \svn@writekw{rev}%
-              \svn@writekw{date}%
-              \svn@writekw{author}%
-              \svn@writekw{year}%
-              \svn@writekw{month}%
-              \svn@writekw{day}%
-              \svn@writekw{hour}%
-              \svn@writekw{minute}%
-              \svn@writekw{second}%
-              \svn@writekw{timezonehour}%
-              \svn@writekw{timezoneminute}%
-              \svn@writekw{files}%
-              \noexpand\svn@namegdefverb{svng@\svn@g @url}%
-                  {\csname @svng@\svn@g @url\endcsname}^^J%
-              \noexpand\svn@namegdefverb{svng@\svn@g @fname}%
-                  {\csname @svng@\svn@g @fname\endcsname}^^J%
-            }%
+            \immediate\write\svn@write{^^J\@percentchar\space Group '\svn@g'}%
+            \svn@writegroup{\svn@g}%
+%    \end{macrocode}
+% Table rows:
+%    \begin{macrocode}
             \if@svnmulti@table
               \begingroup
               \svn@writegrouprow{\svn@g}%
@@ -3499,6 +3478,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
             \fi
             \fi\fi
           }%
+%    \end{macrocode}
+% Table footer:
+%    \begin{macrocode}
           \if@svnmulti@table
             \immediate\write\svn@svtwrite{%
               \noexpand\endsvntable^^J%
