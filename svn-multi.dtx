@@ -2805,7 +2805,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \AtBeginDocument{%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
-      \svn@addfiletogroup{\jobname .\fnk@mainext}{\svn@g}%
+      \svn@addfiletogroup{\jobname .\fnk@mainext}{\jobname}%
       \svnfileasgroup
     \fi
   \fi
@@ -2965,7 +2965,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % The main |.svx| is loaded at the end of the package.
 %    \begin{macrocode}
-\AtEndOfPackage{%
+%%\AtEndOfPackage{%
+\AtBeginDocument{%
   \svn@inputsvx{\jobname}%
 }
 %    \end{macrocode}
@@ -3458,7 +3459,22 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \ifx\@svng@@files\@undefined\else
                 \ifx\@svng@@files\relax\else
                   \@for\svn@file:=\@svng@@files\do{%
-                    \svn@writefilerow{1}{\svn@file}%
+                    \@ifundefined{@svng@\svn@file @files}%
+                      {\svn@writefilerow{1}{\svn@file}}%
+                      {% TODO: this should be recursive:
+                       \svn@ifequal
+                       {\csname @svng@\svn@file @files\endcsname}%
+                       {\svn@file.tex}%
+                         {\svn@writefilerow{1}{\svn@file.tex}}%
+                        {%
+                          \svn@writesubgrouprow{\svn@file}%
+                          \expandafter\let\expandafter
+                            \svn@tempb\csname @svng@\svn@file @files\endcsname
+                          \@for\svn@subfile:=\svn@tempb\do{%
+                            \svn@writefilerow{2}{\svn@subfile}%
+                          }%
+                        }%
+                      }%
                   }%
                 \fi
               \fi
