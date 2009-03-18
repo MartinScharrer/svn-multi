@@ -3149,15 +3149,15 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \fi % defined \tableofcontents
 %    \end{macrocode}
 
-% \begin{macro}{\svn@writerow}[2]{row type ('group', 'file', 'global', \ldots)}
-% {row type specific argument}
+% \begin{macro}{\svn@writerow}[3]{row type ('group', 'file', 'global', \ldots)}
+% {row type specific argument}{row type specific argument}
 % Writes a table row by using |\svn@tabcell| and |\svn@tabcellarg| defined by
 % the |\svn@writeXXXrow| macro below.
 %    \begin{macrocode}
-\def\svn@writerow#1#2{%
+\def\svn@writerow#1#2#3{%
   \immediate\write\svn@svtwrite{%
     \expandafter\noexpand\csname svn#1row\endcsname
-    \expandafter\noexpand\csname svntab#1\endcsname{#2}\space
+    \expandafter\noexpand\csname svntab#1\endcsname{#2}{#3}\space
     \@ampersamchar\space
     \svn@tabcell{rev}\space\@ampersamchar\space
     \svn@tabcell{author}\space\@ampersamchar\space
@@ -3184,7 +3184,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
       \svn@tabcellarg{##1}%
     }%
-    \svn@writerow{group}{#1}%
+    \svn@writerow{group}{#1}{}%
   \endgroup
 }
 %    \end{macrocode}
@@ -3200,24 +3200,24 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
       \svn@tabcellarg{##1}%
     }%
-    \svn@writerow{subgroup}{#1}%
+    \svn@writerow{subgroup}{#1}{}%
   \endgroup
   \fi
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writefilerow}[1]{file name}
+% \begin{macro}{\svn@writefilerow}[2]{grouping level}{file name}
 %    \begin{macrocode}
-\def\svn@writefilerow#1{%
+\def\svn@writefilerow#1#2{%
   \expandafter
-  \ifx\csname @svng@#1@rev\endcsname\relax\else
+  \ifx\csname @svng@#2@rev\endcsname\relax\else
   \begingroup
-    \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}%
+    \def\svn@tabcellarg##1{{\csname @svng@#2@##1\endcsname}}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
       \svn@tabcellarg{##1}%
     }%
-    \svn@writerow{file}{#1}%
+    \svn@writerow{file}{#1}{#2}%
   \endgroup
   \fi
 }
@@ -3232,7 +3232,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
     \svn@tabcellarg{##1}%
   }%
-  \svn@writerow{global}{}%
+  \svn@writerow{global}{}{}%
   \endgroup
 }
 %    \end{macrocode}
@@ -3265,9 +3265,10 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabsubgroup
 }
-\def\svn@tabsubgroup#1{\endgroup\hspace*{1em}Subgroup `\texttt{#1}'}
-\def\svntabfile{%
+\def\svn@tabsubgroup#1{\endgroup\hspace*{\smallskipamount}Subgroup `\texttt{#1}'}
+\def\svntabfile#1{%
   \begingroup
+  \hspace*{#1\smallskipamount}%
   \catcode`\_=12
   \catcode`\&=12
   \catcode`\^=12
@@ -3275,7 +3276,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabfile
 }
-\def\svn@tabfile#1{\endgroup\hspace*{1em}File `\texttt{#1}'}
+\def\svn@tabfile#1{\endgroup File `\texttt{#1}'}
 \def\svntabrev{}
 \def\svntabauthor#1{\svnFullAuthor{#1}}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
@@ -3460,7 +3461,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \ifx\@svng@@files\@undefined\else
                 \ifx\@svng@@files\relax\else
                   \@for\svn@file:=\@svng@@files\do{%
-                    \svn@writefilerow{\svn@file}%
+                    \svn@writefilerow{1}{\svn@file}%
                   }%
                 \fi
               \fi
@@ -3489,18 +3490,18 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \ifx\svn@temp\relax\else
                 \@for\svn@file:=\svn@temp\do{%
                   \@ifundefined{@svng@\svn@file @files}%
-                    {\svn@writefilerow{\svn@file}}%
+                    {\svn@writefilerow{1}{\svn@file}}%
                     {% TODO: this should be recursive:
                      \svn@ifequal
                      {\csname @svng@\svn@file @files\endcsname}%
                      {\svn@file.tex}%
-                      {\svn@writefilerow{\svn@file.tex}}%
+                       {\svn@writefilerow{1}{\svn@file.tex}}%
                       {%
                         \svn@writesubgrouprow{\svn@file}%
                         \expandafter\let\expandafter
                           \svn@tempb\csname @svng@\svn@file @files\endcsname
                         \@for\svn@subfile:=\svn@tempb\do{%
-                          \svn@writefilerow{\svn@subfile}%
+                          \svn@writefilerow{2}{\svn@subfile}%
                         }%
                       }%
                     }%
