@@ -2562,7 +2562,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
       {\svn@initfile}%
     }%
     {\svn@initfile}%
-  \svn@addfiletogroup{\svn@filepath}{\svn@g}%
+  \svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@g}%
   \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
@@ -2868,7 +2868,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
              \@for\@tempa:=\@tempb\do{%
                \svn@ifempty{\@tempa}%
                  {}%
-                 {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\@tempa}}%
+                 {}%
+                 %{\svn@addfiletogroup{\@tempa}{\svn@filedir\svn@filebase}}%
              }%
             }{}%
         \fi
@@ -2930,7 +2931,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@externalfile#1{%
   \endgroup
-  \svn@addfiletogroup{#1}{\svn@g}%
+  %\svn@addfiletogroup{#1}{\svn@g}%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
       \svn@addfiletogroup{#1}{\svn@filedir\svn@filebase}%
@@ -3373,8 +3374,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
         \def\svn@tmplist{}%
         \@for\svn@temp:=\@svng@@files\do{%
         \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
+        \expandafter\ifnum\csname @svng@\svn@temp @rev\endcsname>0
           \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
-        \fi
+        \fi\fi
         }%
         \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
       \endgroup
