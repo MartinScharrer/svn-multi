@@ -2609,6 +2609,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@writekw{second}%
   \svn@writekw{timezonehour}%
   \svn@writekw{timezoneminute}%
+  \@ifundefined{@svng@#1@files}{}{%
+    \immediate\write\svn@write{%
+      \noexpand
+      \svn@namegdefverb{svng@#1@files}{\csname @svng@#1@files\endcsname}%
+    }%
+  }%
   \immediate\write\svn@write{%
     \noexpand
     \svn@namegdefverb{svng@#1@url}{\csname @svng@#1@url\endcsname}^^J%
