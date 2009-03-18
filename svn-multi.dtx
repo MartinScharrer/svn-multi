@@ -1633,8 +1633,7 @@
       \fi
       \if@svnmulti@filesasgroups
         \begingroup
-          \edef\svn@g{\finkdir\finkbase}%
-          \svn@removedotslash\svn@g%
+          \edef\svn@g{\svn@filedir\svn@filebase}%
           \@ifundefined{@svng@\svn@g @rev}%
             {\svn@initgroup{\svn@g}}%
             {}%
@@ -2228,6 +2227,18 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \@ifundefined{fink@restore}{\svn@finkerror}{}%
 \endgroup
 %    \end{macrocode}
+% Init values for file name macros. This is done AtEndOfPackage
+% to ensure that all macros are defined.
+%    \begin{macrocode}
+\AtEndOfPackage{%
+  \edef\svn@filebase{\finkbase}%
+  \edef\svn@fileext{\finkext}%
+  \edef\svn@filedir{\finkdir}%
+  \svn@removedotslash\svn@filedir
+  \edef\svn@filename{\fink@file\finkbase\finkext}%
+  \edef\svn@filepath{\svn@filedir\svn@filename}%
+}
+%    \end{macrocode}
 
 % \begin{macro}{\svnmulti@begininputfilehook}
 % This hook is installed in the |\fink@prepare| macro from the \pkg{fink}
@@ -2240,6 +2251,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
+  \xdef\svn@filebase{\fink@nextbase}%
+  \xdef\svn@fileext{\fink@nextext}%
+  \xdef\svn@filedir{\fink@nextdir}%
+  \svn@removedotslash\svn@filedir
+  \xdef\svn@filename{\fink@file\fink@nextbase\fink@nextext}%
+  \xdef\svn@filepath{\svn@filedir\svn@filename}%
   \svnmulti@begininputfilehook
 }
 %    \end{macrocode}
@@ -2547,18 +2564,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-  \begingroup
-  \let\svn@temp=\fink@nextdir
-  \svn@removedotslash\svn@temp
-  \svn@ifempty{\svn@temp}%
-    {\svn@ifequal{\fink@nextext}{\fnk@mainext}%
+  \svn@ifempty{\svn@filedir}%
+    {\svn@ifequal{\svn@fileext}{\fnk@mainext}%
       {}%
       {\svn@initfile}%
     }%
     {\svn@initfile}%
-  \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
-  \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@temp\fink@nextbase}%
-  \endgroup
+  \svn@addfiletogroup{\svn@filepath}{\svn@g}%
+  \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
 
@@ -2718,9 +2731,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnfileasgroup{%
   \begingroup
-    \svn@removedotslash\finkdir
-    \svn@fileasgroup{\finkdir\finkbase}%
-    \svn@fileasgroup{\finkdir\fink@file\finkbase\finkext}%
+    \svn@removedotslash\svn@filedir
+    \svn@fileasgroup{\svn@filedir\svn@filebase}%
+    \svn@fileasgroup{\svn@filepath}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2786,7 +2799,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \svnmulti@atendinputfile{%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
-      \expandafter\ifx\csname svn@ignore@ext@\finkext\endcsname\relax
+      \expandafter\ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
       \svnfileasgroup
       \fi
     \fi
@@ -2848,28 +2861,24 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
           {\def\svn@temp{\svn@externalgroup}}%
           {\def\svn@temp{#1}}%
         }%
-      \svn@removedotslash\finkpath
       \immediate\write\svn@write{%
-        \noexpand\@svnexternal[\svn@temp]{\finkpath}{#2}%
+        \noexpand\@svnexternal[\svn@temp]{\svn@filepath}{#2}%
       }%
       \if@svnmulti@groups
         \if@svnmulti@filesasgroups
           \svn@ifempty{#1}%
-            {\def\svn@temp{\finkdir\finkbase}%
-             \svn@removedotslash\svn@temp%
-             \edef\@tempb{#2}%
+            {\edef\@tempb{#2}%
              \@for\@tempa:=\@tempb\do{%
-               \message{^^J\svn@temp - \@tempa^^J}%
                \svn@ifempty{\@tempa}%
                  {}%
-                 {\svn@addfiletogroup{\svn@temp}{\@tempa}}%
+                 {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\@tempa}}%
              }%
             }{}%
         \fi
       \fi
     \endgroup
   \fi
-  \svn@inputsvx{\finkdir\finkbase}%
+  \svn@inputsvx{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2952,7 +2961,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \if@svnmulti@autoload
 
 \svnmulti@atbegininputfile{%
-  \svn@inputsvx{\fink@nextdir\fink@nextbase}%
+  \svn@inputsvx{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
 
