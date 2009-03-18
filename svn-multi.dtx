@@ -1379,13 +1379,33 @@
 \def\svn@input#1{%
   \begingroup
     \let\svn@temp\svn@g
-    \IfFileExists{#1}{\@@input #1\relax}{}
+    \IfFileExists{#1}{\@@input #1\relax}{}%
     \global\let\svn@g\svn@temp
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
-
+%
+% \begin{macro}{\svn@inputsvx}[1]{file name/path without extension}
+% Used to save and restore file keywords when reading |.svx| files.
+%    \begin{macrocode}
+\def\svn@inputsvx#1{%
+  \svn@pushfilestack
+  \svn@input{#1.svx}%
+  \svn@popfilestack
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@namexdef}[1]{macro name}
+% Provides an expanding and global version of |\@namedef|.
+%    \begin{macrocode}
+\providecommand\@namexdef[1]{%
+  \expandafter\xdef\csname #1\endcsname
+}
+%    \end{macrocode}
+% \end{macro}
+%
 
 % \subsection{Definition of init values}
 % Initialisation of at least the revision to a numeric value is necessary to not
@@ -1622,6 +1642,34 @@
           \@svncg@save{url}{\svnfileurl}%
           \@svncg@save{fname}{\svnfilefname}%
         \fi
+      \fi
+      \if@svnmulti@filesasgroups
+        \begingroup
+          \tracingmacros=1
+          \edef\svn@g{\finkdir\finkbase}%
+          \svn@removedotslash\svn@g%
+          \@ifundefined{@svng@\svn@g @rev}%
+            {\expandafter\def\csname @svng@\svn@g @rev\endcsname{0}}%
+            {}%
+          \expandafter
+          \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
+            \message{DEBUG: \svn@g - \svnfilerev - \svnfiledate - \svnfilefname}%
+            \@svncg@save{rev}{\svnfilerev}%
+            \@svncg@save{date}{\svnfiledate}%
+            \@svncg@save{author}{\svnfileauthor}%
+            \@svncg@save{year}{\svnfileyear}%
+            \@svncg@save{month}{\svnfilemonth}%
+            \@svncg@save{day}{\svnfileday}%
+            \@svncg@save{hour}{\svnfilehour}%
+            \@svncg@save{minute}{\svnfileminute}%
+            \@svncg@save{second}{\svnfilesecond}%
+            \@svncg@save{timezonehour}{\svnfiletimezonehour}%
+            \@svncg@save{timezoneminute}{\svnfiletimezoneminute}%
+            \@svncg@save{url}{\svnfileurl}%
+            \@svncg@save{fname}{\svnfilefname}%
+          \fi
+          \tracingmacros=0
+        \endgroup
       \fi
     \fi
   \fi
@@ -2544,6 +2592,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     }%
     {\svn@initfile}%
   \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@g}%
+  \svn@addfiletogroup{\svn@temp\fink@file\fink@nextbase\fink@nextext}{\svn@temp\fink@nextbase}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2581,6 +2630,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
     \svn@removedotslash\svn@filename
     \svn@fileasgroup{\svn@filename}%
+    \edef\svn@filename{\finkdir\finkbase}%
+    \svn@removedotslash\svn@filename
+    \svn@fileasgroup{\svn@filename}%
   \endgroup
 }
 %    \end{macrocode}
@@ -2598,25 +2650,32 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
        \expandafter\gdef\csname svn@g@#1\endcsname{1}%
        \svn@checkwrite
        \def\svn@writekw##1{%
-         \noexpand\@namedef{@svng@#1@##1}{\csname svnfile##1\endcsname}^^J%
+         \@namexdef{@svng@#1@##1}{\csname svnfile##1\endcsname}%
+         \immediate\write\svn@write{%
+           \noexpand\@namedef{svng@#1@##1}{\csname svnfile##1\endcsname}%
+         }%
        }%
        \immediate\write\svn@write{^^J%
          \@percentchar\space File '#1'^^J%
-         \svn@writekw{rev}%
-         \svn@writekw{date}%
-         \svn@writekw{author}%
-         \svn@writekw{year}%
-         \svn@writekw{month}%
-         \svn@writekw{day}%
-         \svn@writekw{hour}%
-         \svn@writekw{minute}%
-         \svn@writekw{second}%
-         \svn@writekw{timezonehour}%
-         \svn@writekw{timezoneminute}%
+       }%
+       \svn@writekw{rev}%
+       \svn@writekw{date}%
+       \svn@writekw{author}%
+       \svn@writekw{year}%
+       \svn@writekw{month}%
+       \svn@writekw{day}%
+       \svn@writekw{hour}%
+       \svn@writekw{minute}%
+       \svn@writekw{second}%
+       \svn@writekw{timezonehour}%
+       \svn@writekw{timezoneminute}%
+       \@namexdef{@svng@#1@url}{\svnfileurl}%
+       \@namexdef{@svng@#1@fname}{\svnfilefname}%
+       \immediate\write\svn@write{%
          \noexpand
-         \svn@namegdefverb{@svng@#1@url}{\csname svnfileurl\endcsname}^^J%
+         \svn@namegdefverb{svng@#1@url}{\svnfileurl}^^J%
          \noexpand
-         \svn@namegdefverb{@svng@#1@fname}{\csname svnfilefname\endcsname}^^J%
+         \svn@namegdefverb{svng@#1@fname}{\svnfilefname}^^J%
        }%
      \fi
    \endgroup
@@ -2715,20 +2774,38 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
-\newcommand*\svnexternal[2][\svn@externalgroup]{%
+\newcommand*\svnexternal[2][]{%
   \if@filesw
     \svn@checkwrite
     \begingroup
       \svn@ifequal{#1}{*}%
         {\def\svn@temp{\svn@g}}%
-        {\def\svn@temp{#1}}%
+        {\svn@ifempty{#1}%
+          {\def\svn@temp{\svn@externalgroup}}%
+          {\def\svn@temp{#1}}%
+        }%
       \svn@removedotslash\finkpath
       \immediate\write\svn@write{%
         \noexpand\@svnexternal[\svn@temp]{\finkpath}{#2}%
       }%
+      \if@svnmulti@groups
+        \if@svnmulti@filesasgroups
+          \svn@ifempty{#1}%
+            {\def\svn@temp{\finkdir\finkbase}%
+             \svn@removedotslash\svn@temp%
+             \edef\@tempb{#2}%
+             \@for\@tempa:=\@tempb\do{%
+               \message{^^J\svn@temp - \@tempa^^J}%
+               \svn@ifempty{\@tempa}%
+                 {}%
+                 {\svn@addfiletogroup{\svn@temp}{\@tempa}}%
+             }%
+            }{}%
+        \fi
+      \fi
     \endgroup
   \fi
-  \svn@input{\finkdir\finkbase .svx}%
+  \svn@inputsvx{\finkdir\finkbase}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2766,7 +2843,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % argument is simply removed.
 %    \begin{macrocode}
 \def\svnexternalfile{%
-  \begingroup
+  \begingroup % TODO: maybe use \svn@catcodes
     \catcode`\_=12
     \catcode`\&=12
     \catcode`\^=12
@@ -2811,14 +2888,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \if@svnmulti@autoload
 
 \svnmulti@atbegininputfile{%
-  \svn@input{\fink@nextdir\fink@nextbase .svx}%
+  \svn@inputsvx{\fink@nextdir\fink@nextbase}%
 }
 %    \end{macrocode}
 
 % The main |.svx| is loaded at the end of the package.
 %    \begin{macrocode}
 \AtEndOfPackage{%
-  \svn@input{\jobname .svx}%
+  \svn@inputsvx{\jobname}%
 }
 %    \end{macrocode}
 
@@ -3300,6 +3377,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
               \noexpand\@namedef{svng@\svn@g @##1}%
               {\csname @svng@\svn@g @##1\endcsname}^^J%
             }%
+            % TODO: add writegroup macro
             \immediate\write\svn@write{%
               \@percentchar\space\svn@g^^J%
               \svn@writekw{rev}%
