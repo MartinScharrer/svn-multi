@@ -2939,6 +2939,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@addfiletogroup{#1}{\svn@g}%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
+      \svn@addfiletogroup{#1}{\svn@filedir\svn@filebase}%
       \svn@fileasgroup{#1}%
     \fi
   \fi
