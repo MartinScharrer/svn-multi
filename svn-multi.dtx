@@ -2813,8 +2813,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \AtBeginDocument{%
   \if@svnmulti@filesasgroups
-    \svn@addfiletogroup{\jobname .\fnk@mainext}{\svn@g}%
     \ifsvnfilesasgroup
+      \svn@addfiletogroup{\jobname .\fnk@mainext}{\svn@g}%
       \svnfileasgroup
     \fi
   \fi
