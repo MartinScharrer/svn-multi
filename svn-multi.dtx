@@ -1626,22 +1626,10 @@
 
     \if@svnmulti@groups
       \ifx\svn@g\empty\else
-        \expandafter
-        \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
-          \svn@updategroup{\svn@g}%
-        \fi
+        \svn@updategroup{\svn@g}%
       \fi
       \if@svnmulti@filesasgroups
-        \begingroup
-          \edef\svn@g{\svn@filedir\svn@filebase}%
-          \@ifundefined{@svng@\svn@g @rev}%
-            {\svn@initgroup{\svn@g}}%
-            {}%
-          \expandafter
-          \ifnum\csname @svng@\svn@g @rev\endcsname<\svnfilerev
-            \svn@updategroup{\svn@g}%
-          \fi
-        \endgroup
+        \svn@updategroup{\svn@filedir\svn@filebase}%
       \fi
     \fi
   \fi
@@ -2619,19 +2607,25 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Updates group with |\svnfile...| macro values.
 %    \begin{macrocode}
 \def\svn@updategroup#1{%
-  \svn@gkwset{#1}{rev}{\svnfilerev}%
-  \svn@gkwset{#1}{date}{\svnfiledate}%
-  \svn@gkwset{#1}{author}{\svnfileauthor}%
-  \svn@gkwset{#1}{year}{\svnfileyear}%
-  \svn@gkwset{#1}{month}{\svnfilemonth}%
-  \svn@gkwset{#1}{day}{\svnfileday}%
-  \svn@gkwset{#1}{hour}{\svnfilehour}%
-  \svn@gkwset{#1}{minute}{\svnfileminute}%
-  \svn@gkwset{#1}{second}{\svnfilesecond}%
-  \svn@gkwset{#1}{timezonehour}{\svnfiletimezonehour}%
-  \svn@gkwset{#1}{timezoneminute}{\svnfiletimezoneminute}%
-  \svn@gkwset{#1}{url}{\svnfileurl}%
-  \svn@gkwset{#1}{fname}{\svnfilefname}%
+  \@ifundefined{@svng@#1@rev}%
+    {\svn@initgroup{#1}}%
+    {}%
+  \expandafter
+  \ifnum\csname @svng@#1@rev\endcsname<\svnfilerev
+    \svn@gkwset{#1}{rev}{\svnfilerev}%
+    \svn@gkwset{#1}{date}{\svnfiledate}%
+    \svn@gkwset{#1}{author}{\svnfileauthor}%
+    \svn@gkwset{#1}{year}{\svnfileyear}%
+    \svn@gkwset{#1}{month}{\svnfilemonth}%
+    \svn@gkwset{#1}{day}{\svnfileday}%
+    \svn@gkwset{#1}{hour}{\svnfilehour}%
+    \svn@gkwset{#1}{minute}{\svnfileminute}%
+    \svn@gkwset{#1}{second}{\svnfilesecond}%
+    \svn@gkwset{#1}{timezonehour}{\svnfiletimezonehour}%
+    \svn@gkwset{#1}{timezoneminute}{\svnfiletimezoneminute}%
+    \svn@gkwset{#1}{url}{\svnfileurl}%
+    \svn@gkwset{#1}{fname}{\svnfilefname}%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
