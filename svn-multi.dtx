@@ -2740,15 +2740,14 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \begin{macro}{\svnfileasgroup}
 % User level and internal macro to declare the current file as extra group.
 % It produces the current file path and calls \cs{svn@fileasgroup}.
+% Creates two groups one with and one without the file extension. The one
+% without holds the latest revision of all files included in this file.
 %    \begin{macrocode}
 \def\svnfileasgroup{%
   \begingroup
-    \edef\svn@filename{\finkdir\fink@file\finkbase\finkext}%
-    \svn@removedotslash\svn@filename
-    \svn@fileasgroup{\svn@filename}%
-    \edef\svn@filename{\finkdir\finkbase}%
-    \svn@removedotslash\svn@filename
-    \svn@fileasgroup{\svn@filename}%
+    \svn@removedotslash\finkdir
+    \svn@fileasgroup{\finkdir\finkbase}%
+    \svn@fileasgroup{\finkdir\fink@file\finkbase\finkext}%
   \endgroup
 }
 %    \end{macrocode}
