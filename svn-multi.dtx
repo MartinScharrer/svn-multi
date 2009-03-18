@@ -2225,19 +2225,21 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \@ifundefined{finkbase}{\svn@finkerror}{}%
 \@ifundefined{fink@prepare}{\svn@finkerror}{}%
 \@ifundefined{fink@restore}{\svn@finkerror}{}%
+\@ifundefined{fnk@maindir}{\svn@finkerror}{}%
+\@ifundefined{fnk@mainext}{\svn@finkerror}{}%
 \endgroup
 %    \end{macrocode}
 % Init values for file name macros. This is done AtEndOfPackage
 % to ensure that all macros are defined.
 %    \begin{macrocode}
 \AtEndOfPackage{%
-  \edef\svn@filebase{\finkbase}%
-  \edef\svn@fileext{\finkext}%
-  \edef\svn@filedir{\finkdir}%
+  \edef\svn@filebase{\jobname}%
+  \edef\svn@fileext{\fnk@mainext}%
+  \edef\svn@filedir{\fnk@maindir}%
   \svn@removedotslash\svn@filedir
-  \edef\svn@filename{\fink@file\finkbase\finkext}%
-  \edef\svn@filepath{\svn@filedir\svn@filename}%
 }
+\def\svn@filename{\fink@file\svn@filebase\svn@fileext}%
+\def\svn@filepath{\svn@filedir\svn@filename}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnmulti@begininputfilehook}
@@ -2255,8 +2257,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \xdef\svn@fileext{\fink@nextext}%
   \xdef\svn@filedir{\fink@nextdir}%
   \svn@removedotslash\svn@filedir
-  \xdef\svn@filename{\fink@file\fink@nextbase\fink@nextext}%
-  \xdef\svn@filepath{\svn@filedir\svn@filename}%
   \svnmulti@begininputfilehook
 }
 %    \end{macrocode}
