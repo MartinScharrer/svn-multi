@@ -2755,7 +2755,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
         \expandafter\gdef\csname svn@g@#1\endcsname{1}%
         \svn@checkwrite
         \svn@updategroup{#1}%
-        \svn@definegroup{#1}%
         \immediate\write\svn@write{^^J\@percentchar\space File '#1'}%
         \svn@writegroup{#1}%
       \fi
