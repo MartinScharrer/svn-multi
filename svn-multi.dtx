@@ -35,6 +35,7 @@
 
 \documentclass{ltxdoc}
 \usepackage{svn-multi}
+\usepackage{booktabs}
 \usepackage{ifpdf}
 \ifpdf
   % use hypdoc if you have it, hyperref else
@@ -923,8 +924,9 @@
 % author of the file |some_file.tex|
 %
 % \subsection{Table of Revisions}\label{sec:table}
-% Version 2.0 introduces this new feature which is not yet fully documented and
-% might change a little in future versions.
+% Version 2.0 introduces this new feature which allows a overview table to be
+% typeset which holds the version control information of all files of the
+% document.
 %
 % \DescribeMacro{tableofrevisions}{}
 % If the \op{table} is enabled a table of revision is written into a file called
@@ -933,23 +935,130 @@
 % the complete document and of all defined groups.
 % If the \op{filesasgroups} option is set the table will also include the single
 % files sorted by group.\par
+%
+% \subsubsection*{Table Format Macros}
 % The |.svt| file is in an general format which uses a lot of macros to format
-% the table and the different cells. This macros are called |\svntab...| or
-% similar and can be redefined to produce a different look.  Please see the
-% macro implementation in section~\ref{sec:impl:table}, the package example
-% files and/or the |.svt| file itself to learn which macros exists and how to
-% redefine them.\par
-% \textbf{Note:} The generic table is wrapped in
-% \csi{svntable}/\csi{endsvntable} macros which are by default
-% defined to use a |tabular| table environment. This macros can (in theory) be
-% redefined to use other table environments. However, \TeX\ processes the tables
-% in quite a special way (which is the reason why an auxiliary file is used in
-% the first place), so most alternative table packages like \pkg{tabularx} seem to
-% read the content in an verbatim like way which doesn't work (yet) with the
-% current format of the |.svt| file. Future versions of the package might produce
-% a pre-processed version of the |.svt| file on user request containing \eg
-% a \pkg{tabularx} table which simply has to be read using |\input| (this is done
-% inside the \cs{tableofrevisions} macro).
+% the table and the different cells.  This macros should not be used by the user
+% directly but rather can be redefined to fit the personal taste.
+% Figure~\ref{fig:tablemacros} shows this macros in their position inside the 
+% table of revisions.
+%
+% \par\noindent
+% \begin{figure}
+%   \makebox[1.175\textwidth][r]{%
+%   \framebox{\scalebox{0.675}{%
+% \begin{tabular}{ll@{\ \ \ }l@{\ \ \ }l@{\ \ \ }ll}
+% &\multicolumn{4}{l}{\texttt{\textbackslash chapterORsection*\{\cs{svnrevisionsname}\}}}\\
+% \\
+% &\multicolumn{4}{l}{\cs{svnbeforetable}}\\
+% & \cs{svntable} (like \cs{begin}\texttt{\{svntable\}})\\
+% \\
+% \cmidrule{2-5}
+% &\cs{svntablehead}\\
+% \cmidrule{2-5}
+% \cs{svnglobalrow}   & \cs{svntabglobal}                           &&&&\cs{endsvnglobalrow} \\
+% \cs{svngrouprow}    & \cs{svntabgroup}    \marg{group}            &&&&\cs{endsvngrouprow}\\
+% \cs{svnsubgrouprow} & \cs{svntabsubgroup} \marg{level}\marg{name} &&&&\cs{endsvnsubgrouprow}\\
+% \cs{svnfilerow}     & \cs{svntabfile}     \marg{level}\marg{name} &
+% \raisebox{3.3ex}[-3.3ex]{%
+% \cs{svntabrev}\marg{rev}
+% }&
+% \raisebox{3.3ex}[-3.3ex]{%
+% \cs{svntabauthor}\marg{username}
+% }&
+% \raisebox{4ex}[-4ex]{\parbox{13.5em}{\raggedright
+% \cs{svntabdate}\newline\marg{year}\marg{month}\marg{day}\newline
+% \marg{hour}\marg{minute}\marg{second}\newline\marg{TZ~hour}\marg{TZ~minute}
+% }}
+% &\cs{endsvnfilerow}\\[\smallskipamount]
+% &\cs{svntablefoot} \\
+% \cmidrule{2-5}
+% \\
+% &\cs{endsvntable} (like \cs{end}\texttt{\{svntable\}})\\
+% &\multicolumn{4}{l}{\cs{svnaftertable}}\\
+% \end{tabular}
+% }}}
+%   \caption{Table formatting macros and their position.}\label{fig:tablemacros}
+% \end{figure}
+%
+% \DescribeMacro{svnrevisionsname}{}
+% Holds the name of the table of revisions which is printed above it. The
+% default is ``Table of Revisions'' which can be changed \eg to another
+% language.
+%
+% \DescribeMacro{svnbeforetable}{}
+% Can hold some content to be placed between the headline and the table.
+%
+% \DescribeMacro{svnaftertable}{}
+% Can hold some content to be placed after the table. By default it holds a
+% macro to force a new page.
+%
+% \DescribeMacro{svntable}{}
+% \DescribeMacro*{endsvntable}{}
+% This macros build the table environment and hold a |\begin{tabular}{llll}|
+% |\end{tabular}| group by default. They can be redefined using\\
+% \hspace*{3em}|\renewcommand{svntable}{...}{...}|.\\ In order to support
+% special table packages like \pkg{tabularx} or \pkg{longtable} the
+% \emph{content} of this macro is written verbatim into the |.svt| file. All
+% other table macros are written as string and will be expanded when the |.svt|
+% is read back.
+%
+% \DescribeMacro{svntablehead}{}
+% Holds the table head row ``Name |&| Rev |&| Author |&| Date |\\\hline|''.
+%
+% \DescribeMacro{svntablefoot}{}
+% Can hold the table foot row but is empty by default.
+%
+% \noindent
+% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{}}\\
+% \DescribeMacro*{svnglobalrow}{} & \DescribeMacro*{endsvnglobalrow}{}\\
+% \DescribeMacro*{svngrouprow}{}  & \DescribeMacro*{endsvngrouprow}{} \\
+% \DescribeMacro*{svnsubgrouprow}{} & \DescribeMacro*{endsvnsubgrouprow}{} \\
+% \DescribeMacro*{svnfilerow}{} & \DescribeMacro*{endsvnfilerow}{} \\
+% \end{tabular}
+% \\*[\medskipamount]
+% This macros are placed at the begin and end of every corresponding row and are
+% empty be default. They can be used to insert horizontal lines before or after
+% certain row types.
+%
+% \DescribeMacro{svntabglobal}{}
+% Simply typesets the name for the row holding the information of the whole
+% document, \eg ``Document''.
+%
+% \DescribeMacro{svntabgroup}{\marg{group name}}
+% Formats the group name.
+%
+% \DescribeMacro{svntabsubgroup}{\marg{nesting level
+% (1,2,3,\ldots)}\marg{subgroup name}}
+% Formats a sub-group name. The name is derived from a file name and therfore 
+% could contain characters like `\_' which should be taken into account. The
+% macro \cs{svnnolinkurl} can be used for this. Because sub-groups can be nested
+% a number is provided to tell the nesting depth. This can be used to produce
+% different indents for different levels: |\hspace*{#1\myindentamount}|.
+%
+% \DescribeMacro{svntabfile}{\marg{nesting level
+% (1,2,3,\ldots)}\marg{file path/name}}
+% Same as for the sub-group above but for file names. Please n
+%
+% \DescribeMacro{svntabrev}{\marg{revision number}}
+% Allows the formatting of the revision number. If empty the number will be
+% typeset as normal. Conditional formatting is possible using the \pkg{ifthen}
+% package: \eg the highest revision should be bold:
+% \begin{verbatim}
+%  \renewcommand*{\svntabrev}[1]{\ifthenelse{#1=\svnrev}{\textbf{#1}}{#1}}
+% \end{verbatim}
+% \vspace{-1\baselineskip}
+% \DescribeMacro{svntabauthor}{\marg{author username}}
+% Formats the user names in the table. The macro \cs{svnFullAuthor} is a good
+% candidate to be used here.
+%
+% \DescribeMacro{svntabdate}{\ignorespaces
+% \marg{year}\marg{month}\marg{day}\ignorespaces
+% \marg{hour}\marg{minute}\marg{second}\ignorespaces
+% \marg{TZ~hour}\marg{TZ~minute}}
+% Allows the formatting of the date. All values are given as numbers. The year
+% has four digits and the timezone hour has a |+| or |-| sign, but all other
+% values have only two digits.
 %
 % \subsection{Including Keywords of External Files}\label{sec:external}
 % Version 2.0 now supports the inclusion of keywords of external files using the
@@ -3513,6 +3622,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svn@writesvt}
 % This macro writes the |.svt| auxiliary file and is called from a
 % |\AtEndDocument| macro later on.
+%    \begin{macrocode}
 \def\svn@writesvt{%
 %    \end{macrocode}
 % Write table of revisions if enabled.
