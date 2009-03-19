@@ -1575,10 +1575,8 @@
 \def\svnurl{} \def\svnfname{}
 \def\svn@temp{}
 
-\if@svnmulti@groups
 \def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g}
 \let\@svng@@files\relax
-\fi
 
 \def\svn@initfile{%
   \gdef\svnfilerev{-1}%
@@ -3632,7 +3630,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % Remove all files which do not have a revision number from list:
 %    \begin{macrocode}
     \if@svnmulti@groups
-      \ifx\@svng@@files\empty\else
+      \ifx\@svng@@files\relax\else
       \begingroup
         \def\svn@tmplist{}%
         \@for\svn@temp:=\@svng@@files\do{%
