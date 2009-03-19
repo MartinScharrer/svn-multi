@@ -3379,37 +3379,18 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\svn@writeaux}
+% \begin{macro}{\svn@writesvn}
 % This macro writes the |.svn| auxiliary file and is called from a
 % |\AtEndDocument| macro later on.
 %    \begin{macrocode}
 {\catcode`\&=12
 \gdef\@ampersamchar{&}
 }
-\def\svn@writeaux{%
-%    \end{macrocode}
-% We first check if we have something to save. Revision, date and author must be
-% non-empty. This suppresses the auxiliary file if the user doesn't use the
-% appropriate macros but other provided by this package.
-%    \begin{macrocode}
-  \if@filesw \ifx\@svn@rev\empty\else \ifnum\@svn@rev=0\else
-  \ifx\@svn@date\empty\else \ifx\@svn@author\empty\else
+\def\svn@writesvn{%
 %    \end{macrocode}
 % Remove all files which do not have a revision number from list:
 %    \begin{macrocode}
     \if@svnmulti@groups
-      \ifx\@svng@@files\empty\else
-      \begingroup
-        \def\svn@tmplist{}%
-        \@for\svn@temp:=\@svng@@files\do{%
-        \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
-        \expandafter\ifnum\csname @svng@\svn@temp @rev\endcsname>0
-          \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
-        \fi\fi
-        }%
-        \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
-      \endgroup
-      \fi
     \fi
 %    \end{macrocode}
 % Write document global values:
@@ -3431,55 +3412,31 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \noexpand\svn@gdefverb\noexpand\svnurl{\@svn@url}^^J%
       \noexpand\svn@gdefverb\noexpand\svnfname{\@svn@fname}^^J%
     }%
+%    \end{macrocode}
+% Write group keyword macro definitions.
+% Remove all files which do not have a revision number from list:
+%    \begin{macrocode}
     \if@svnmulti@groups
+      \ifx\@svng@@files\empty\else
+      \begingroup
+        \def\svn@tmplist{}%
+        \@for\svn@temp:=\@svng@@files\do{%
+        \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
+        \expandafter\ifnum\csname @svng@\svn@temp @rev\endcsname>0
+          \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
+        \fi\fi
+        }%
+        \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
+      \endgroup
+      \fi
       \immediate\write\svn@write{%
         \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
       }%
-    \else
-      \immediate\write\svn@write{^^J}%
-    \fi
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
-    \if@svnmulti@groups
       \ifx\svn@glist\empty\else
         \begingroup
-%    \end{macrocode}
-% Write table of revisions file if \op{table} option was used.
-%    \begin{macrocode}
-          \if@svnmulti@table
-            \newwrite\svn@svtwrite
-            \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
-            \immediate\write\svn@svtwrite{%
-              \noexpand\svnbeforetable^^J%
-              \noexpand\svntable%
-            }%
-            \begingroup
-              \svn@writeglobalrow{}%
-              \ifx\@svng@@files\@undefined\else
-                \ifx\@svng@@files\relax\else
-                  \@for\svn@file:=\@svng@@files\do{%
-                    \@ifundefined{@svng@\svn@file @files}%
-                      {\svn@writefilerow{1}{\svn@file}}%
-                      {% TODO: this should be recursive:
-                       \svn@ifequal
-                       {\csname @svng@\svn@file @files\endcsname}%
-                       {\svn@file.tex}%
-                         {\svn@writefilerow{1}{\svn@file.tex}}%
-                        {%
-                          \svn@writesubgrouprow{\svn@file}%
-                          \expandafter\let\expandafter
-                            \svn@tempb\csname @svng@\svn@file @files\endcsname
-                          \@for\svn@subfile:=\svn@tempb\do{%
-                            \svn@writefilerow{2}{\svn@subfile}%
-                          }%
-                        }%
-                      }%
-                  }%
-                \fi
-              \fi
-            \endgroup
-          \fi
           \immediate\write\svn@write{^^J%
             \@percentchar\space SVN File Groups: \svn@glist
           }%
@@ -3488,68 +3445,100 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % and write to the output file:
 %    \begin{macrocode}
           \@for\svn@g:=\svn@glist\do{%
-            \expandafter\ifx\csname @svng@\svn@g @rev\endcsname\relax\else
-            \expandafter\ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
-            \immediate\write\svn@write{^^J\@percentchar\space Group '\svn@g'}%
-            \svn@writegroup{\svn@g}%
-%    \end{macrocode}
-% Table rows:
-%    \begin{macrocode}
-            \if@svnmulti@table
-              \begingroup
-              \svn@writegrouprow{\svn@g}%
-              \expandafter\let\expandafter
-                \svn@temp\csname @svng@\svn@g @files\endcsname
-              \ifx\svn@temp\relax\else
-                \@for\svn@file:=\svn@temp\do{%
-                  \@ifundefined{@svng@\svn@file @files}%
-                    {\svn@writefilerow{1}{\svn@file}}%
-                    {% TODO: this should be recursive:
-                     \svn@ifequal
-                     {\csname @svng@\svn@file @files\endcsname}%
-                     {\svn@file.tex}%
-                       {\svn@writefilerow{1}{\svn@file.tex}}%
-                      {%
-                        \svn@writesubgrouprow{\svn@file}%
-                        \expandafter\let\expandafter
-                          \svn@tempb\csname @svng@\svn@file @files\endcsname
-                        \@for\svn@subfile:=\svn@tempb\do{%
-                          \svn@writefilerow{2}{\svn@subfile}%
-                        }%
-                      }%
-                    }%
-                }%
+            \expandafter
+            \ifx\csname @svng@\svn@g @rev\endcsname\relax\else
+              \expandafter
+              \ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
+                \immediate\write\svn@write{^^J\@percentchar\space Group '\svn@g'}%
+                \svn@writegroup{\svn@g}%
               \fi
-              \endgroup
             \fi
-            \fi\fi
           }%
-%    \end{macrocode}
-% Table footer:
-%    \begin{macrocode}
-          \if@svnmulti@table
-            \immediate\write\svn@svtwrite{%
-              \noexpand\endsvntable^^J%
-              \noexpand\svnaftertable
-            }%
-            \immediate\closeout\svn@svtwrite%
-          \fi
         \endgroup
       \fi
+    \else
+      \immediate\write\svn@write{^^J}%
     \fi
 %    \end{macrocode}
 % Finally close output file:
 %    \begin{macrocode}
     \immediate\closeout\svn@write%
-  \fi\fi\fi\fi\fi
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
+% \begin{macro}{\svn@writesvt}
+% This macro writes the |.svt| auxiliary file and is called from a
+% |\AtEndDocument| macro later on.
+\def\svn@writesvt{%
+%    \end{macrocode}
+% Write table of revisions if enabled.
+%    \begin{macrocode}
+  \if@svnmulti@table
+%    \end{macrocode}
+% Open |.svt| file and write table header:
+%    \begin{macrocode}
+    \newwrite\svn@svtwrite
+    \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
+    \immediate\write\svn@svtwrite{%
+      \noexpand\svnbeforetable^^J%
+      \noexpand\svntable%
+    }%
+%    \end{macrocode}
+% Group rows:
+%    \begin{macrocode}
+    \edef\svn@glist{,\svn@glist}%
+    \@for\svn@g:=\svn@glist\do{%
+      \svn@ifempty{\svn@g}%
+        {\svn@writeglobalrow{}}%
+        {\svn@writegrouprow{\svn@g}}%
+      \expandafter\let\expandafter
+        \svn@temp\csname @svng@\svn@g @files\endcsname
+      \ifx\svn@temp\relax\else
+        \@for\svn@file:=\svn@temp\do{%
+          \@ifundefined{@svng@\svn@file @files}%
+            {\svn@writefilerow{1}{\svn@file}}%
+            {% TODO: this should be recursive:
+             \svn@ifequal
+             {\csname @svng@\svn@file @files\endcsname}%
+             {\svn@file.tex}%
+               {\svn@writefilerow{1}{\svn@file.tex}}%
+              {%
+                \svn@writesubgrouprow{\svn@file}%
+                \expandafter\let\expandafter
+                  \svn@tempb\csname @svng@\svn@file @files\endcsname
+                \@for\svn@subfile:=\svn@tempb\do{%
+                  \svn@writefilerow{2}{\svn@subfile}%
+                }%
+              }%
+            }%
+        }%
+      \fi
+    }%
+%    \end{macrocode}
+% Write table footer and close file:
+%    \begin{macrocode}
+    \immediate\write\svn@svtwrite{%
+      \noexpand\endsvntable^^J%
+      \noexpand\svnaftertable
+    }%
+    \immediate\closeout\svn@svtwrite%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
 % At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
-  \svn@writeaux
+  \if@filesw
+    \ifx\@svn@rev\empty\else
+      \ifnum\@svn@rev<1\else
+        \svn@writesvn
+        \svn@writesvt
+      \fi
+    \fi
+  \fi
 }
 %    \end{macrocode}
 %
