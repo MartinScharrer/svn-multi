@@ -1468,7 +1468,7 @@
 \def\svn@temp{}
 
 \if@svnmulti@groups
-\def\svn@g{} \def\svn@cg{\svn@g}
+\def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g}
 \def\@svng@@files{}
 \fi
 
@@ -2244,6 +2244,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Init values for file name macros. This is done AtEndOfPackage
 % to ensure that all macros are defined.
 %    \begin{macrocode}
+\edef\svn@filebase{\jobname}%
+\edef\svn@fileext{\fnk@mainext}%
+\edef\svn@filedir{\fnk@maindir}%
 \AtEndOfPackage{%
   \edef\svn@filebase{\jobname}%
   \edef\svn@fileext{\fnk@mainext}%
@@ -2259,18 +2262,21 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % package which will be executed at the begin of a input file. The file name and
 % path are not yet in |\finkpath| etc. but in |\fink@nextpath|.
 %    \begin{macrocode}
+\def\svnmulti@begininputfilehook{}
 \message{Package svn-multi: patching macro '\string\fink@prepare' from the
 'fink' package!}%
-\def\svnmulti@begininputfilehook{}
 \let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
+  %\if@svnmulti@groups
+  %  \xdef\svn@pg{\svn@filedir\svn@filebase}%
+  %\fi
   \xdef\svn@filebase{\fink@nextbase}%
   \xdef\svn@fileext{\fink@nextext}%
   \xdef\svn@filedir{\fink@nextdir}%
   \svn@removedotslash\svn@filedir
   \svnmulti@begininputfilehook
-}
+}%
 %    \end{macrocode}
 % \end{macro}
 
@@ -2279,9 +2285,9 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % package which will be executed at the end of a input file. The file path
 % |\finkpath| etc. is still valid.
 %    \begin{macrocode}
+\def\svnmulti@endinputfilehook{}
 \message{Package svn-multi: patching macro '\string\fink@restore' from the
 'fink' package!}%
-\def\svnmulti@endinputfilehook{}
 \let\svnmulti@fink@restore\fink@restore
 \def\fink@restore#1{%
   \svnmulti@endinputfilehook
@@ -2290,7 +2296,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \xdef\svn@fileext{\finkext}%
   \xdef\svn@filedir{\finkdir}%
   \svn@removedotslash\svn@filedir
-}
+}%
 %    \end{macrocode}
 % \end{macro}
 
@@ -2340,6 +2346,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     {\svnfiletimezoneminute}%
     {\svnfileurl}%
     {\svnfilefname}%
+    {\svn@g}%
+    {\svn@pg}%
   }\svn@filestack}%
 }
 
@@ -2369,11 +2377,13 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@restorefilekws@@
 }
 
-\def\svn@restorefilekws@@#1#2#3#4{%
+\def\svn@restorefilekws@@#1#2#3#4#5#6{%
   \gdef\svnfiletimezonehour{#1}%
   \gdef\svnfiletimezoneminute{#2}%
   \gdef\svnfileurl{#3}%
   \gdef\svnfilefname{#4}%
+  \gdef\svn@g{#5}%
+  \gdef\svn@pg{#6}%
 }
 
 \def\svn@popfilestack{%
@@ -2441,6 +2451,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
       {The group name '*' is invalid for '\string\svngroup'}{}{}%
     }{}%
   \xdef\svn@g{#1}%
+  \let\svn@pg\svn@g
   \ifx\svn@g\empty\else%
 %    \end{macrocode}
 % Only initialise the group at first usage:
@@ -2583,7 +2594,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@ifequal{./\svn@filepath}{\fnk@maindir\jobname.\fnk@mainext}%
     {}%
     {\svn@initfile}%
-  \svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@g}%
+  \svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}%
   \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
