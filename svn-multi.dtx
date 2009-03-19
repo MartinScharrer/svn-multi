@@ -2882,21 +2882,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
       \immediate\write\svn@write{%
         \noexpand\@svnexternal[\svn@temp]{\svn@filepath}{#2}%
       }%
-      \iffalse
-      \if@svnmulti@groups
-        \if@svnmulti@filesasgroups
-          \svn@ifempty{#1}%
-            {\edef\@tempb{#2}%
-             \@for\@tempa:=\@tempb\do{%
-               \svn@ifempty{\@tempa}%
-                 {}%
-                 {}%
-                 %{\svn@addfiletogroup{\@tempa}{\svn@filedir\svn@filebase}}%
-             }%
-            }{}%
-        \fi
-      \fi
-      \fi
     \endgroup
   \fi
   \svn@inputsvx{\svn@filedir\svn@filebase}%
