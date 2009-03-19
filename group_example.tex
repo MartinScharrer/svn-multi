@@ -9,15 +9,18 @@
 {$LastChangedRevision: 98 $}
 {$LastChangedBy: author3 $}
 
-\svngroup{notused}
-\svngroup{}
-\svngroup{graphics}
+% Pre-declaration of groups to define order in table
+\svngroup{abc}
+\svngroup{def}
+\svngroup{ghi}
+\svngroup{jkl}
+\svngroup{Images}
 \svngroup{}
 
 %\svnexternal{{tests/test1.tex}}%
 \svnexternal{{tests/fish.jpg}}%
 \svnignoregraphic{tests/fish.jpg}
-%\svngraphicsgroup{graphics}
+\svngraphicsgroup{Images}
 %\svnexternalgroup{external}
 
 \usepackage{fink}
@@ -73,7 +76,7 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 \chaptervctable
 \includegraphics{tests/subdir/leaf.jpg}
 \includegraphics{tests/fish}
-\svnexternal{{tests/test2.tex}}%
+\svnexternal[def]{{tests/test2.tex}}%
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1b.tex}
@@ -157,7 +160,23 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 4a}
 \chaptervctable
+\svnexternal{{svn-multi.dtx}}
 \includegraphics{tests/fish}
+
+\input{group_example_part4a_sub1.tex}
+\end{filecontents}
+
+\begin{filecontents}{group_example_part4a_sub1.tex}
+\svnidlong
+{$HeadURL: svn://server/group_example_part4a_sub1.tex $}
+{$LastChangedDate: 2000-01-01 00:00:00 +0000 (SubSubfile 4a-1) $}
+{$LastChangedRevision: 96 $}
+{$LastChangedBy: author2 $}
+
+\section{SubSubfile 4a-1}
+This is a sub file in a sub file.
+\svnexternal{{Makefile}}
+
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4b.tex}
@@ -270,9 +289,9 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 }
 \renewenvironment{svntable}{%
 \begin{tabular}
-    {p{5.5cm}rll}
+    {p{6.2cm}rll}
 \toprule
-    Name & Rev & Autor & \"Anderungszeitpunkt \\
+    Name & Rev & Autor & Datum \\
 \midrule
 }
 %\renewcommand{\endsvntable}
@@ -288,10 +307,14 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 % Saver: \ifthenelse from the 'ifthen' package!
 
 \renewcommand{\svntabfile}[2]{\hspace*{#1\medskipamount}Datei `{\scriptsize\svnnolinkurl{#2}}'}
-\renewcommand{\svntabsubgroup}[1]{\ `{\scriptsize\svnnolinkurl{#1}}'}
+\renewcommand{\svntabsubgroup}[2]{%
+  \hspace*{#1\medskipamount}%
+  `{\scriptsize\svnnolinkurl{#2}}'%
+}
 \renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
 \renewcommand{\svntabdate}[8]{\small #3.#2.#1\ #4:#5:#6}
 \renewcommand{\svngrouprow}{\midrule}
+\renewcommand{\endsvnglobalrow}{\midrule}
 \tableofrevisions
 
 
