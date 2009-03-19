@@ -3357,27 +3357,98 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \subsubsection{Table Format Macros}\label{sec:impl:table}
 % Generic format macro used in the |.svt| file. Can be redefined by the user to
 % change table format. % TODO: More documentation needed!
+%
+% \begin{macro}{\svntable}
 %    \begin{macrocode}
 \def\svntable{%
   \begin{tabular}{lrll}\hline
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\endsvntable}
+%    \begin{macrocode}
 \def\endsvntable{\hline\end{tabular}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svntablehead}
+%    \begin{macrocode}
 \def\svntablehead{%
     Name & Rev & Last Author & Last Changed At \\\hline
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svntablefoot}
+%    \begin{macrocode}
 \def\svntablefoot{}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnbeforetable}
+%    \begin{macrocode}
 \def\svnbeforetable{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnaftertable}
+%    \begin{macrocode}
 \def\svnaftertable{\clearpage}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnglobalrow}
+%    \begin{macrocode}
 \def\svnglobalrow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\endsvnglobalrow}
+%    \begin{macrocode}
 \def\endsvnglobalrow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svngrouprow}
+%    \begin{macrocode}
 \def\svngrouprow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\endsvngrouprow}
+%    \begin{macrocode}
 \def\endsvngrouprow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnsubgrouprow}
+%    \begin{macrocode}
 \def\svnsubgrouprow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\endsvnsubgrouprow}
+%    \begin{macrocode}
 \def\endsvnsubgrouprow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svnsubgrouprow}
+%    \begin{macrocode}
 \def\svnfilerow{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\endsvnsubgrouprow}
+%    \begin{macrocode}
 \def\endsvnfilerow{}
-\def\svntabgroup#1{Group `#1'}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svntabglobal}
+%    \begin{macrocode}
 \def\svntabglobal{Document}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svntabgroup}
+%    \begin{macrocode}
+\def\svntabgroup#1{Group `#1'}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svntabfile}
+%    \begin{macrocode}
 \def\svntabsubgroup#1{%
   \begingroup
   \hspace*{#1\medskipamount}%
@@ -3389,6 +3460,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \svn@tabsubgroup
 }
 \def\svn@tabsubgroup#1{\endgroup Subgroup `\texttt{#1}'}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svntabfile}
+%    \begin{macrocode}
 \def\svntabfile#1{%
   \begingroup
   \hspace*{#1\medskipamount}%
@@ -3400,12 +3476,26 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \svn@tabfile
 }
 \def\svn@tabfile#1{\endgroup File `\texttt{#1}'}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svntabrev}
+%    \begin{macrocode}
 \def\svntabrev{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svntabauthor}
+%    \begin{macrocode}
 \def\svntabauthor#1{\svnFullAuthor{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\svntabdate}
+%    \begin{macrocode}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
     #1-#2-#3 #4:#5:#6 #7#8%
 }
 %    \end{macrocode}
+% \end{macro}
 
 %    \begin{macrocode}
 \fi
