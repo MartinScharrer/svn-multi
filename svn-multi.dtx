@@ -2943,7 +2943,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@externalfile#1#2{%
   \endgroup
-  %\svn@addfiletogroup{#2}{\svn@g}%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
       \svn@ifequal{#1}{\svn@rg}%
@@ -3071,8 +3070,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\pgf@declareimage}[3]{??, not used}{image label}{??, not used}
 %    \begin{macrocode}
-\message{Package svn-multi: patching macro '\string\pgf@declareimage' and the
-generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
+\message{Package svn-multi: patching macro '\string\pgf@declareimage' and will
+patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \let\svnmulti@pgf@declareimage\pgf@declareimage
 \renewcommand*{\pgf@declareimage}[3][]{%
   \svnmulti@pgf@declareimage[#1]{#2}{#3}%
@@ -3267,7 +3266,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \def\svnfilerow{}
 \def\endsvnfilerow{}
 \def\svntabgroup#1{Group `#1'}
-\def\svntabglobal{Whole Document}
+\def\svntabglobal{Document}
 \def\svntabsubgroup#1{%
   \begingroup
   \hspace*{#1\medskipamount}%
