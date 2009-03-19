@@ -3250,11 +3250,13 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % change table format. % TODO: More documentation needed!
 %    \begin{macrocode}
 \def\svntable{%
-  \begin{tabular}{lrll}%
-    \hline
-    \strut Name & Rev & Last Author & Last Changed At \\\hline
+  \begin{tabular}{lrll}\hline
 }
 \def\endsvntable{\hline\end{tabular}}
+\def\svntablehead{%
+    Name & Rev & Last Author & Last Changed At \\\hline
+}
+\def\svntablefoot{}
 \def\svnbeforetable{}
 \def\svnaftertable{\clearpage}
 \def\svnglobalrow{}
@@ -3525,6 +3527,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \immediate\write\svn@svtwrite{%
       \noexpand\svnbeforetable^^J%
       \svntable
+      \noexpand\svntablehead^^J%
     }%
 %    \end{macrocode}
 % Group rows:
@@ -3550,6 +3553,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
     \@onelevel@sanitize\endsvntable%
     \immediate\write\svn@svtwrite{%
+      \noexpand\svntablefoot^^J%
       \endsvntable^^J%
       \noexpand\svnaftertable
     }%
