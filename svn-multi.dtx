@@ -3458,7 +3458,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % and write to the output file:
 %    \begin{macrocode}
           \@for\svn@g:=\svn@glist\do{%
-            \svn@ifvalidrev{@svn@\svn@g @rev}%
+            \svn@ifvalidrev{@svng@\svn@g @rev}%
               {\immediate\write\svn@write{^^J%
                  \@percentchar\space Group '\svn@g'}%
                 \svn@writegroup{\svn@g}%
