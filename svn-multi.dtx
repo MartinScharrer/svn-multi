@@ -1348,7 +1348,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
 % \begin{macro}{\svn@ifequal}[2]{string a}{string b}
 % Tests if the given arguments are identical, \eg same strings. If so the first
 % of the next two token will be expanded, the second one otherwise.
@@ -1358,6 +1358,30 @@
   \edef\svn@stringa{#1}%
   \edef\svn@stringb{#2}%
   \ifx\svn@stringa\svn@stringb
+    \endgroup
+    \expandafter
+    \@firstoftwo
+  \else
+    \endgroup
+    \expandafter
+    \@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@ifvalidrev}[1]{macro name}
+% Checks if the given macro (by name) is a valid revision, \ie defined and
+% greater than zero.
+%    \begin{macrocode}
+\def\svn@ifvalidrev#1{%
+  \begingroup
+  \expandafter\let
+  \expandafter\svn@temp\csname #1\endcsname
+  \ifx\svn@temp\relax
+    \def\svn@temp{-1}%
+  \fi
+  \ifnum\svn@temp>0\relax
     \endgroup
     \expandafter
     \@firstoftwo
@@ -3194,8 +3218,6 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svn@writesubgrouprow}[2]{grouping level}{subgroup name}
 %    \begin{macrocode}
 \def\svn@writesubgrouprow#1#2{%
-  \expandafter
-  \ifx\csname @svng@#2@rev\endcsname\relax\else
   \begingroup
     \def\svn@tabcellarg##1{{\csname @svng@#2@##1\endcsname}}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -3203,7 +3225,6 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     }%
     \svn@writerow{subgroup}{#1}{#2}%
   \endgroup
-  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3211,8 +3232,6 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svn@writefilerow}[2]{grouping level}{file name}
 %    \begin{macrocode}
 \def\svn@writefilerow#1#2{%
-  \expandafter
-  \ifx\csname @svng@#2@rev\endcsname\relax\else
   \begingroup
     \def\svn@tabcellarg##1{{\csname @svng@#2@##1\endcsname}}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
@@ -3220,7 +3239,6 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     }%
     \svn@writerow{file}{#1}{#2}%
   \endgroup
-  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3429,10 +3447,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \begingroup
         \def\svn@tmplist{}%
         \@for\svn@temp:=\@svng@@files\do{%
-        \expandafter\ifx\csname @svng@\svn@temp @rev\endcsname\relax\else
-        \expandafter\ifnum\csname @svng@\svn@temp @rev\endcsname>0
-          \edef\svn@tmplist{\svn@tmplist,\svn@temp}%
-        \fi\fi
+          \svn@ifvalidrev{@svng@\svn@temp @rev}%
+            {\edef\svn@tmplist{\svn@tmplist,\svn@temp}}%
+            {}%
         }%
         \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
       \endgroup
@@ -3453,14 +3470,11 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % and write to the output file:
 %    \begin{macrocode}
           \@for\svn@g:=\svn@glist\do{%
-            \expandafter
-            \ifx\csname @svng@\svn@g @rev\endcsname\relax\else
-              \expandafter
-              \ifnum\csname @svng@\svn@g @rev\endcsname>-1\relax
-                \immediate\write\svn@write{^^J\@percentchar\space Group '\svn@g'}%
+            \svn@ifvalidrev{@svn@\svn@g @rev}%
+              {\immediate\write\svn@write{^^J%
+                 \@percentchar\space Group '\svn@g'}%
                 \svn@writegroup{\svn@g}%
-              \fi
-            \fi
+              }{}%
           }%
         \endgroup
       \fi
@@ -3487,21 +3501,18 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \expandafter\svn@files\csname @svng@#1@files\endcsname
     \ifx\svn@files\relax\else
       \@for\svn@file:=\svn@files\do{%
-        \@ifundefined{@svng@\svn@file @rev}{}%
-        {%
-          \expandafter
-          \ifnum\csname @svng@\svn@file @rev\endcsname>0\relax
-            \@ifundefined{@svng@\svn@file @files}%
-              {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
-              {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
-                {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
-                {%
-                  \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
-                  \svn@writegroupfiles{\svn@file}%
-                }%
+        \svn@ifvalidrev{@svng@\svn@file @rev}
+          {%
+          \@ifundefined{@svng@\svn@file @files}%
+            {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
+            {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
+              {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
+              {%
+                \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
+                \svn@writegroupfiles{\svn@file}%
               }%
-          \fi
-        }%
+            }%
+          }{}%
       }%
     \fi
   \endgroup
