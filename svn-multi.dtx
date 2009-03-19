@@ -482,14 +482,14 @@
 % Controls the keyword groups feature described in
 % section~\ref{sec:group}.
 %
-% \DescribeOption{filesasgroups}
+% \DescribeOption{subgroups}
 % Controls the automatic declaration of all input files as
-% independent groups so that there keyword information can be typeset inside
+% independent subgroups so that there keyword information can be typeset inside
 % other files. The group name is the file path (`|subdir/file.tex|'). The files
 % are still added to the current group defined by \cs{svngroup}.\par This can be
-% disabled and re-enabled using \cs{svnfilesasgroupfalse} and
-% \cs{svnfilesasgrouptrue} inside the document. See
-% section~\ref{sec:filesasgroups} for additional information.
+% disabled and re-enabled using \cs{svnsubgroupsfalse} and
+% \cs{svnsubgroupstrue} inside the document. See
+% section~\ref{sec:subgroups} for additional information.
 %
 % \DescribeOption{graphics}
 % This option allows to automatically declare all images included using the
@@ -533,7 +533,7 @@
 % Controls the generation of a table of revisions which can be included using
 % the \cs{tableofrevisions} macro. This table shows the
 % revisions of all files and groups. This needs \op{groups} to work which is
-% activated with \op{table}. Enable \op{filesasgroup} to include a list of all
+% activated with \op{table}. Enable \op{subgroups} to include a list of all
 % files per group. See the section~\ref{sec:table} for more information.
 %
 % \DescribeOption{<<inputfilehooks>>}
@@ -884,7 +884,7 @@
 % requested keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please
 % note that this macro can not be used inside macros like \cs{svnFullAuthor}.
 %
-% \subsubsection{Files as Own Groups}\label{sec:filesasgroups}
+% \subsubsection{Files as Subgroups}\label{sec:subgroups}
 % The group feature could be used to access the version control information of
 % single files anywhere in the document when these are defined as own groups for
 % themselves. Because a file can only be in one group this would not be compatible
@@ -896,11 +896,11 @@
 % the (internal) list of groups. The file will still be part of the current
 % group.\par
 % \paragraph{Declaration:}
-% This feature is enabled by the \op{filesasgroups} option. All files of the
+% This feature is enabled by the \op{subgroups} option. All files of the
 % document are then automatically declared as extra groups. This can be disabled
-% for parts of the document using \csi{svnfilesasgroupsfalse} and re-enabled
-% using \cs{svnfilesasgroupstrue} macros. The current file can be manually
-% declared as extra group with the \cs{svnfileasgroup} macro.\par
+% for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
+% using \cs{svnsubgroupstrue} macros. The current file can be manually
+% declared as extra group with the \cs{svnfilesubgroup} macro.\par
 % \paragraph{Exclude/Consider files extensions:}
 % The above mentioned automatically group declaration uses an hook which is
 % triggered every time another file is read by the document. This unfortunately
@@ -933,7 +933,7 @@
 % \meta{main \LaTeX\ file}|.svt| (|t| for table) which can be included using the
 % \cs{tableofrevisions} macro. The table contains the revision information of
 % the complete document and of all defined groups.
-% If the \op{filesasgroups} option is set the table will also include the single
+% If the \op{subgroups} option is set the table will also include the single
 % files sorted by group.\par
 %
 % \subsubsection*{Table Format Macros}
@@ -1030,15 +1030,15 @@
 %
 % \DescribeMacro{svntabsubgroup}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{subgroup name}}
-% Formats a sub-group name. The name is derived from a file name and therfore 
+% Formats a subgroup name. The name is derived from a file name and therfore 
 % could contain characters like `\_' which should be taken into account. The
-% macro \cs{svnnolinkurl} can be used for this. Because sub-groups can be nested
+% macro \cs{svnnolinkurl} can be used for this. Because subgroups can be nested
 % a number is provided to tell the nesting depth. This can be used to produce
 % different indents for different levels: |\hspace*{#1\myindentamount}|.
 %
 % \DescribeMacro{svntabfile}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{file path/name}}
-% Same as for the sub-group above but for file names. Please n
+% Same as for the subgroup above but for file names. Please n
 %
 % \DescribeMacro{svntabrev}{\marg{revision number}}
 % Allows the formatting of the revision number. If empty the number will be
@@ -1334,7 +1334,7 @@
   \@svnmulti@autoloadfalse
   \@svnmulti@tablefalse
   \@svnmulti@needinputfilenamefalse
-  \@svnmulti@filesasgroupsfalse
+  \@svnmulti@subgroupsfalse
 }
 \DeclareVoidOption{all}{%
   \@svnmulti@verbatimtrue
@@ -1345,12 +1345,12 @@
   \@svnmulti@autoloadtrue
   \@svnmulti@tabletrue
   \@svnmulti@needinputfilenametrue
-  \@svnmulti@filesasgroupstrue
+  \@svnmulti@subgroupstrue
 }
 \DeclareBoolOption[true]{verbatim}
 \DeclareBoolOption[false]{groups}
 \DeclareBoolOption[false]{external}
-\DeclareBoolOption[false]{filesasgroups}
+\DeclareBoolOption[false]{subgroups}
 \DeclareBoolOption[false]{graphics}
 \DeclareBoolOption[false]{pgfimages}
 \DeclareStringOption{autoload}[true]
@@ -1375,7 +1375,7 @@
 \if@svnmulti@external
   \@svnmulti@needinputfilenametrue
 \fi
-\if@svnmulti@filesasgroups
+\if@svnmulti@subgroups
   \svn@depoption{groups}
   \@svnmulti@needinputfilenametrue
 \fi
@@ -1758,7 +1758,7 @@
       \ifx\svn@g\empty\else
         \svn@updategroup{\svn@g}%
       \fi
-      \if@svnmulti@filesasgroups
+      \if@svnmulti@subgroups
         \svn@updategroup{\svn@filedir\svn@filebase}%
       \fi
     \fi
@@ -2839,42 +2839,42 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % This special groups are not added to the list of groups.
 
 % A user-level switch is declared to enable or disable the automatic declaration
-% of every file as own group. This causes \cs{svnfileasgroup} to be called for
+% of every file as own group. This causes \cs{svnfilesubgroup} to be called for
 % all input files.
-% The if macro is defined outside the |\if@svnmulti@filesasgroups| because
+% The if macro is defined outside the |\if@svnmulti@subgroups| because
 % |\newif| inside |\if| is not a good idea.
 %    \begin{macrocode}
-\newif\ifsvnfilesasgroup
-\svnfilesasgroupfalse
+\newif\ifsvnsubgroups
+\svnsubgroupsfalse
 %    \end{macrocode}
 
 %    \begin{macrocode}
-\if@svnmulti@filesasgroups
-\svnfilesasgrouptrue
+\if@svnmulti@subgroups
+\svnsubgroupstrue
 %    \end{macrocode}
 
-% \begin{macro}{\svnfileasgroup}
+% \begin{macro}{\svnfilesubgroup}
 % User level and internal macro to declare the current file as extra group.
-% It produces the current file path and calls \cs{svn@fileasgroup}.
+% It produces the current file path and calls \cs{svn@filesubgroup}.
 % Creates two groups one with and one without the file extension. The one
 % without holds the latest revision of all files included in this file.
 %    \begin{macrocode}
-\def\svnfileasgroup{%
+\def\svnfilesubgroup{%
   \begingroup
     \svn@removedotslash\svn@filedir
-    \svn@fileasgroup{\svn@filedir\svn@filebase}%
-    \svn@fileasgroup{\svn@filepath}%
+    \svn@filesubgroup{\svn@filedir\svn@filebase}%
+    \svn@filesubgroup{\svn@filepath}%
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@fileasgroup}[1]{file name}
+% \begin{macro}{\svn@filesubgroup}[1]{file name}
 % Macro to write a file as group to |.svn| file. After checking if the filename
 % was not already written, the |.svn| file is checked if it is open and then the
 % file keyword information is written.
 %    \begin{macrocode}
-\def\svn@fileasgroup#1{%
+\def\svn@filesubgroup#1{%
   \ifnum\svnfilerev>-1\relax
     \begingroup
       \expandafter\ifx\csname svn@g@#1\endcsname\relax%
@@ -2891,7 +2891,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
-% extensions (without leading dot) to ignore for automatic \csd{svnfileasgroup}.}
+% extensions (without leading dot) to ignore for automatic \csd{svnfilesubgroup}.}
 % A special macro is defined for all extensions. The existents of this macro is
 % then tested later to check if this extension should be ignored.
 %    \begin{macrocode}
@@ -2905,7 +2905,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
 % extensions (without leading dot) to consider for automatic
-% \csd{svnfileasgroup}.}
+% \csd{svnfilesubgroup}.}
 % The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
 % to |\relax|.
 %    \begin{macrocode}
@@ -2926,10 +2926,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % declare this file as group if its extension is not configured to be ignored.
 %    \begin{macrocode}
 \svnmulti@atendinputfile{%
-  \if@svnmulti@filesasgroups
-    \ifsvnfilesasgroup
+  \if@svnmulti@subgroups
+    \ifsvnsubgroups
       \expandafter\ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
-      \svnfileasgroup
+      \svnfilesubgroup
       \fi
     \fi
   \fi
@@ -2938,10 +2938,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 %    \begin{macrocode}
 \AtBeginDocument{%
-  \if@svnmulti@filesasgroups
-    \ifsvnfilesasgroup
+  \if@svnmulti@subgroups
+    \ifsvnsubgroups
       \svn@addfiletogroup{\jobname .\fnk@mainext}{\jobname}%
-      \svnfileasgroup
+      \svnfilesubgroup
     \fi
   \fi
 }
@@ -3050,12 +3050,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@externalfile#1#2{%
   \endgroup
-  \if@svnmulti@filesasgroups
-    \ifsvnfilesasgroup
+  \if@svnmulti@subgroups
+    \ifsvnsubgroups
       \svn@ifequal{#1}{\svn@rg}%
         {\svn@addfiletogroup{#2}{\svn@filedir\svn@filebase}}%
         {\svn@addfiletogroup{#2}{#1}}%
-      \svn@fileasgroup{#2}%
+      \svn@filesubgroup{#2}%
     \fi
   \fi
 }
@@ -3074,7 +3074,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \subsection{Auto loading of \texttt{.svx} files}
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files
 % using the \cs{svnmulti@atbegininputfile} macro.
-% The macros \cs{svn@addfiletogroup} and \cs{svnfileasgroup} are used to do the
+% The macros \cs{svn@addfiletogroup} and \cs{svnfilesubgroup} are used to do the
 % actual work.
 %    \begin{macrocode}
 \if@svnmulti@autoload
@@ -3679,7 +3679,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 
 % \begin{macro}{\svn@writegroupfiles}[1]{group name}
 % Writes all files of a group to the |.svt| file. If the file is actually a
-% sub-group it calls itself recursively.
+% subgroup it calls itself recursively.
 %    \begin{macrocode}
 \def\svn@writegroupfiles#1{%
   \begingroup
