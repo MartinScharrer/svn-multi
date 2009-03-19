@@ -3188,17 +3188,17 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@writesubgrouprow}[1]{file name}
+% \begin{macro}{\svn@writesubgrouprow}[2]{grouping level}{subgroup name}
 %    \begin{macrocode}
-\def\svn@writesubgrouprow#1{%
+\def\svn@writesubgrouprow#1#2{%
   \expandafter
-  \ifx\csname @svng@#1@rev\endcsname\relax\else
+  \ifx\csname @svng@#2@rev\endcsname\relax\else
   \begingroup
-    \def\svn@tabcellarg##1{{\csname @svng@#1@##1\endcsname}}%
+    \def\svn@tabcellarg##1{{\csname @svng@#2@##1\endcsname}}%
     \def\svn@tabcell##1{\expandafter\noexpand\csname svntab##1\endcsname%
       \svn@tabcellarg{##1}%
     }%
-    \svn@writerow{subgroup}{#1}{}%
+    \svn@writerow{subgroup}{#1}{#2}%
   \endgroup
   \fi
 }
@@ -3254,8 +3254,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \def\svnfilerow{}
 \def\svntabgroup#1{Group `#1'}
 \def\svntabglobal{Whole Document}
-\def\svntabsubgroup{% TODO: svn@catcodes?
+\def\svntabsubgroup#1{%
   \begingroup
+  \hspace*{#1\medskipamount}%
   \catcode`\_=12
   \catcode`\&=12
   \catcode`\^=12
@@ -3263,10 +3264,10 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabsubgroup
 }
-\def\svn@tabsubgroup#1{\endgroup\hspace*{\smallskipamount}Subgroup `\texttt{#1}'}
+\def\svn@tabsubgroup#1{\endgroup Subgroup `\svnnolinkurl{#1}'}
 \def\svntabfile#1{%
   \begingroup
-  \hspace*{#1\smallskipamount}%
+  \hspace*{#1\medskipamount}%
   \catcode`\_=12
   \catcode`\&=12
   \catcode`\^=12
@@ -3274,7 +3275,7 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabfile
 }
-\def\svn@tabfile#1{\endgroup File `\texttt{#1}'}
+\def\svn@tabfile#1{\endgroup File `\svnnolinkurl{#1}'}
 \def\svntabrev{}
 \def\svntabauthor#1{\svnFullAuthor{#1}}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
@@ -3467,6 +3468,40 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
+
+% \begin{macro}{\svn@writegroupfiles}[1]{group name}
+% Writes all files of a group to the |.svt| file. If the file is actually a
+% sub-group it calls itself recursively.
+%    \begin{macrocode}
+\def\svn@writegroupfiles#1{%
+  \begingroup
+    \advance\svn@grouplevel by 1\relax
+    \expandafter\let
+    \expandafter\svn@files\csname @svng@#1@files\endcsname
+    \ifx\svn@files\relax\else
+      \@for\svn@file:=\svn@files\do{%
+        \@ifundefined{@svng@\svn@file @rev}{}%
+        {%
+          \expandafter
+          \ifnum\csname @svng@\svn@file @rev\endcsname>0\relax
+            \@ifundefined{@svng@\svn@file @files}%
+              {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
+              {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
+                {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
+                {%
+                  \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
+                  \svn@writegroupfiles{\svn@file}%
+                }%
+              }%
+          \fi
+        }%
+      }%
+    \fi
+  \endgroup
+}%
+%    \end{macrocode}
+% \end{macro}
+
 % \begin{macro}{\svn@writesvt}
 % This macro writes the |.svt| auxiliary file and is called from a
 % |\AtEndDocument| macro later on.
@@ -3487,34 +3522,22 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Group rows:
 %    \begin{macrocode}
-    \edef\svn@glist{,\svn@glist}%
+    \let\svn@grouplevel\@tempcnta
+    \svn@grouplevel=0\relax
+    \svn@writeglobalrow{}%
+    \svn@writegroupfiles{}%
+%
     \@for\svn@g:=\svn@glist\do{%
-      \svn@ifempty{\svn@g}%
-        {\svn@writeglobalrow{}}%
-        {\svn@writegrouprow{\svn@g}}%
-      \expandafter\let\expandafter
-        \svn@temp\csname @svng@\svn@g @files\endcsname
-      \ifx\svn@temp\relax\else
-        \@for\svn@file:=\svn@temp\do{%
-          \@ifundefined{@svng@\svn@file @files}%
-            {\svn@writefilerow{1}{\svn@file}}%
-            {% TODO: this should be recursive:
-             \svn@ifequal
-             {\csname @svng@\svn@file @files\endcsname}%
-             {\svn@file.tex}%
-               {\svn@writefilerow{1}{\svn@file.tex}}%
-              {%
-                \svn@writesubgrouprow{\svn@file}%
-                \expandafter\let\expandafter
-                  \svn@tempb\csname @svng@\svn@file @files\endcsname
-                \@for\svn@subfile:=\svn@tempb\do{%
-                  \svn@writefilerow{2}{\svn@subfile}%
-                }%
-              }%
-            }%
-        }%
-      \fi
+      \@ifundefined{@svng@\svn@g @rev}{}%
+      {%
+        \expandafter
+        \ifnum\csname @svng@\svn@g @rev\endcsname>0\relax
+          \svn@writegrouprow{\svn@g}%
+          \svn@writegroupfiles{\svn@g}%
+        \fi
+      }%
     }%
+
 %    \end{macrocode}
 % Write table footer and close file:
 %    \begin{macrocode}
