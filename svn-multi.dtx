@@ -1376,12 +1376,11 @@
 %    \begin{macrocode}
 \def\svn@ifvalidrev#1{%
   \begingroup
-  \expandafter\let
-  \expandafter\svn@temp\csname #1\endcsname
-  \ifx\svn@temp\relax
-    \def\svn@temp{-1}%
-  \fi
-  \ifnum\svn@temp>0\relax
+  \@ifundefined{#1}%
+    {\def\svn@temp{-1}}%
+    {\expandafter\edef
+     \expandafter\svn@temp\expandafter{\csname #1\endcsname}}%
+  \ifnum\svn@temp>-1\relax
     \endgroup
     \expandafter
     \@firstoftwo
@@ -1469,7 +1468,7 @@
 
 \if@svnmulti@groups
 \def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g}
-\def\@svng@@files{}
+\let\@svng@@files\relax
 \fi
 
 \def\svn@initfile{%
@@ -2268,9 +2267,11 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
-  %\if@svnmulti@groups
-  %  \xdef\svn@pg{\svn@filedir\svn@filebase}%
-  %\fi
+  \if@svnmulti@groups
+    \svn@ifequal{\svn@filedir\svn@filebase.\svn@fileext}{\jobname.\fnk@mainext}%
+      {\global\let\svn@pg\svn@g}%
+      {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
+  \fi
   \xdef\svn@filebase{\fink@nextbase}%
   \xdef\svn@fileext{\fink@nextext}%
   \xdef\svn@filedir{\fink@nextdir}%
@@ -2328,10 +2329,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 %    \begin{macrocode}
 \def\svn@filestack{{}}
-\def\svn@indent{}
 
 \def\svn@pushfilestack{%
-  \edef\svn@indent{.\svn@indent}%
   \xdef\svn@filestack{{%
     {\svnfilerev}%
     {\svnfiledate}%
@@ -2349,10 +2348,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     {\svn@g}%
     {\svn@pg}%
   }\svn@filestack}%
-}
-
-\def\svn@indentit#1#2\empty{%
-  \xdef\svn@indent{#2}%
 }
 
 \def\svn@restorefilekws#1#2\relax{%
@@ -2572,14 +2567,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
     %
-    \expandafter
-    \ifx\csname @svng@#2@files\endcsname\relax%
-      \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
-    \else
-      \expandafter\xdef\csname @svng@#2@files\endcsname{%
+    \@ifundefined{@svng@#2@files}%
+      {\expandafter\xdef\csname @svng@#2@files\endcsname{#1}}%
+      {\expandafter\xdef\csname @svng@#2@files\endcsname{%
         \csname @svng@#2@files\endcsname,#1%
+       }%
       }%
-    \fi
   \fi
 }
 %    \end{macrocode}
@@ -2939,7 +2932,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     \catcode`\^=12
     \catcode`\$=12
     \catcode`\#=12
-    \svn@externalfile{#1}
+    \svn@externalfile{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
