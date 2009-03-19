@@ -27,6 +27,7 @@
 \usepackage{graphics}
 \usepackage{pgf}
 \usepackage{hyperref}
+\urlstyle{tt}
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily}
 \makeatletter
@@ -35,7 +36,8 @@
 }
 \makeatother
 \usepackage{booktabs}
-\usepackage{varioref}
+\usepackage{tabularx}
+\usepackage{longtable}
 
 % This is an example document to show the group feature of svn-multi 2.0.
 % Please the notes below.
@@ -241,6 +243,7 @@ Last Changed Date     & \svncgdate\\
 % Custom titlepage:
 \hbox{}%
 \vfill
+\pdfbookmark{Title Page}{titlepage}%
 {\centering
 \Huge\texttt{svn-multi} v2.0 Keyword Groups Example Document\\
 \Large Martin Scharrer\\
@@ -258,7 +261,7 @@ influence the correct functionality of the svn-multi package.\\
 \vfill%
 \par\noindent
 {\large Version Control Information for this document:\\[\bigskipamount]}%
-\begin{tabular}{ll}
+\begin{tabular}{lp{0.7\textwidth}}
 Main URL              & \svnnolinkurl{\svnmainurl}\\
 Main File name        & \svnnolinkurl{\svnmainfilename}\\
 URL of latest file    & \svnnolinkurl{\svnurl}\\
@@ -279,6 +282,8 @@ keywords:\\*[-\baselineskip]
 This is an automatic generated table using the \textbf{\sffamily table} option.
 \bigskip\par\noindent
 }
+\clearpage
+\pdfbookmark{Table of Revisions (1)}{tora}%
 \tableofrevisions
 
 % Redefined to German
@@ -288,16 +293,16 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 \bigskip\par\noindent
 }
 \renewenvironment{svntable}{%
-\begin{tabular}
-    {p{6.2cm}rll}
+\begin{longtable}{p{6.2cm}rll}
 \toprule
-    Name & Rev & Autor & Datum \\
-\midrule
 }
-%\renewcommand{\endsvntable}
 {%
 \bottomrule
-\end{tabular}
+\end{longtable}
+}
+\renewcommand*\svntablehead{%
+    Name & Rev & Autor & Datum \\
+\midrule
 }
 \renewcommand{\svnrevisionsname}{Revisionen}
 \renewcommand{\svntabgroup}[1]{Gruppe `#1'}
@@ -314,8 +319,11 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 \renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
 \renewcommand{\svntabdate}[8]{\small #3.#2.#1\ #4:#5:#6}
 \renewcommand{\svngrouprow}{\midrule}
-\renewcommand{\endsvnglobalrow}{\midrule}
+\renewcommand{\endsvnglobalrow}{\midrule Ohne Gruppe:\\}
+\clearpage
+\pdfbookmark{Table of Revisions (2)}{torb}%
 \tableofrevisions
+\clearpage
 
 
 \svngroup{abc}
