@@ -25,7 +25,7 @@ new: fullclean all
 
 doc: ${PACKAGE}.pdf svn-multi-pl.pdf
 
-package: ${PACKAGE}.sty
+package: ${PACKAGE}.sty ${PACKAGE}.pl
 
 %.pdf: %.dtx
 	${LATEX} $*.dtx

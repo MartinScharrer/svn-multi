@@ -1378,9 +1378,9 @@
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
-    \let\svn@temp\svn@g
+    \let\svn@rg\svn@g
     \IfFileExists{#1}{\@@input #1\relax}{}%
-    \global\let\svn@g\svn@temp
+    \global\let\svn@g\svn@rg
   \endgroup
 }
 %    \end{macrocode}
@@ -2912,29 +2912,31 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % the \cs{svn@externalfile} is called to read the file name. Otherwise the
 % argument is simply removed.
 %    \begin{macrocode}
-\def\svnexternalfile{%
+\newcommand*\svnexternalfile[1][\svn@filedir\svn@filebase]{%
   \begingroup % TODO: maybe use \svn@catcodes
     \catcode`\_=12
     \catcode`\&=12
     \catcode`\^=12
     \catcode`\$=12
     \catcode`\#=12
-    \expandafter\svn@externalfile
+    \svn@externalfile{#1}
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@externalfile}[1]{file name}
+% \begin{macro}{\svn@externalfile}[2]{group name}{file name}
 % Ends group which began in \cs{svnexternalfile} and calls the appropriate
 % macros.
 %    \begin{macrocode}
-\def\svn@externalfile#1{%
+\def\svn@externalfile#1#2{%
   \endgroup
-  %\svn@addfiletogroup{#1}{\svn@g}%
+  %\svn@addfiletogroup{#2}{\svn@g}%
   \if@svnmulti@filesasgroups
     \ifsvnfilesasgroup
-      \svn@addfiletogroup{#1}{\svn@filedir\svn@filebase}%
-      \svn@fileasgroup{#1}%
+      \svn@ifequal{#1}{\svn@rg}%
+        {\svn@addfiletogroup{#2}{\svn@filedir\svn@filebase}}%
+        {\svn@addfiletogroup{#2}{#1}}%
+      \svn@fileasgroup{#2}%
     \fi
   \fi
 }
