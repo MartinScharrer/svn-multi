@@ -3168,7 +3168,8 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \svn@tabcellarg{second}%
     \svn@tabcellarg{timezonehour}%
     \svn@tabcellarg{timezoneminute}%
-    \@backslashchar\@backslashchar
+    \space\@backslashchar\@backslashchar
+    \expandafter\noexpand\csname endsvn#1row\endcsname
   }%
 }
 %    \end{macrocode}
@@ -3249,9 +3250,13 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \def\svnbeforetable{}
 \def\svnaftertable{\clearpage}
 \def\svnglobalrow{}
+\def\endsvnglobalrow{}
 \def\svngrouprow{}
+\def\endsvngrouprow{}
 \def\svnsubgrouprow{}
+\def\endsvnsubgrouprow{}
 \def\svnfilerow{}
+\def\endsvnfilerow{}
 \def\svntabgroup#1{Group `#1'}
 \def\svntabglobal{Whole Document}
 \def\svntabsubgroup#1{%
