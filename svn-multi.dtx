@@ -3522,9 +3522,10 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
     \newwrite\svn@svtwrite
     \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
+    \@onelevel@sanitize\svntable%
     \immediate\write\svn@svtwrite{%
       \noexpand\svnbeforetable^^J%
-      \noexpand\svntable%
+      \svntable
     }%
 %    \end{macrocode}
 % Group rows:
@@ -3548,8 +3549,9 @@ generated macro '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Write table footer and close file:
 %    \begin{macrocode}
+    \@onelevel@sanitize\endsvntable%
     \immediate\write\svn@svtwrite{%
-      \noexpand\endsvntable^^J%
+      \endsvntable^^J%
       \noexpand\svnaftertable
     }%
     \immediate\closeout\svn@svtwrite%
