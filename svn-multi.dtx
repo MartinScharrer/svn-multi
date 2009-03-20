@@ -2741,6 +2741,29 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\svn@writeallgroups}[1]{macro holding a list of groups}
+%    \begin{macrocode}
+\def\svn@writeallgroups#1{%
+  \begingroup
+    \ifx\relax#1\relax\else
+      \@for\svn@temp:=#1\do{%
+        \svn@ifvalidrev{@svng@\svn@temp @rev}%
+          {%
+            \expandafter
+            \svn@cleanfilelist\csname @svng@\svn@temp @files\endcsname
+            \svn@writegroup{\svn@temp}%
+            \@ifundefined{@svng@\svn@temp @files}{}%
+              {\expandafter\svn@writeallgroups
+               \csname @svng@\svn@temp @files\endcsname
+              }%
+          }{}%
+      }%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
 
 % \begin{macro}{\svn@updategroup}[1]{group name}
 % Updates group with |\svnfile...| macro values.
@@ -2836,6 +2859,27 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \end{macrocode}
 % \end{macro}
 
+% \begin{macro}{\svn@cleanfilelist}[1]{macro holing a file list}
+% Takes a macro which holds a file list and removes all files from the list 
+% which don't have a valid revision number.
+%    \begin{macrocode}
+\def\svn@cleanfilelist#1{
+  \begingroup
+    \def\svn@tmplist{}%
+    \ifx\relax#1\relax\else
+      \@for\svn@temp:=#1\do{%
+        \expandafter\svn@ifvalidrev
+        \expandafter{@svng@\svn@temp @rev}%
+          {\edef\svn@tmplist{\svn@tmplist,\svn@temp}}%
+          {}%
+      }%
+      \xdef#1{\expandafter\@gobble\svn@tmplist\empty}%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
 %    \begin{macrocode}
 \fi
 %    \end{macrocode}
@@ -2883,15 +2927,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svn@filesubgroup#1{%
   \ifnum\svnfilerev>-1\relax
-    \begingroup
-      \expandafter\ifx\csname svn@g@#1\endcsname\relax%
-        \expandafter\gdef\csname svn@g@#1\endcsname{1}%
-        \svn@checkwrite
-        \svn@updategroup{#1}%
-        \immediate\write\svn@write{^^J\@percentchar\space File '#1'}%
-        \svn@writegroup{#1}%
-      \fi
-    \endgroup
+    \expandafter\ifx\csname svn@g@#1\endcsname\relax%
+      \expandafter\gdef\csname svn@g@#1\endcsname{1}%
+      \svn@updategroup{#1}%
+    \fi
   \fi
 }
 %    \end{macrocode}
@@ -3638,20 +3677,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % Remove all files which do not have a revision number from list:
 %    \begin{macrocode}
     \if@svnmulti@groups
-      \ifx\@svng@@files\relax\else
-      \begingroup
-        \def\svn@tmplist{}%
-        \@for\svn@temp:=\@svng@@files\do{%
-          \svn@ifvalidrev{@svng@\svn@temp @rev}%
-            {\edef\svn@tmplist{\svn@tmplist,\svn@temp}}%
-            {}%
-        }%
-        \xdef\@svng@@files{\expandafter\@gobble\svn@tmplist\empty}%
-      \endgroup
-      \fi
+      \svn@cleanfilelist\@svng@@files
       \immediate\write\svn@write{%
         \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
       }%
+      \svn@writeallgroups\@svng@@files
 %    \end{macrocode}
 % Write keyword group values if groups were specified:
 %    \begin{macrocode}
@@ -3660,17 +3690,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
           \immediate\write\svn@write{^^J%
             \@percentchar\space SVN File Groups: \svn@glist
           }%
-%    \end{macrocode}
-% For every activated keyword group check if any keywords got recorded
-% and write to the output file:
-%    \begin{macrocode}
-          \@for\svn@g:=\svn@glist\do{%
-            \svn@ifvalidrev{@svng@\svn@g @rev}%
-              {\immediate\write\svn@write{^^J%
-                 \@percentchar\space Group '\svn@g'}%
-                \svn@writegroup{\svn@g}%
-              }{}%
-          }%
+          \svn@writeallgroups\svn@glist
         \endgroup
       \fi
     \else
@@ -3695,6 +3715,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \expandafter\let
     \expandafter\svn@files\csname @svng@#1@files\endcsname
     \ifx\svn@files\relax\else
+      \svn@cleanfilelist\svn@files
       \@for\svn@file:=\svn@files\do{%
         \svn@ifvalidrev{@svng@\svn@file @rev}
           {%
