@@ -2694,7 +2694,12 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@ifequal{./\svn@filepath}{\fnk@maindir\jobname.\fnk@mainext}%
     {}%
     {\svn@initfile}%
-  \svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}%
+  \svn@ifequal{\svn@fileext}{\fnk@mainext}%
+    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
+  \svn@ifequal{\svn@fileext}{sty}%
+    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
+  \svn@ifequal{\svn@fileext}{cls}%
+    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
   \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
 }
 %    \end{macrocode}
@@ -2919,7 +2924,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % The following extensions are ignored by default.
 %    \begin{macrocode}
-\svnignoreextensions{aux,toc,out,svn,svx,cls,sty,cfg,enc}
+\svnignoreextensions{aux,bbl,cfg,cls,fd,enc,fls,glo,idx,ilg,ind,ist,%
+lof,log,lot,out,sty,svn,svt,svx,toc}
 %    \end{macrocode}
 
 % Check at the end of every input file if files should be extra groups and
