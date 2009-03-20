@@ -2347,20 +2347,35 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \@ifundefined{fnk@mainext}{\svn@finkerror}{}%
 \endgroup
 %    \end{macrocode}
-% Init values for file name macros. This is done AtEndOfPackage
-% to ensure that all macros are defined.
+
+% \begin{macro}{\svn@removedotslash}[1]{string (\eg file path) which might start
+% with \texttt{./}}
+% Removes leading './' from given macro (holding a directory path). Awaits a
+% macro as argument which is redefined inside the current group!
+%    \begin{macrocode}
+\def\svn@removedotslash#1{%
+  \def\svn@removedotslash@##1##2##3\relax{%
+    \svn@ifequal{./}{##1##2}%
+      {\edef#1{##3}\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
+      {\edef#1{##1##2##3}\let\next\relax}%
+    \next
+  }%
+  \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
+}
+%    \end{macrocode}
+% \end{macro}
+
+% Init values for file name macros.
 %    \begin{macrocode}
 \let\svn@mainext\fnk@mainext
 \let\svn@maindir\fnk@maindir
+\svn@removedotslash\svn@maindir
 \edef\svn@filebase{\jobname}%
 \edef\svn@fileext{\svn@mainext}%
 \edef\svn@filedir{\svn@maindir}%
-\AtEndOfPackage{%
-  \edef\svn@filebase{\jobname}%
-  \edef\svn@fileext{\svn@mainext}%
-  \edef\svn@filedir{\svn@maindir}%
-  \svn@removedotslash\svn@filedir
-}
+%    \end{macrocode}
+% Filename and -path are build using the other macros:
+%    \begin{macrocode}
 \def\svn@filename{\fink@file\svn@filebase\svn@fileext}%
 \def\svn@filepath{\svn@filedir\svn@filename}%
 %    \end{macrocode}
@@ -2377,7 +2392,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
   \if@svnmulti@groups
-    \svn@ifequal{\svn@filedir\svn@filebase.\svn@fileext}{\jobname.\svn@mainext}%
+    \svn@ifequal{\svn@filepath}{\jobname.\svn@mainext}%
       {\global\let\svn@pg\svn@g}%
       {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
   \fi
@@ -2509,23 +2524,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 }%
 %
 %    \end{macrocode}
-
-% \begin{macro}{\svn@removedotslash}[1]{string (\eg file path) which might start
-% with \texttt{./}}
-% Removes leading './' from given macro (holding a directory path). Awaits a
-% macro as argument which is redefined inside the current group!
-%    \begin{macrocode}
-\def\svn@removedotslash#1{%
-  \def\svn@removedotslash@##1##2##3\relax{%
-    \svn@ifequal{./}{##1##2}%
-      {\edef#1{##3}\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
-      {\edef#1{##1##2##3}\let\next\relax}%
-    \next
-  }%
-  \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
-}
-%    \end{macrocode}
-% \end{macro}
 
 %    \begin{macrocode}
 \fi
@@ -2693,7 +2691,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-  \svn@ifequal{./\svn@filepath}{\svn@maindir\jobname.\svn@mainext}%
+  \svn@ifequal{\svn@filepath}{\svn@maindir\jobname.\svn@mainext}%
     {}%
     {\svn@initfile}%
   \svn@ifequal{\svn@fileext}{\svn@mainext}%
