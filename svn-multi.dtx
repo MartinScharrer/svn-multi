@@ -2350,13 +2350,15 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Init values for file name macros. This is done AtEndOfPackage
 % to ensure that all macros are defined.
 %    \begin{macrocode}
+\let\svn@mainext\fnk@mainext
+\let\svn@maindir\fnk@maindir
 \edef\svn@filebase{\jobname}%
-\edef\svn@fileext{\fnk@mainext}%
-\edef\svn@filedir{\fnk@maindir}%
+\edef\svn@fileext{\svn@mainext}%
+\edef\svn@filedir{\svn@maindir}%
 \AtEndOfPackage{%
   \edef\svn@filebase{\jobname}%
-  \edef\svn@fileext{\fnk@mainext}%
-  \edef\svn@filedir{\fnk@maindir}%
+  \edef\svn@fileext{\svn@mainext}%
+  \edef\svn@filedir{\svn@maindir}%
   \svn@removedotslash\svn@filedir
 }
 \def\svn@filename{\fink@file\svn@filebase\svn@fileext}%
@@ -2375,7 +2377,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
   \if@svnmulti@groups
-    \svn@ifequal{\svn@filedir\svn@filebase.\svn@fileext}{\jobname.\fnk@mainext}%
+    \svn@ifequal{\svn@filedir\svn@filebase.\svn@fileext}{\jobname.\svn@mainext}%
       {\global\let\svn@pg\svn@g}%
       {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
   \fi
@@ -2691,10 +2693,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-  \svn@ifequal{./\svn@filepath}{\fnk@maindir\jobname.\fnk@mainext}%
+  \svn@ifequal{./\svn@filepath}{\svn@maindir\jobname.\svn@mainext}%
     {}%
     {\svn@initfile}%
-  \svn@ifequal{\svn@fileext}{\fnk@mainext}%
+  \svn@ifequal{\svn@fileext}{\svn@mainext}%
     {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
   \svn@ifequal{\svn@fileext}{sty}%
     {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
@@ -2946,7 +2948,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 \AtBeginDocument{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
-      \svn@addfiletogroup{\jobname .\fnk@mainext}{\jobname}%
+      \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
       \svnfilesubgroup
     \fi
   \fi
