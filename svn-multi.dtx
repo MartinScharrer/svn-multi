@@ -39,10 +39,12 @@
 \usepackage{ifpdf}
 \ifpdf
   % use hypdoc if you have it, hyperref else
-  %\usepackage{hyperref}
-  \usepackage{hypdoc}
-  \urlstyle{tt}
-\else\let\url=\texttt\fi
+  \IfFileExists{hypdoc.sty}
+    {\usepackage{hypdoc}}
+    {\usepackage{hyperref}}
+\else
+  \let\url\texttt
+\fi
 \usepackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
@@ -349,7 +351,7 @@
 % \ifpdf
 % \hypersetup{
 %   pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle={The svn-multi package, \fileversion, r\filerev},
+%   pdftitle={The svn-multi package, \fileversion, r\filerev from \filedate},
 %   pdfsubject={Documentation of LaTeX package svn-multi which allows the
 %   typesetting of Subversion keywords in multi-file LaTeX documents},
 %   pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
@@ -1759,7 +1761,9 @@
         \svn@updategroup{\svn@g}%
       \fi
       \if@svnmulti@subgroups
-        \svn@updategroup{\svn@filedir\svn@filebase}%
+        \ifsvnsubgroups
+          \svn@updategroup{\svn@filedir\svn@filebase}%
+        \fi
       \fi
     \fi
   \fi
@@ -2322,8 +2326,8 @@
 % \end{macro}
 
 % \subsection{Input File Name}
-% The FiNK package is used to get the input file names. AtBegin/AtEnd hooks are
-% installed which will be used later.
+% The \pkg{fink} package is used to get the input file names. AtBegin/AtEnd 
+% hooks are installed which will be used later.
 %    \begin{macrocode}
 \if@svnmulti@needinputfilename
 %    \end{macrocode}
