@@ -1036,7 +1036,8 @@
 % could contain characters like `\_' which should be taken into account. The
 % macro \cs{svnnolinkurl} can be used for this. Because subgroups can be nested
 % a number is provided to tell the nesting depth. This can be used to produce
-% different indents for different levels: |\hspace*{#1\myindentamount}|.
+% different indents for different levels: \eg: 
+% |\addtolength{\leftskip}{#1\someindentamount}|.
 %
 % \DescribeMacro{svntabfile}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{file path/name}}
@@ -3408,7 +3409,8 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svntable}
 %    \begin{macrocode}
 \def\svntable{%
-  \begin{tabular}{lrll}\hline
+  \begin{tabular}{p{0.425\textwidth}rp{0.25\textwidth}p{0.225\textwidth}}%
+    \hline
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3497,8 +3499,9 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svntabfile}
 %    \begin{macrocode}
 \def\svntabsubgroup#1{%
+  \raggedright
+  \addtolength{\leftskip}{#1\medskipamount}%
   \begingroup
-  \hspace*{#1\medskipamount}%
   \catcode`\_=12
   \catcode`\&=12
   \catcode`\^=12
@@ -3506,15 +3509,16 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabsubgroup
 }
-\def\svn@tabsubgroup#1{\endgroup Subgroup `\texttt{#1}'}
+\def\svn@tabsubgroup#1{\endgroup Subgroup `\texttt{\small #1}'}
 %    \end{macrocode}
 % \end{macro}
 
 % \begin{macro}{\svntabfile}
 %    \begin{macrocode}
 \def\svntabfile#1{%
+  \raggedright
+  \addtolength{\leftskip}{#1\medskipamount}%
   \begingroup
-  \hspace*{#1\medskipamount}%
   \catcode`\_=12
   \catcode`\&=12
   \catcode`\^=12
@@ -3522,7 +3526,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \catcode`\#=12
   \svn@tabfile
 }
-\def\svn@tabfile#1{\endgroup File `\texttt{#1}'}
+\def\svn@tabfile#1{\endgroup File `\texttt{\small #1}'}
 %    \end{macrocode}
 % \end{macro}
 
@@ -3539,7 +3543,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svntabdate}
 %    \begin{macrocode}
 \def\svntabdate#1#2#3#4#5#6#7#8{%
-    #1-#2-#3 #4:#5:#6 #7#8%
+    #1-#2-#3 #4:#5:#6% #7#8%
 }
 %    \end{macrocode}
 % \end{macro}
