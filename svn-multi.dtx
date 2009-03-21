@@ -590,7 +590,7 @@
 % Please note that the arguments are read verbatim. Special precaution are taken
 % to allow spaces, newlines and comments direct after the |\svnidlong| and after
 % each of the four arguments, just in case someone need this.  In fact
-% everything not inside braces \{ \} is ignored.
+% everything not inside braces |{ }| is ignored.
 %
 % \DescribeMacro{svn}{\kmarg{keyword}}
 % \DescribeMacro*{svn*}{\kmarg{keyword}}
@@ -805,7 +805,7 @@
 % \DescribeMacro{svnnolinkurl}{\marg{macro with returns special text}}
 % This macro allows you to write |\svnnolinkurl{\svnkw{HeadURL}}| and get the
 % Head URL typeset verbatim. However |\url{|\cs{svnkw}|{HeadURL}}|
-% (\pkg{hyperref} package) gives you the same result with hyperlinked. Both
+% (\pkg{hyperref} package) gives you the same result with a hyperlink. Both
 % macros require the \pkg{hyperref} package which is not automatically loaded by
 % \svnmulti.  Please load it manually when you like to use \cs{svnnolinkurl}.
 %
@@ -814,7 +814,7 @@
 % can be used to have keyword values with special characters in roman font,
 % which normally doesn't hold letters like `\_'.
 %
-% Please note that you can't use \pkg{hyperref}s |\nolinkurl| because it won't
+% Please note that you can't use \pkg{hyperref}'s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
 % \subsection{Groups}\label{sec:group}
@@ -1041,7 +1041,7 @@
 %
 % \DescribeMacro{svntabfile}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{file path/name}}
-% Same as for the subgroup above but for file names. Please n
+% Same as for the subgroup above but for file names.
 %
 % \DescribeMacro{svntabrev}{\marg{revision number}}
 % Allows the formatting of the revision number. If empty the number will be
@@ -1088,7 +1088,7 @@
 % file.
 %
 % \DescribeMacro{svnexternalpath}{\{\{\meta{patha}\}\ignorespaces
-% \{\meta{fileb}\}\ldots\{\meta{pathx}\}\}}
+% \{\meta{pathb}\}\ldots\{\meta{pathx}\}\}}
 % This macro can be used in the document preamble to declare a set of paths to
 % be scanned for files specified with \cs{svnexternal}. This avoids the need to
 % provide the path again and again for every file.
@@ -1789,7 +1789,7 @@
   \svnkwdef{LastChangedBy}{}%
 %    \end{macrocode}
 % The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters
-% inside the keywords.  The braces \{ \} are changed to allow comments between
+% inside the keywords.  The braces |{ }| are changed to allow comments between
 % the arguments.  \cs{svnidlong@readargsfull} is called to read the arguments.
 %    \begin{macrocode}
   \begingroup
@@ -3026,7 +3026,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \{ \}}
+% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \texttt{\{ \}}}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
@@ -3050,7 +3050,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternalpath}[1]{list of paths in \{ \}}
+% \begin{macro}{\svnexternalpath}[1]{list of paths in \texttt{\{ \}}}
 % Writes its argument as argument of \cs{@svnexternalpath} into the |.svn| file.
 %    \begin{macrocode}
 \def\svnexternalpath#1{%
@@ -3479,7 +3479,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \def\svnfilerow{}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\endsvnsubgrouprow}
+% \begin{macro}{\endsvnfilerow}
 %    \begin{macrocode}
 \def\endsvnfilerow{}
 %    \end{macrocode}
