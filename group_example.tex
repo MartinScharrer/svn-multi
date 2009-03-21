@@ -22,6 +22,7 @@
 
 \let\ifvtex=\relax
 \usepackage{hyperref}
+\usepackage{ifthen}
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily}
 \makeatletter
@@ -280,6 +281,7 @@ This is an automatic generated table using the \textbf{\sffamily table} option.
 \clearpage
 \pdfbookmark{Table of Revisions (1)}{tora}%
 \tableofrevisions
+\clearpage
 
 % Redefined to German
 % Uses booktabs for nicer table
@@ -297,25 +299,41 @@ Can be redefined to another format and language: Verstehen Sie Deutsch?
 }
 \renewcommand*\svntablehead{%
     Name & Rev & Autor & Datum \\
-\midrule
+\midrule[\heavyrulewidth]
 }
 \renewcommand{\svnrevisionsname}{Revisionen}
 \renewcommand{\svntabgroup}[1]{Gruppe `#1'}
 
+% Some highlight examples:
 % Print highest revision bold:
-\renewcommand{\svntabrev}[1]{\ifnum#1=\svnrev\textbf{#1}\else#1\fi}
-% Saver: \ifthenelse from the 'ifthen' package!
+\renewcommand{\svntabrev}[1]{\ifthenelse{#1=\svnrev}{\textbf{#1}}{#1}}
+% Highlight all dates after the 14th March 2008 12:00:00:
+\renewcommand{\svntabdate}[8]{%
+  \ifthenelse{#1#2#3#4>2008031412}{\color{red}\bfseries}{}%
+  \small #3.#2.#1\ #4:#5:#6%
+}
+% Mark all files last changed by the last author:
+\renewcommand{\svntabauthor}[1]{%
+  \ifthenelse{\equal{#1}{\svnauthor}}{\color{green}}{}%
+  \svnFullAuthor{#1}%
+}
 
-\renewcommand{\svntabfile}[2]{\hspace*{#1\medskipamount}Datei `{\scriptsize\svnnolinkurl{#2}}'}
+% Using \scriptsize and \svnnolinkurl for files and subgroups:
+\renewcommand{\svntabfile}[2]{%
+  \addtolength{\leftskip}{#1\medskipamount}%
+  Datei `{\scriptsize\svnnolinkurl{#2}}'
+}
 \renewcommand{\svntabsubgroup}[2]{%
-  \hspace*{#1\medskipamount}%
-  `{\scriptsize\svnnolinkurl{#2}}'%
+  \addtolength{\leftskip}{#1\medskipamount}%
+  Untergruppe `{\scriptsize\svnnolinkurl{#2}}'%
 }
 \renewcommand{\svntabglobal}[1]{Gesamtes Dokument}
-\renewcommand{\svntabdate}[8]{\small #3.#2.#1\ #4:#5:#6}
+
+% Add rule before group rows:
 \renewcommand{\svngrouprow}{\midrule}
+% Add rule and description after global row:
 \renewcommand{\endsvnglobalrow}{\midrule Ohne Gruppe:\\}
-\clearpage
+
 \pdfbookmark{Table of Revisions (2)}{torb}%
 \tableofrevisions
 \clearpage
