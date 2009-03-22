@@ -360,79 +360,81 @@
 % \fi
 % \maketitle
 %
-% \vspace{3\baselineskip}
-% \section{Package naming}
-% The authors first choice for this package was |svnkw| but the CTAN
-% maintainer suggested a more descriptive name and put the package in the
-% \svnmulti\footnote{CTAN:
-% \url{http://www.ctan.org/tex-archive/macros/latex/contrib/svn-multi/}}
-% directory. Therefore the style file got renamed to \svnmulti, but a
-% |svnkw| dummy style file which loads the new package is still provided
-% for backward compatibility.
-%
 % \section{Introduction}
-% This package lets you typeset keywords of the version control system
-% Subversion\footnote {Subversion homepage: \url{http://subversion.tigris.org/}}
-% (svn), which is the successor of the popular CVS, inside your \LaTeX{} files
-% anywhere you like.  Unlike the package \pkg{svn} the usage of
-% multiple files for one \LaTeX{} document is well supported. The package
-% acquires the keywords of the last changed file and provides them to the user
-% through macros. The package has to read all keywords of all files first and
-% writes the most recent values in an auxiliary file with a `|.svn|' extension.
-% This file is read back at the next \LaTeX{} run which introduces a delay like
-% by the table of contents. The standard \LaTeX{} switch |\nofiles| can be used
-% to suppress the file generation. Macros to typeset the keywords of the current
-% |\include|-d or |\input|-ed \LaTeX{} file are also provided.
+% This package allows to typeset version control (VC) information provided by 
+% Subversion\footnote{Subversion homepage: \url{http://subversion.tigris.org/}} 
+% keywords (\eg |$||Id: ... $|) in \LaTeX\ documents which can contain of 
+% multiple |.tex| files included using |\include| or |\input|.
+% Subversion is a modern version control system designed to replace its 
+% predecessor CVS and uses integers as revision numbers.
 %
-% \newpage
+% This package reads the keywords of all files and provides the VC information 
+% of of the most recent changed file of the document to the user through a set 
+% of macros. This information is written to an auxiliary |.svn| file during the 
+% first \LaTeX\ run and read back at the next which introduces the same delay 
+% known from the table of contents. The standard \LaTeX{} switch |\nofiles| can 
+% be used to suppress the file generation.
+%
+% In addition to this basic functionality several more features are provided:
+% \begin{itemize}
+%   \item Macros to typeset the VC information of the current source file.
+%   \item Access of all parts of the VC date.
+%   \item Formatting of author names or revision numbers.
+%   \item Definition of groups and subgroups.
+%   \item Including of the VC information of external files.
+%   \item Table of Revisions.
+% \end{itemize}
+%
 % \subsection{Scope of Keywords}
 % This package provides the Subversion keyword data in several different scopes:
 % document-global, file-local and, new with v2.0, by group.
 %
 % \subsubsection*{Document global}
-% The normal macros, \eg \cs{svnrev}, return the latest version control
-% information (keyword data) for the whole multi-file document, \ie the
-% information of the latest changed file of the document. To collect, sort and
+% The document global macros, like \cs{svnrev}, return the latest version 
+% control information (keyword data) for the whole multi-file document, \ie the 
+% information of the latest changed file of the document. To collect, sort and 
 % provide this information is the main functionality of this package.
 %
 % \subsubsection*{Local to current file}
-% There are also other macros, \eg \cs{svnfilerev}, which return the version
-% control information of the current file, \ie the file they are used in. It is
-% assumed here that every file using this macros calls first either a \cs{svnid}
-% or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} for more
-% details about the id macros.  Please note that the file-local macros
-% technically actually return the \emph{last registered} information from the
-% last \cs{svnid} or \cs{svnidlong} even when these were in a previous file. 
-% This will cause wrong results if they are used in a file before or without any
-% id macros.
+% There are also file-local macros, \eg \cs{svnfilerev}, which return the 
+% version control information of the current file, \ie the file they are used 
+% in. It is assumed here that every file using this macros calls first either a 
+% \cs{svnid} or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} 
+% for more details about the id macros.  Please note that the file-local macros 
+% technically actually return the \emph{last registered} information from the 
+% last \cs{svnid} or \cs{svnidlong}. As long the \op{filehooks} option (new in 
+% v2.0) is not enabled (explicit or implicit) this keyword macros will leak from 
+% one file over to the next.  This will cause wrong results if they are used in 
+% a file before or without any id macros. With this option the macros will be 
+% reset at the beginning of every source file of the document.
 %
 % \subsubsection*{Groups}
-% Version 2.0 introduces the concept of groups. Several files\footnote{actually
-% several id macros} of a multi-file \LaTeX\ document can be grouped together
-% and the latest version control information of all files of a group is
-% provided by macros. This works in the same way as the global macros mentioned
-% above but only with the files in the group. It can also be seen from the other
-% side: the macros are local like the file-local macros mentioned above but for
-% all files of the group, not only the current one.
+% Version 2.0 introduces the concept of groups. Several files of a multi-file 
+% \LaTeX\ document can be grouped together and the latest version control 
+% information of all files of a group is provided by macros. This works in the 
+% same way as the global macros mentioned above but only with the files in the 
+% group. It can also be seen from the other side: the macros are local like the 
+% file-local macros mentioned above but for all files of the group, not only the 
+% current one.
 %
-% This groups could also be called \textit{file groups}, \textit{keyword groups}
-% or, like in programming languages, \textit{namespaces}. In this manual they
-% will be reference as simple \textit{groups} most the time. In places where
-% they could be confused with \TeX\ groups (|{ }|, |\begingroup| |\endgroup|),
-% \eg ``in the current group'' or ``group local'', they will be called
-% \textit{keyword groups}.
+% These groups could also be called \textit{file groups}, \textit{keyword 
+% groups} or, like in programming languages, \textit{namespaces}. In this manual 
+% they will be reference as simple \textit{groups} most the time. In places 
+% where they could be confused with \TeX\ groups (|{ }|, |\begingroup| 
+% |\endgroup|), \eg ``in the current group'' or ``group local'', they will be 
+% called \textit{keyword groups}.
 %
-% There is no limitation (besides internal \LaTeX\ resource limits) for the
-% number of different groups. The files of one group do not have to be included
-% in a row but can be included everywhere in the document. The version control
-% information of the current group can be typeset with macros like
-% \cs{svncgrev} (|cg| for \emph{current group}).  Also, a general but less
-% robust macro \cs{svng}\marg{group name}\marg{key} is provided to access others
-% groups by name everywhere in the document. To avoid some macro robustness
-% problems the current group can be changed locally for the output macros using
+% There is no limitation (besides internal \LaTeX\ resource limits) for the 
+% number of different groups. The files of one group do not have to be included 
+% in a row but can be included everywhere in the document. The version control 
+% information of the current group can be typeset with macros like \cs{svncgrev} 
+% (|cg| for \emph{current group}).  Also, a general but less robust macro 
+% \cs{svng}\marg{group name}\marg{key} is provided to access others groups by 
+% name everywhere in the document. To avoid some macro robustness problems the 
+% current group can be changed locally for the output macros using 
 % \cs{svnsetcg}\marg{group name}.
 %
-% See section~\ref{sec:group} for further details and usage instructions on
+% See section~\ref{sec:group} for further details and usage instructions on 
 % group macros.
 %
 % \section{Usage}
@@ -481,8 +483,7 @@
 % \emph{current group}.\par
 %
 % \DescribeOption{groups}
-% Controls the keyword groups feature described in
-% section~\ref{sec:group}.
+% Controls the keyword groups feature described in section~\ref{sec:group}.
 %
 % \DescribeOption{subgroups}
 % Controls the automatic declaration of all input files as
@@ -538,11 +539,15 @@
 % activated with \op{table}. Enable \op{subgroups} to include a list of all
 % files per group. See the section~\ref{sec:table} for more information.
 %
-% \DescribeOption{<<inputfilehooks>>}
-% This is not really an option but an internal switch which loads the \pkg{fink}
-% package and installs at-begin-input-file and at-end-input-file hooks which are
-% needed for many of the options above. These options enable this switch
-% automatically.
+% \DescribeOption{filehooks}
+% This option loads the \pkg{fink} 
+% package and installs at-begin-input-file and at-end-input-file hooks which are 
+% needed for many of the options above. While this option is enabled 
+% automatically if needed it can be also enabled manually to ensure that the 
+% file-local macros are reset to empty values at the begin of each input file.  
+% This prevents the keyword from leaking over from one file to the next.
+% After every subfile the file-local keyword macros are then also restored to 
+% the value of the parent file.
 %
 % \subsection{Including of the Subversion keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
@@ -826,14 +831,13 @@
 % This macro declares all following files (actually only following \cs{svnid},
 % \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svngroup} as part
 % of the given keyword group. It can be placed inside the main file before some
-% |\include|/|\input| macros or inside sub-files before the id macros, \ie
-% direct at the start of the file. Please note that the group will then swap
-% over to the following file. However, the group can be closed manually using an
-% `|*|' as argument (|\svngroup{*}|), \eg at the end of a file.\par The changes
-% done by this macro are \TeX\ global, \ie there can't be caught using \TeX\
-% groups (|{ }|).
+% |\include|/|\input| macros or inside subfiles before the id macros, \ie
+% direct at the start of the file.
+% The changes done by this macro are \TeX\ global, \ie there can't be caught 
+% using \TeX\ groups (|{ }|). However, in order to prevent subfiles to change 
+% the group of the rest of the parent file the group will be restored to the 
+% previous one at the end of each input file. 
 %
-% \smallskip
 % \DescribeMacro{thesvngroup}{}
 % Returns the name of the current keyword group.
 %
@@ -1013,10 +1017,10 @@
 %
 % \noindent
 % \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{}}\\
-% \DescribeMacro*{svnglobalrow}{} & \DescribeMacro*{endsvnglobalrow}{}\\
-% \DescribeMacro*{svngrouprow}{}  & \DescribeMacro*{endsvngrouprow}{} \\
-% \DescribeMacro*{svnsubgrouprow}{} & \DescribeMacro*{endsvnsubgrouprow}{} \\
-% \DescribeMacro*{svnfilerow}{} & \DescribeMacro*{endsvnfilerow}{} \\
+%   \DescribeMacro*{svnglobalrow}{}   & \DescribeMacro*{endsvnglobalrow}{}   \\
+%   \DescribeMacro*{svngrouprow}{}    & \DescribeMacro*{endsvngrouprow}{}    \\
+%   \DescribeMacro*{svnsubgrouprow}{} & \DescribeMacro*{endsvnsubgrouprow}{} \\
+%   \DescribeMacro*{svnfilerow}{}     & \DescribeMacro*{endsvnfilerow}{}     \\
 % \end{tabular}
 % \\*[\medskipamount]
 % This macros are placed at the begin and end of every corresponding row and are
@@ -1032,7 +1036,7 @@
 %
 % \DescribeMacro{svntabsubgroup}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{subgroup name}}
-% Formats a subgroup name. The name is derived from a file name and therfore 
+% Formats a subgroup name. The name is derived from a file name and therefore 
 % could contain characters like `|_|' which should be taken into account. The
 % macro \cs{svnnolinkurl} can be used for this. Because subgroups can be nested
 % a number is provided to tell the nesting depth. This can be used to produce
