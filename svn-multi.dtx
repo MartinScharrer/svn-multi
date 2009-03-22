@@ -351,7 +351,7 @@
 % \ifpdf
 % \hypersetup{
 %   pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle={The svn-multi package, \fileversion, r\filerev from \filedate},
+%   pdftitle={The svn-multi package, \fileversion, r\filerev\ from \filedate},
 %   pdfsubject={Documentation of LaTeX package svn-multi which allows the
 %   typesetting of Subversion keywords in multi-file LaTeX documents},
 %   pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
@@ -609,7 +609,7 @@
 % \subsection{Typesetting the keyword values}\label{sec:kwaccess}
 % The following macros can be used to typeset the keyword values anywhere in the
 % document. Please note that not all \LaTeX{} fonts have all special
-% characters, \eg `\_' is not provided in the standard roman font. To proper
+% characters, \eg `|_|' is not provided in the standard roman font. To proper
 % typeset file names and URLs containing these letters you can use either
 % teletype font (|\texttt|) or use |{\urlstyle{rm}\svnnolinkurl{...}}| which
 % requires the \pkg{hyperref} package.
@@ -812,7 +812,7 @@
 % Since v1.3 all keywords are read and typeset verbatim so this macro isn't this
 % important anymore. However together with \pkg{hyperref}'s |\urlstyle| macro it
 % can be used to have keyword values with special characters in roman font,
-% which normally doesn't hold letters like `\_'.
+% which normally doesn't hold letters like `|_|'.
 %
 % Please note that you can't use \pkg{hyperref}'s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
@@ -1033,7 +1033,7 @@
 % \DescribeMacro{svntabsubgroup}{\marg{nesting level
 % (1,2,3,\ldots)}\marg{subgroup name}}
 % Formats a subgroup name. The name is derived from a file name and therfore 
-% could contain characters like `\_' which should be taken into account. The
+% could contain characters like `|_|' which should be taken into account. The
 % macro \cs{svnnolinkurl} can be used for this. Because subgroups can be nested
 % a number is provided to tell the nesting depth. This can be used to produce
 % different indents for different levels: \eg: 
