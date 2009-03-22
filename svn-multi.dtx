@@ -608,6 +608,88 @@
 % Please note that the argument is read verbatim and that there should be no
 % space between the macro and the argument's left brace.
 %
+% \subsection{Groups}\label{sec:group}
+% Starting with v2.0 files can be grouped together and the keyword values of the
+% latest revision of a group can be accessed. Use the \op{groups} option to
+% activate these macros.
+%
+% \DescribeMacro{svngroup}{\marg{group name}}
+% This macro declares all following files (actually only following \cs{svnid},
+% \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svngroup} as part
+% of the given keyword group. It can be placed inside the main file before some
+% |\include|/|\input| macros or inside subfiles before the id macros, \ie
+% direct at the start of the file.
+% The changes done by this macro are \TeX\ global, \ie there can't be caught 
+% using \TeX\ groups (|{ }|). However, in order to prevent subfiles to change 
+% the group of the rest of the parent file the group will be restored to the 
+% previous one at the end of each input file. 
+%
+% \DescribeMacro{thesvngroup}{}
+% Returns the name of the current keyword group.
+%
+% \DescribeMacro{svnsetcg}{\marg{group name}}
+% Normally the |\svncgXXX| macros mentioned above use the last keyword
+% group defined by \cs{svngroup}, but this can be changed using the
+% \cs{svnsetcg} macro.\par The idea is that the currently selected group can be
+% changed locally to the current \TeX\ group for the keyword output macros
+% |\svncgXXX| only while the group for the keyword input macros like
+% \cs{svnid} is unaffected.\par
+% To reset the used group to the last one defined by \cs{svngroup} simply
+% use \cs{svnsetcg} with an `|*|' as argument.\par
+% \paragraph*{Example 1:} |{\svnsetcg{abc}\svnFullAuthor{\svncgauthor}}|\\ would
+% output the full author's name of group \textit{abc}.\par
+% \paragraph*{Example 2:} To typeset the three keyword values of group
+% \textit{abc} somewhere outside this group use:\\
+% |{\svnsetcg{abc}Rev: \svncgrev\\||Date: \svncgdate\\|\\{}
+% |Author: \svncgauthor\\}|
+% \paragraph*{Example 3:} To typeset the date of group \textit{abc} outside of
+% this group in the format of |\today| use: |{\svnsetcg{abc}\svncgtoday}|
+% \smallskip
+%
+% \DescribeMacro{thesvncg}{}
+% Returns the name of the current group selected by \cs{svnsetcg}.
+%
+% \subsubsection{Files as Subgroups}\label{sec:subgroups}
+% The group feature could be used to access the version control information of 
+% single files anywhere in the document when these are defined as own groups for 
+% themselves. Because a file can only be in one group this would not be 
+% compatible with the normal usage of the group feature. Therefore a special 
+% feature was introduced to automatically or manually define a file as subgroup 
+% for itself which does not influence its membership in a normal group.
+% \paragraph{Declaration:}
+% This feature is enabled by the \op{subgroups} option. All files of the
+% document are then automatically declared as extra groups. This can be disabled
+% for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
+% using \cs{svnsubgroupstrue} macros. The current file can be manually
+% declared as extra group with the \cs{svnfilesubgroup} macro.\par
+% \paragraph{Exclude/Consider files extensions:}
+% The above mentioned automatically group declaration uses an hook which is
+% triggered every time another file is read by the document. This unfortunately
+% includes other packages, some auxiliary files and font, config and other files
+% read in by this packages. An internal filter is in place to ignore this files
+% by their file extension. This filter can by modified by the two following
+% macros.
+% \DescribeMacro{svnignoreextensions}{\marg{comma separated list of extension 
+% without leading dot}}
+% Tells \svnmulti to ignore the following file extension and never declare files 
+% with them as extra groups.
+% \DescribeMacro{svnconsiderextensions}{\marg{comma separated list of extension 
+% without leading dot}}
+% Tells \svnmulti to (re-)consider the following file extension and declare 
+% files with them as extra groups if read in.
+%
+% \paragraph{Typesetting:}
+% The keyword information of the subgroups (subfile including any included 
+% external files or subsubfiles) can be typeset using the normal group typeset 
+% macros mentioned below where the group name is the file path without 
+% extension. The keyword information of the |.tex| file alone can be typeset 
+% with the full file path including extension.
+% \paragraph{Example:} |\svnsetcg{subdir/some_file.tex}\svncgrev| would typeset 
+% the revision of the file |some_file.tex| while
+% |\svnsetcg{subdir/some_file}\svncgrev| would typeset the latest revision of 
+% the same file or any subfile or declared external file included by it.
+%
+%
 % \subsection{Typesetting the Keyword Values}\label{sec:kwaccess}
 % The following macros can be used to typeset the keyword values anywhere in the
 % document. Please note that not all \LaTeX{} fonts have all special
@@ -640,6 +722,23 @@
 % option is enabled which enabled the \pkg{fink} package. Please see
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
+%
+% \DescribeMacro{svncgrev}{}
+% \DescribeMacro*{svncgauthor}{}
+% \DescribeMacro*{svncgdate}{}
+% These macros return keyword values of the currently selected keyword group.
+% In order to hold them robust, which is important to use them in macros like
+% \cs{svnFullAuthor}, they do not provide any arguments to select other groups
+% than the current one. To access keyword values of other groups use the general
+% macro \cs{svng} or change the locally selected keyword group using the macro 
+% \cs{svnsetcg}.
+%
+% \DescribeMacro{svng}{\marg{group name}\marg{key}}
+% This macro is a general form of the |\svncgXXX| macro mentioned above.
+% The first argument is the requested keyword group, the second one the
+% requested keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please
+% note that this macro can not be used inside macros like \cs{svnFullAuthor}.
+%
 %
 % \DescribeMacro{svnmainurl}{}
 % \DescribeMacro*{svnmainfilename}{}
@@ -690,18 +789,35 @@
 % macros. You can \eg say |\svnkwdef{Rev}{123}| and then typeset it with
 % |\svnkw{Revision}| or |\svnkw{LastChangedRev}| if you like.
 %
-% \subsubsection{Accessing Date Values}\label{sec:date}
-% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{}}\\
-% \DescribeMacro*{svnfileyear}{}          &\DescribeMacro*{svnyear}{}\\
-% \DescribeMacro*{svnfilemonth}{}         &\DescribeMacro*{svnmonth}{}\\
-% \DescribeMacro*{svnfileday}{}           &\DescribeMacro*{svnday}{}\\
-% \DescribeMacro*{svnfilehour}{}          &\DescribeMacro*{svnhour}{}\\
-% \DescribeMacro*{svnfileminute}{}        &\DescribeMacro*{svnminute}{}\\
-% \DescribeMacro*{svnfilesecond}{}        &\DescribeMacro*{svnsecond}{}\\
-% \DescribeMacro*{svnfiletimezone}{}      &\DescribeMacro*{svntimezone}{}\\
-% \DescribeMacro*{svnfiletimezonehour}{}  &\DescribeMacro*{svntimezonehour}{}\\
-% \DescribeMacro*{svnfiletimezoneminute}{}&\DescribeMacro*{svntimezoneminute}{}
-% \\
+% \subsection{Accessing Date Values}\label{sec:date}
+% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{\hspace{-2\macrosep}}l@{}}\\
+% \DescribeMacro*{svnyear}{}&
+% \DescribeMacro*{svnfileyear}{}&
+% \DescribeMacro*{svncgyear}{}\\
+% \DescribeMacro*{svnmonth}{}&
+% \DescribeMacro*{svnfilemonth}{}&
+% \DescribeMacro*{svncgmonth}{}\\
+% \DescribeMacro*{svnday}{}&
+% \DescribeMacro*{svnfileday}{}&
+% \DescribeMacro*{svncgday}{}\\
+% \DescribeMacro*{svnhour}{}&
+% \DescribeMacro*{svnfilehour}{}&
+% \DescribeMacro*{svncghour}{}\\
+% \DescribeMacro*{svnminute}{}&
+% \DescribeMacro*{svnfileminute}{}&
+% \DescribeMacro*{svncgminute}{}\\
+% \DescribeMacro*{svnsecond}{}&
+% \DescribeMacro*{svnfilesecond}{}&
+% \DescribeMacro*{svncgsecond}{}\\
+% \DescribeMacro*{svntimezone}{}&
+% \DescribeMacro*{svnfiletimezone}{}&
+% \DescribeMacro*{svncgtimezone}{}\\
+% \DescribeMacro*{svntimezonehour}{}&
+% \DescribeMacro*{svnfiletimezonehour}{}&
+% \DescribeMacro*{svncgtimezonehour}{}\\
+% \DescribeMacro*{svntimezoneminute}{}&
+% \DescribeMacro*{svnfiletimezoneminute}{}&
+% \DescribeMacro*{svncgtimezoneminute}{}\\
 % \end{tabular}
 % \\*[\medskipamount]
 % Whenever the date information is read, \ie by
@@ -818,112 +934,6 @@
 % Please note that you can't use \pkg{hyperref}'s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
 %
-% \subsection{Groups}\label{sec:group}
-% Starting with v2.0 files can be grouped together and the keyword values of the
-% latest revision of a group can be accessed. Use the \op{groups} option to
-% activate these macros.
-%
-% \DescribeMacro{svngroup}{\marg{group name}}
-% This macro declares all following files (actually only following \cs{svnid},
-% \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svngroup} as part
-% of the given keyword group. It can be placed inside the main file before some
-% |\include|/|\input| macros or inside subfiles before the id macros, \ie
-% direct at the start of the file.
-% The changes done by this macro are \TeX\ global, \ie there can't be caught 
-% using \TeX\ groups (|{ }|). However, in order to prevent subfiles to change 
-% the group of the rest of the parent file the group will be restored to the 
-% previous one at the end of each input file. 
-%
-% \DescribeMacro{thesvngroup}{}
-% Returns the name of the current keyword group.
-%
-% \medskip\noindent
-% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{}}\\
-% \DescribeMacro*{svncgrev}{}    & \DescribeMacro*{svncghour}{}           \\
-% \DescribeMacro*{svncgauthor}{} & \DescribeMacro*{svncgminute}{}         \\
-% \DescribeMacro*{svncgdate}{}   & \DescribeMacro*{svncgsecond}{}         \\
-% \DescribeMacro*{svncgyear}{}   & \DescribeMacro*{svncgtimezone}{}       \\
-% \DescribeMacro*{svncgmonth}{}  & \DescribeMacro*{svncgtimezonehour}{}   \\
-% \DescribeMacro*{svncgday}{}    & \DescribeMacro*{svncgtimezoneminute}{} \\
-% \end{tabular}
-% \\*[\medskipamount]
-% These macros return keyword values of the currently selected keyword group,
-% like the \cs{svnrev}, \cs{svnfilerev}, etc., macros described in
-% sections~\ref{sec:kwaccess} do for the whole document and the current file,
-% respectively.
-% In order to hold them robust, which is important to use them in macros like
-% \cs{svnFullAuthor} they do not provide any arguments to select other groups
-% than the current one. To access keyword values of other groups use the general
-% macro \cs{svng}\marg{group name}\marg{key} or change the locally selected
-% keyword group using the \cs{svnsetcg}.\par
-%
-% \smallskip\noindent
-% \DescribeMacro{svnsetcg}{\marg{group name}}
-% Normally the |\svncgXXX| macros mentioned above use the last keyword
-% group defined by \cs{svngroup}, but this can be changed using the
-% \cs{svnsetcg} macro.\par The idea is that the currently selected group can be
-% changed locally to the current \TeX\ group for the keyword output macros
-% |\svncgXXX| only while the group for the keyword input macros like
-% \cs{svnid} is unaffected.\par
-% To reset the used group to the last one defined by \cs{svngroup} simply
-% use \cs{svnsetcg} with an `|*|' as argument.\par
-% \paragraph*{Example 1:} |{\svnsetcg{abc}\svnFullAuthor{\svncgauthor}}|\\ would
-% output the full author's name of group \textit{abc}.\par
-% \paragraph*{Example 2:} To typeset the three keyword values of group
-% \textit{abc} somewhere outside this group use:\\
-% |{\svnsetcg{abc}Rev: \svncgrev\\||Date: \svncgdate\\|\\{}
-% |Author: \svncgauthor\\}|
-% \paragraph*{Example 3:} To typeset the date of group \textit{abc} outside of
-% this group in the format of |\today| use: |{\svnsetcg{abc}\svncgtoday}|
-% \smallskip
-%
-% \DescribeMacro{thesvncg}{}
-% Returns the name of the current group selected by \cs{svnsetcg}.
-%
-% \DescribeMacro{svng}{\marg{group name}\marg{key}}
-% This macro is a general form of the |\svncgXXX| macro mentioned above.
-% The first argument is the requested keyword group, the second one the
-% requested keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please
-% note that this macro can not be used inside macros like \cs{svnFullAuthor}.
-%
-% \subsubsection{Files as Subgroups}\label{sec:subgroups}
-% The group feature could be used to access the version control information of
-% single files anywhere in the document when these are defined as own groups for
-% themselves. Because a file can only be in one group this would not be compatible
-% with the normal usage of the group feature. Therefore a special feature was
-% introduced to automatically or manually define a file as \emph{extra} group
-% for itself which doesn't influence its membership in a real group. This means
-% that a set of (internal) group macros is produced for the file like for a
-% normal group but neither is the current group changed nor is it included in
-% the (internal) list of groups. The file will still be part of the current
-% group.\par
-% \paragraph{Declaration:}
-% This feature is enabled by the \op{subgroups} option. All files of the
-% document are then automatically declared as extra groups. This can be disabled
-% for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
-% using \cs{svnsubgroupstrue} macros. The current file can be manually
-% declared as extra group with the \cs{svnfilesubgroup} macro.\par
-% \paragraph{Exclude/Consider files extensions:}
-% The above mentioned automatically group declaration uses an hook which is
-% triggered every time another file is read by the document. This unfortunately
-% includes other packages, some auxiliary files and font, config and other files
-% read in by this packages. An internal filter is in place to ignore this files
-% by their file extension. This filter can by modified by the two following
-% macros.
-% \DescribeMacro{svnignoreextensions}{\marg{comma separated list of extension without
-% leading dot}}
-% Tells \svnmulti to ignore the following file extension and never declare
-% files with them as extra groups.
-% \DescribeMacro{svnconsiderextensions}{\marg{comma separated list of extension without
-% leading dot}}
-% Tells \svnmulti to (re-)consider the following file extension and declare
-% files with them as extra groups if read in.
-%
-% \paragraph{Typesetting:}
-% The keyword information of the files can be typeset with the normal group
-% typeset macro where the filename (including extension) is the group name.\\
-% \emph{Example:} |\svnsetcg{some_file.tex}\svncgauthor| would typeset the
-% author of the file |some_file.tex|
 %
 % \subsection{Table of Revisions}\label{sec:table}
 % Version 2.0 introduces this new feature which allows a overview table to be
