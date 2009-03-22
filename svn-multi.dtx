@@ -389,13 +389,13 @@
 % This package provides the Subversion keyword data in several different scopes:
 % document-global, file-local and, new with v2.0, by group.
 %
-% \subsubsection*{Document global}
+% \subsubsection*{Document Global}
 % The document global macros, like \cs{svnrev}, return the latest version 
 % control information (keyword data) for the whole multi-file document, \ie the 
 % information of the latest changed file of the document. To collect, sort and 
 % provide this information is the main functionality of this package.
 %
-% \subsubsection*{Local to current file}
+% \subsubsection*{Local to Current File}
 % There are also file-local macros, \eg \cs{svnfilerev}, which return the 
 % version control information of the current file, \ie the file they are used 
 % in. It is assumed here that every file using this macros calls first either a 
@@ -442,11 +442,11 @@
 % first need to be read in by dedicated macros and can then be typeset using
 % different macros.
 %
-% \subsection{Package Options} Since v2.0 this package provides options to
-% enable only a needed features, \eg to avoid problems with other packages or
-% save \TeX\ memory. For backwards compatibility to pre-2.0 package versions all
-% old features are enabled by default and all new features are disabled to
-% save a little of \TeX\ memory.
+% \subsection{Package Options}
+% Since v2.0 this package provides options to enable only a needed features, \eg 
+% to avoid problems with other packages or save \TeX\ memory. For backwards 
+% compatibility to pre-2.0 package versions all old features are enabled by 
+% default and all new features are disabled to save a little of \TeX\ memory.
 %
 % All options except the first two are boolean key=value options (so far) and
 % await either `|true|' or `|false|' as value. A missing value means `|true|'.
@@ -486,13 +486,12 @@
 % Controls the keyword groups feature described in section~\ref{sec:group}.
 %
 % \DescribeOption{subgroups}
-% Controls the automatic declaration of all input files as
-% independent subgroups so that there keyword information can be typeset inside
-% other files. The group name is the file path (`|subdir/file.tex|'). The files
-% are still added to the current group defined by \cs{svngroup}.\par This can be
-% disabled and re-enabled using \cs{svnsubgroupsfalse} and
-% \cs{svnsubgroupstrue} inside the document. See
-% section~\ref{sec:subgroups} for additional information.
+% Controls the automatic declaration of all input files as subgroups so that 
+% there keyword information can be typeset inside other files. The group name is 
+% the file path without the file extension (`|subdir/filebase|').
+% It is possible to disable and re-enable this using \cs{svnsubgroupsfalse} and 
+% \cs{svnsubgroupstrue} during the document preamble or body to exclude certain 
+% files.  See section~\ref{sec:subgroups} for additional information.
 %
 % \DescribeOption{graphics}
 % This option allows to automatically declare all images included using the
@@ -549,7 +548,7 @@
 % After every subfile the file-local keyword macros are then also restored to 
 % the value of the parent file.
 %
-% \subsection{Including of the Subversion keywords}\label{sec:usage:id}
+% \subsection{Including of the Subversion Keywords}\label{sec:usage:id}
 % To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
 % These macros should be written very early in each file, \ie in the preamble of
 % the main document soon after |\documentclass| and |\usepackage{svn-multi}| and
@@ -611,7 +610,7 @@
 % Please note that the argument is read verbatim and that there should be no
 % space between the macro and the argument's left brace.
 %
-% \subsection{Typesetting the keyword values}\label{sec:kwaccess}
+% \subsection{Typesetting the Keyword Values}\label{sec:kwaccess}
 % The following macros can be used to typeset the keyword values anywhere in the
 % document. Please note that not all \LaTeX{} fonts have all special
 % characters, \eg `|_|' is not provided in the standard roman font. To proper
@@ -712,7 +711,7 @@
 % \cs{svnid}, the following macros are set to the appropriate date parts for the
 % current file (the |\svnfile...| versions) and for the whole document.
 %
-% Please note that the hour and timezone are dependend on the keyword which
+% Please note that the hour and timezone are dependent on the keyword which
 % defines the date information. The hour will be in UTC aka Zulu-time, \ie
 % timezone +0000, when the date comes from the |Id| keyword.
 % Otherwise the hour and timezone will be in local time.
@@ -748,7 +747,6 @@
 % \DescribeMacro*{svncgtime}{}
 % This macros return the time part of the date only and simply return the
 % corresponding hour, minute and second macros with a colon as separator.
-% \vspace{2\baselineskip}
 %
 % \DescribeMacro{svnpdfdate}{}
 % Returns the last changed date of the whole document in a format needed for
@@ -764,7 +762,7 @@
 % respectively, using the format of |\today| which depends on the used language.
 % To adjust the language of your document use the \pkg{babel} package.
 %
-% \subsection{Using full author names}
+% \subsection{Using Full Author Names}
 % If you like to have the full author\footnote{This means subversion authors,
 % \eg the persons who commit changes into the svn repository.} names, not only
 % the usernames, in your document you can use the following macros. First you
@@ -782,11 +780,11 @@
 % first with \cs{svnRegisterAuthor}, otherwise it returns the given username.
 % The star version returns the username in parentheses after the full name.
 % This is normally used in one of the following forms:\\
-% \hspace*{3em}\cs{svnFullAuthor}\{\cs{svnauthor}\}\\
-% \hspace*{3em}\cs{svnFullAuthor}\{\cs{svnfileauthor}\}\\
-% \hspace*{3em}\cs{svnFullAuthor}\{\cs{svncgauthor}\}
+% \hspace*{3em}\cs{svnFullAuthor}|{|\cs{svnauthor}|}|\\
+% \hspace*{3em}\cs{svnFullAuthor}|{|\cs{svnfileauthor}|}|\\
+% \hspace*{3em}\cs{svnFullAuthor}|{|\cs{svncgauthor}|}|
 %
-% \subsection{Using full revision names}
+% \subsection{Using Full Revision Names}
 % Like the author's also revision names/tags can be registered and used later.
 % These macros were implemented on user request and have the drawback that you
 % have to guess the next revision number of your document in order to get
@@ -805,7 +803,7 @@
 % number}''.  The star version returns also the revision number leaded by `r' in
 % parentheses after the tag name, \eg |Name (r123)|.
 %
-% \subsection{Verbatim URLs with and without hyperlinks}
+% \subsection{Verbatim URLs with and without Hyperlinks}
 % \vspace{-\baselineskip}
 % \DescribeMacro{svnnolinkurl}{\marg{macro with returns special text}}
 % This macro allows you to write |\svnnolinkurl{\svnkw{HeadURL}}| and get the
@@ -1206,7 +1204,7 @@
 % provide some workaround. Please feel free to write \svnmulti author if you
 % detect any side effects or other issues causes by this package.
 %
-% \subsection{Packet \texttt{listings} uses \textbackslash input}
+% \subsection{Packet \texttt{listings} uses \cs{input}}
 % If a file \meta{basename}.\meta{extension} is typeset verbatim using
 % |\lstinputlisting|, which uses |\input| to read the file, an existing
 % \meta{basename}|.svx| file is also included as part of the listing. This can
