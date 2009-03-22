@@ -341,22 +341,23 @@
 % \DoNotIndex{\tableofcontents,\tableofrevisions,\texttt,\today}
 % \DoNotIndex{\twocolumn,\@undefined,\url,\year}
 %
-% \title{The \textsf{svn-multi} package
-%   \\formerly known as \textsf{svnkw}}
+% \title{The \textsf{svn-multi} package \\ formerly known as \textsf{svnkw}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://www.scharrer-online.de/latex/svn-multi}\\
 % CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
 % \date{Version \expandafter\@gobble\fileversion\\[0.5ex]\today}
 %
 % \ifpdf
-% \hypersetup{
-%   pdfauthor={Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle={The svn-multi package, \fileversion, r\filerev\ from \filedate},
-%   pdfsubject={Documentation of LaTeX package svn-multi which allows the
-%   typesetting of Subversion keywords in multi-file LaTeX documents},
-%   pdfkeywords={svn-multi, svnkw, LaTeX, Subversion, keywords, Version
-%   Control, Id, Table Of Revisions}
-% }
+% \hypersetup{%
+%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
+%   pdftitle    = {The svn-multi package, \fileversion, r\filerev\ from 
+%                  \filedate},
+%   pdfsubject  = {Documentation of LaTeX package svn-multi which allows the 
+%                  typesetting of Subversion keywords in multi-file LaTeX 
+%                  documents},
+%   pdfkeywords = {svn-multi, svnkw, LaTeX, Subversion, keywords, Version 
+%                  Control, Id, Table Of Revisions}
+% }%
 % \fi
 % \maketitle
 %
@@ -456,31 +457,31 @@
 % The available options are:\par
 %
 % \DescribeOption{old}
-% Only pre-v2.0 features are active. This enables \op{verbatim} and disables all
+% Only pre-v2.0 features are active. This enables \op{verbatim} and disables all 
 % other options below. This is the default for reasons mentioned above.
 %
 % \DescribeOption{all}
 % Activates all features of the package.
 %
 % \DescribeOption{verbatim}
-% Controls the verbatim mode of the keyword parser
-% macros. Normally verbatim mode is very much wanted to support strange
-% characters in URLs and file names, but this options gives the user a
-% possibility to disable verbatim, \eg for trouble shooting.  Please note that
-% verbatim mode is needed in order to make \svnmulti work with some packages,
-% like \pkg{babel} with the |french| option.
+% Controls the verbatim mode of the keyword parser macros. Normally verbatim 
+% mode is very much wanted to support strange characters in URLs and file names, 
+% but this options gives the user a possibility to disable verbatim, \eg for 
+% trouble shooting.  Please note that verbatim mode is needed in order to make 
+% \svnmulti work with some packages, like \pkg{babel} with the |french| option.
 %
 % \DescribeOption{external}
-% Controls the support for keywords from external files
-% described in section~\ref{sec:external}. An old |.svn| file should be removed
-% when this feature is deactivated to avoid \textit{undefined macro} errors
-% caused by macros placed there by this feature.\par
-% If the \op{groups} option is enabled the macro
-% \csi{svnexternalgroup}\marg{group name} can be used to declare a own group
-% which is used for all the external files.  Otherwise they are placed in the
-% currently active group.  This macro can be used several times during the
-% document where an empty argument means \emph{no group} and a `|*|' means
-% \emph{current group}.\par
+% Controls the support for keywords from external files described in 
+% section~\ref{sec:external}. An old |.svn| file should be removed when this 
+% feature is deactivated to avoid \textit{undefined macro} errors caused by 
+% macros placed there by this feature.
+%
+% If the \op{groups} option is enabled the macro 
+% \csi{svnexternalgroup}\marg{group name} can be used to declare a own group 
+% which is used for all the external files.  Otherwise they are placed in the 
+% currently active group.  This macro can be used several times during the 
+% document where an empty argument means \emph{no group} and a `|*|' means 
+% \emph{current group}.
 %
 % \DescribeOption{groups}
 % Controls the keyword groups feature described in section~\ref{sec:group}.
@@ -494,107 +495,104 @@
 % files.  See section~\ref{sec:subgroups} for additional information.
 %
 % \DescribeOption{graphics}
-% This option allows to automatically declare all images included using the
-% macro |\includegraphics| from the \pkg{graphics}/\pkg{graphicx} package as external
-% files (see section~\ref{sec:external}). The options \op{external} and
-% \op{autoload} are activated by this option so that the produced
-% |.svx| files are loaded automatically.  An |autoload=false| option after
-% \pkg{graphics} will deactivate this, but then an \cs{svnexternal} macro must be
-% included in all \LaTeX\ files which should take the image revisions into
-% account.\par The \pkg{graphics} package is loaded if this option is active. If
-% this package is needed with some special options it should be loaded by the
-% \LaTeX\ document before \svnmulti.\par  Please note that this feature needs
-% to tie itself into the \pkg{graphics} package and might fail if the internal
-% structure of this package changes in future versions.\par
-% If the \op{groups} option is enabled the macro
-% \csi{svngraphicsgroup}\marg{group name} can be used to declare a own group
-% which is used for all the graphic files (also for pgf images, see below).
-% Otherwise they are placed in the group specified by \cs{svnexternalgroup}
-% which defaults to the currently active group.  This macro can be used several
-% times during the document where an empty argument means \emph{no group} and a
-% `|*|' means \emph{current group}.\par Some graphics like logos can appear
-% frequently in a document. Do not count them as part of each chapter they can
-% be ignored using \csi{svnignoregraphic}\marg{file path}. The macro
-% \csi{svnconsidergraphic}\marg{file path} disables this again. Such graphics
-% can be then included manually using an explicit \cs{svnexternal} macro.
+% This option allows to automatically declare all images included using the 
+% macro |\includegraphics| from the \pkg{graphics}/\pkg{graphicx} package as 
+% external files (see section~\ref{sec:external}). The options \op{external} and 
+% \op{autoload} are activated by this option so that the produced |.svx| files 
+% are loaded automatically.  An |autoload=false| option after \pkg{graphics} 
+% will deactivate this, but then an \cs{svnexternal} macro must be included in 
+% all \LaTeX\ files which should take the image revisions into account.\par The 
+% \pkg{graphics} package is loaded if this option is active. If this package is 
+% needed with some special options it should be loaded by the \LaTeX\ document 
+% before \svnmulti.\par  Please note that this feature needs to tie itself into 
+% the \pkg{graphics} package and might fail if the internal structure of this 
+% package changes in future versions.
+%
+% If the \op{groups} option is enabled the macro 
+% \csi{svngraphicsgroup}\marg{group name} can be used to declare a own group 
+% which is used for all the graphic files (also for pgf images, see below).  
+% Otherwise they are placed in the group specified by \cs{svnexternalgroup} 
+% which defaults to the currently active group.  This macro can be used several 
+% times during the document where an empty argument means \emph{no group} and a 
+% `|*|' means \emph{current group}.\par Some graphics like logos can appear 
+% frequently in a document. Do not count them as part of each chapter they can 
+% be ignored using \csi{svnignoregraphic}\marg{file path}. The macro 
+% \csi{svnconsidergraphic}\marg{file path} disables this again. Such graphics 
+% can be then included manually using an explicit \cs{svnexternal} macro. 
 %
 % \DescribeOption{pgfimages}
-% Identical to like the \op{graphics} option but for the \pkg{pgf} package
-% (implemented against the version from 2008/01/15) with the |\pgfuseimage| and
-% |\pgfimage| macros.  Please also see the notes about package loading and ties
-% mentioned above.
+% Identical to like the \op{graphics} option but for the \pkg{pgf} package 
+% (implemented against the version from 2008/01/15) with the |\pgfuseimage| and 
+% |\pgfimage| macros.  Please also see the notes about package loading and ties 
+% mentioned above. 
 %
 % \DescribeOption{autoload}
-% Controls automatic loading of corresponding |.svx|
-% files at the begin of files included using |\input| or |\import|. This avoids
-% the need of putting an \cs{svnexternal} macro in every file just to load the
-% |.svx| files created automatically by the \op{graphics} option. The option
-% \op{external} is activated by \op{autoload}.
+% Controls automatic loading of corresponding |.svx| files at the begin of files 
+% included using |\input| or |\import|. This avoids the need of putting an 
+% \cs{svnexternal} macro in every file just to load the |.svx| files created 
+% automatically by the \op{graphics} option. The option \op{external} is 
+% activated by \op{autoload}. 
 %
 % \DescribeOption{table}
-% Controls the generation of a table of revisions which can be included using
-% the \cs{tableofrevisions} macro. This table shows the
-% revisions of all files and groups. This needs \op{groups} to work which is
-% activated with \op{table}. Enable \op{subgroups} to include a list of all
-% files per group. See the section~\ref{sec:table} for more information.
+% Controls the generation of a table of revisions which can be included using 
+% the \cs{tableofrevisions} macro. This table shows the revisions of all files 
+% and groups. This needs \op{groups} to work which is activated with \op{table}. 
+% Enable \op{subgroups} to include a list of all files per group. See the 
+% section~\ref{sec:table} for more information.
 %
 % \DescribeOption{filehooks}
-% This option loads the \pkg{fink} 
-% package and installs at-begin-input-file and at-end-input-file hooks which are 
-% needed for many of the options above. While this option is enabled 
-% automatically if needed it can be also enabled manually to ensure that the 
-% file-local macros are reset to empty values at the begin of each input file.  
-% This prevents the keyword from leaking over from one file to the next.
-% After every subfile the file-local keyword macros are then also restored to 
-% the value of the parent file.
+% This option loads the \pkg{fink}  package and installs at-begin-input-file and 
+% at-end-input-file hooks which are  needed for many of the options above. While 
+% this option is enabled  automatically if needed it can be also enabled 
+% manually to ensure that the  file-local macros are reset to empty values at 
+% the begin of each input file.   This prevents the keyword from leaking over 
+% from one file to the next.  After every subfile the file-local keyword macros 
+% are also restored to the  value of the parent file. 
 %
-% \subsection{Including of the Subversion Keywords}\label{sec:usage:id}
-% To include your Subversion Id keywords use \cs{svnid} or \cs{svnidlong}.
-% These macros should be written very early in each file, \ie in the preamble of
-% the main document soon after |\documentclass| and |\usepackage{svn-multi}| and
-% as first in \emph{every} |\include|d subfile before the |\chapter| macro. They
-% do not create any output.  See section~\ref{sec:kwaccess} to learn how to
-% typeset the keyword values.
+% \subsection{Including Subversion Keywords}\label{sec:usage:id}
+% Subversion keywords are included using \cs{svnid} or \cs{svnidlong}.  These 
+% macros should be written very early in each file, \ie in the preamble of the 
+% main document soon after |\documentclass| and |\usepackage{svn-multi}| and as 
+% first in \emph{every} subfile before an |\chapter| or similar macro. They do 
+% not create any output.  See section~\ref{sec:kwaccess} to learn how to typeset 
+% the keyword values.
 %
 % \DescribeMacro{svnid}{\karg{Id}}
-% Macro for the svn Id keyword.  Write the macro as |\svnid{$||Id$}| into your
-% \LaTeX{} files. A trailing colon with spaces after the |Id| is also valid but
-% \textbf{everything else} except a valid Subversion string will cause a \TeX{}
-% parse error.  Don't forget to set the subversion property |svn:keywords| of
-% the files to at least `|Id|'. Subversion will expand it at the next commit.
-% Please note that because the value is read verbatim the macro should exactly
-% be written like above. Spaces, newlines or comments between |\svnid| and the
-% \{ will lead to \TeX{} parse errors.
+% The macro is for the |Id| keyword and must be written like shown.  A trailing 
+% colon with or without spaces after the `|Id|' is also valid but 
+% \textbf{everything else} except a valid Subversion string will cause a \TeX{} 
+% parse error.  The subversion property |svn:keywords| must be set on all source 
+% files and include `|Id|' so that Subversion will expand it at the next commit.
 %
-% \DescribeMacro{svnidlong}{\karg{HeadURL}\karg{LastChangedDate}\ignorespaces
-% \karg{LastChangedRevision}\karg{LastChangedBy}}
-% Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the
-% above four keywords. The usage of \cs{svnid} or \cs{svnidlong} is a matter
-% of taste. The second is more readable inside the code and results in a nicer
-% date and a full URL, not only the filename. Both can also be used together.
-% In this case the \cs{svnid} macro should be come last. Because its revision is
-% not higher (but identical) than the revision of the \cs{svnidlong} macro it
-% does not override its values. This way both the full time zone from the long
-% and the file name from the short id macro can be accessed. Please note that
-% all features from the 2.0 version load the \pkg{fink} package which lets you
-% typeset the current file name anyway using |\finkbase.\finkext|\footnote{The
-% file name in \texttt{\${}Id\$} is always the original Subversion file name
-% while the one given by the \pkg{fink} package is the current file name.
-% Both could differ if the file got renamed.}.
+% \DescribeMacro{svnidlong}{\ignorespaces
+% \\\hspace*{\macrosep}\karg{HeadURL}\ignorespaces
+% \\\hspace*{\macrosep}\karg{LastChangedDate}\ignorespaces
+% \\\hspace*{\macrosep}\karg{LastChangedRevision}\ignorespaces
+% \\\hspace*{\macrosep}\karg{LastChangedBy}}
+% Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the 
+% above four keywords. The usage of \cs{svnid} or \cs{svnidlong} is a matter of 
+% taste. The second is more readable inside the code and results in a nicer date 
+% and a full URL, not only the filename. However, both can also be used 
+% together.  In this case the \cs{svnid} macro should be come last. Because its 
+% revision is not higher (but identical) than the revision of the \cs{svnidlong} 
+% macro it does not override its values. This way both the full time zone from 
+% the long and the file name from the short id macro can be accessed. Please 
+% note that all features from the 2.0 version load the \pkg{fink} package which 
+% lets you typeset the current file name anyway using 
+% |\finkbase.\finkext|\footnote{The file name in \texttt{\${}Id\$} is always the 
+% original Subversion file name while the one given by the \pkg{fink} package is 
+% the current file name.  Both could differ if the file got renamed.}.
 %
-% Write this macro like this (order of arguments not meaningfull)\\[2ex]
-% |      \svnidlong|\\
-% |      {$||HeadURL$}|\\
-% |      {$||LastChangedDate$}|\\
-% |      {$||LastChangedRevision$}|\\
-% |      {$||LastChangedBy$}|\\[2ex]
-% in your files and set the subversion property |svn:keywords| of them
-% to\\`|HeadURL LastChangedDate LastChangedRevision LastChangedBy|'.
+% This macro must be written like seen above while the order of arguments is not 
+% meaningfull. The Subversion property |svn:keywords| must be set on all source 
+% files with an value which includes `|HeadURL| |LastChangedDate| 
+% |LastChangedRevision| |LastChangedBy|' or one of their alternative spellings 
+% (\eg `|URL|', `|Rev|', `|Date|', etc.).
 %
-% Please note that the arguments are read verbatim. Special precaution are taken
-% to allow spaces, newlines and comments direct after the |\svnidlong| and after
-% each of the four arguments, just in case someone need this.  In fact
-% everything not inside braces |{ }| is ignored.
+% Please note that the arguments are read verbatim as long the \op{verbatim} 
+% option is not disabled explicitly. Special precaution are taken to allow 
+% spaces, newlines and comments direct after the |\svnidlong| and after each of 
+% the four arguments. In fact everything not inside braces |{ }| is ignored.
 %
 % \DescribeMacro{svn}{\kmarg{keyword}}
 % \DescribeMacro*{svn*}{\kmarg{keyword}}
