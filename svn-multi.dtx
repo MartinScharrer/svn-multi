@@ -1328,7 +1328,6 @@
   family = svn-multi,
   prefix = @svnmulti@
 }
-\newif\if@svnmulti@needinputfilename
 \newif\if@svnmulti@anygraphic
 \newif\if@svnmulti@autoload
 
@@ -1340,7 +1339,7 @@
   \@svnmulti@pgfimagesfalse
   \@svnmulti@autoloadfalse
   \@svnmulti@tablefalse
-  \@svnmulti@needinputfilenamefalse
+  \@svnmulti@filehooksfalse
   \@svnmulti@subgroupsfalse
 }
 \DeclareVoidOption{all}{%
@@ -1351,7 +1350,7 @@
   \@svnmulti@pgfimagestrue
   \@svnmulti@autoloadtrue
   \@svnmulti@tabletrue
-  \@svnmulti@needinputfilenametrue
+  \@svnmulti@filehookstrue
   \@svnmulti@subgroupstrue
 }
 \DeclareBoolOption[true]{verbatim}
@@ -1362,6 +1361,7 @@
 \DeclareBoolOption[false]{pgfimages}
 \DeclareStringOption{autoload}[true]
 \DeclareBoolOption[false]{table}
+\DeclareBoolOption[false]{filehooks}
 
 \ExecuteOptions{old}
 \ProcessKeyvalOptions{svn-multi}
@@ -1377,32 +1377,32 @@
 }
 
 \if@svnmulti@groups
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@external
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@subgroups
   \svn@depoption{groups}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@graphics
   \svn@depoption{external}
   \svn@depoption{autoload}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@pgfimages
   \svn@depoption{external}
   \svn@depoption{autoload}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@autoload
   \svn@depoption{external}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 \if@svnmulti@table
   \svn@depoption{groups}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \fi
 %    \end{macrocode}
 %
@@ -1416,7 +1416,7 @@
 \ifx\@svnmulti@autoload\svn@temp
   \@svnmulti@autoloadtrue
   \svn@depoption{external}
-  \@svnmulti@needinputfilenametrue
+  \svn@depoption{filehooks}
 \else
 \def\svn@temp{false}
 \ifx\@svnmulti@autoload\svn@temp
@@ -2334,7 +2334,7 @@
 % The \pkg{fink} package is used to get the input file names. AtBegin/AtEnd 
 % hooks are installed which will be used later.
 %    \begin{macrocode}
-\if@svnmulti@needinputfilename
+\if@svnmulti@filehooks
 %    \end{macrocode}
 
 % Load \pkg{fink} package and check if all needed macros are provided.
