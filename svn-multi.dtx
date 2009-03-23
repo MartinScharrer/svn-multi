@@ -27,7 +27,7 @@
  \def\filerev{#3}%
 }
 \filedate$Id$
-\def\fileversion{v2.0 beta 1}
+\def\fileversion{v2.0}
 %</package|driver|wrapper>
 %<*driver>
 \ProvidesFile{svn-multi.dtx}
@@ -614,28 +614,33 @@
 % activate these macros.
 %
 % \DescribeMacro{svngroup}{\marg{group name}}
-% This macro declares all following files (actually only following \cs{svnid},
-% \cs{svnidlong} and \cs{svnkwsave} macros) until the next \cs{svngroup} as part
-% of the given keyword group. It can be placed inside the main file before some
-% |\include|/|\input| macros or inside subfiles before the id macros, \ie
-% direct at the start of the file.
+% This macro declares all following files until the next \cs{svngroup} as part 
+% of the given keyword group. It can be placed inside the main file before some 
+% |\include|/|\input| macros or inside subfiles before the id macros, \ie direct 
+% at the start of the file.
+% 
 % The changes done by this macro are \TeX\ global, \ie there can't be caught 
 % using \TeX\ groups (|{ }|). However, in order to prevent subfiles to change 
 % the group of the rest of the parent file the group will be restored to the 
-% previous one at the end of each input file. 
+% previous one at the end of each input file.
+%
+% The latest VC information of a group can be typeset with the |\svnvgXXX| 
+% macros or the \cs{svng} macro shown in section~\ref{sec:kwaccess}.
 %
 % \DescribeMacro{thesvngroup}{}
 % Returns the name of the current keyword group.
 %
 % \DescribeMacro{svnsetcg}{\marg{group name}}
-% Normally the |\svncgXXX| macros mentioned above use the last keyword
-% group defined by \cs{svngroup}, but this can be changed using the
-% \cs{svnsetcg} macro.\par The idea is that the currently selected group can be
-% changed locally to the current \TeX\ group for the keyword output macros
-% |\svncgXXX| only while the group for the keyword input macros like
-% \cs{svnid} is unaffected.\par
-% To reset the used group to the last one defined by \cs{svngroup} simply
-% use \cs{svnsetcg} with an `|*|' as argument.\par
+% Normally the |\svncgXXX| macros mentioned below use the last keyword 
+% group defined by \cs{svngroup} but this can be changed using the \cs{svnsetcg} 
+% macro. The idea behind it is that the currently selected group can be 
+% changed locally to the current \TeX\ group for the keyword output macros 
+% |\svncgXXX| only while the group for the keyword input macros like \cs{svnid} 
+% is unaffected.
+%
+% To reset the used group to the last one defined by \cs{svngroup} simply use 
+% \cs{svnsetcg} with an `|*|' as argument.
+%
 % \paragraph*{Example 1:} |{\svnsetcg{abc}\svnFullAuthor{\svncgauthor}}|\\ would
 % output the full author's name of group \textit{abc}.\par
 % \paragraph*{Example 2:} To typeset the three keyword values of group
@@ -662,6 +667,10 @@
 % for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
 % using \cs{svnsubgroupstrue} macros. The current file can be manually
 % declared as extra group with the \cs{svnsubgroup} macro.\par
+% \DescribeMacro{svnsubgroup}{}
+% This macro declares the current file as subgroup. It is used automatically for 
+% every subfile if \op{subgroups} and \csi{svnsubgroupstrue} are enabled.
+%
 % \paragraph{Exclude/Consider files extensions:}
 % The above mentioned automatically group declaration uses an hook which is
 % triggered every time another file is read by the document. This unfortunately
@@ -1161,8 +1170,8 @@
 %
 % \section{Compile Guide}\label{sec:compileguide}
 % A document which uses \svnmulti\ needs to be compiled by \LaTeX\ in the
-% following ways depending on the used features. The Figure~\ref{fig:compi}
-% below shows the complete compilation cycle.
+% following ways depending on the used features.
+% ^^A The Figure~\ref{fig:compi} below shows the complete compilation cycle.
 %
 % \subsection*{Basic Features -- Global and Group Keywords}
 % \begin{enumerate}
@@ -1197,11 +1206,12 @@
 %     \svnmulti. Document global and group keyword macros are now fully valid.
 % \end{enumerate}
 %
+% \iffalse
 % \begin{figure}
 %   \centerline{\includegraphics[width=.8\textwidth]{images/compilation.pdf}}
 %   \caption{Compilation cycle of documents which use \svnmulti}\label{fig:compi}
 % \end{figure}
-%
+% \fi
 %
 % \section{Known Issues}\label{sec:issues}
 % This section lists some known issues of the \svnmulti package and tries to
@@ -3136,7 +3146,9 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 \if@svnmulti@autoload
 
 \svnmulti@atbegininputfile{%
-  \svn@inputsvx{\svn@filedir\svn@filebase}%
+  \svn@ifequal{\svn@filext}{tex}%
+    {\svn@inputsvx{\svn@filedir\svn@filebase}}%
+    {}%
 }
 %    \end{macrocode}
 
