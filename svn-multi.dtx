@@ -661,7 +661,7 @@
 % document are then automatically declared as extra groups. This can be disabled
 % for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
 % using \cs{svnsubgroupstrue} macros. The current file can be manually
-% declared as extra group with the \cs{svnfilesubgroup} macro.\par
+% declared as extra group with the \cs{svnsubgroup} macro.\par
 % \paragraph{Exclude/Consider files extensions:}
 % The above mentioned automatically group declaration uses an hook which is
 % triggered every time another file is read by the document. This unfortunately
@@ -2899,7 +2899,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % This special groups are not added to the list of groups.
 
 % A user-level switch is declared to enable or disable the automatic declaration
-% of every file as own group. This causes \cs{svnfilesubgroup} to be called for
+% of every file as own group. This causes \cs{svnsubgroup} to be called for
 % all input files.
 % The if macro is defined outside the |\if@svnmulti@subgroups| because
 % |\newif| inside |\if| is not a good idea.
@@ -2913,28 +2913,28 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \svnsubgroupstrue
 %    \end{macrocode}
 
-% \begin{macro}{\svnfilesubgroup}
+% \begin{macro}{\svnsubgroup}
 % User level and internal macro to declare the current file as extra group.
-% It produces the current file path and calls \cs{svn@filesubgroup}.
+% It produces the current file path and calls \cs{svn@subgroup}.
 % Creates two groups one with and one without the file extension. The one
 % without holds the latest revision of all files included in this file.
 %    \begin{macrocode}
-\def\svnfilesubgroup{%
+\def\svnsubgroup{%
   \begingroup
     \svn@removedotslash\svn@filedir
-    \svn@filesubgroup{\svn@filedir\svn@filebase}%
-    \svn@filesubgroup{\svn@filepath}%
+    \svn@subgroup{\svn@filedir\svn@filebase}%
+    \svn@subgroup{\svn@filepath}%
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svn@filesubgroup}[1]{file name}
+% \begin{macro}{\svn@subgroup}[1]{file name}
 % Macro to write a file as group to |.svn| file. After checking if the filename
 % was not already written, the |.svn| file is checked if it is open and then the
 % file keyword information is written.
 %    \begin{macrocode}
-\def\svn@filesubgroup#1{%
+\def\svn@subgroup#1{%
   \ifnum\svnfilerev>-1\relax
     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
       \expandafter\gdef\csname svn@g@#1\endcsname{1}%
@@ -2946,7 +2946,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
-% extensions (without leading dot) to ignore for automatic \csd{svnfilesubgroup}.}
+% extensions (without leading dot) to ignore for automatic \csd{svnsubgroup}.}
 % A special macro is defined for all extensions. The existents of this macro is
 % then tested later to check if this extension should be ignored.
 %    \begin{macrocode}
@@ -2960,7 +2960,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
 % extensions (without leading dot) to consider for automatic
-% \csd{svnfilesubgroup}.}
+% \csd{svnsubgroup}.}
 % The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
 % to |\relax|.
 %    \begin{macrocode}
@@ -2985,7 +2985,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
   \if@svnmulti@subgroups
     \ifsvnsubgroups
       \expandafter\ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
-      \svnfilesubgroup
+      \svnsubgroup
       \fi
     \fi
   \fi
@@ -2997,7 +2997,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
   \if@svnmulti@subgroups
     \ifsvnsubgroups
       \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
-      \svnfilesubgroup
+      \svnsubgroup
     \fi
   \fi
 }
@@ -3111,7 +3111,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
       \svn@ifequal{#1}{\svn@rg}%
         {\svn@addfiletogroup{#2}{\svn@filedir\svn@filebase}}%
         {\svn@addfiletogroup{#2}{#1}}%
-      \svn@filesubgroup{#2}%
+      \svn@subgroup{#2}%
     \fi
   \fi
 }
@@ -3130,7 +3130,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 % \subsection{Auto loading of \texttt{.svx} files}
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files
 % using the \cs{svnmulti@atbegininputfile} macro.
-% The macros \cs{svn@addfiletogroup} and \cs{svnfilesubgroup} are used to do the
+% The macros \cs{svn@addfiletogroup} and \cs{svnsubgroup} are used to do the
 % actual work.
 %    \begin{macrocode}
 \if@svnmulti@autoload
