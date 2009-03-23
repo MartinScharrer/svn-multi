@@ -2,7 +2,7 @@
 
 PACKAGE=svn-multi
 PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf svn-multi-pl.dtx svn-multi.pl example_main.tex \
-			example_chap1.tex example.pdf Makefile README
+			example_chap1.tex example.pdf Makefile README group_example.tex
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd
 TESTDIR = tests
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
@@ -41,7 +41,7 @@ package: ${PACKAGE}.sty ${PACKAGE}.pl
 %.eps: %.dia
 	dia -t eps -e $@ $<
 
-${PACKAGE}.pdf: images/*.pdf
+${PACKAGE}.pdf:
 
 ${INSGENERATED}: *.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
@@ -72,7 +72,7 @@ group_example.pdf: group_example.tex svn-multi.sty
 	${LATEX} $<
 	${LATEX} $<
 
-zip: package doc example ${ZIPFILE}
+zip: fullclean package doc example tests ${ZIPFILE}
 ${PACKAGE}.zip: zip
 
 zip: ZIPVERSION=$(shell grep '\\def\\fileversion{.*}' svn-multi.dtx | sed -e 's/\\def\\fileversion{\(.*\)}/\1/' -e 's/\s\+//g')
@@ -81,7 +81,7 @@ ${ZIPFILE}: ${PACKFILES}
 	grep -q '\* Checksum passed \*' svn-multi.log
 	grep -q '\* Checksum passed \*' svn-multi-pl.log
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
-	zip $@ ${PACKFILES}
+	zip ${ZIPFILE} ${PACKFILES}
 	@echo
 	@echo "ZIP file ${ZIPFILE} created!"
 
