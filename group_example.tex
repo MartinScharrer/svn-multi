@@ -1,5 +1,5 @@
 \documentclass[a4paper,oneside]{scrbook}
-\usepackage[all,autoload]{svn-multi}[2009/03/06]
+\usepackage[all]{svn-multi}[2009/03/06]
 \svnidlong
 {$HeadURL: svn://server/group_example.tex $}
 {$LastChangedDate: 2000-01-01 01:44:01 +0000 (Main file) $}
@@ -11,13 +11,15 @@
 \svngroup{def}
 \svngroup{ghi}
 \svngroup{jkl}
-\svngroup{Images}
+%\svngroup{Images}
 \svngroup{}
 
-%\svnexternal{{tests/test1.tex}}%
-\svnexternal{{tests/fish.jpg}}%
-\svnignoregraphic{tests/fish.jpg}
-\svngraphicsgroup{Images}
+% Ignore logo in subfiles and set it explicitly into the main file:
+%\svnexternal{{logo.jpg}}%
+%\svnignoregraphic{logo.jpg}
+
+% Special groups for images and other external files:
+%\svngraphicsgroup{Images}
 %\svnexternalgroup{external}
 
 \let\ifvtex=\relax
@@ -43,7 +45,7 @@
 \newcommand{\chaptervctable}{%
 \par\noindent
 \textbf{Version Control Information for this chapter}\\[\bigskipamount]%
-\begin{tabular}{ll}
+\begin{tabular}{lp{0.7\textwidth}}
 Chapter URL           & \svnnolinkurl{\svnfileurl}\\
 Chapter File name     & \svnnolinkurl{\svnfilefname}\\
 Last Changed Revision & \svnfilerev\\
@@ -72,9 +74,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1a}
 \chaptervctable
-\includegraphics{tests/subdir/leaf.jpg}
-\includegraphics{tests/fish}
-\svnexternal[def]{{tests/test2.tex}}%
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1b.tex}
@@ -86,7 +85,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1b}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part1c.tex}
@@ -98,7 +96,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 1c}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2a.tex}
@@ -110,7 +107,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 2a}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part2b.tex}
@@ -122,7 +118,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 2b}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3a.tex}
@@ -134,7 +129,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 3a}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part3b.tex}
@@ -146,7 +140,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 3b}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4a.tex}
@@ -158,9 +151,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 
 \chapter{Subfile 4a}
 \chaptervctable
-\svnexternal{{svn-multi.dtx}}
-\includegraphics{tests/fish}
-
 \input{group_example_part4a_sub1.tex}
 \end{filecontents}
 
@@ -174,7 +164,6 @@ This files contains the following SVN keywords:\\*[-\baselineskip]
 \section{SubSubfile 4a-1}
 This is a sub file in a sub file.
 \svnexternal{{Makefile}}
-
 \end{filecontents}
 
 \begin{filecontents}{group_example_part4b.tex}
@@ -186,7 +175,6 @@ This is a sub file in a sub file.
 
 \chapter{Subfile 4b}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_end.tex}
@@ -198,7 +186,6 @@ This is a sub file in a sub file.
 
 \chapter{End credits}
 \chaptervctable
-\includegraphics{tests/fish}
 \end{filecontents}
 
 \begin{filecontents}{group_example_unexpanded.tex}
@@ -223,7 +210,7 @@ This is a sub file in a sub file.
 \vspace*{5cm}
 \par\noindent
 \textbf{Version Control Information for this part:}\\[\bigskipamount]%
-\begin{tabular}{ll}
+\begin{tabular}{lp{0.7\textwidth}}
 URL of latest File    & \svnnolinkurl{\svncgurl}\\
 Name of latest File   & \svnnolinkurl{\svncgfname}\\
 Last Changed Revision & \svncgrev\\
@@ -269,7 +256,7 @@ Last Changed Date     & \svndate\\
 \bigskip\par\noindent
 The main file of this document contains the following SVN
 keywords:\\*[-\baselineskip]
-\svnlstinputlisting[firstline=4,lastline=8]{\finkpath}
+\svnlstinputlisting[firstline=3,lastline=7]{\finkpath}
 \thispagestyle{empty}
 \clearpage
 
