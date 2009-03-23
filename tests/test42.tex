@@ -36,8 +36,8 @@ Test if internal group list doesn't has any empty elements.
 
 \makeatletter
 \ifx\svn@glist\reference\else
-    \message{List contains empty elements: '\svn@glist'}
-    \error{List contains empty elements!}
+    \message{List contains empty or repeated elements: '\svn@glist'}
+    \error{List contains empty or repeated elements!}
 \fi
 \makeatother
 
