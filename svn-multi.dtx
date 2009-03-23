@@ -268,7 +268,7 @@
 \begin{document}
   \DocInput{svn-multi.dtx}%
   \PrintChanges
-  \clearpage
+  %\clearpage
   \PrintIndex
 \end{document}
 %</driver>
@@ -314,8 +314,8 @@
 % part, \eg +0530.}
 % \changes{v1.5}{2009/02/28}{Added \css{today}-style macros \cs{svntoday} and
 % \cs{svnfiletoday}.}
-% \changes{v2.0}{2009/03/12}{New features: keyword groups, external file
-% support, auto-include of images, files-as-groups and table of revisions.}
+% \changes{v2.0}{2009/03/23}{New features: keyword groups, external file
+% support, auto-include of images, files as subgroups and table of revisions.}
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
@@ -340,6 +340,11 @@
 % \DoNotIndex{\@restonecolfalse,\@restonecoltrue,\section,\strut}
 % \DoNotIndex{\tableofcontents,\tableofrevisions,\texttt,\today}
 % \DoNotIndex{\twocolumn,\@undefined,\url,\year}
+% \DoNotIndex{\textwidth,\the,\string,\raggedright,\providecommand,\small,\toks@}
+% \DoNotIndex{\medskipamount,\long,\leftskip,\clearpage,\advance,\addtolength}
+% \DoNotIndex{\DeclareBoolOption,\DeclareStringOption,\DeclareVoidOption}
+% \DoNotIndex{\ProcessKeyvalOptions,\SetupKeyvalOptions}
+% \DoNotIndex{\@firstoftwo,\@secondoftwo,\@gobble}
 %
 % \title{The \textsf{svn-multi} package \\ formerly known as \textsf{svnkw}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
@@ -2230,9 +2235,7 @@
 
 % \subsection{Register and FullName Macros}
 % \begin{macro}{\svnRegisterAuthor}[2]{author username}{Full Name}
-%    \begin{macrocode}
-% Saves the author's name by defining
-% |svn@author@|\meta{username} to it.
+% Saves the author's name by defining |svn@author@|\meta{username} to it.
 %    \begin{macrocode}
 \newcommand{\svnRegisterAuthor}[2]{%
   \expandafter\def\csname svn@author@#1\endcsname{#2}%
@@ -3146,7 +3149,7 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 \if@svnmulti@autoload
 
 \svnmulti@atbegininputfile{%
-  \svn@ifequal{\svn@filext}{tex}%
+  \svn@ifequal{\svn@fileext}{tex}%
     {\svn@inputsvx{\svn@filedir\svn@filebase}}%
     {}%
 }
