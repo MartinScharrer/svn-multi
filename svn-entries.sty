@@ -1,0 +1,207 @@
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{svn-entries}
+  [2009/03/23 v0.1 TeX Parser for Subversion entries files]
+
+% Preliminary Declarations:
+% The following declarations are needed to process the package options.
+
+% Options:
+
+% Other General Declarations:
+%\RequirePackage[options]{package}[2009/12/13]
+%\RequirePackageWithOptions{package}[2009/12/13] % load with all local options
+
+\newread\svne@read
+\def\svne@gtempa{}
+\def\svne@gtempb{}
+
+\begingroup
+\catcode`\^^L=12
+\gdef\svne@ff{^^L}
+\endgroup
+
+\newcommand*{\svne@catcodes}{%
+  \let\do\@makeother
+  \catcode`\^^L=12
+  \dospecials
+}
+
+% Package macros:
+\newcommand*{\svne@getformat}[1]{%
+  \IfFileExists{#1}{%
+    \begingroup
+      \openin\svne@read=#1\relax
+      \endlinechar=-1%
+      \svne@catcodes
+      \global\read\svne@read to \svne@gtempa
+      \closein\svne@read
+    \endgroup
+    \let\svneformat\svne@gtempa
+  }{%
+    \def\svneformat{0}%
+  }%
+}
+
+\def\svne@readentriesline{%
+  \ifeof\svne@read\else
+    \read\svne@read to \svne@line
+    \ifx\svne@line\svne@ff
+      \xdef\svne@gtempa{\svne@gtempa^^J{\svne@entry}}%
+      \def\svne@entry{}%
+    \else
+      \edef\svne@entry{\svne@entry{\svne@line}}%
+    \fi
+  \fi
+  \ifeof\svne@read\else
+    \expandafter\svne@readentriesline
+  \fi
+}
+
+\newcommand*{\svne@getentries}[1]{%
+  \IfFileExists{#1}{%
+    \begingroup
+      \def\svne@gtempa{}%
+      \def\svne@entry{}%
+      \openin\svne@read=#1\relax
+      \endlinechar=-1%
+      \svne@catcodes
+      \global\read\svne@read to \svne@gtempb
+      \svne@readentriesline
+      \closein\svne@read
+    \endgroup
+    \edef\svneentriesformat{\svne@gtempb{}}%
+    \edef\svneentries{\svne@gtempa{}}%
+  }{%
+    \def\svneentries{}%
+  }%
+}
+
+\def\svne@gobblerest{%
+  \ifeof\svne@read
+    \let\next\relax
+  \else
+    \read\svne@read to \svne@line
+    \ifx\svne@line\svne@ff
+      \let\next\relax
+    \else
+      \let\next\svne@gobblerest
+    \fi
+  \fi
+  \next
+}
+
+\def\svne@readline{%
+  \ifeof\svne@read\else
+    \read\svne@read to \svne@line
+  \fi
+}
+
+\def\svne@gobblesix{%
+  \svne@readline
+  \svne@readline
+  \svne@readline
+  \svne@readline
+  \svne@readline
+  \svne@readline
+}
+
+\def\svne@endread{%
+  \closein\svne@read
+}
+
+\newcommand*{\svne@parseentriesfile}[1]{%
+  \IfFileExists{#1}{%
+    \begingroup
+      \openin\svne@read=#1\relax
+      \endlinechar=-1%
+      \svne@catcodes
+      \read\svne@read to \svne@version
+      \ifnum\svne@version>7\relax
+        \expandafter
+        \svne@parsedirentry
+        \expandafter
+        \svne@parseentries
+      \fi
+      \closein\svne@read
+    \endgroup
+  }{}%
+}
+
+\def\svne@dir{dir}
+\def\svne@file{file}
+
+\newcommand*{\svne@parsedirentry}{%
+  \read\svne@read to \svne@name
+  \read\svne@read to \svne@kind
+  \ifx\svne@name\empty
+    \ifx\svne@kind\svne@dir
+      \read\svne@read to \svne@ignore
+      \global
+      \read\svne@read to \svne@baseurl
+      \svne@gobblerest
+    \fi
+  \fi
+}
+
+\def\svne@scandate#1{\expandafter\svne@scandate@#1\relax}
+
+% 2009-03-19T18:08:07.052260Z
+\def\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax{%
+  \gdef\svnfileyear{#1}%
+  \gdef\svnfilemonth{#2}%
+  \gdef\svnfileday{#3}%
+  \gdef\svnfilehour{#4}%
+  \gdef\svnfileminute{#5}%
+  \gdef\svnfilesecond{#6}%
+  \gdef\svnfiletimezonehour{+00}%
+  \gdef\svnfiletimezoneminute{00}%
+  \gdef\svnfiledate{#1-#2-#3 #4:#5:#6Z}%
+  \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
+}
+
+\newcommand*{\svne@parseentries}{%
+  \ifeof\svne@read
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \read\svne@read to \svne@name
+    \ifeof\svne@read
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+    \read\svne@read to \svne@kind
+    \ifx\svne@kind\svne@file
+      \svne@gobblesix
+      \read\svne@read to \svne@date
+      \read\svne@read to \svne@rev
+      \read\svne@read to \svne@author
+      \svne@scandate{\svne@date}%
+      \edef\svne@url{\svne@baseurl/\svne@name}%
+      \expandafter
+      \svne@handleentry
+    \fi
+    \svne@gobblerest
+    \svne@parseentries
+    }%
+  }%
+}
+
+\newcommand*{\svne@handleentry}{%
+  % check if entry is wanted
+  % Parsing can be stopped by calling \svne@endread
+  \message{^^J%
+Name: \svne@name^^J%
+Date: \svne@date^^J%
+Rev: \svne@rev^^J%
+Author: \svne@author^^J%
+URL: \svne@url^^J%
+  }
+}
+
+\endinput
+%EOF
+
