@@ -90,19 +90,21 @@
   \next
 }
 
-\def\svne@readline{%
-  \ifeof\svne@read\else
-    \read\svne@read to \svne@line
+\def\svne@readline#1{%
+  \ifeof\svne@read
+    \def#1{}%
+  \else
+    \read\svne@read to #1\relax
   \fi
 }
 
 \def\svne@gobblesix{%
-  \svne@readline
-  \svne@readline
-  \svne@readline
-  \svne@readline
-  \svne@readline
-  \svne@readline
+  \read\svne@read to \svne@ignore
+  \read\svne@read to \svne@ignore
+  \read\svne@read to \svne@ignore
+  \read\svne@read to \svne@ignore
+  \read\svne@read to \svne@ignore
+  \read\svne@read to \svne@ignore
 }
 
 \def\svne@endread{%
@@ -115,7 +117,7 @@
       \openin\svne@read=#1\relax
       \endlinechar=-1%
       \svne@catcodes
-      \read\svne@read to \svne@version
+      \svne@readline\svne@version
       \ifnum\svne@version>7\relax
         \expandafter
         \svne@parsedirentry
@@ -131,13 +133,13 @@
 \def\svne@file{file}
 
 \newcommand*{\svne@parsedirentry}{%
-  \read\svne@read to \svne@name
-  \read\svne@read to \svne@kind
+  \svne@readline\svne@name
+  \svne@readline\svne@kind
   \ifx\svne@name\empty
     \ifx\svne@kind\svne@dir
-      \read\svne@read to \svne@ignore
+      \svne@readline\svne@ignore
       \global
-      \read\svne@read to \svne@baseurl
+      \svne@readline\svne@baseurl
       \svne@gobblerest
     \fi
   \fi
@@ -166,19 +168,19 @@
     \expandafter\@firstofone
   \fi
   {%
-    \read\svne@read to \svne@name
+    \svne@readline\svne@name
     \ifeof\svne@read
       \expandafter\@gobble
     \else
       \expandafter\@firstofone
     \fi
     {%
-    \read\svne@read to \svne@kind
+    \svne@readline\svne@kind
     \ifx\svne@kind\svne@file
       \svne@gobblesix
-      \read\svne@read to \svne@date
-      \read\svne@read to \svne@rev
-      \read\svne@read to \svne@author
+      \svne@readline\svne@date
+      \svne@readline\svne@rev
+      \svne@readline\svne@author
       \svne@scandate{\svne@date}%
       \edef\svne@url{\svne@baseurl/\svne@name}%
       \expandafter
