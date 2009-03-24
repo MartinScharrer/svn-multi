@@ -9,11 +9,13 @@
 %\svne@getformat{.svn/format}
 %\svne@getentries{entries}
 
-\begingroup
-%\tracingmacros=1
-%\tracingassigns=1
-\svne@parseentriesfile{entries}
-\endgroup
+%\svne@parseentriesfile{.svn/entries}
+%
+\svnegetfile{Makefile}
+\svnegetfile{svn-multi.dtx}
+\svnegetfile{../../dev/svn-multi.dtx}
+\svnegetfile{../../dev/svn-multi.dt}
+
 
 %\message{^^J\meaning\svneformat^^J}
 %\message{^^J\meaning\svneentries^^J}
