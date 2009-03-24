@@ -1616,6 +1616,7 @@
   \gdef\svnfiletimezoneminute{00}%
   \gdef\svnfileurl{}%
   \gdef\svnfilefname{}%
+  \gdef\svnfilepath{}%
 }
 \svn@initfile
 %    \end{macrocode}
@@ -3621,6 +3622,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@getfilename#1{%
   \begingroup
+    \gdef\svnfilepath{}%
     \edef\svn@temp{#1}%
     \expandafter\@svn@getfilename\svn@temp/{}\relax
 }%
@@ -3635,9 +3637,15 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % split the remainder.
 %    \begin{macrocode}
 \def\@svn@getfilename#1/#2\relax{%
-    \svn@ifempty{#2}%
-      {\endgroup\gdef\svnfilefname{#1}}%
-      {\@svn@getfilename#2\relax}%
+  \svn@ifempty{#2}%
+    {%
+      \endgroup
+      \gdef\svnfilefname{#1}%
+    }%
+    {%
+      \xdef\svnfilepath{\svnfilepath#1/}%
+      \@svn@getfilename#2\relax
+    }%
 }%
 %    \end{macrocode}
 % \end{macro}
