@@ -65,6 +65,7 @@
       \openin\svne@read=#1\relax
       \endlinechar=-1%
       \svne@catcodes
+      \svn@catcodes
       \global\read\svne@read to \svne@gtempb
       \svne@readentriesline
       \closein\svne@read
@@ -169,6 +170,7 @@
   \fi
   {%
     \svne@readline\svne@name
+    \@onelevel@sanitize\svne@name
     \ifeof\svne@read
       \expandafter\@gobble
     \else
@@ -259,8 +261,9 @@ URL: \svne@url^^J%
   }
 }
 
-\newcommand*{\svnegetfile}[1]{%
+\def\svnegetfile#1{%
   \svn@getfilename{#1}%
+  \@onelevel@sanitize\svnfilefname
   \renewcommand*{\svne@handleentry}{%
     \ifx\svne@name\svnfilefname
       \message{^^J%
@@ -270,14 +273,29 @@ URL: \svne@url^^J%
         Author: \svne@author^^J%
         URL: \svne@url^^J%
       }
+      \svnkwdef{Filename}{\svne@name}%
+      \svnkwdef{Date}{\svne@date}%
+      \svnkwdef{Revision}{\svne@rev}%
+      \svnkwdef{Author}{\svne@author}%
+      \svnkwdef{HeadURL}{\svne@url}%
+      \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
+      \expandafter\svnexternalfile\expandafter{#1}%
       \svne@endread
     \fi
   }%
+  \svne@parseentriesfile{\svnfilepath _svn/entries}
   \svne@parseentriesfile{\svnfilepath .svn/entries}
 }
 
+%\svnmulti@atbegininputfile{%
+\AtBeginDocument{%
+  \svnegetfile{\jobname.tex}%
+}
+
 \def\svnexternal#1{%
+  \svn@pushfilestack
   \svne@@external#1\relax
+  \svn@popfilestack
 }
 
 \def\svne@@external#1{%
