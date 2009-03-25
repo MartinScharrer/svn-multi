@@ -276,6 +276,17 @@ URL: \svne@url^^J%
   \svne@parseentriesfile{\svnfilepath .svn/entries}
 }
 
+\def\svnexternal#1{%
+  \svne@@external#1\relax
+}
+
+\def\svne@@external#1{%
+  \ifx\relax#1\empty\else
+    \svnegetfile{#1}%
+    \expandafter\svne@@external
+  \fi
+}
+
 \endinput
 %EOF
 
