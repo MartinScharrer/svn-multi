@@ -1664,6 +1664,8 @@
 
 % \subsection{Auto-Keywords}
 %    \begin{macrocode}
+\if@svnmulti@autokw
+
 \newread\svne@read
 
 \begingroup
@@ -1809,52 +1811,41 @@
   }%
 }
 
+\def\svne@handleentry{%
+  \svn@ifequal{\svne@name}{\svnfilefname}%
+    {%
+      \svnkwdef{Filename}{\svne@name}%
+      \svnkwdef{Date}{\svne@date}%
+      \svnkwdef{Revision}{\svne@rev}%
+      \svnkwdef{Author}{\svne@author}%
+      \svnkwdef{HeadURL}{\svne@url}%
+      \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
+      \svnexternalfile[#1]{#2}%
+      \svne@endread
+    }{}%
+}%
 
-\def\svnegetfile#1#2{%
-  \svn@getfilename{#2}%
-  \edef\svnfilefname{\svnfilefname}%
-  \@onelevel@sanitize\svnfilefname
-  \def\svne@handleentry{%
-    \svn@ifequal{\svne@name}{\svnfilefname}%
-      {%
-        \svnkwdef{Filename}{\svne@name}%
-        \svnkwdef{Date}{\svne@date}%
-        \svnkwdef{Revision}{\svne@rev}%
-        \svnkwdef{Author}{\svne@author}%
-        \svnkwdef{HeadURL}{\svne@url}%
-        \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
-        \svnexternalfile[#1]{#2}%
-        \svne@endread
-      }{}%
-  }%
+\def\svnegetfile#1{%
   \begingroup
-  \svne@parseentriesfile{\svnfiledir .svn/}%
-  \svne@parseentriesfile{\svnfiledir _svn/}%
+    \svn@getfilename{#1}%
+    \edef\svnfilefname{\svnfilefname}%
+    \@onelevel@sanitize\svnfilefname
+    \svne@parseentriesfile{\svnfiledir .svn/}%
+    \svne@parseentriesfile{\svnfiledir _svn/}%
   \endgroup
 }
 
+\iffalse
 \svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@filedir\svn@filebase}{\svn@filepath}%
+  \svnegetfile{\svn@filepath}%
 }
 
 \AtBeginDocument{%
-  \svnegetfile{\svn@filedir\svn@filebase}{\jobname.tex}%
+  \svnegetfile{\jobname.tex}%
 }
+\fi
 
-\renewcommand*{\svnexternal}[2][\svn@g]{%
-  \svn@pushfilestack
-  \edef\svn@eg{#1}%
-  \svne@@external#2\relax
-  \svn@popfilestack
-}
-
-\def\svne@@external#1{%
-  \ifx\relax#1\empty\else
-    \svnegetfile{\svn@eg}{#1}%
-    \expandafter\svne@@external
-  \fi
-}
-
+\fi
 %    \end{macrocode}
 
 
@@ -3289,7 +3280,37 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \texttt{\{ \}}}
+% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \texttt{\{ 
+% \}}}
+%    \begin{macrocode}
+\if@svnmulti@autokw
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcommand*\svnexternal[2][]{%
+  \svn@pushfilestack
+  \svn@ifequal{#1}{*}%
+    {\edef\svn@eg{\svn@g}}%
+    {\svn@ifempty{#1}%
+      {\edef\svn@eg{\svn@externalgroup}}%
+      {\edef\svn@eg{#1}}%
+    }%
+  \svne@@external#2\relax
+  \svn@popfilestack
+}
+
+\def\svne@@external#1{%
+  \ifx\relax#1\empty\else
+    \svnegetfile{#1}%
+    \begingroup\svn@externalfile{\svn@eg}{#1}%
+    \expandafter\svne@@external
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
@@ -3310,6 +3331,9 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
   \fi
   \svn@inputsvx{\svn@filedir\svn@filebase}%
 }
+%    \end{macrocode}
+%    \begin{macrocode}
+\fi
 %    \end{macrocode}
 % \end{macro}
 
