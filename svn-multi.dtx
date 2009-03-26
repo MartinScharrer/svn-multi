@@ -1616,7 +1616,7 @@
   \gdef\svnfiletimezoneminute{00}%
   \gdef\svnfileurl{}%
   \gdef\svnfilefname{}%
-  \gdef\svnfilepath{}%
+  \gdef\svnfiledir{}%
 }
 \svn@initfile
 %    \end{macrocode}
@@ -3437,7 +3437,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svntable}
 %    \begin{macrocode}
 \def\svntable{%
-  \begin{tabular}{p{0.425\textwidth}rp{0.25\textwidth}p{0.225\textwidth}}%
+  \begin{tabular}{p{0.425\textwidth}rll}%
     \hline
 }
 %    \end{macrocode}
@@ -3628,7 +3628,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@getfilename#1{%
   \begingroup
-    \gdef\svnfilepath{}%
+    \gdef\svnfiledir{}%
     \edef\svn@temp{#1}%
     \expandafter\@svn@getfilename\svn@temp/{}\relax
 }%
@@ -3649,7 +3649,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
       \gdef\svnfilefname{#1}%
     }%
     {%
-      \xdef\svnfilepath{\svnfilepath#1/}%
+      \xdef\svnfiledir{\svnfiledir#1/}%
       \@svn@getfilename#2\relax
     }%
 }%
