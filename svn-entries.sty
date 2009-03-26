@@ -48,12 +48,14 @@
 }
 
 \def\svne@gobblesix{%
-  \read\svne@read to \svne@ignore
-  \read\svne@read to \svne@ignore
-  \read\svne@read to \svne@ignore
-  \read\svne@read to \svne@ignore
-  \read\svne@read to \svne@ignore
-  \read\svne@read to \svne@ignore
+  \begingroup
+  \read\svne@read to \svne@line
+  \read\svne@read to \svne@line
+  \read\svne@read to \svne@line
+  \read\svne@read to \svne@line
+  \read\svne@read to \svne@line
+  \read\svne@read to \svne@line
+  \endgroup
 }
 
 \def\svne@endread{%
