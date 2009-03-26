@@ -62,19 +62,34 @@
 
 \newcommand*{\svne@parseentriesfile}[1]{%
   \begingroup
-  \IfFileExists{#1}{%
-      \openin\svne@read=#1\relax
-      \endlinechar=-1%
-      \svne@catcodes
+    \endlinechar=-1%
+    % open format file
+    \openin\svne@read=#1format\relax
+    \ifeof\svne@read\else
+      % if exists:
       \svne@readline\svne@version
-      \ifnum\svne@version>7\relax
-        \expandafter
-        \svne@parsedirentry
-        \expandafter
-        \svne@parseentries
-      \fi
       \closein\svne@read
-  }{}%
+      % and format>7
+      \ifnum\svne@version>7\relax
+        % open entries file
+        \openin\svne@read=#1entries\relax
+        \ifeof\svne@read\else
+          % if exists:
+          \svne@catcodes
+          \svne@readline\svne@version
+          % check format version again:
+          \ifnum\svne@version>7\relax
+            \expandafter\svne@parsedirentry
+            \expandafter\svne@parseentries
+            \expandafter
+          \fi
+          \expandafter\svne@endread
+        \expandafter
+        \fi
+      \expandafter
+      \fi
+    \expandafter
+    \fi
   \endgroup
 }
 
@@ -88,7 +103,7 @@
         \svne@readline\svne@ignore
         \svne@readline\svne@baseurl
         \svne@gobblerest
-      }%
+      }{}%
     }{}%
 }
 
@@ -116,16 +131,16 @@
     {}%
     {%
     \svne@readline\svne@kind
-    \ifx\svne@kind\svne@file
+    \svn@ifequal{\svne@kind}{file}%
+      {%
       \svne@gobblesix
       \svne@readline\svne@date
       \svne@readline\svne@rev
       \svne@readline\svne@author
       \svne@scandate{\svne@date}%
       \edef\svne@url{\svne@baseurl/\svne@name}%
-      \expandafter
       \svne@handleentry
-    \fi
+      }{}%
     \svne@gobblerest
     \svne@parseentries
     }%
@@ -150,8 +165,8 @@
         \svne@endread
       }{}%
   }%
-  \svne@parseentriesfile{\svnfiledir .svn/entries}%
-  \svne@parseentriesfile{\svnfiledir _svn/entries}%
+  \svne@parseentriesfile{\svnfiledir .svn/}%
+  \svne@parseentriesfile{\svnfiledir _svn/}%
 }
 
 
