@@ -6,6 +6,14 @@
 \def\svne@gtempa{}
 \def\svne@gtempb{}
 
+\def\svn@ifeof#1{%
+  \ifeof#1%
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+
 \begingroup
 \catcode`\^^L=12
 \gdef\svne@ff{^^L}
@@ -15,26 +23,6 @@
   \let\do\@makeother
   \catcode`\^^L=12
   \dospecials
-}
-
-\newcommand*{\svne@getentries}[1]{%
-  \begingroup
-  \IfFileExists{#1}{%
-      \def\svne@gtempa{}%
-      \def\svne@entry{}%
-      \openin\svne@read=#1\relax
-      \endlinechar=-1%
-      \svne@catcodes
-      \svn@catcodes
-      \global\read\svne@read to \svne@gtempb
-      \svne@readentriesline
-      \closein\svne@read
-    \xdef\svneentriesformat{\svne@gtempb{}}%
-    \xdef\svneentries{\svne@gtempa{}}%
-  }{%
-    \gdef\svneentries{}%
-  }%
-    \endgroup
 }
 
 \def\svne@gobblerest{%
@@ -105,8 +93,6 @@
 }
 
 \def\svne@scandate#1{\expandafter\svne@scandate@#1\relax}
-
-% 2009-03-19T18:08:07.052260Z
 \def\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax{%
   \gdef\svnfileyear{#1}%
   \gdef\svnfilemonth{#2}%
@@ -118,14 +104,6 @@
   \gdef\svnfiletimezoneminute{00}%
   \gdef\svnfiledate{#1-#2-#3 #4:#5:#6Z}%
   \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
-}
-
-\def\svn@ifeof#1{%
-  \ifeof#1%
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-  \fi
 }
 
 \newcommand*{\svne@parseentries}{%
@@ -175,6 +153,7 @@
   \svne@parseentriesfile{\svnfiledir .svn/entries}%
   \svne@parseentriesfile{\svnfiledir _svn/entries}%
 }
+
 
 
 \svnmulti@atbegininputfile{%
