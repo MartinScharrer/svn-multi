@@ -114,8 +114,8 @@
 }
 
 \newcommand*{\svne@parseentriesfile}[1]{%
+  \begingroup
   \IfFileExists{#1}{%
-    \begingroup
       \openin\svne@read=#1\relax
       \endlinechar=-1%
       \svne@catcodes
@@ -127,8 +127,8 @@
         \svne@parseentries
       \fi
       \closein\svne@read
-    \endgroup
   }{}%
+  \endgroup
 }
 
 \def\svne@dir{dir}
@@ -231,10 +231,8 @@ URL: \svne@url^^J%
       \svne@endread
       }{}%
   }%
-  \begingroup
   \svne@parseentriesfile{\svnfilepath .svn/entries}%
-  %\svne@parseentriesfile{\svnfilepath _svn/entries}%
-  \endgroup
+  \svne@parseentriesfile{\svnfilepath _svn/entries}%
 }
 
 
