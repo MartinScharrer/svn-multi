@@ -2,15 +2,6 @@
 \ProvidesPackage{svn-entries}
   [2009/03/23 v0.1 TeX Parser for Subversion entries files]
 
-% Preliminary Declarations:
-% The following declarations are needed to process the package options.
-
-% Options:
-
-% Other General Declarations:
-%\RequirePackage[options]{package}[2009/12/13]
-%\RequirePackageWithOptions{package}[2009/12/13] % load with all local options
-
 \newread\svne@read
 \def\svne@gtempa{}
 \def\svne@gtempb{}
@@ -24,37 +15,6 @@
   \let\do\@makeother
   \catcode`\^^L=12
   \dospecials
-}
-
-% Package macros:
-\newcommand*{\svne@getformat}[1]{%
-  \IfFileExists{#1}{%
-    \begingroup
-      \openin\svne@read=#1\relax
-      \endlinechar=-1%
-      \svne@catcodes
-      \global\read\svne@read to \svne@gtempa
-      \closein\svne@read
-    \endgroup
-    \let\svneformat\svne@gtempa
-  }{%
-    \def\svneformat{0}%
-  }%
-}
-
-\def\svne@readentriesline{%
-  \ifeof\svne@read\else
-    \read\svne@read to \svne@line
-    \ifx\svne@line\svne@ff
-      \xdef\svne@gtempa{\svne@gtempa^^J{\svne@entry}}%
-      \def\svne@entry{}%
-    \else
-      \edef\svne@entry{\svne@entry{\svne@line}}%
-    \fi
-  \fi
-  \ifeof\svne@read\else
-    \expandafter\svne@readentriesline
-  \fi
 }
 
 \newcommand*{\svne@getentries}[1]{%
@@ -130,20 +90,18 @@
   \endgroup
 }
 
-\def\svne@dir{dir}
-\def\svne@file{file}
 
 \newcommand*{\svne@parsedirentry}{%
   \svne@readline\svne@name
   \svne@readline\svne@kind
-  \ifx\svne@name\empty
-    \ifx\svne@kind\svne@dir
-      \svne@readline\svne@ignore
-      \global
-      \svne@readline\svne@baseurl
-      \svne@gobblerest
-    \fi
-  \fi
+  \svn@ifempty{\svne@name}%
+    {\svn@ifequal{\svne@kind}{dir}%
+      {%
+        \svne@readline\svne@ignore
+        \svne@readline\svne@baseurl
+        \svne@gobblerest
+      }%
+    }{}%
 }
 
 \def\svne@scandate#1{\expandafter\svne@scandate@#1\relax}
@@ -162,20 +120,22 @@
   \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
 }
 
-\newcommand*{\svne@parseentries}{%
-  \ifeof\svne@read
-    \expandafter\@gobble
+\def\svn@ifeof#1{%
+  \ifeof#1%
+    \expandafter\@firstoftwo
   \else
-    \expandafter\@firstofone
+    \expandafter\@secondoftwo
   \fi
+}
+
+\newcommand*{\svne@parseentries}{%
+  \svn@ifeof{\svne@read}%
+  {}%
   {%
     \svne@readline\svne@name
     \@onelevel@sanitize\svne@name
-    \ifeof\svne@read
-      \expandafter\@gobble
-    \else
-      \expandafter\@firstofone
-    \fi
+    \svn@ifeof{\svne@read}%
+    {}%
     {%
     \svne@readline\svne@kind
     \ifx\svne@kind\svne@file
@@ -202,13 +162,6 @@
   \def\svne@handleentry{%
     \svn@ifequal{\svne@name}{\svnfilefname}%
       {%
-        \message{^^J%
-          Name: \svne@name^^J%
-          Date: \svne@date^^J%
-          Rev: \svne@rev^^J%
-          Author: \svne@author^^J%
-          URL: \svne@url^^J%
-        }%
         \svnkwdef{Filename}{\svne@name}%
         \svnkwdef{Date}{\svne@date}%
         \svnkwdef{Revision}{\svne@rev}%
