@@ -1,45 +1,16 @@
 %&pdflatex
-%\tracingassigns=1
-\tracingmacros=1
-
 \documentclass{article}
-
-\def\showcat#1{%
-  \ifx\relax#1\empty\else
-    \message{^^JA: '#1' = \the\catcode`#1^^J}%
-    \expandafter\showcat
-  \fi
-}
-
-\expandafter\showcat\jobname\relax
-
-\begingroup
-
-\message{^^JA: \the\catcode`-^^J}%
-
-\def\temp{svne-test}%
-\expandafter\showcat\temp\relax
-\ifx\temp\jobname
-  \message{^^JA: \the\catcode`-^^J}%
-\else
-  \message{^^JA: No!^^J}%
-\fi
-
-\endgroup
-
-
+\usepackage{trace}
 
 \usepackage[all]{svn-multi}
 \usepackage{svn-entries}
 
 \svnexternal{{Makefile}{svn-multi.dtx}{svn-multi-pl.dtx}}
-\svnexternal{{svne-test.tex}}
 
 \begin{document}
 
 \tableofrevisions
 
-\input{t}
-
+\input{svne-sub}
 \end{document}
 

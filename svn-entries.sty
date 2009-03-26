@@ -58,8 +58,8 @@
 }
 
 \newcommand*{\svne@getentries}[1]{%
+  \begingroup
   \IfFileExists{#1}{%
-    \begingroup
       \def\svne@gtempa{}%
       \def\svne@entry{}%
       \openin\svne@read=#1\relax
@@ -73,6 +73,7 @@
     \edef\svneentriesformat{\svne@gtempb{}}%
     \edef\svneentries{\svne@gtempa{}}%
   }{%
+    \endgroup
     \def\svneentries{}%
   }%
 }
@@ -194,60 +195,6 @@
   }%
 }
 
-% \begin{macro}{\svn@ifempty}[1]{string}
-% Tests if the given argument is empty. If so the first of the next two token
-% will be expanded, the second one otherwise.
-%    \begin{macrocode}
-\def\svn@ifempty#1{%
-  \begingroup
-  \edef\svn@temp{#1}%
-  \ifx\svn@temp\empty
-    \endgroup
-    \expandafter
-    \@firstoftwo
-  \else
-    \endgroup
-    \expandafter
-    \@secondoftwo
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\svn@getfilename}[1]{URL}
-% This macro expands the content using the temporary macro and sets it in front
-% of the \csi{svn@getfilename} sub-macro together with |/{}| to make sure the
-% macro does not break at values without directories. A |\relax| is used as
-% end marker.
-%    \begin{macrocode}
-\def\svn@getfilename#1{%
-  \begingroup
-    \gdef\svnfilepath{}%
-    \edef\svn@temp{#1}%
-    \expandafter\@svn@getfilename\svn@temp/{}\relax
-}%
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\@svn@getfilename}[2]{URL part before first slash}{URL part after
-% first slash}
-% Splits the content at the first slash (|/|) and checks if the remainder is
-% empty. If so the end marker got reached and the part before the slash is the
-% filename which is returned. Otherwise the macro recursively calls itself to
-% split the remainder.
-%    \begin{macrocode}
-\def\@svn@getfilename#1/#2\relax{%
-  \svn@ifempty{#2}%
-    {%
-      \endgroup
-      \gdef\svnfilefname{#1}%
-    }%
-    {%
-      \xdef\svnfilepath{\svnfilepath#1/}%
-      \@svn@getfilename#2\relax
-    }%
-}%
-%    \end{macrocode}
-% \end{macro}
 
 \newcommand*{\svne@handleentry}{%
   % check if entry is wanted
@@ -265,7 +212,8 @@ URL: \svne@url^^J%
   \svn@getfilename{#1}%
   \@onelevel@sanitize\svnfilefname
   \renewcommand*{\svne@handleentry}{%
-    \ifx\svne@name\svnfilefname
+    \svn@ifequal{\svne@name}{\svnfilefname}%
+      {%
       \message{^^J%
         Name: \svne@name^^J%
         Date: \svne@date^^J%
@@ -281,13 +229,19 @@ URL: \svne@url^^J%
       \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
       \expandafter\svnexternalfile\expandafter{#1}%
       \svne@endread
-    \fi
+      }{}%
   }%
-  \svne@parseentriesfile{\svnfilepath _svn/entries}
-  \svne@parseentriesfile{\svnfilepath .svn/entries}
+  \begingroup
+  \svne@parseentriesfile{\svnfilepath .svn/entries}%
+  %\svne@parseentriesfile{\svnfilepath _svn/entries}%
+  \endgroup
 }
 
-%\svnmulti@atbegininputfile{%
+
+\svnmulti@atbegininputfile{%
+  \svnegetfile{\svn@filepath}%
+}
+
 \AtBeginDocument{%
   \svnegetfile{\jobname.tex}%
 }
