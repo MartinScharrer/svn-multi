@@ -5,6 +5,7 @@
 \newread\svne@read
 \def\svne@gtempa{}
 \def\svne@gtempb{}
+\def\svne@line{}
 
 \def\svn@ifeof#1{%
   \ifeof#1%
@@ -173,11 +174,11 @@
 
 
 \svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@g}{\svn@filepath}%
+  \svnegetfile{\svn@filedir\svn@filebase}{\svn@filepath}%
 }
 
 \AtBeginDocument{%
-  \svnegetfile{\svn@g}{\jobname.tex}%
+  \svnegetfile{\svn@filedir\svn@filebase}{\jobname.tex}%
 }
 
 \renewcommand*{\svnexternal}[2][\svn@g]{%
