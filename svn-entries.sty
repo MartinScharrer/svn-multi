@@ -62,6 +62,7 @@
 
 \newcommand*{\svne@parseentriesfile}[1]{%
   \begingroup
+    \let\next\relax
     \endlinechar=-1%
     % open format file
     \openin\svne@read=#1format\relax
@@ -79,17 +80,15 @@
           \svne@readline\svne@version
           % check format version again:
           \ifnum\svne@version>7\relax
-            \expandafter\svne@parsedirentry
-            \expandafter\svne@parseentries
-            \expandafter
+            \def\next{\svne@parsedirentry%
+                      \svne@parseentries}
+          \else
+            \closein\svne@read
           \fi
-          \expandafter\svne@endread
-        \expandafter
         \fi
-      \expandafter
       \fi
-    \expandafter
     \fi
+    \next
   \endgroup
 }
 
