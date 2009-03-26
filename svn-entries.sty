@@ -69,13 +69,12 @@
       \global\read\svne@read to \svne@gtempb
       \svne@readentriesline
       \closein\svne@read
-    \endgroup
-    \edef\svneentriesformat{\svne@gtempb{}}%
-    \edef\svneentries{\svne@gtempa{}}%
+    \xdef\svneentriesformat{\svne@gtempb{}}%
+    \xdef\svneentries{\svne@gtempa{}}%
   }{%
-    \endgroup
-    \def\svneentries{}%
+    \gdef\svneentries{}%
   }%
+    \endgroup
 }
 
 \def\svne@gobblerest{%
@@ -196,52 +195,41 @@
 }
 
 
-\newcommand*{\svne@handleentry}{%
-  % check if entry is wanted
-  % Parsing can be stopped by calling \svne@endread
-  \message{^^J%
-Name: \svne@name^^J%
-Date: \svne@date^^J%
-Rev: \svne@rev^^J%
-Author: \svne@author^^J%
-URL: \svne@url^^J%
-  }
-}
-
-\def\svnegetfile#1{%
+\def\svnegetfile#1#2{%
   \svn@getfilename{#1}%
+  \edef\svnfilefname{\svnfilefname}
   \@onelevel@sanitize\svnfilefname
-  \renewcommand*{\svne@handleentry}{%
+  \def\svne@handleentry{%
     \svn@ifequal{\svne@name}{\svnfilefname}%
       {%
-      \message{^^J%
-        Name: \svne@name^^J%
-        Date: \svne@date^^J%
-        Rev: \svne@rev^^J%
-        Author: \svne@author^^J%
-        URL: \svne@url^^J%
-      }
-      \svnkwdef{Filename}{\svne@name}%
-      \svnkwdef{Date}{\svne@date}%
-      \svnkwdef{Revision}{\svne@rev}%
-      \svnkwdef{Author}{\svne@author}%
-      \svnkwdef{HeadURL}{\svne@url}%
-      \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
-      \svnexternalfile[\svn@eg]{#1}%
-      \svne@endread
+        \message{^^J%
+          Name: \svne@name^^J%
+          Date: \svne@date^^J%
+          Rev: \svne@rev^^J%
+          Author: \svne@author^^J%
+          URL: \svne@url^^J%
+        }%
+        \svnkwdef{Filename}{\svne@name}%
+        \svnkwdef{Date}{\svne@date}%
+        \svnkwdef{Revision}{\svne@rev}%
+        \svnkwdef{Author}{\svne@author}%
+        \svnkwdef{HeadURL}{\svne@url}%
+        \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
+        \svnexternalfile[#2]{#1}%
+        \svne@endread
       }{}%
   }%
-  \svne@parseentriesfile{\svnfilepath .svn/entries}%
-  \svne@parseentriesfile{\svnfilepath _svn/entries}%
+  \svne@parseentriesfile{\svnfiledir .svn/entries}%
+  \svne@parseentriesfile{\svnfiledir _svn/entries}%
 }
 
 
 \svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@filepath}%
+  \svnegetfile{\svn@filepath}{\svn@g}%
 }
 
 \AtBeginDocument{%
-  \svnegetfile{\jobname.tex}%
+  \svnegetfile{\jobname.tex}{\svn@g}%
 }
 
 \renewcommand*{\svnexternal}[2][\svn@g]{%
@@ -253,7 +241,7 @@ URL: \svne@url^^J%
 
 \def\svne@@external#1{%
   \ifx\relax#1\empty\else
-    \svnegetfile{#1}%
+    \svnegetfile{#1}{\svn@eg}%
     \expandafter\svne@@external
   \fi
 }
