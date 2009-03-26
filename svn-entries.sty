@@ -156,8 +156,8 @@
 
 
 \def\svnegetfile#1#2{%
-  \svn@getfilename{#1}%
-  \edef\svnfilefname{\svnfilefname}
+  \svn@getfilename{#2}%
+  \edef\svnfilefname{\svnfilefname}%
   \@onelevel@sanitize\svnfilefname
   \def\svne@handleentry{%
     \svn@ifequal{\svne@name}{\svnfilefname}%
@@ -168,7 +168,7 @@
         \svnkwdef{Author}{\svne@author}%
         \svnkwdef{HeadURL}{\svne@url}%
         \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
-        \svnexternalfile[#2]{#1}%
+        \svnexternalfile[#1]{#2}%
         \svne@endread
       }{}%
   }%
@@ -178,11 +178,11 @@
 
 
 \svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@filepath}{\svn@g}%
+  \svnegetfile{\svn@g}{\svn@filepath}%
 }
 
 \AtBeginDocument{%
-  \svnegetfile{\jobname.tex}{\svn@g}%
+  \svnegetfile{\svn@g}{\jobname.tex}%
 }
 
 \renewcommand*{\svnexternal}[2][\svn@g]{%
@@ -194,7 +194,7 @@
 
 \def\svne@@external#1{%
   \ifx\relax#1\empty\else
-    \svnegetfile{#1}{\svn@eg}%
+    \svnegetfile{\svn@eg}{#1}%
     \expandafter\svne@@external
   \fi
 }
