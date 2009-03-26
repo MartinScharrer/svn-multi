@@ -1554,6 +1554,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\svn@ifeof}[1]{input file handle}
+% Checks if the input file is at the end-of-file (or not open).
+%    \begin{macrocode}
+\def\svn@ifeof#1{%
+  \ifeof#1%
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\svn@input}[1]{file name/path}
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
@@ -1648,7 +1661,203 @@
 }
 \svn@initfile
 %    \end{macrocode}
-%
+
+% \subsection{Auto-Keywords}
+%    \begin{macrocode}
+\newread\svne@read
+
+\begingroup
+\catcode`\^^L=12
+\gdef\svne@ff{^^L}
+\endgroup
+
+\newcommand*{\svne@catcodes}{%
+  \let\do\@makeother
+  \endlinechar=-1
+  \catcode`\^^L=12
+  \dospecials
+}
+
+\def\svne@readline#1{%
+  \ifeof\svne@read
+    \def#1{}%
+  \else
+    \read\svne@read to #1\relax
+  \fi
+}
+
+\def\svne@gobblerest{%
+  \ifeof\svne@read
+    \let\next\relax
+  \else
+    \begingroup
+    \read\svne@read to \svne@temp
+    \ifx\svne@line\svne@ff
+      \endgroup
+      \let\next\relax
+    \else
+      \endgroup
+      \let\next\svne@gobblerest
+    \fi
+  \fi
+  \next
+}
+
+\def\svne@endread{%
+  \closein\svne@read
+}
+
+\newcommand*{\svne@parseentriesfile}[1]{%
+  \begingroup
+    \let\next\relax
+    % open format file
+    \openin\svne@read=#1format\relax
+    \ifeof\svne@read\else
+      % if exists:
+      \svne@readline\svne@version
+      \closein\svne@read
+      % and format>7
+      \ifnum\svne@version>7\relax
+        % open entries file
+        \openin\svne@read=#1entries\relax
+        \ifeof\svne@read\else
+          % if exists:
+          \svne@catcodes
+          \svne@readline\svne@version
+          % check format version again:
+          \ifnum\svne@version>7\relax
+            \def\next{\svne@parsedirentry%
+                      \svne@parseentries}
+          \else
+            \closein\svne@read
+          \fi
+        \fi
+      \fi
+    \fi
+    \next
+  \endgroup
+}
+
+\newcommand*{\svne@parsedirentry}{%
+  \svne@readline\svne@name
+  \svne@readline\svne@kind
+  \svn@ifempty{\svne@name}%
+    {\svn@ifequal{\svne@kind}{dir}%
+      {%
+        \svne@readline\svne@ignore
+        \svne@readline\svne@baseurl
+        \svne@gobblerest
+      }{}%
+    }{}%
+}
+
+\def\svne@scandate#1{%
+  \expandafter\svne@scandate@#1\relax
+  0000-00-00T00:00:00.00000Z\relax\relax
+}
+
+\begingroup
+
+\catcode`\-=12
+\catcode`\:=12
+\catcode`\.=12
+
+\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
+  \gdef\svnfileyear{#1}%
+  \gdef\svnfilemonth{#2}%
+  \gdef\svnfileday{#3}%
+  \gdef\svnfilehour{#4}%
+  \gdef\svnfileminute{#5}%
+  \gdef\svnfilesecond{#6}%
+  \gdef\svnfiletimezonehour{+00}%
+  \gdef\svnfiletimezoneminute{00}%
+  \gdef\svnfiledate{#1-#2-#3 #4:#5:#6Z}%
+  \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
+}
+
+\endgroup
+
+\newcommand*{\svne@parseentries}{%
+  \svn@ifeof{\svne@read}%
+  {}%
+  {%
+    \svne@readline\svne@name
+    \@onelevel@sanitize\svne@name
+    \svn@ifeof{\svne@read}%
+    {}%
+    {%
+    \svne@readline\svne@kind
+    \svn@ifequal{\svne@kind}{file}%
+      {%
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svne@date
+      \svne@readline\svne@rev
+      \svne@readline\svne@author
+      \@onelevel@sanitize\svne@date
+      \svne@scandate{\svne@date}%
+      \edef\svne@url{\svne@baseurl/\svne@name}%
+      \svne@handleentry
+      }{}%
+    \svne@gobblerest
+    \svne@parseentries
+    }%
+  }%
+}
+
+
+\def\svnegetfile#1#2{%
+  \svn@getfilename{#2}%
+  \edef\svnfilefname{\svnfilefname}%
+  \@onelevel@sanitize\svnfilefname
+  \def\svne@handleentry{%
+    \svn@ifequal{\svne@name}{\svnfilefname}%
+      {%
+        \svnkwdef{Filename}{\svne@name}%
+        \svnkwdef{Date}{\svne@date}%
+        \svnkwdef{Revision}{\svne@rev}%
+        \svnkwdef{Author}{\svne@author}%
+        \svnkwdef{HeadURL}{\svne@url}%
+        \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
+        \svnexternalfile[#1]{#2}%
+        \svne@endread
+      }{}%
+  }%
+  \begingroup
+  \svne@parseentriesfile{\svnfiledir .svn/}%
+  \svne@parseentriesfile{\svnfiledir _svn/}%
+  \endgroup
+}
+
+\svnmulti@atbegininputfile{%
+  \svnegetfile{\svn@filedir\svn@filebase}{\svn@filepath}%
+}
+
+\AtBeginDocument{%
+  \svnegetfile{\svn@filedir\svn@filebase}{\jobname.tex}%
+}
+
+\renewcommand*{\svnexternal}[2][\svn@g]{%
+  \svn@pushfilestack
+  \edef\svn@eg{#1}%
+  \svne@@external#2\relax
+  \svn@popfilestack
+}
+
+\def\svne@@external#1{%
+  \ifx\relax#1\empty\else
+    \svnegetfile{\svn@eg}{#1}%
+    \expandafter\svne@@external
+  \fi
+}
+
+%    \end{macrocode}
+
+
 % \subsection{Timezone macros}
 % \begin{macro}{\svntimezone}
 % \begin{macro}{\svnfiletimezone}
