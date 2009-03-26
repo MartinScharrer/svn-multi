@@ -1832,6 +1832,12 @@
 }
 
 
+\if@svnmulti@autokwall
+\AtBeginDocument{%
+    \svnegetfile{\jobname.\svn@mainext}%
+}
+\fi
+
 \fi
 %    \end{macrocode}
 
@@ -4081,13 +4087,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 
 %    \begin{macrocode}
 \if@svnmulti@autokwall
+
 \svnmulti@atbegininputfile{%
   \svnegetfile{\svn@filepath}%
 }
 
-\AtBeginDocument{%
-  \svnegetfile{\jobname.tex}%
-}
 \fi
 %    \end{macrocode}
 % At the end of document the values are written to the auxiliary file.
