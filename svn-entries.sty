@@ -227,7 +227,7 @@ URL: \svne@url^^J%
       \svnkwdef{Author}{\svne@author}%
       \svnkwdef{HeadURL}{\svne@url}%
       \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
-      \expandafter\svnexternalfile\expandafter{#1}%
+      \svnexternalfile[\svn@eg]{#1}%
       \svne@endread
       }{}%
   }%
@@ -244,9 +244,10 @@ URL: \svne@url^^J%
   \svnegetfile{\jobname.tex}%
 }
 
-\def\svnexternal#1{%
+\renewcommand*{\svnexternal}[2][\svn@g]{%
   \svn@pushfilestack
-  \svne@@external#1\relax
+  \edef\svn@eg{#1}%
+  \svne@@external#2\relax
   \svn@popfilestack
 }
 
