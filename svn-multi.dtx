@@ -1347,6 +1347,9 @@
 }
 \newif\if@svnmulti@anygraphic
 \newif\if@svnmulti@autoload
+\newif\if@svnmulti@autokw
+\newif\if@svnmulti@autokwall
+\newif\if@svnmulti@autokwext
 
 \DeclareVoidOption{old}{%
   \@svnmulti@verbatimtrue
@@ -1379,6 +1382,7 @@
 \DeclareStringOption{autoload}[true]
 \DeclareBoolOption[false]{table}
 \DeclareBoolOption[false]{filehooks}
+\DeclareStringOption[false]{autokw}[all]
 
 \ExecuteOptions{old}
 \ProcessKeyvalOptions{svn-multi}
@@ -1446,6 +1450,30 @@
     {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
      ! Only 'true','false' or empty (='true') are allowed!}
 \fi\fi\fi\fi
+%    \end{macrocode}
+
+% Set \op{autokw} modes:
+%    \begin{macrocode}
+\def\svn@temp{true}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwalltrue
+\fi
+\def\svn@temp{all}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwalltrue
+\fi
+\def\svn@temp{ext}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwallfalse
+\fi
+\def\svn@temp{false}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwfalse
+  \@svnmulti@autokwallfalse
+\fi
 %    \end{macrocode}
 
 % General switch if any graphic option is enabled:
