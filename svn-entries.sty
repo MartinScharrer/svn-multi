@@ -109,8 +109,18 @@
     }{}%
 }
 
-\def\svne@scandate#1{\expandafter\svne@scandate@#1\relax}
-\def\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax{%
+\def\svne@scandate#1{%
+  \expandafter\svne@scandate@#1\relax
+  0000-00-00T00:00:00.00000Z\relax\relax
+}
+
+\begingroup
+
+\catcode`\-=12
+\catcode`\:=12
+\catcode`\.=12
+
+\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
   \gdef\svnfileyear{#1}%
   \gdef\svnfilemonth{#2}%
   \gdef\svnfileday{#3}%
@@ -122,6 +132,8 @@
   \gdef\svnfiledate{#1-#2-#3 #4:#5:#6Z}%
   \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
 }
+
+\endgroup
 
 \newcommand*{\svne@parseentries}{%
   \svn@ifeof{\svne@read}%
@@ -139,6 +151,7 @@
       \svne@readline\svne@date
       \svne@readline\svne@rev
       \svne@readline\svne@author
+      \@onelevel@sanitize\svne@date
       \svne@scandate{\svne@date}%
       \edef\svne@url{\svne@baseurl/\svne@name}%
       \svne@handleentry
@@ -167,10 +180,11 @@
         \svne@endread
       }{}%
   }%
+  \begingroup
   \svne@parseentriesfile{\svnfiledir .svn/}%
   \svne@parseentriesfile{\svnfiledir _svn/}%
+  \endgroup
 }
-
 
 
 \svnmulti@atbegininputfile{%
