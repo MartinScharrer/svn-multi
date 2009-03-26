@@ -1349,7 +1349,6 @@
 \newif\if@svnmulti@autoload
 \newif\if@svnmulti@autokw
 \newif\if@svnmulti@autokwall
-\newif\if@svnmulti@autokwext
 
 \DeclareVoidOption{old}{%
   \@svnmulti@verbatimtrue
@@ -1692,13 +1691,10 @@
   \ifeof\svne@read
     \let\next\relax
   \else
-    \begingroup
-    \read\svne@read to \svne@temp
-    \ifx\svne@line\svne@ff
-      \endgroup
+    \read\svne@read to \svn@temp
+    \ifx\svn@temp\svne@ff
       \let\next\relax
     \else
-      \endgroup
       \let\next\svne@gobblerest
     \fi
   \fi
@@ -1763,6 +1759,7 @@
 \catcode`\-=12
 \catcode`\:=12
 \catcode`\.=12
+%\catcode`\T=12
 
 \gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
   \gdef\svnfileyear{#1}%
@@ -1800,7 +1797,7 @@
       \svne@readline\svne@date
       \svne@readline\svne@rev
       \svne@readline\svne@author
-      \@onelevel@sanitize\svne@date
+      %\@onelevel@sanitize\svne@date
       \svne@scandate{\svne@date}%
       \edef\svne@url{\svne@baseurl/\svne@name}%
       \svne@handleentry
@@ -1820,7 +1817,6 @@
       \svnkwdef{Author}{\svne@author}%
       \svnkwdef{HeadURL}{\svne@url}%
       \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
-      \svnexternalfile[#1]{#2}%
       \svne@endread
     }{}%
 }%
@@ -1835,15 +1831,6 @@
   \endgroup
 }
 
-\iffalse
-\svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@filepath}%
-}
-
-\AtBeginDocument{%
-  \svnegetfile{\jobname.tex}%
-}
-\fi
 
 \fi
 %    \end{macrocode}
@@ -4092,6 +4079,17 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
+%    \begin{macrocode}
+\if@svnmulti@autokwall
+\svnmulti@atbegininputfile{%
+  \svnegetfile{\svn@filepath}%
+}
+
+\AtBeginDocument{%
+  \svnegetfile{\jobname.tex}%
+}
+\fi
+%    \end{macrocode}
 % At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
