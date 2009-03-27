@@ -57,13 +57,13 @@
 #
 #
 %<*driver>
-\fi
-\def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
- \year#4\month#5\day#6\relax
- \def\filedate{#4/#5/#6}%
-}
-\filedate$Id$
-\def\fileversion{v0.1}
+% $Id$
+\def\svnmulti@version {v0.1a}
+\def\svnmulti@rev  $#1: #2 $ {\def\svnmulti@rev{#2}}
+\def\svnmulti@date $#1: #2-#3-#4 $ {\def\svnmulti@date{#2/#3/#4}}
+\svnmulti@rev  $Rev: 687 $
+\svnmulti@date $Date: 2009-03-27 $
+
 \ProvidesFile{svn-multi-pl.dtx}
  [\filedate\space\fileversion\space SVN Keywords extractor for svn-multi]
 
