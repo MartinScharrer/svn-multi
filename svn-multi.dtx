@@ -3241,7 +3241,16 @@ lof,log,lot,out,svn,svt,svx,toc}
 \AtBeginDocument{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
-      \svn@addfiletogroup{\jobname}{\svn@g}%
+      \@ifundefined{@svng@\svn@g @files}%
+        {%
+          \expandafter
+          \xdef\csname @svng@\svn@g @files\endcsname{\jobname}%
+        }%
+        {%
+          \expandafter
+          \xdef\csname @svng@\svn@g @files\endcsname
+            {\jobname,\csname @svng@\svn@g @files\endcsname}%
+        }%
       \svnsubgroup
     \fi
   \fi
