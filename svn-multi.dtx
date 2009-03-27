@@ -98,8 +98,9 @@
 \newcommand{\macrohlinkprefix}{desc}
 \newcommand{\macrolink}{}
 
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}%
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
@@ -275,7 +276,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2264}
+% \CheckSum{2641}
 %
 % {\makeatother
 % \CharacterTable
@@ -466,7 +467,7 @@
 % other options below. This is the default for reasons mentioned above.
 %
 % \DescribeOption{all}
-% Activates all features of the package.
+% Activates all features of the package except of the experimental ones.
 %
 % \DescribeOption{verbatim}
 % Controls the verbatim mode of the keyword parser macros. Normally verbatim 
@@ -552,7 +553,40 @@
 % manually to ensure that the  file-local macros are reset to empty values at 
 % the begin of each input file.   This prevents the keyword from leaking over 
 % from one file to the next.  After every subfile the file-local keyword macros 
-% are also restored to the  value of the parent file. 
+% are also restored to the  value of the parent file.
+%
+% \DescribeOption{autokw}
+% This experimental feature allows the automatically extraction of the keyword 
+% values from the hidden Subversion working copy database. The database (a text 
+% file called `|entries|') is located in the hidden Subversion directory 
+% `|.svn|' (or `|_svn|' on some Windows installations) inside every directory 
+% which is under VC.
+%
+% This feature makes an external script like \scr{svn-multi.pl} or even keyword 
+% macros redundant as long the files are inside a Subversion working directory.  
+% However, this feature does not work if the files are exported (\eg with 
+% \texttt{svn~export}) or manually copied and also depends on the used version 
+% of Subversion.  Only versions starting with 1.4 (with working copy format 
+% version 7) are supported.  Earlier version used a different format for the 
+% |entries| file.  Newer versions should be compatible as long the basic format 
+% is not changed again.
+%
+% The experimental status will be lifted after the feature was tested using
+% different Subversion versions on different platforms. Please do not hesitate 
+% to send error reports to the package author. Minimal examples and information 
+% about the used Subversion version and platform are very much appreciated.
+%
+% This option allows the following values:
+% \begin{description}
+%   \item[\texttt{false}] Feature is disabled (default).
+%   \item[\textnormal{\sffamily No value or \textbf{\texttt{true}} or 
+%   \textbf{\texttt{all}}}] The keywords of all files are automatically 
+%   extracted.  No \cs{svnid} or \cs{svnidlong} macros or external scripts are 
+%   necessary as long the files are inside a Subversion working directory and 
+%   not exported.
+%   \item[\texttt{ext}] Only the keywords of external files are extracted. This 
+%     avoids the need of the \scr{svn-multi.pl} script.
+% \end{description}
 %
 % \subsection{Including Subversion Keywords}\label{sec:usage:id}
 % Subversion keywords are included using \cs{svnid} or \cs{svnidlong}.  These 
@@ -1668,8 +1702,8 @@
 
 % \subsection{Auto-Keywords}
 
-% Special care must be taken for the line feed character |^^L|, otherwise it 
-% causes an error if \op{autokw} is disabled.
+% Special care must be taken for the line feed character, otherwise it causes an 
+% error if \op{autokw} is disabled.
 %    \begin{macrocode}
 \begingroup
 \@makeother\^^L
@@ -1686,7 +1720,6 @@
 %    \begin{macrocode}
 \newread\svne@read
 %    \end{macrocode}
-% \end{macro}
 
 % \begin{macro}{\svne@catcodes}
 % Sets the catcodes for verbatim input reading. Also removes the end-of-line 
