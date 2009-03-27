@@ -317,6 +317,8 @@
 % \cs{svnfiletoday}.}
 % \changes{v2.0}{2009/03/23}{New features: keyword groups, external file
 % support, auto-include of images, files as subgroups and table of revisions.}
+% \changes{v2.1}{2009/03/27}{Added automatic extraction of keywords from 
+% Subversion 'entries' file: 'autokw' option}
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
@@ -478,9 +480,8 @@
 %
 % \DescribeOption{external}
 % Controls the support for keywords from external files described in 
-% section~\ref{sec:external}. An old |.svn| file should be removed when this 
-% feature is deactivated to avoid \textit{undefined macro} errors caused by 
-% macros placed there by this feature.
+% section~\ref{sec:external}. This needs either the external script 
+% \scr{svn-multi.pl} or the \op{autokw} option.
 %
 % If the \op{groups} option is enabled the macro 
 % \csi{svnexternalgroup}\marg{group name} can be used to declare a own group 
