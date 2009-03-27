@@ -27,24 +27,25 @@
 % $Id$
 %
 \def\svnmulti@version {v2.1}
-\def\svnmulti@rev  $#1: #2 $ {\def\svnmulti@rev{#2}}
-\def\svnmulti@date $#1: #2-#3-#4 $ {\def\svnmulti@date{#2/#3/#4}}
-\svnmulti@rev  $Rev$
-\svnmulti@date $Date$
+\def\svnmulti@rev  $#1: #2 ${\def\svnmulti@rev{#2}}
+\def\svnmulti@date $#1: #2-#3-#4 #5 ${\def\svnmulti@date{#2/#3/#4}}
+\svnmulti@rev  $Rev$\relax
+\svnmulti@date $Date$\relax
 
 %</package|driver>
 %<*driver>
 \ProvidesFile{svn-multi.dtx}
  [\svnmulti@date\space\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
 
-\def\svnmulti@date $#1: #2-#3-#4 $ {%
-  \year#2\month#3\day#4\relax
+\def\svnmulti@date $#1: #2-#3-#4 #5 $ {%
+  \def\svnmulti@today{{\year#2\month#3\day#4\today}}%
   \def\svnmulti@date{#2/#3/#4}%
 }
 \svnmulti@date $Date$
 
 \documentclass{ltxdoc}
-\usepackage{svn-multi}
+
+\usepackage{svn-multi}[\svnmulti@date]
 \usepackage{booktabs}
 \usepackage{ifpdf}
 \ifpdf
@@ -286,7 +287,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2643}
+% \CheckSum{2638}
 %
 % {\makeatother
 % \CharacterTable
@@ -359,11 +360,12 @@
 % \DoNotIndex{\ProcessKeyvalOptions,\SetupKeyvalOptions}
 % \DoNotIndex{\@firstoftwo,\@secondoftwo,\@gobble}
 %
-% \title{The \textsf{svn-multi} package \\ formerly known as \textsf{svnkw}}
+% \title{The \textsf{svn-multi} Package \\\large formerly known as 
+% \textsf{svnkw}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://www.scharrer-online.de/latex/svn-multi}\\
 % CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
-% \date{Version \expandafter\@gobble\svnmulti@version\\[0.5ex]\today}
+% \date{Version \expandafter\@gobble\svnmulti@version\\[0.5ex]\svnmulti@today}
 %
 % \ifpdf
 % \hypersetup{%
@@ -378,6 +380,8 @@
 % }%
 % \fi
 % \maketitle
+%
+% \vfill
 %
 % \section{Introduction}
 % This package allows to typeset version control (VC) information provided by 
@@ -403,6 +407,7 @@
 %   \item Including of the VC information of external files.
 %   \item Table of Revisions.
 % \end{itemize}
+% \newpage
 %
 % \subsection{Scope of Keywords}
 % This package provides the Subversion keyword data in several different scopes:
