@@ -60,9 +60,12 @@
 % $Id$
 \def\svnmulti@version {v0.1a}
 \def\svnmulti@rev  $#1: #2 $ {\def\svnmulti@rev{#2}}
-\def\svnmulti@date $#1: #2-#3-#4 $ {\def\svnmulti@date{#2/#3/#4}}
-\svnmulti@rev  $Rev: 687 $
-\svnmulti@date $Date: 2009-03-27 $
+\def\svnmulti@date $#1: #2-#3-#4 $ {%
+  \year#2\month#3\day#4\relax
+  \def\svnmulti@date{#2/#3/#4}%
+}
+\svnmulti@rev  $Rev$
+\svnmulti@date $Date$
 
 \ProvidesFile{svn-multi-pl.dtx}
  [\filedate\space\fileversion\space SVN Keywords extractor for svn-multi]
