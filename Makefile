@@ -75,7 +75,8 @@ group_example.pdf: group_example.tex svn-multi.sty
 zip: fullclean package doc example tests ${ZIPFILE}
 ${PACKAGE}.zip: zip
 
-zip: ZIPVERSION=$(shell grep '\\def\\fileversion{.*}' svn-multi.dtx | sed -e 's/\\def\\fileversion{\(.*\)}/\1/' -e 's/\s\+//g')
+zip: ZIPVERSION=$(shell grep 'Package: svn-multi ' svn-multi.log | \
+	sed -e 's/.*Package: svn-multi ....\/..\/..\s\+\(v\S\+\).*/\1/')
 
 ${ZIPFILE}: ${PACKFILES}
 	grep -q '\* Checksum passed \*' svn-multi.log
