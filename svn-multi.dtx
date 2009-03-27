@@ -1681,16 +1681,30 @@
 
 %    \begin{macrocode}
 \if@svnmulti@autokw
-
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
 \newread\svne@read
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@catcodes}
+% Sets the catcodes for verbatim input reading. Also removes the end-of-line 
+% character.
+% \begin{macrocode}
 \newcommand*{\svne@catcodes}{%
   \let\do\@makeother
   \endlinechar=-1
   \dospecials
   \do\- \do\: \do\. \do\^^L
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@readline}[1]{macro}
+% Reads the next line to the provided macro and handles the end-of-file case 
+% correctly.
+%    \begin{macrocode}
 \def\svne@readline#1{%
   \ifeof\svne@read
     \def#1{}%
@@ -1698,7 +1712,12 @@
     \read\svne@read to #1\relax
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@gobblerest}
+% Gobbles the rest of the current entry.
+%    \begin{macrocode}
 \def\svne@gobblerest{%
   \ifeof\svne@read
     \let\next\relax
@@ -1712,29 +1731,44 @@
   \fi
   \next
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@endread}
+% Stops the reading process of the entries file.
+%    \begin{macrocode}
 \def\svne@endread{%
   \closein\svne@read
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@parseentriesfile}[1]{file path}
+%    \begin{macrocode}
 \newcommand*{\svne@parseentriesfile}[1]{%
   \begingroup
     \let\next\relax
-    % open format file
+%    \end{macrocode}
+% Open the format file to read the version number:
+%    \begin{macrocode}
     \openin\svne@read=#1format\relax
     \ifeof\svne@read\else
-      % if exists:
       \svne@readline\svne@version
       \closein\svne@read
-      % and format>7
+%    \end{macrocode}
+% Check the format version:
+%    \begin{macrocode}
       \ifnum\svne@version>7\relax
-        % open entries file
+%    \end{macrocode}
+% Now open the entries file and read the version number from there again.
+%    \begin{macrocode}
         \openin\svne@read=#1entries\relax
         \ifeof\svne@read\else
-          % if exists:
           \svne@catcodes
           \svne@readline\svne@version
-          % check format version again:
+%    \end{macrocode}
+% Check the version and call the parse macros if OK:
+%    \begin{macrocode}
           \ifnum\svne@version>7\relax
             \def\next{\svne@parsedirentry%
                       \svne@parseentries}
@@ -1747,30 +1781,46 @@
     \next
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@parsedirentry}
+% Reads the first entry which is the directory entry and sets its URL as base 
+% URL for all other entries.
+% \begin{macrocode}
 \newcommand*{\svne@parsedirentry}{%
   \svne@readline\svne@name
   \svne@readline\svne@kind
   \svn@ifempty{\svne@name}%
     {\svn@ifequal{\svne@kind}{dir}%
       {%
-        \svne@readline\svne@ignore
+        {\svne@readline\svn@temp}%
         \svne@readline\svne@baseurl
         \svne@gobblerest
       }{}%
     }{}%
 }
+%    \end{macrocode}
+% \end{macro}
 
-\def\svne@scandate#1{%
-  \expandafter\svne@scandate@#1\relax
-  0000-00-00T00:00:00.00000Z\relax\relax
-}
-
+% \begin{macro}{\svne@scandate}
+% \begin{macro}{\svne@scandate@}
+% Parses the date from the svn entries file. Special care is taken to handle the 
+% case when the TeX parsing would fail. The catcode of the characters '|-|', 
+% '|:|', '|.|' used inside the date is set explicitly to ensure the correct 
+% value.
+%
+% \begin{macrocode}
 \begingroup
 
 \@makeother\-
 \@makeother\:
 \@makeother\.
+
+\gdef\svne@scandate#1{%
+  \expandafter\svne@scandate@#1\relax
+  0000-00-00T00:00:00.00000Z\relax\relax
+}
 
 \gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
   \gdef\svnfileyear{#1}%
@@ -1786,7 +1836,12 @@
 }
 
 \endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
 
+% \begin{macro}{\svne@parseentries}
+%    \begin{macrocode}
 \newcommand*{\svne@parseentries}{%
   \svn@ifeof{\svne@read}%
   {}%
@@ -1818,7 +1873,18 @@
     }%
   }%
 }
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svne@handleentry}
+% This macro is called for every entry except the first one which stands for the 
+% directory. The VC data is located in the following macros: \csi{svne@name}, 
+% \csi{svne@date}, \csi{svne@rev}, \csi{svne@author}, \csi{svne@url}.
+%
+% This implementation sets the correct keywords and calls the update macro to 
+% emulate the behaviour of \cs{svnidlong}. Then the \cs{svne@endread} macro is 
+% used to stop the file reading.
+%    \begin{macrocode}
 \def\svne@handleentry{%
   \svn@ifequal{\svne@name}{\svnfilefname}%
     {%
@@ -1831,7 +1897,11 @@
       \svne@endread
     }{}%
 }%
+%    \end{macrocode}
+% \end{macro}
 
+% \begin{macro}{\svnegetfile}[1]{file path}
+%    \begin{macrocode}
 \def\svnegetfile#1{%
   \begingroup
     \svn@getfilename{#1}%
@@ -1841,14 +1911,20 @@
     \svne@parseentriesfile{\svnfiledir _svn/}%
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
 
-
+% Load keywords of main document at begin of the document body if option is set 
+% to 'all'.
+%    \begin{macrocode}
 \if@svnmulti@autokwall
 \AtBeginDocument{%
     \svnegetfile{\jobname.\svn@mainext}%
 }
 \fi
+%    \end{macrocode}
 
+%    \begin{macrocode}
 \fi
 %    \end{macrocode}
 
@@ -4124,7 +4200,12 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
-%    \begin{macrocode}
+% Load the keywords of every subfile if the \op{autokw} option is enabled and 
+% the extension is not on the ignore list.
+%
+% This code is placed here because it has to come after the at-begin-input-file 
+% code.
+%     \begin{macrocode}
 \if@svnmulti@autokwall
 
 \svnmulti@atbegininputfile{%
@@ -4136,6 +4217,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 
 \fi
 %    \end{macrocode}
+
 % At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
 \AtEndDocument{%
