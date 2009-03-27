@@ -4092,7 +4092,10 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 \if@svnmulti@autokwall
 
 \svnmulti@atbegininputfile{%
-  \svnegetfile{\svn@filepath}%
+  \expandafter
+  \ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
+    \svnegetfile{\svn@filepath}%
+  \fi
 }
 
 \fi
