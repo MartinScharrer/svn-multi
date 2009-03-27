@@ -98,8 +98,9 @@
 \newcommand{\macrohlinkprefix}{desc}
 \newcommand{\macrolink}{}
 
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}%
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
@@ -275,7 +276,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2264}
+% \CheckSum{2643}
 %
 % {\makeatother
 % \CharacterTable
@@ -316,6 +317,8 @@
 % \cs{svnfiletoday}.}
 % \changes{v2.0}{2009/03/23}{New features: keyword groups, external file
 % support, auto-include of images, files as subgroups and table of revisions.}
+% \changes{v2.1}{2009/03/27}{Added automatic extraction of keywords from 
+% Subversion 'entries' file: 'autokw' option}
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
@@ -466,7 +469,7 @@
 % other options below. This is the default for reasons mentioned above.
 %
 % \DescribeOption{all}
-% Activates all features of the package.
+% Activates all features of the package except of the experimental ones.
 %
 % \DescribeOption{verbatim}
 % Controls the verbatim mode of the keyword parser macros. Normally verbatim 
@@ -477,9 +480,8 @@
 %
 % \DescribeOption{external}
 % Controls the support for keywords from external files described in 
-% section~\ref{sec:external}. An old |.svn| file should be removed when this 
-% feature is deactivated to avoid \textit{undefined macro} errors caused by 
-% macros placed there by this feature.
+% section~\ref{sec:external}. This needs either the external script 
+% \scr{svn-multi.pl} or the \op{autokw} option.
 %
 % If the \op{groups} option is enabled the macro 
 % \csi{svnexternalgroup}\marg{group name} can be used to declare a own group 
@@ -552,7 +554,41 @@
 % manually to ensure that the  file-local macros are reset to empty values at 
 % the begin of each input file.   This prevents the keyword from leaking over 
 % from one file to the next.  After every subfile the file-local keyword macros 
-% are also restored to the  value of the parent file. 
+% are also restored to the  value of the parent file.
+%
+% \DescribeOption{autokw}
+% This experimental feature allows the automatically extraction of the keyword 
+% values from the hidden Subversion working copy database. The database (a text 
+% file called `|entries|') is located in the hidden Subversion directory 
+% `|.svn|' (or `|_svn|' on some Windows installations) inside every directory 
+% which is under VC.
+%
+% This feature makes an external script like \scr{svn-multi.pl} or even keyword 
+% macros redundant as long the files are inside a Subversion working directory.  
+% However, this feature does not work if the files are exported (\eg with 
+% \texttt{svn~export}) or manually copied and also depends on the used version 
+% of Subversion.  Only versions starting with 1.4 (with working copy format 
+% version 7) are supported.  Earlier version used a different format for the 
+% |entries| file.  Newer versions should be compatible as long the basic format 
+% is not changed again.
+%
+% The experimental status will be lifted after the feature was tested using
+% different Subversion versions on different platforms. Please do not hesitate 
+% to send error reports to the package author. Minimal examples and information 
+% about the used Subversion version and platform are very much appreciated.
+%
+% This option allows the following values:
+% \begin{description}
+%   \item[\texttt{false}] Feature is disabled (default).
+%   \item[\textnormal{\sffamily No value or \textbf{\texttt{true}} or 
+%   \textbf{\texttt{all}}}] The keywords of all files are automatically 
+%   extracted.  No \cs{svnid} or \cs{svnidlong} macros or external scripts are 
+%   necessary as long the files are inside a Subversion working directory and 
+%   not exported.
+%   \item[\texttt{ext}] Only the keywords of external files are extracted. This 
+%   avoids the need of the \scr{svn-multi.pl} script. The option \op{external} 
+%   must be still enabled manually.
+% \end{description}
 %
 % \subsection{Including Subversion Keywords}\label{sec:usage:id}
 % Subversion keywords are included using \cs{svnid} or \cs{svnidlong}.  These 
@@ -1347,6 +1383,8 @@
 }
 \newif\if@svnmulti@anygraphic
 \newif\if@svnmulti@autoload
+\newif\if@svnmulti@autokw
+\newif\if@svnmulti@autokwall
 
 \DeclareVoidOption{old}{%
   \@svnmulti@verbatimtrue
@@ -1379,6 +1417,7 @@
 \DeclareStringOption{autoload}[true]
 \DeclareBoolOption[false]{table}
 \DeclareBoolOption[false]{filehooks}
+\DeclareStringOption[false]{autokw}[all]
 
 \ExecuteOptions{old}
 \ProcessKeyvalOptions{svn-multi}
@@ -1446,6 +1485,32 @@
     {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
      ! Only 'true','false' or empty (='true') are allowed!}
 \fi\fi\fi\fi
+%    \end{macrocode}
+
+% Set \op{autokw} modes:
+%    \begin{macrocode}
+\def\svn@temp{true}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwalltrue
+  \svn@depoption{filehooks}
+\fi
+\def\svn@temp{all}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwalltrue
+  \svn@depoption{filehooks}
+\fi
+\def\svn@temp{ext}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwtrue
+  \@svnmulti@autokwallfalse
+\fi
+\def\svn@temp{false}
+\ifx\@svnmulti@autokw\svn@temp
+  \@svnmulti@autokwfalse
+  \@svnmulti@autokwallfalse
+\fi
 %    \end{macrocode}
 
 % General switch if any graphic option is enabled:
@@ -1525,7 +1590,35 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
+% \begin{macro}{\svn@ifeof}[1]{input file handle}
+% Checks if the input file is at the end-of-file (or not open).
+%    \begin{macrocode}
+\def\svn@ifeof#1{%
+  \ifeof#1%
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@ifonlyone}[1]{group name}
+% Checks if there is only one element in the given group file list.
+% It looks whether there is a comma in the list.
+%    \begin{macrocode}
+\def\svn@ifonlyone#1{%
+  \expandafter\expandafter\expandafter
+  \svn@@ifonlyone\csname @svng@#1@files\endcsname,\relax
+}
+
+\def\svn@@ifonlyone#1,#2\relax{%
+  \svn@ifempty{#2}
+}
+%    \end{macrocode}
+% \end{macro}
+
 % \begin{macro}{\svn@input}[1]{file name/path}
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
@@ -1541,7 +1634,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
 % \begin{macro}{\svn@inputsvx}[1]{file name/path without extension}
 % Used to save and restore file keywords when reading |.svx| files.
 %    \begin{macrocode}
@@ -1552,16 +1645,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\@namexdef}[1]{macro name}
-% Provides an expanding and global version of |\@namedef|.
-%    \begin{macrocode}
-\providecommand\@namexdef[1]{%
-  \expandafter\xdef\csname #1\endcsname
-}
-%    \end{macrocode}
-% \end{macro}
-%
 
 % \subsection{Definition of init values}
 % Initialisation of at least the revision to a numeric value is necessary to not
@@ -1599,7 +1682,7 @@
 \def\svnurl{} \def\svnfname{}
 \def\svn@temp{}
 
-\def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g}
+\def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g} \def\svn@rg{\svn@pg}
 \let\@svng@@files\relax
 
 \def\svn@initfile{%
@@ -1616,10 +1699,273 @@
   \gdef\svnfiletimezoneminute{00}%
   \gdef\svnfileurl{}%
   \gdef\svnfilefname{}%
+  \gdef\svnfiledir{}%
 }
 \svn@initfile
 %    \end{macrocode}
+
+% \subsection{Auto-Keywords}
+
+% Special care must be taken for the line feed character, otherwise it causes an 
+% error if \op{autokw} is disabled.
+%    \begin{macrocode}
+\begingroup
+\@makeother\^^L
+\if@svnmulti@autokw
+\gdef\svne@ff{^^L}
+\fi
+\endgroup
+%    \end{macrocode}
+
+%    \begin{macrocode}
+\if@svnmulti@autokw
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\newread\svne@read
+%    \end{macrocode}
+
+% \begin{macro}{\svne@catcodes}
+% Sets the catcodes for verbatim input reading. Also removes the end-of-line 
+% character.
+% \begin{macrocode}
+\newcommand*{\svne@catcodes}{%
+  \let\do\@makeother
+  \endlinechar=-1
+  \dospecials
+  \do\- \do\: \do\. \do\^^L
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@readline}[1]{macro}
+% Reads the next line to the provided macro and handles the end-of-file case 
+% correctly.
+%    \begin{macrocode}
+\def\svne@readline#1{%
+  \ifeof\svne@read
+    \def#1{}%
+  \else
+    \read\svne@read to #1\relax
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@gobblerest}
+% Gobbles the rest of the current entry.
+%    \begin{macrocode}
+\def\svne@gobblerest{%
+  \ifeof\svne@read
+    \let\next\relax
+  \else
+    \read\svne@read to \svn@temp
+    \ifx\svn@temp\svne@ff
+      \let\next\relax
+    \else
+      \let\next\svne@gobblerest
+    \fi
+  \fi
+  \next
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@endread}
+% Stops the reading process of the entries file.
+%    \begin{macrocode}
+\def\svne@endread{%
+  \closein\svne@read
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@parseentriesfile}[1]{file path}
+%    \begin{macrocode}
+\newcommand*{\svne@parseentriesfile}[1]{%
+  \begingroup
+    \let\next\relax
+%    \end{macrocode}
+% Open the format file to read the version number:
+%    \begin{macrocode}
+    \openin\svne@read=#1format\relax
+    \ifeof\svne@read\else
+      \svne@readline\svne@version
+      \closein\svne@read
+%    \end{macrocode}
+% Check the format version:
+%    \begin{macrocode}
+      \ifnum\svne@version>7\relax
+%    \end{macrocode}
+% Now open the entries file and read the version number from there again.
+%    \begin{macrocode}
+        \openin\svne@read=#1entries\relax
+        \ifeof\svne@read\else
+          \svne@catcodes
+          \svne@readline\svne@version
+%    \end{macrocode}
+% Check the version and call the parse macros if OK:
+%    \begin{macrocode}
+          \ifnum\svne@version>7\relax
+            \def\next{\svne@parsedirentry%
+                      \svne@parseentries}
+          \else
+            \closein\svne@read
+          \fi
+        \fi
+      \fi
+    \fi
+    \next
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@parsedirentry}
+% Reads the first entry which is the directory entry and sets its URL as base 
+% URL for all other entries.
+% \begin{macrocode}
+\newcommand*{\svne@parsedirentry}{%
+  \svne@readline\svne@name
+  \svne@readline\svne@kind
+  \svn@ifempty{\svne@name}%
+    {\svn@ifequal{\svne@kind}{dir}%
+      {%
+        {\svne@readline\svn@temp}%
+        \svne@readline\svne@baseurl
+        \svne@gobblerest
+      }{}%
+    }{}%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@scandate}
+% \begin{macro}{\svne@scandate@}
+% Parses the date from the svn entries file. Special care is taken to handle the 
+% case when the TeX parsing would fail. The catcode of the characters '|-|', 
+% '|:|', '|.|' used inside the date is set explicitly to ensure the correct 
+% value.
 %
+% \begin{macrocode}
+\begingroup
+
+\@makeother\-
+\@makeother\:
+\@makeother\.
+
+\gdef\svne@scandate#1{%
+  \expandafter\svne@scandate@#1\relax
+  0000-00-00T00:00:00.00000Z\relax\relax
+}
+
+\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
+  \gdef\svnfileyear{#1}%
+  \gdef\svnfilemonth{#2}%
+  \gdef\svnfileday{#3}%
+  \gdef\svnfilehour{#4}%
+  \gdef\svnfileminute{#5}%
+  \gdef\svnfilesecond{#6}%
+  \gdef\svnfiletimezonehour{+00}%
+  \gdef\svnfiletimezoneminute{00}%
+  \gdef\svnfiledate{#1-#2-#3 #4:#5:#6Z}%
+  \def\svne@date{#1-#2-#3 #4:#5:#6Z}%
+}
+
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+
+% \begin{macro}{\svne@parseentries}
+%    \begin{macrocode}
+\newcommand*{\svne@parseentries}{%
+  \svn@ifeof{\svne@read}%
+  {}%
+  {%
+    \svne@readline\svne@name
+    \@onelevel@sanitize\svne@name
+    \svn@ifeof{\svne@read}%
+    {}%
+    {%
+    \svne@readline\svne@kind
+    \svn@ifequal{\svne@kind}{file}%
+      {%
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svn@temp
+      \svne@readline\svne@date
+      \svne@readline\svne@rev
+      \svne@readline\svne@author
+      %\@onelevel@sanitize\svne@date
+      \svne@scandate{\svne@date}%
+      \edef\svne@url{\svne@baseurl/\svne@name}%
+      \svne@handleentry
+      }{}%
+    \svne@gobblerest
+    \svne@parseentries
+    }%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svne@handleentry}
+% This macro is called for every entry except the first one which stands for the 
+% directory. The VC data is located in the following macros: \csi{svne@name}, 
+% \csi{svne@date}, \csi{svne@rev}, \csi{svne@author}, \csi{svne@url}.
+%
+% This implementation sets the correct keywords and calls the update macro to 
+% emulate the behaviour of \cs{svnidlong}. Then the \cs{svne@endread} macro is 
+% used to stop the file reading.
+%    \begin{macrocode}
+\def\svne@handleentry{%
+  \svn@ifequal{\svne@name}{\svnfilefname}%
+    {%
+      \svnkwdef{Filename}{\svne@name}%
+      \svnkwdef{Date}{\svne@date}%
+      \svnkwdef{Revision}{\svne@rev}%
+      \svnkwdef{Author}{\svne@author}%
+      \svnkwdef{HeadURL}{\svne@url}%
+      \@svn@updateid{\svne@rev}{\svne@date}{\svne@author}{\svne@url}%
+      \svne@endread
+    }{}%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svnegetfile}[1]{file path}
+%    \begin{macrocode}
+\def\svnegetfile#1{%
+  \begingroup
+    \svn@getfilename{#1}%
+    \edef\svnfilefname{\svnfilefname}%
+    \@onelevel@sanitize\svnfilefname
+    \svne@parseentriesfile{\svnfiledir .svn/}%
+    \svne@parseentriesfile{\svnfiledir _svn/}%
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% Load keywords of main document at begin of the document body if option is set 
+% to 'all'.
+%    \begin{macrocode}
+\if@svnmulti@autokwall
+\AtBeginDocument{%
+    \svnegetfile{\jobname.\svn@mainext}%
+}
+\fi
+%    \end{macrocode}
+
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+
+
 % \subsection{Timezone macros}
 % \begin{macro}{\svntimezone}
 % \begin{macro}{\svnfiletimezone}
@@ -2987,8 +3333,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 
 % The following extensions are ignored by default.
 %    \begin{macrocode}
-\svnignoreextensions{aux,bbl,cfg,cls,fd,enc,fls,glo,idx,ilg,ind,ist,%
-lof,log,lot,out,sty,svn,svt,svx,toc}
+\svnignoreextensions{aux,bbl,fd,enc,fls,glo,idx,ilg,ind,ist,%
+lof,log,lot,out,svn,svt,svx,toc}
 %    \end{macrocode}
 
 % Check at the end of every input file if files should be extra groups and
@@ -3005,11 +3351,29 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 }
 %    \end{macrocode}
 
+% The main file is added to the main base name (|\jobname|) subgroup here.  This 
+% subgroup is added as first element to the active group at begin of the 
+% document body.
 %    \begin{macrocode}
+\if@svnmulti@subgroups
+  \ifsvnsubgroups
+    \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
+    \svnsubgroup
+  \fi
+\fi
 \AtBeginDocument{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
-      \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
+      \@ifundefined{@svng@\svn@g @files}%
+        {%
+          \expandafter
+          \xdef\csname @svng@\svn@g @files\endcsname{\jobname}%
+        }%
+        {%
+          \expandafter
+          \xdef\csname @svng@\svn@g @files\endcsname
+            {\jobname,\csname @svng@\svn@g @files\endcsname}%
+        }%
       \svnsubgroup
     \fi
   \fi
@@ -3045,7 +3409,37 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \texttt{\{ \}}}
+% \begin{macro}{\svnexternal}[2]{group name}{list of filenames in \texttt{\{ 
+% \}}}
+%    \begin{macrocode}
+\if@svnmulti@autokw
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcommand*\svnexternal[2][]{%
+  \svn@pushfilestack
+  \svn@ifequal{#1}{*}%
+    {\edef\svn@eg{\svn@g}}%
+    {\svn@ifempty{#1}%
+      {\edef\svn@eg{\svn@externalgroup}}%
+      {\edef\svn@eg{#1}}%
+    }%
+  \svne@@external#2\relax
+  \svn@popfilestack
+}
+
+\def\svne@@external#1{%
+  \ifx\relax#1\empty\else
+    \svnegetfile{#1}%
+    \begingroup\svn@externalfile{\svn@eg}{#1}%
+    \expandafter\svne@@external
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
 % Writes the current input file path and its argument as arguments of
 % \cs{@svnexternal} into the |.svn| file.
 %    \begin{macrocode}
@@ -3066,6 +3460,9 @@ lof,log,lot,out,sty,svn,svt,svx,toc}
   \fi
   \svn@inputsvx{\svn@filedir\svn@filebase}%
 }
+%    \end{macrocode}
+%    \begin{macrocode}
+\fi
 %    \end{macrocode}
 % \end{macro}
 
@@ -3430,7 +3827,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\svntable}
 %    \begin{macrocode}
 \def\svntable{%
-  \begin{tabular}{p{0.425\textwidth}rp{0.25\textwidth}p{0.225\textwidth}}%
+  \begin{tabular}{p{0.425\textwidth}rll}%
     \hline
 }
 %    \end{macrocode}
@@ -3621,6 +4018,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \def\svn@getfilename#1{%
   \begingroup
+    \gdef\svnfiledir{}%
     \edef\svn@temp{#1}%
     \expandafter\@svn@getfilename\svn@temp/{}\relax
 }%
@@ -3635,9 +4033,15 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % split the remainder.
 %    \begin{macrocode}
 \def\@svn@getfilename#1/#2\relax{%
-    \svn@ifempty{#2}%
-      {\endgroup\gdef\svnfilefname{#1}}%
-      {\@svn@getfilename#2\relax}%
+  \svn@ifempty{#2}%
+    {%
+      \endgroup
+      \gdef\svnfilefname{#1}%
+    }%
+    {%
+      \xdef\svnfiledir{\svnfiledir#1/}%
+      \@svn@getfilename#2\relax
+    }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -3741,18 +4145,34 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \advance\svn@grouplevel by 1\relax
     \expandafter\let
     \expandafter\svn@files\csname @svng@#1@files\endcsname
+%    \end{macrocode}
+% Stop if no files in list.
+%    \begin{macrocode}
     \ifx\svn@files\relax\else
       \svn@cleanfilelist\svn@files
       \@for\svn@file:=\svn@files\do{%
+%    \end{macrocode}
+% Check if VC data is set and then if it is a (sub)group or not by looking at 
+% the file list.
+%    \begin{macrocode}
         \svn@ifvalidrev{@svng@\svn@file @rev}%
           {%
             \@ifundefined{@svng@\svn@file @files}%
               {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
-              {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
-                {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
-                {%
-                  \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
-                  \svn@writegroupfiles{\svn@file}%
+%    \end{macrocode}
+% If subgroup only contains out of a TeX file with the same name print it as 
+% file and only as subgroup otherwise. If the subgroup file list is empty the 
+% subgroup was generated in error and is not printed at all.
+%    \begin{macrocode}
+              {\svn@ifonlyone{\svn@file}%
+                {\svn@writefilerow{\the\svn@grouplevel}%
+                  {\csname @svng@\svn@file @files\endcsname}}%
+                {\svn@ifempty{\csname @svng@\svn@file @files\endcsname}%
+                  {}%
+                  {%
+                    \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
+                    \svn@writegroupfiles{\svn@file}%
+                  }%
                 }%
               }%
           }{}%
@@ -3816,6 +4236,24 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 }
 %    \end{macrocode}
 % \end{macro}
+
+% Load the keywords of every subfile if the \op{autokw} option is enabled and 
+% the extension is not on the ignore list.
+%
+% This code is placed here because it has to come after the at-begin-input-file 
+% code.
+%     \begin{macrocode}
+\if@svnmulti@autokwall
+
+\svnmulti@atbegininputfile{%
+  \expandafter
+  \ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
+    \svnegetfile{\svn@filepath}%
+  \fi
+}
+
+\fi
+%    \end{macrocode}
 
 % At the end of document the values are written to the auxiliary file.
 %    \begin{macrocode}
