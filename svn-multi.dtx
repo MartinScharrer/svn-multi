@@ -1552,7 +1552,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
 % \begin{macro}{\svn@ifeof}[1]{input file handle}
 % Checks if the input file is at the end-of-file (or not open).
 %    \begin{macrocode}
@@ -1565,7 +1565,22 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
+% \begin{macro}{\svn@ifonlyone}[1]{group name}
+% Checks if there is only one element in the given group file list.
+% It looks whether there is a comma in the list.
+%    \begin{macrocode}
+\def\svn@ifonlyone#1{%
+  \expandafter\expandafter\expandafter
+  \svn@@ifonlyone\csname @svng@#1@files\endcsname,\relax
+}
+
+\def\svn@@ifonlyone#1,#2\relax{%
+  \svn@ifempty{#2}
+}
+%    \end{macrocode}
+% \end{macro}
+
 % \begin{macro}{\svn@input}[1]{file name/path}
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
@@ -1581,7 +1596,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
+
 % \begin{macro}{\svn@inputsvx}[1]{file name/path without extension}
 % Used to save and restore file keywords when reading |.svx| files.
 %    \begin{macrocode}
@@ -1592,16 +1607,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\@namexdef}[1]{macro name}
-% Provides an expanding and global version of |\@namedef|.
-%    \begin{macrocode}
-\providecommand\@namexdef[1]{%
-  \expandafter\xdef\csname #1\endcsname
-}
-%    \end{macrocode}
-% \end{macro}
-%
 
 % \subsection{Definition of init values}
 % Initialisation of at least the revision to a numeric value is necessary to not
@@ -4027,8 +4032,9 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % file and only as subgroup otherwise. If the subgroup file list is empty the 
 % subgroup was generated in error and is not printed at all.
 %    \begin{macrocode}
-              {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
-                {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
+              {\svn@ifonlyone{\svn@file}%
+                {\svn@writefilerow{\the\svn@grouplevel}%
+                  {\csname @svng@\svn@file @files\endcsname}}%
                 {\svn@ifempty{\csname @svng@\svn@file @files\endcsname}%
                   {}%
                   {%
