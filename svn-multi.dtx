@@ -4018,9 +4018,12 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
               {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
               {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
                 {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
-                {%
-                  \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
-                  \svn@writegroupfiles{\svn@file}%
+                {\svn@ifempty{\csname @svng@\svn@file @files\endcsname}%
+                  {}%
+                  {%
+                    \svn@writesubgrouprow{\the\svn@grouplevel}{\svn@file}%
+                    \svn@writegroupfiles{\svn@file}%
+                  }%
                 }%
               }%
           }{}%
