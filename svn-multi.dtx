@@ -276,7 +276,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2641}
+% \CheckSum{2643}
 %
 % {\makeatother
 % \CharacterTable
@@ -585,7 +585,8 @@
 %   necessary as long the files are inside a Subversion working directory and 
 %   not exported.
 %   \item[\texttt{ext}] Only the keywords of external files are extracted. This 
-%     avoids the need of the \scr{svn-multi.pl} script.
+%   avoids the need of the \scr{svn-multi.pl} script. The option \op{external} 
+%   must be still enabled manually.
 % \end{description}
 %
 % \subsection{Including Subversion Keywords}\label{sec:usage:id}
@@ -1491,11 +1492,13 @@
 \ifx\@svnmulti@autokw\svn@temp
   \@svnmulti@autokwtrue
   \@svnmulti@autokwalltrue
+  \svn@depoption{filehooks}
 \fi
 \def\svn@temp{all}
 \ifx\@svnmulti@autokw\svn@temp
   \@svnmulti@autokwtrue
   \@svnmulti@autokwalltrue
+  \svn@depoption{filehooks}
 \fi
 \def\svn@temp{ext}
 \ifx\@svnmulti@autokw\svn@temp
