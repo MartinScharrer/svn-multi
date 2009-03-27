@@ -1667,15 +1667,22 @@
 %    \end{macrocode}
 
 % \subsection{Auto-Keywords}
+
+% Special care must be taken for the line feed character |^^L|, otherwise it 
+% causes an error if \op{autokw} is disabled.
+%    \begin{macrocode}
+\begingroup
+\@makeother\^^L
+\if@svnmulti@autokw
+\gdef\svne@ff{^^L}
+\fi
+\endgroup
+%    \end{macrocode}
+
 %    \begin{macrocode}
 \if@svnmulti@autokw
 
 \newread\svne@read
-
-\begingroup
-\@makeother\^^L
-\gdef\svne@ff{^^L}
-\endgroup
 
 \newcommand*{\svne@catcodes}{%
   \let\do\@makeother
