@@ -4009,13 +4009,25 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \advance\svn@grouplevel by 1\relax
     \expandafter\let
     \expandafter\svn@files\csname @svng@#1@files\endcsname
+%    \end{macrocode}
+% Stop if no files in list.
+%    \begin{macrocode}
     \ifx\svn@files\relax\else
       \svn@cleanfilelist\svn@files
       \@for\svn@file:=\svn@files\do{%
+%    \end{macrocode}
+% Check if VC data is set and then if it is a (sub)group or not by looking at 
+% the file list.
+%    \begin{macrocode}
         \svn@ifvalidrev{@svng@\svn@file @rev}%
           {%
             \@ifundefined{@svng@\svn@file @files}%
               {\svn@writefilerow{\the\svn@grouplevel}{\svn@file}}%
+%    \end{macrocode}
+% If subgroup only contains out of a TeX file with the same name print it as 
+% file and only as subgroup otherwise. If the subgroup file list is empty the 
+% subgroup was generated in error and is not printed at all.
+%    \begin{macrocode}
               {\svn@ifequal{\csname @svng@\svn@file @files\endcsname}{\svn@file.tex}%
                 {\svn@writefilerow{\the\svn@grouplevel}{\svn@file.tex}}%
                 {\svn@ifempty{\csname @svng@\svn@file @files\endcsname}%
