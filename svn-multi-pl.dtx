@@ -57,18 +57,20 @@
 #
 #
 %<*driver>
+\fi
+\makeatletter
 % $Id$
-\def\svnmulti@version {v0.1a}
-\def\svnmulti@rev  $#1: #2 $ {\def\svnmulti@rev{#2}}
-\def\svnmulti@date $#1: #2-#3-#4 $ {%
-  \year#2\month#3\day#4\relax
-  \def\svnmulti@date{#2/#3/#4}%
+\def\svnmultipl@version {v0.1a}
+\def\svnmultipl@rev  $#1: #2 ${\def\svnmultipl@rev{#2}}
+\def\svnmultipl@date $#1: #2-#3-#4 #5 ${%
+  \def\svnmultipl@today{{\year#2\month#3\day#4\today}}%
+  \def\svnmultipl@date{#2/#3/#4}%
 }
-\svnmulti@rev  $Rev$
-\svnmulti@date $Date$
+\svnmultipl@rev  $Rev$
+\svnmultipl@date $Date$
 
 \ProvidesFile{svn-multi-pl.dtx}
- [\filedate\space\fileversion\space SVN Keywords extractor for svn-multi]
+ [\svnmultipl@date\space\svnmultipl@version\space SVN Keywords extractor for svn-multi]
 
 \documentclass{ltxdoc}
 \usepackage{ifpdf}
@@ -126,10 +128,12 @@
 % }
 % \iffalse " \fi
 %
-% \title{The \textsf{svn-multi.pl} script\thanks{This document
-%   corresponds to \textsf{svn-multi.pl}~\fileversion, dated \filedate.}}
+% \title{The \textsf{svn-multi.pl} Script}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
-% \url{http://www.scharrer-online.de/latex/svn-multi}}
+% \url{http://www.scharrer-online.de/latex/svn-multi} \\
+% CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
+% \date{Version \expandafter\@gobble\svnmultipl@version\\[0.5ex]\svnmultipl@today}
+%
 %
 % \ifpdf
 % \hypersetup{
