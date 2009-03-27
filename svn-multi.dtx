@@ -1668,15 +1668,15 @@
 \newread\svne@read
 
 \begingroup
-\catcode`\^^L=12
+\@makeother\^^L
 \gdef\svne@ff{^^L}
 \endgroup
 
 \newcommand*{\svne@catcodes}{%
   \let\do\@makeother
   \endlinechar=-1
-  \catcode`\^^L=12
   \dospecials
+  \do\- \do\: \do\. \do\^^L
 }
 
 \def\svne@readline#1{%
@@ -1756,10 +1756,9 @@
 
 \begingroup
 
-\catcode`\-=12
-\catcode`\:=12
-\catcode`\.=12
-%\catcode`\T=12
+\@makeother\-
+\@makeother\:
+\@makeother\.
 
 \gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
   \gdef\svnfileyear{#1}%
