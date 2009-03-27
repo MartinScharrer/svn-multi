@@ -17,21 +17,31 @@
 %
 % This work consists of the files svn-multi.dtx and svn-multi.ins
 % and the derived files svn-multi.sty and svnkw.sty.
-% $Id$
+%
+% <*driver>
+\makeatletter
+% </driver>
 % \fi
 % \iffalse
-%<*package|driver|wrapper>
-\def\filedate$#1: #2 #3 #4-#5-#6 #7 ${%
- \year#4\month#5\day#6\relax
- \def\filedate{#4/#5/#6}%
- \def\filerev{#3}%
-}
-\filedate$Id$
-\def\fileversion{v2.1}
-%</package|driver|wrapper>
+%<*package|driver>
+% $Id$
+%
+\def\svnmulti@version {v2.1}
+\def\svnmulti@rev  $#1: #2 $ {\def\svnmulti@rev{#2}}
+\def\svnmulti@date $#1: #2-#3-#4 $ {\def\svnmulti@date{#2/#3/#4}}
+\svnmulti@rev  $Rev: 687 $
+\svnmulti@date $Date: 2009-03-27 $
+
+%</package|driver>
 %<*driver>
 \ProvidesFile{svn-multi.dtx}
- [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
+ [\svnmulti@date\space\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
+
+\def\svnmulti@date $#1: #2-#3-#4 $ {%
+  \year#2\month#3\day#4\relax
+  \def\svnmulti@date{#2/#3/#4}%
+}
+\svnmulti@date $Date: 2009-03-27 $
 
 \documentclass{ltxdoc}
 \usepackage{svn-multi}
@@ -333,7 +343,7 @@
 % \DoNotIndex{\^,\ ,\_,\(,\),\$,\&,\#,\@ampersamchar,\AtEndOfPackage}
 % \DoNotIndex{\@backslashchar,\begin,\bgroup,\chapter,\day}
 % \DoNotIndex{\DeclareOption,\do,\dospecials,\@dottedtocline,\egroup}
-% \DoNotIndex{\end,\ExecuteOptions,\filedate,\fileversion,\@for}
+% \DoNotIndex{\end,\ExecuteOptions,\svnmulti@date,\svnmulti@version,\@for}
 % \DoNotIndex{\futurelet,\g@addto@macro,\global,\@gobbletwo,\hline}
 % \DoNotIndex{\hspace,\if@restonecol,\if@twocolumn,\ignorespaces}
 % \DoNotIndex{\makeatletter,\MakeUppercase,\@mkboth,\month,\@namedef}
@@ -353,13 +363,13 @@
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://www.scharrer-online.de/latex/svn-multi}\\
 % CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
-% \date{Version \expandafter\@gobble\fileversion\\[0.5ex]\today}
+% \date{Version \expandafter\@gobble\svnmulti@version\\[0.5ex]\today}
 %
 % \ifpdf
 % \hypersetup{%
 %   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle    = {The svn-multi package, \fileversion, r\filerev\ from 
-%                  \filedate},
+%   pdftitle    = {The svn-multi package, \svnmulti@version, r\svnmulti@rev\ 
+%                  from \svnmulti@date},
 %   pdfsubject  = {Documentation of LaTeX package svn-multi which allows the 
 %                  typesetting of Subversion keywords in multi-file LaTeX 
 %                  documents},
@@ -1369,7 +1379,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{svn-multi}
- [\filedate\space\fileversion\space SVN Keywords for multi-file LaTeX documents]
+ [\svnmulti@date\space\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
 %    \end{macrocode}
 
 % \subsubsection*{Options}
@@ -4280,11 +4290,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{svnkw}
-[\filedate\space\fileversion\space Backward compatibility wrapper for svn-multi]
-\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi'
-and is now only a backward compatibility wrapper which loads 'svn-multi'.
-Please adjust your document preamble to use the new name.}
-\RequirePackage{svn-multi}[\filedate]
+  [2009/03/27 v2.1 Backward compatibility wrapper for svn-multi]
+\PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi' and is now 
+only a backward compatibility wrapper which loads 'svn-multi'.  Please adjust 
+your document preamble to use the new name.}
+\RequirePackage{svn-multi}
 %    \end{macrocode}
 % \iffalse
 %</wrapper>
