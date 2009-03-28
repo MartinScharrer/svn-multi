@@ -1,7 +1,7 @@
 # $Id: Makefile 628 2007-07-10 20:32:06Z martin $
 
 PACKAGE=svn-multi
-PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf svn-multi-pl.dtx svn-multi.pl example_main.tex \
+PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf svn-multi-pl.dtx example_main.tex \
 			example_chap1.tex example.pdf Makefile README group_example.tex
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd
 TESTDIR = tests
