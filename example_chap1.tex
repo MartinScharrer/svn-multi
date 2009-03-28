@@ -1,7 +1,6 @@
 % Version control information:
-\svnid{$Id: example_chap1.tex 211 2009-02-27 13:58:39Z martin $}
 \svnidlong
-{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/example_chap1.tex $}
+{$HeadURL: svn://server/dir/example_chap1.tex $}
 {$LastChangedDate: 2009-02-27 13:58:39 +0000 (Fri, 27 Feb 2009) $}
 {$LastChangedRevision: 211 $}
 {$LastChangedBy: martin $}
@@ -13,14 +12,14 @@
 % \url is needed because there is an underscore in the name
 % The package 'underscore' seems not to work properly, so the 'hyperref'
 % package is used which is not the best solution. Avoid underscore in LaTeX filenames.
-Filename: \svnnolinkurl{\svnkw{Filename}}\\
-URL: \url{\svnkw{HeadURL}}\\
-% Something like \href{\svnkw{HeadURL}}{Download} works also!
+Filename: \svnnolinkurl{\svnfilefname}\\
+URL: \svnnolinkurl{\svnfileurl}\\
+% Something like \href{\svnfileurl}{Download} works also!
 \textbf{Last change}\\
 Revision: \svnfilerev\\
 Date: \svnfiledate\\
 Year: \svnfileyear\\
-Time: \svnfilehour:\svnfileminute:\svnfilesecond\ \svnfiletimezone00\\
+Time: \svnfilehour:\svnfileminute:\svnfilesecond\ \svnfiletimezone\\
 Timezone: \svnfiletimezonehour : \svnfiletimezoneminute\\
 Author: \svnfileauthor\\
 
@@ -31,12 +30,12 @@ URL: \url{\svnmainurl}\\
 Revision: \svnrev\\
 Date: \svndate\\
 Year: \svnyear\\
-Time: \svnhour:\svnminute:\svnsecond\ \svntimezone00\\
+Time: \svnhour:\svnminute:\svnsecond\ \svntimezone\\
 Timezone: \svntimezonehour : \svntimezoneminute\\
 Author: \svnauthor\\
 % [...]
 
-\section{Tests}
+\section{Full Author Names}
 \svnRegisterRevision{14}{Test}
 
 Registered author name: \svnFullAuthor{\svnfileauthor}\\

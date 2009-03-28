@@ -1,39 +1,35 @@
 \documentclass[12pt]{report}
-\usepackage[all,external,groups]{svn-multi}[2009/03/03]
+
+% Traditional way to include keywords:
+\usepackage{svn-multi}[2009/03/03]
 % Version control information:
 \svnidlong
-{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi-2/example_main.tex $}
+{$HeadURL: svn://server/dir/example_main.tex $}
 {$LastChangedDate: 2008-12-03 13:29:19 +0000 (Wed, 03 Dec 2008) $}
 {$LastChangedRevision: 146 $}
 {$LastChangedBy: martin $}
-\svnid{$Id: example_main.tex 146 2008-12-03 13:29:19Z martin $}
+% The extra Id to access the file name is not needed anymore because it is 
+% extracted from the URL:
+%\svnid{$Id: example_main.tex 146 2008-12-03 13:29:19Z martin $}
+%
 % Don't forget to set the svn property 'svn:keywords' to
 % 'HeadURL LastChangedDate LastChangedRevision LastChangedBy' or
 % 'Id' or both depending if you use \svnidlong and/or \svnid
 
-
-% Include keywords from the following external files and put them in the
-% 'external' group.
-% Note: this only works when the 'svn-multi.pl' is run on this file after it has
-% been compiled once AND the files below are part of a Subversion working
-% directory. The latter is not the case if this file is from the CTAN server.
-\svngroup{external}
-\svnexternalpath{{images/}}
-\svnexternal{{Makefile}{svn-multi.dtx}{svn-multi.ins}}
-\svngroup{}
-%
+% Alternative you can use the auto-keyword feature to extract the keywords from 
+% the Subversion working directory:
+%\usepackage[autokw=all]{svn-multi}[2009/03/28]
 
 \usepackage{hyperref}
-\usepackage{url}
 
 \usepackage{fancyhdr}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \setlength{\headheight}{14.5pt}
 % This will display the last changed revision of the current chapter.
-% Change \svnkw{LastChangedRevision} to \svnrev if you like to have the
+% Change \svnfilerev to \svnrev if you like to have the
 % document revision.
-\newcommand{\svnfooter}{Last Changed Rev: \svnkw{LastChangedRevision}}
+\newcommand{\svnfooter}{Last Changed Rev: \svnfilerev}
 
 \pdfinfo{%
   /CreationDate (D:\svnpdfdate)
@@ -44,46 +40,32 @@
 \svnRegisterAuthor{martin}{Martin S.}
 \svnRegisterRevision{15}{Version~1}
 
-\usepackage{graphics}
-\graphicspath{{images/}}
-\usepackage{pgf}
-\begingroup
-\pgfdeclareimage[width=4cm]{test}{images/logo}
-
 \listfiles
 \begin{document}
-
 
 \begin{titlepage}
  \vspace{8ex}
  {\huge Title\par}
  \vspace{2ex}
- {\large \noindent This is an example document for the \texttt{svn-multi} (aka
- \texttt{svnkw}) package. Please also look at the LaTeX source code of this
- document.}
+ {\large \noindent This is an small example document for the \texttt{svn-multi} 
+ (aka \texttt{svnkw}) package. Please also look at the LaTeX source code of this 
+ document. An advanced example which includes keyword groups is shown in 
+ \url{group\_example.pdf}}
  \vfill
  \flushleft\sffamily
  Version control information:\\
- Head URL: \url{\svnkw{HeadURL}}\\
- Head URL: \svnnolinkurl{\svnkw{HeadURL}}\\
+ Head URL: \svnnolinkurl{\svnmainurl}\\
+ %or with hyperlink: Head URL: \url{\svnurl}\\
+ Last changed file: \texttt{\svnfname}\\
  Last changed date: \svndate\\
  Last changes revision: \svnrev\\
  Version: \svnFullRevision*{\svnrev}\\
  Last changed by: \svnFullAuthor*{\svnauthor}\\
 \end{titlepage}
 
-\tableofcontents
-
 % Include chapters
 \include{example_chap1}
 %\include{example_chap2}
 %\include{example_chap3}
-
-
-%\input{test}
-%\pgfuseimage{test}
-\makeatletter
-
-\makeatother
 
 \end{document}
