@@ -3413,8 +3413,8 @@ lof,log,lot,out,svn,svt,svx,toc}
 \if@svnmulti@groups
 \def\svnexternalgroup#1{%
   \svn@ifequal{#1}{*}%
-    {\def\svn@externalgroup{#1}}%
     {\def\svn@externalgroup{\svn@g}}%
+    {\def\svn@externalgroup{#1}}%
 }
 \def\svn@externalgroup{\svn@g}
 \else
