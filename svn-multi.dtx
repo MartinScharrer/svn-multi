@@ -2741,8 +2741,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@removedotslash#1{%
   \def\svn@removedotslash@##1##2##3\relax{%
     \svn@ifequal{./}{##1##2}%
-      {\edef#1{##3}\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
-      {\edef#1{##1##2##3}\let\next\relax}%
+      {\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
+      {\xdef#1{##1##2##3}\let\next\relax}%
     \next
   }%
   \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
