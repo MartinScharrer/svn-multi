@@ -41,7 +41,7 @@ package: ${PACKAGE}.sty ${PACKAGE}.pl
 %.eps: %.dia
 	dia -t eps -e $@ $<
 
-${PACKAGE}.pdf:
+${PACKAGE}.pdf: ${PACKAGE}.sty
 
 ${INSGENERATED}: *.dtx ${PACKAGE}.ins 
 	yes | latex ${PACKAGE}.ins
