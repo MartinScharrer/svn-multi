@@ -3379,6 +3379,9 @@ lof,log,lot,out,svn,svt,svx,toc}
 \AtBeginDocument{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
+    \@ifundefined{@svng@\svn@g @files@\jobname}%
+      {%
+      \@namedef{@svng@\svn@g @files@\jobname}{1}%
       \@ifundefined{@svng@\svn@g @files}%
         {%
           \expandafter
@@ -3389,6 +3392,7 @@ lof,log,lot,out,svn,svt,svx,toc}
           \xdef\csname @svng@\svn@g @files\endcsname
             {\jobname,\csname @svng@\svn@g @files\endcsname}%
         }%
+      }{}%
       \svnsubgroup
     \fi
   \fi
