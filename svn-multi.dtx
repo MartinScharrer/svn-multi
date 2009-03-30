@@ -3413,10 +3413,10 @@ lof,log,lot,out,svn,svt,svx,toc}
 \if@svnmulti@groups
 \def\svnexternalgroup#1{%
   \svn@ifequal{#1}{*}%
-    {\def\svn@externalgroup{\svn@g}}%
+    {\def\svn@externalgroup{\svn@pg}}%
     {\def\svn@externalgroup{#1}}%
 }
-\def\svn@externalgroup{\svn@g}
+\def\svn@externalgroup{\svn@pg}
 \else
 \def\svn@externalgroup{}
 \fi
@@ -3433,7 +3433,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 \newcommand*\svnexternal[2][]{%
   \svn@pushfilestack
   \svn@ifequal{#1}{*}%
-    {\edef\svn@eg{\svn@g}}%
+    {\edef\svn@eg{\svn@pg}}%
     {\svn@ifempty{#1}%
       {\edef\svn@eg{\svn@externalgroup}}%
       {\edef\svn@eg{#1}}%
@@ -3462,7 +3462,7 @@ lof,log,lot,out,svn,svt,svx,toc}
     \svn@checkwrite
     \begingroup
       \svn@ifequal{#1}{*}%
-        {\def\svn@temp{\svn@g}}%
+        {\def\svn@temp{\svn@pg}}%
         {\svn@ifempty{#1}%
           {\def\svn@temp{\svn@externalgroup}}%
           {\def\svn@temp{#1}}%
@@ -3592,7 +3592,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \begin{macrocode}
 \def\svngraphicsgroup#1{%
   \svn@ifequal{#1}{*}%
-    {\def\svn@graphicsgroup{\svn@g}}%
+    {\def\svn@graphicsgroup{\svn@pg}}%
     {\def\svn@graphicsgroup{#1}}%
 }
 \def\svn@graphicsgroup{\svn@externalgroup}
