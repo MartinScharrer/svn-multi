@@ -2741,8 +2741,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@removedotslash#1{%
   \def\svn@removedotslash@##1##2##3\relax{%
     \svn@ifequal{./}{##1##2}%
-      {\edef#1{##3}\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
-      {\edef#1{##1##2##3}\let\next\relax}%
+      {\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
+      {\xdef#1{##1##2##3}\let\next\relax}%
     \next
   }%
   \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
@@ -2776,9 +2776,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
+  \svn@pushfilestack
   \if@svnmulti@groups
     \svn@ifequal{\svn@filepath}{\jobname.\svn@mainext}%
-      {\global\let\svn@pg\svn@g}%
+      {\xdef\svn@pg{\svn@g}}%
       {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
   \fi
   \xdef\svn@filebase{\fink@nextbase}%
@@ -2802,6 +2803,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\fink@restore#1{%
   \svnmulti@endinputfilehook
   \svnmulti@fink@restore{#1}%
+  \svn@popfilestack
   \xdef\svn@filebase{\finkbase}%
   \xdef\svn@fileext{\finkext}%
   \xdef\svn@filedir{\finkdir}%
@@ -2900,13 +2902,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \fi
 }
 
-\svnmulti@atbegininputfile{%
-  \svn@pushfilestack
-}
-
-\svnmulti@atendinputfile{%
-  \svn@popfilestack
-}%
 %
 %    \end{macrocode}
 
@@ -3418,10 +3413,10 @@ lof,log,lot,out,svn,svt,svx,toc}
 \if@svnmulti@groups
 \def\svnexternalgroup#1{%
   \svn@ifequal{#1}{*}%
+    {\def\svn@externalgroup{\svn@pg}}%
     {\def\svn@externalgroup{#1}}%
-    {\def\svn@externalgroup{\svn@g}}%
 }
-\def\svn@externalgroup{\svn@g}
+\def\svn@externalgroup{\svn@pg}
 \else
 \def\svn@externalgroup{}
 \fi
@@ -3438,7 +3433,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 \newcommand*\svnexternal[2][]{%
   \svn@pushfilestack
   \svn@ifequal{#1}{*}%
-    {\edef\svn@eg{\svn@g}}%
+    {\edef\svn@eg{\svn@pg}}%
     {\svn@ifempty{#1}%
       {\edef\svn@eg{\svn@externalgroup}}%
       {\edef\svn@eg{#1}}%
@@ -3467,7 +3462,7 @@ lof,log,lot,out,svn,svt,svx,toc}
     \svn@checkwrite
     \begingroup
       \svn@ifequal{#1}{*}%
-        {\def\svn@temp{\svn@g}}%
+        {\def\svn@temp{\svn@pg}}%
         {\svn@ifempty{#1}%
           {\def\svn@temp{\svn@externalgroup}}%
           {\def\svn@temp{#1}}%
@@ -3597,7 +3592,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \begin{macrocode}
 \def\svngraphicsgroup#1{%
   \svn@ifequal{#1}{*}%
-    {\def\svn@graphicsgroup{\svn@g}}%
+    {\def\svn@graphicsgroup{\svn@pg}}%
     {\def\svn@graphicsgroup{#1}}%
 }
 \def\svn@graphicsgroup{\svn@externalgroup}
