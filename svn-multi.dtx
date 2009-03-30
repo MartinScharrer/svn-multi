@@ -2776,9 +2776,10 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \let\svnmulti@fink@prepare\fink@prepare
 \renewcommand*{\fink@prepare}[1]{%
   \svnmulti@fink@prepare{#1}%
+  \svn@pushfilestack
   \if@svnmulti@groups
     \svn@ifequal{\svn@filepath}{\jobname.\svn@mainext}%
-      {\global\let\svn@pg\svn@g}%
+      {\xdef\svn@pg{\svn@g}}%
       {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
   \fi
   \xdef\svn@filebase{\fink@nextbase}%
@@ -2802,6 +2803,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\fink@restore#1{%
   \svnmulti@endinputfilehook
   \svnmulti@fink@restore{#1}%
+  \svn@popfilestack
   \xdef\svn@filebase{\finkbase}%
   \xdef\svn@fileext{\finkext}%
   \xdef\svn@filedir{\finkdir}%
@@ -2900,13 +2902,6 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \fi
 }
 
-\svnmulti@atbegininputfile{%
-  \svn@pushfilestack
-}
-
-\svnmulti@atendinputfile{%
-  \svn@popfilestack
-}%
 %
 %    \end{macrocode}
 
