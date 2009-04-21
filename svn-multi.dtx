@@ -3715,6 +3715,9 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \begin{macro}{\tableofrevisions}
 % The |\tableofcontents| macro from standard \LaTeX\ is adapted for this macro.
 % Classes which provide chapters will get a different table then one which not.
+%
+% The external (\ie non-svn-multi) if-switches are masked using |\ifx| and 
+% |\csname| to avoid \TeX{} if-parsing errors when they are not defined.
 %    \begin{macrocode}
 \AtBeginDocument{%
 \ifx\chapter\@undefined
@@ -3730,7 +3733,9 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 
 %% Adapted from the \tableofcontents macro, LaTeX `book' class [2005/09/16]
 \newcommand\tableofrevisions{%
-  \if@twocolumn
+  \expandafter\ifx
+  \csname if@twocolumn\expandafter\endcsname
+  \csname iftrue\endcsname
     \@restonecoltrue\onecolumn
   \else
     \@restonecolfalse
@@ -3738,7 +3743,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \chapter*{\svnrevisionsname
     \@mkboth{\MakeUppercase\svnrevisionsname}{\MakeUppercase\svnrevisionsname}}%
   \svn@input{\jobname .\svn@svt}%
-  \if@restonecol\twocolumn\fi
+  \expandafter\ifx
+  \csname if@restonecol\expandafter\endcsname
+  \csname iftrue\endcsname
+    \twocolumn
+  \fi
 }
 
 \fi
