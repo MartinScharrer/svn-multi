@@ -26,24 +26,27 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version {v2.1}
-\def\svnmulti@rev  $#1: #2 ${\def\svnmulti@rev{#2}}
-\def\svnmulti@date $#1: #2-#3-#4 #5 ${\def\svnmulti@date{#2/#3/#4}}
-\svnmulti@rev  $Rev$\relax
-\svnmulti@date $Date$\relax
-
+\def\svnmulti@version{v2.1}
+\RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
-\ProvidesFile{svn-multi.dtx}
- [\svnmulti@date\space\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
-
-\def\svnmulti@date $#1: #2-#3-#4 #5 $ {%
-  \def\svnmulti@today{{\year#2\month#3\day#4\today}}%
-  \def\svnmulti@date{#2/#3/#4}%
-}
-\svnmulti@date $Date$
+\ProvidesFileSVN{$Id$}
+ [\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
+\GetFileInfoSVN*
+\let\svnmulti@date\filedate
+\let\svnmulti@rev\filerev
 
 \documentclass{ltxdoc}
+
+\def\svnmulti@today#1/#2/#3\relax{%
+  \begingroup
+    \year#1\relax
+    \month#2\relax
+    \day#3\relax
+    \xdef\svnmulti@today{\today}
+  \endgroup
+}
+\expandafter\svnmulti@today\svnmulti@date\relax
 
 \usepackage{svn-multi}[\svnmulti@date]
 \usepackage{booktabs}
@@ -277,6 +280,7 @@
 %\OnlyDescription
 \widowpenalty=500
 \clubpenalty=500
+\listfiles
 \begin{document}
   \DocInput{svn-multi.dtx}%
   \PrintChanges
@@ -287,7 +291,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2652} 
+% \CheckSum{2650} 
 %
 % {\makeatother
 % \CharacterTable
@@ -1383,8 +1387,9 @@
 % \subsubsection*{Package Identification}
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{svn-multi}
- [\svnmulti@date\space\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
+\ProvidesPackageSVN
+  {$Id$}
+  [\svnmulti@version\space SVN Keywords for multi-file LaTeX documents]
 %    \end{macrocode}
 
 % \subsubsection*{Options}
@@ -4303,7 +4308,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{svnkw}
-  [2009/03/27 v2.1 Backward compatibility wrapper for svn-multi]
+ [2009/03/27 v2.1 Backward compatibility wrapper for svn-multi]
 \PackageWarning{svnkw}{The package 'svnkw' got renamed to 'svn-multi' and is now 
 only a backward compatibility wrapper which loads 'svn-multi'.  Please adjust 
 your document preamble to use the new name.}
