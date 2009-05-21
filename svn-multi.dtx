@@ -1590,22 +1590,22 @@
 
 % \begin{macro}{\svn@ifvalidrev}[1]{macro name}
 % Checks if the given macro (by name) is a valid revision, \ie defined and
-% greater than zero.
+% not equal to the init value.
 %    \begin{macrocode}
 \def\svn@ifvalidrev#1{%
   \begingroup
   \@ifundefined{#1}%
-    {\def\svn@temp{-1}}%
+    {\let\svn@temp\svn@revinit}%
     {\expandafter\edef
      \expandafter\svn@temp\expandafter{\csname #1\endcsname}}%
-  \ifnum\svn@temp>-1\relax
-    \endgroup
-    \expandafter
-    \@firstoftwo
-  \else
+  \ifnum\svn@temp=\svn@revinit\relax
     \endgroup
     \expandafter
     \@secondoftwo
+  \else
+    \endgroup
+    \expandafter
+    \@firstoftwo
   \fi
 }
 %    \end{macrocode}
@@ -1669,7 +1669,7 @@
 % \subsection{Definition of init values}
 % Initialisation of at least the revision to a numeric value is necessary to not
 % break the |\ifnum| tests later in this package. The revision is initialised to
-% -1, but will be set to 0 if an unexpanded |$||Rev:$| keyword is read. This way
+% -2, but will be set to 0 if an unexpanded |$||Rev:$| keyword is read. This way
 % it can be tested if a file had any keyword macros or not.\par
 % Note that there a two different macros for the document global keywords:\par
 % The user level |\svn|\meta{kw} macros hold the global value and are only valid
@@ -1687,7 +1687,8 @@
 % |\svn@g|\meta{current group}|@|\meta{kw}.
 %    \begin{macrocode}
 % Init values
-\def\svnrev{-1}             \def\@svn@rev{-1}
+\def\svn@revinit{-2}
+\let\svnrev\svn@revinit     \let\@svn@rev\svn@revinit
 \def\svndate{}              \def\@svn@date{}
 \def\svnauthor{}            \def\@svn@author{}
 \def\svnyear{0000}          \def\@svn@year{0000}
@@ -1706,7 +1707,7 @@
 \let\@svng@@files\relax
 
 \def\svn@initfile{%
-  \gdef\svnfilerev{-1}%
+  \global\let\svnfilerev\svn@revinit
   \gdef\svnfiledate{}%
   \gdef\svnfileauthor{}%
   \gdef\svnfileyear{0000}%
@@ -3203,7 +3204,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Initialises group.
 %    \begin{macrocode}
 \def\svn@initgroup#1{%
-  \svn@gkwset{#1}{rev}{-1}%
+  \svn@gkwset{#1}{rev}{\svn@revinit}%
   \svn@gkwset{#1}{date}{}%
   \svn@gkwset{#1}{author}{}%
   \svn@gkwset{#1}{year}{0000}%
@@ -3309,7 +3310,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % file keyword information is written.
 %    \begin{macrocode}
 \def\svn@subgroup#1{%
-  \ifnum\svnfilerev>-1\relax
+  \ifnum\svnfilerev=\svn@revinit\else
     \expandafter\ifx\csname svn@g@#1\endcsname\relax%
       \expandafter\gdef\csname svn@g@#1\endcsname{1}%
       \svn@updategroup{#1}%
