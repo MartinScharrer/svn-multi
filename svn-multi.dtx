@@ -291,7 +291,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2650} 
+% \CheckSum{0}
 %
 % {\makeatother
 % \CharacterTable
@@ -1723,6 +1723,8 @@
   \gdef\svnfiledir{}%
 }
 \svn@initfile
+
+\newif\ifsvn@modified
 %    \end{macrocode}
 
 % \subsection{Auto-Keywords}
@@ -2360,12 +2362,29 @@
 %
 % The keywords |Author| and |Date| are just calling \cs{svnkwdef@} with a fixed
 % first argument.  For the revision the value is checked if empty and then a 0
-% is substituted.
+% is substituted. Also a temp counter is used to strip any trailing characters 
+% like `M' which indicate an exported and modified file.
 %    \begin{macrocode}
 \def\svnkwdef@Rev#1{%
   \svn@ifempty{#1}%
     {\svnkwdef@{Rev}{0}}%
-    {\svnkwdef@{Rev}{#1}}%
+    {%
+     \afterassignment\svnkwdef@Rev@
+     \@tempcnta=#1\relax
+    }%
+}
+\def\svnkwdef@Rev@#1\relax{%
+  \svnkwdef@{Rev}{\the\@tempcnta}%
+  \def\svn@temp{#1}%
+  \if M\svn@temp\relax
+    \global\svn@modifiedtrue
+  \else
+    \if *\svn@temp\relax
+      \global\svn@modifiedtrue
+    \else
+      \global\svn@modifiedfalse
+    \fi
+  \fi
 }
 \def\svnkwdef@Author#1{\svnkwdef@{Author}{#1}}
 \def\svnkwdef@Date#1{\svnkwdef@{Date}{#1}}
