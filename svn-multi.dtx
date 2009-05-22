@@ -2889,6 +2889,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
     {\svnfilefname}%
     {\svn@g}%
     {\svn@pg}%
+    {\ifsvnfilemodified{@firstoftwo}{@secondoftwo}}%
   }\svn@filestack}%
 }
 
@@ -2896,7 +2897,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@restorefilekws@#1\empty
   \empty \empty \empty \empty
   \empty \empty \empty \empty
-  \empty \empty \empty \empty
+  \empty \empty \empty \empty \empty
   \svn@ifempty{#2}%
     {\gdef\svn@filestack{{}}}%
     {\gdef\svn@filestack{#2}}%
@@ -2914,13 +2915,15 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
   \svn@restorefilekws@@
 }
 
-\def\svn@restorefilekws@@#1#2#3#4#5#6{%
+\def\svn@restorefilekws@@#1#2#3#4#5#6#7{%
   \gdef\svnfiletimezonehour{#1}%
   \gdef\svnfiletimezoneminute{#2}%
   \gdef\svnfileurl{#3}%
   \gdef\svnfilefname{#4}%
   \gdef\svn@g{#5}%
   \gdef\svn@pg{#6}%
+  \expandafter\global\expandafter\let
+  \expandafter\ifsvnfilemodified\csname#7\endcsname%
 }
 
 \def\svn@popfilestack{%
