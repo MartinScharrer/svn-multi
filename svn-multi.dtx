@@ -1689,6 +1689,8 @@
 % Init values
 \def\svn@revinit{-2}
 \let\svnrev\svn@revinit     \let\@svn@rev\svn@revinit
+\let\ifsvnmodified\@secondoftwo
+\def\@svn@modified{@secondoftwo}%
 \def\svndate{}              \def\@svn@date{}
 \def\svnauthor{}            \def\@svn@author{}
 \def\svnyear{0000}          \def\@svn@year{0000}
@@ -2139,6 +2141,7 @@
   \ifx\svnfilerev\empty\else
     \ifnum\@svn@rev<\svnfilerev
       \xdef\@svn@rev{\svnfilerev}%
+      \xdef\@svn@modified{\ifsvnfilemodified{@firstoftwo}{@secondoftwo}}%
       \xdef\@svn@date{\svnfiledate}%
       \xdef\@svn@author{\svnfileauthor}%
       \xdef\@svn@year{\svnfileyear}%
@@ -4147,6 +4150,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \immediate\write\svn@write{^^J%
       \@percentchar\space Global values:^^J%
       \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
+      \noexpand\let\noexpand\ifsvnmodified\@backslashchar\@svn@modified^^J%
       \noexpand\def\noexpand\svndate{\@svn@date}^^J%
       \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
       \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
