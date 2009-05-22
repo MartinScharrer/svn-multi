@@ -1708,6 +1708,7 @@
 
 \def\svn@initfile{%
   \global\let\svnfilerev\svn@revinit
+  \global\let\ifsvnfilemodified\@secondoftwo
   \gdef\svnfiledate{}%
   \gdef\svnfileauthor{}%
   \gdef\svnfileyear{0000}%
@@ -2121,6 +2122,11 @@
 %    \begin{macrocode}
 \def\@svn@updateid#1#2#3#4{%
   \xdef\svnfilerev{#1}%
+  \ifsvn@modified
+    \global\let\ifsvnfilemodified\@firstoftwo
+  \else
+    \global\let\ifsvnfilemodified\@secondoftwo
+  \fi
   \xdef\svnfiledate{#2}%
   \xdef\svnfileauthor{#3}%
   \xdef\svnfileurl{#4}%
