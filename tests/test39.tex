@@ -1,0 +1,63 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+\usepackage{ifthen}
+
+
+\svnidlong
+{$URL$}
+{$Date$}
+{$Revision$}
+{$Author$}
+
+\pagestyle{empty}
+\begin{document}
+\ttfamily
+
+\chapter{Test 39}
+
+\section*{Short Keywords}
+
+\noindent
+\begin{tabular}{ll}
+Rev & \svnrev\\
+Date & \svndate\\
+Author & \svnauthor\\
+Filerev & \svnfilerev\\
+Filedate & \svnfiledate\\
+Fileauthor & \svnfileauthor\\
+FileURL & \svnfileurl\\
+Mainurl & \svnmainurl\\
+Mainfile & \svnmainfilename\\
+\end{tabular}
+
+
+\let\testdatea\svnfiledate
+
+\section*{Long Keywords}
+
+\svnidlong
+{$HeadURL$}
+{$LastChangedDate$}
+{$LastChangedRevision$}
+{$LastChangedBy$}
+
+\noindent
+\begin{tabular}{ll}
+Rev & \svnrev\\
+Date & \svndate\\
+Author & \svnauthor\\
+Filerev & \svnfilerev\\
+Filedate & \svnfiledate\\
+Fileauthor & \svnfileauthor\\
+FileURL & \svnfileurl\\
+Mainurl & \svnmainurl\\
+Mainfile & \svnmainfilename\\
+\end{tabular}
+
+\let\testdateb\svnfiledate
+
+
+\ifthenelse{\equal{\testdatea}{\testdateb}}{}{\error}
+
+\end{document}
+

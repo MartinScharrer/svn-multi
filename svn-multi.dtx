@@ -2182,10 +2182,10 @@
 % We clear the keyword value first to reduce the risk though bad user input.
 %    \begin{macrocode}
 \newcommand{\svnidlong}{%
-  \svnkwdef{HeadURL}{}%
-  \svnkwdef{LastChangedDate}{}%
-  \svnkwdef{LastChangedRevision}{0}%
-  \svnkwdef{LastChangedBy}{}%
+  \svnkwdef{URL}{}%
+  \svnkwdef{Date}{}%
+  \svnkwdef{Revision}{0}%
+  \svnkwdef{Author}{}%
 %    \end{macrocode}
 % The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters
 % inside the keywords.  The braces |{ }| are changed to allow comments between
@@ -2263,11 +2263,11 @@
 %    \end{macrocode}
 % Now the update macros for date and id are called.
 %    \begin{macrocode}
-  \ifx\svnkwLastChangedDate\empty\else
-    \@svn@scanlongdate{\svnkwLastChangedDate}%
+  \ifx\svnkwDate\empty\else
+    \@svn@scanlongdate{\svnkwDate}%
   \fi
-  \@svn@updateid{\svnkw{LastChangedRevision}}{\svnkw{LastChangedDate}}%
-  {\svnkw{LastChangedBy}}{\svnkw{HeadURL}}%
+  \@svn@updateid{\svnkw{Revision}}{\svnkw{Date}}%
+  {\svnkw{Author}}{\svnkw{URL}}%
   \ignorespaces
 }%
 %    \end{macrocode}
@@ -2405,14 +2405,14 @@
 \let\svnkwdef@Revision=\svnkwdef@Rev
 \let\svnkwdef@LastChangedRevision=\svnkwdef@Rev
 \let\svnkwdef@LastChangedBy=\svnkwdef@Author
-\let\svnkwdef@LastChangedAt=\svnkwdef@Date
+\let\svnkwdef@LastChangedDate=\svnkwdef@Date
 %    \end{macrocode}
 % and then for reading.
 %    \begin{macrocode}
 \def\svnkwRevision{\svnkwRev}
 \def\svnkwLastChangedRevision{\svnkwRev}
 \def\svnkwLastChangedBy{\svnkwAuthor}
-\def\svnkwLastChangedAt{\svnkwDate}
+\def\svnkwLastChangedDate{\svnkwDate}
 \def\svnkwURL{\svnkwHeadURL}
 %    \end{macrocode}
 % So \eg |\svnkw{LastChangedRevision}| is always be the
