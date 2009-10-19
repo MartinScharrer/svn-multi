@@ -1,9 +1,11 @@
 %&pdflatex
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{svn-multi}
+\usepackage{ifthen}
 
 \begin{document}
+\chapter{Test 38}
 
 \svnkwdef{URL}{URL}
 \svnkwdef{HeadURL}{HeadURL}
@@ -11,7 +13,7 @@
 \svnkwdef{Author}{Author}
 \svnkwdef{LastChangedDate}{LastChangedDate}
 
-\svnkwdef{LastChangedRev}{1}
+\svnkwdef{LastChangedRevision}{1}
 \svnkwdef{Rev}{2}
 \svnkwdef{Revision}{3}
 
@@ -31,8 +33,14 @@ HeadURL &\svnkw{HeadURL}\\
 \\
 Rev &\svnkw{Rev}\\
 Revision &\svnkw{Revision}\\
-LastChangedRev &\svnkw{LastChangedRev}\\
+LastChangedRev &\svnkw{LastChangedRevision}\\
 \end{tabular}
+
+\ifthenelse{\equal{\svnkw{Date}}{\svnkw{LastChangedDate}}}{}{\error}
+\ifthenelse{\equal{\svnkw{Author}}{\svnkw{LastChangedBy}}}{}{\error}
+\ifthenelse{\equal{\svnkw{URL}}{\svnkw{HeadURL}}}{}{\error}
+\ifthenelse{\equal{\svnkw{Rev}}{\svnkw{Revision}}}{}{\error}
+\ifthenelse{\equal{\svnkw{Rev}}{\svnkw{LastChangedRevision}}}{}{\error}
 
 \end{document}
 
