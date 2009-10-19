@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.1}
+\def\svnmulti@version{v2.2}
 \RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
@@ -291,7 +291,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{2728}
 %
 % {\makeatother
 % \CharacterTable
@@ -334,6 +334,8 @@
 % support, auto-include of images, files as subgroups and table of revisions.}
 % \changes{v2.1}{2009/03/27}{Added automatic extraction of keywords from 
 % Subversion 'entries' file: 'autokw' option}
+% \changes{v2.2}{2009/10/19}{Added \css{ifsvnmodified} and 
+% \css{ifsvnfilemodified} macros. Some bug fixes.}
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
@@ -858,6 +860,22 @@
 % macros. You can \eg say |\svnkwdef{Rev}{123}| and then typeset it with
 % |\svnkw{Revision}| or |\svnkw{LastChangedRev}| if you like.
 %
+% \subsubsection*{New in version 2.2. Will change in future versions:}
+% \DescribeMacro{ifsvnfilemodified}{\marg{case:~modified}\marg{case:~not 
+% modified}}
+% \DescribeMacro*{ifsvnmodified}{\marg{case:~modified}\marg{case:~not modified}}
+% This two macro can be used to check if either the current or any file was 
+% modified after it was last checked into the repository. At the moment (v2.2) a 
+% file is marked `modified' if there is either a `|*|' or `|M|' after the 
+% revision number, \eg `|$||Rev: 123M $|'. Such an marker is automatically added 
+% for exported files (`|svn export|') if there where locally modified, but can 
+% also be added manually.
+% 
+% Future versions of this package might mark files as modified by use of the 
+% \op{autokw} option which can read this information out of the working 
+% directory Subversion entries.
+%
+% \newpage
 % \subsection{Accessing Date Values}\label{sec:date}
 % \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{\hspace{-2\macrosep}}l@{}}\\
 % \DescribeMacro*{svnyear}{}&
@@ -1002,7 +1020,6 @@
 %
 % Please note that you can't use \pkg{hyperref}'s |\nolinkurl| because it won't
 % expand \cs{svnkw}.
-%
 %
 % \subsection{Table of Revisions}\label{sec:table}
 % Version 2.0 introduces this new feature which allows a overview table to be
