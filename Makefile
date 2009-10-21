@@ -12,7 +12,7 @@ TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls
 INSGENERATED = ${PACKAGE_STY} svnkw.sty svn-multi.pl
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf svn-multi-pl.pdf example.pdf group_example.pdf group_example_*.tex ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
-TDSZIPFILE = ${PACKAGE}.tds.zip
+TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
 
 TESTDIR = tests
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
@@ -92,8 +92,11 @@ zip: ${PACKFILES}
 zip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
 	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
 
+tdszip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
+	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
+
 ${PACKAGE}%.zip: ${PACKFILES}
-	grep -L '\* Checksum passed \*' ${PACKAGE_DTX:.dtx=.log} | wc -l | grep -q '^0$$'
+	@test -n "${IGNORE_CHECKSUM}" || grep -L '\* Checksum passed \*' ${PACKAGE_DTX:.dtx=.log} | wc -l | grep -q '^0$$'
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	${RM} $@
 	zip $@ ${PACKFILES}
