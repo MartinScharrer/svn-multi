@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.2}
+\def\svnmulti@version{v2.3-dev}
 \RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
@@ -575,7 +575,10 @@
 % manually to ensure that the  file-local macros are reset to empty values at 
 % the begin of each input file.   This prevents the keyword from leaking over 
 % from one file to the next.  After every subfile the file-local keyword macros 
-% are also restored to the  value of the parent file.
+% are also restored to the  value of the parent file. A \cs{clearpage} should be
+% added at the very end of \cs{include}d files to ensure the last page is flushed 
+% out by \TeX\ before the keyword macros are restored. Otherwise the last page 
+% might display the mainfile keyword values.
 %
 % \DescribeOption{autokw}
 % This experimental feature allows the automatically extraction of the keyword 
