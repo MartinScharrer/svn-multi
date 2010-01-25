@@ -1832,12 +1832,16 @@
   \begingroup
     \let\next\relax
 %    \end{macrocode}
-% Open the format file to read the version number:
+% Open the format file to read the version number. If this file does not exists
+% (true for recent svn versions) a valid default value is used and the true
+% version number is read from the |entries| file.
 %    \begin{macrocode}
+    \def\svne@version{8}%
     \openin\svne@read=#1format\relax
     \ifeof\svne@read\else
       \svne@readline\svne@version
       \closein\svne@read
+    \fi
 %    \end{macrocode}
 % Check the format version:
 %    \begin{macrocode}
@@ -1860,7 +1864,6 @@
           \fi
         \fi
       \fi
-    \fi
     \next
   \endgroup
 }
