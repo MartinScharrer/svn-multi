@@ -291,7 +291,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2728}
+% \CheckSum{0}
 %
 % {\makeatother
 % \CharacterTable
@@ -3147,7 +3147,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 \def\svn@writegroup#1{%
   \def\svn@writekw##1{%
    \immediate\write\svn@write{%
-     \noexpand\@namedef{svng@#1@##1}{\csname @svng@#1@##1\endcsname}%
+     \string\global\string\@namedef{svng@#1@##1}{\csname @svng@#1@##1\endcsname}%
    }%
   }%
   \svn@writekw{rev}%
@@ -4139,13 +4139,8 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % it's redefines itself to |\relax| at the end.
 %    \begin{macrocode}
 \def\svn@checkwrite{%
- \@ifundefined{svn@write}{%
-   \newwrite\svn@write
-   \immediate\openout\svn@write=\jobname.svn\relax%
-   \immediate\write\svn@write{\@percentchar\space SVN Keyword cache}%
-   %\immediate\write\svn@write{\noexpand\makeatletter}%
- }{}%
- \let\svn@checkwrite=\relax
+  \let\svn@write\@mainaux
+  \let\svn@checkwrite=\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4169,18 +4164,18 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \svn@checkwrite
     \immediate\write\svn@write{^^J%
       \@percentchar\space Global values:^^J%
-      \noexpand\def\noexpand\svnrev{\@svn@rev}^^J%
-      \noexpand\let\noexpand\ifsvnmodified\@backslashchar\@svn@modified^^J%
-      \noexpand\def\noexpand\svndate{\@svn@date}^^J%
-      \noexpand\def\noexpand\svnauthor{\@svn@author}^^J%
-      \noexpand\def\noexpand\svnyear{\@svn@year}^^J%
-      \noexpand\def\noexpand\svnmonth{\@svn@month}^^J%
-      \noexpand\def\noexpand\svnday{\@svn@day}^^J%
-      \noexpand\def\noexpand\svnhour{\@svn@hour}^^J%
-      \noexpand\def\noexpand\svnminute{\@svn@minute}^^J%
-      \noexpand\def\noexpand\svnsecond{\@svn@second}^^J%
-      \noexpand\def\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
-      \noexpand\def\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
+      \noexpand\gdef\noexpand\svnrev{\@svn@rev}^^J%
+      \noexpand\global\noexpand\let\noexpand\ifsvnmodified\@backslashchar\@svn@modified^^J%
+      \noexpand\gdef\noexpand\svndate{\@svn@date}^^J%
+      \noexpand\gdef\noexpand\svnauthor{\@svn@author}^^J%
+      \noexpand\gdef\noexpand\svnyear{\@svn@year}^^J%
+      \noexpand\gdef\noexpand\svnmonth{\@svn@month}^^J%
+      \noexpand\gdef\noexpand\svnday{\@svn@day}^^J%
+      \noexpand\gdef\noexpand\svnhour{\@svn@hour}^^J%
+      \noexpand\gdef\noexpand\svnminute{\@svn@minute}^^J%
+      \noexpand\gdef\noexpand\svnsecond{\@svn@second}^^J%
+      \noexpand\gdef\noexpand\svntimezonehour{\@svn@timezonehour}^^J%
+      \noexpand\gdef\noexpand\svntimezoneminute{\@svn@timezoneminute}^^J%
       \noexpand\svn@gdefverb\noexpand\svnurl{\@svn@url}^^J%
       \noexpand\svn@gdefverb\noexpand\svnfname{\@svn@fname}^^J%
     }%
@@ -4191,7 +4186,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
     \if@svnmulti@groups
       \svn@cleanfilelist\@svng@@files
       \immediate\write\svn@write{%
-        \noexpand\def\noexpand\svng@@files{\@svng@@files}^^J%
+        \noexpand\gdef\noexpand\svng@@files{\@svng@@files}^^J%
       }%
       \svn@writeallgroups\@svng@@files
 %    \end{macrocode}
@@ -4276,7 +4271,8 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Open |.svt| file and write table header:
 %    \begin{macrocode}
-    \newwrite\svn@svtwrite
+    \immediate\closeout\svn@write
+    \let\svn@svtwrite\svn@write
     \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
     \@onelevel@sanitize\svntable%
     \immediate\write\svn@svtwrite{%
