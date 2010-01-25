@@ -399,7 +399,7 @@
 %
 % This package reads the keywords of all files and provides the VC information 
 % of of the most recent changed file of the document to the user through a set 
-% of macros. This information is written to an auxiliary |.svn| file during the 
+% of macros. This information is written to an auxiliary |.aux| file during the 
 % first \LaTeX\ run and read back at the next which introduces the same delay 
 % known from the table of contents. The standard \LaTeX{} switch |\nofiles| can 
 % be used to suppress the file generation.
@@ -1174,7 +1174,7 @@
 % enclosed by |{ }|. The files must be under version control by Subversion, of
 % course. Use \cs{svnexternalpath} to specify paths to be scanned for this
 % files if they are not located relative to the main file.  The requested
-% filenames are written into the |.svn| auxiliary file and then processed by the
+% filenames are written into the |.aux| auxiliary file and then processed by the
 % external script \scr{svn-multi.pl} which must be executed like described
 % below. The appropriate keywords are then written in \meta{source file}|.svx|
 % files (|x| like eXternal) which are read in by the same \cs{svnexternal} macro
@@ -1204,7 +1204,7 @@
 % major operating systems.\par
 % The script should be run inside the document folder in the following order:
 % \begin{enumerate}
-%  \item Compile \LaTeX\ document, |.svn| file is generated.
+%  \item Compile \LaTeX\ document, |.aux| file is generated.
 %  \item Run \scr{svn-multi.pl} script, |.svx| files are generated.
 %  \item Compile \LaTeX\ document, |.svx| files are read in.
 % \end{enumerate}
@@ -1215,7 +1215,7 @@
 %
 % \DescribeScript{svn-multi.pl}{\meta{jobname}}
 % As already mentioned in the \cs{svnexternal} description above this script
-% reads the requested external filename from the \meta{jobname}|.svn| file. The
+% reads the requested external filename from the \meta{jobname}|.aux| file. The
 % Subversion command line client |svn| is then used to fetch the needed keywords
 % which are placed in a \cs{svnidlong} macro inside a \meta{source file}|.svx|
 % file. Every single source file which uses \cs{svnexternal} will become its own
@@ -1255,9 +1255,9 @@
 %
 % \subsection*{Basic Features -- Global and Group Keywords}
 % \begin{enumerate}
-%   \item Compile document with \LaTeX. The |.svn| file is generated. Document
+%   \item Compile document with \LaTeX. The |.aux| file is generated. Document
 %     global and group keyword macros are not valid yet.
-%   \item Compile document again with \LaTeX. The |.svn| file is read by
+%   \item Compile document again with \LaTeX. The |.aux| file is read by
 %     \svnmulti. Document global and group keyword macros are now valid.
 % \end{enumerate}
 %
@@ -1271,7 +1271,7 @@
 %
 % \subsection*{External Files}
 % \begin{enumerate}
-%   \item Compile document with \LaTeX. The |.svn| file is generated with
+%   \item Compile document with \LaTeX. The |.aux| file is generated with
 %     references to the external files. Document global and group keyword macros
 %     are not valid yet. External files are not taken into account.
 %   \item Run \scr{svn-multi.pl} with the main base name (main file name without
@@ -1279,10 +1279,10 @@
 %     which used \cs{svnexternal}. This files contain the keywords of the
 %     external files.
 %   \item Compile document again with \LaTeX. The |.svx| files are read by
-%     \svnmulti and the |.svn| file is updated to take the new keywords into
+%     \svnmulti and the |.aux| file is updated to take the new keywords into
 %     account. Document global and group keywords macros only hold
 %     internal values.
-%   \item Compile document again with \LaTeX. The |.svn| file is read by
+%   \item Compile document again with \LaTeX. The |.aux| file is read by
 %     \svnmulti. Document global and group keyword macros are now fully valid.
 % \end{enumerate}
 %
@@ -1693,15 +1693,15 @@
 % it can be tested if a file had any keyword macros or not.\par
 % Note that there a two different macros for the document global keywords:\par
 % The user level |\svn|\meta{kw} macros hold the global value and are only valid
-% after a \LaTeX\ run. They are initialised here and defined in the |.svn|
+% after a \LaTeX\ run. They are initialised here and defined in the |.aux|
 % file which is read at the end of the package if it exists and written at the
 % end of the document.\par
 % The internal macros |\@svn@|\meta{kw} store the oldest (i.e. highest revision)
 % keywords read so far from the \cs{svnid} and \cs{svnidlong} macros. They
 % change during the document and are used to produce the values of the
-% |\svn|\meta{kw} macros when the |.svn| file is written.\par
+% |\svn|\meta{kw} macros when the |.aux| file is written.\par
 % Group wide macros are initialised when the group is first defined and have
-% three different macros: |\svng@|\meta{group}|@|\meta{kw} (defined in |.svn|),
+% three different macros: |\svng@|\meta{group}|@|\meta{kw} (defined in |.aux|),
 % |\@svng@|\meta{group}|@|\meta{kw} (accumulator) and also an access
 % macro |\svncg|\meta{group} which uses
 % |\svn@g|\meta{current group}|@|\meta{kw}.
@@ -2156,7 +2156,7 @@
 %    \end{macrocode}
 % Then we check if the revision is non-empty (not yet expanded by subversion?)
 % and larger then the current maximum value |\@svn@rev|.  If yes we save all
-% value to save them in the .svn-file later.
+% value to save them in the |.aux|-file later.
 %    \begin{macrocode}
   \ifx\svnfilerev\empty\else
     \ifnum\@svn@rev<\svnfilerev
@@ -3356,8 +3356,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % \end{macro}
 
 % \begin{macro}{\svn@subgroup}[1]{file name}
-% Macro to write a file as group to |.svn| file. After checking if the filename
-% was not already written, the |.svn| file is checked if it is open and then the
+% Macro to write a file as group to |.aux| file. After checking if the filename
+% was not already written, the |.aux| file is checked if it is open and then the
 % file keyword information is written.
 %    \begin{macrocode}
 \def\svn@subgroup#1{%
@@ -3512,11 +3512,10 @@ lof,log,lot,out,svn,svt,svx,toc}
 \else
 %    \end{macrocode}
 % Writes the current input file path and its argument as arguments of
-% \cs{@svnexternal} into the |.svn| file.
+% \cs{@svnexternal} into the |.aux| file.
 %    \begin{macrocode}
 \newcommand*\svnexternal[2][]{%
   \if@filesw
-    \svn@checkwrite
     \begingroup
       \svn@ifequal{#1}{*}%
         {\def\svn@temp{\svn@pg}}%
@@ -3538,11 +3537,10 @@ lof,log,lot,out,svn,svt,svx,toc}
 % \end{macro}
 
 % \begin{macro}{\svnexternalpath}[1]{list of paths in \texttt{\{ \}}}
-% Writes its argument as argument of \cs{@svnexternalpath} into the |.svn| file.
+% Writes its argument as argument of \cs{@svnexternalpath} into the |.aux| file.
 %    \begin{macrocode}
 \def\svnexternalpath#1{%
   \if@filesw
-    \svn@checkwrite
     \immediate\write\svn@write{%
       \noexpand\@svnexternalpath{#1}%
     }%
@@ -4126,27 +4124,17 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
-% \subsection{Auxiliary file generation and read-back}
-%
-% Reread output from last compile run if it exists.
-%    \begin{macrocode}
-\@input{\jobname .svn}
-%    \end{macrocode}
+% \subsection{Write to Auxiliary File}
 
-% \begin{macro}{\svn@checkwrite}
-% Checks if .svn file is already open and if not opens it. This makes sure that
-% the file is only created if really needed. The macro is only needed once, so
-% it's redefines itself to |\relax| at the end.
+% \begin{macro}{\svn@write}
+% Simply an alias for the main aux file write handle.
 %    \begin{macrocode}
-\def\svn@checkwrite{%
-  \let\svn@write\@mainaux
-  \let\svn@checkwrite=\relax
-}
+\let\svn@write\@mainaux
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\svn@writesvn}
-% This macro writes the |.svn| auxiliary file and is called from a
+% This macro writes the |.aux| auxiliary file and is called from a
 % |\AtEndDocument| macro later on.
 %    \begin{macrocode}
 {\catcode`\&=12
@@ -4161,7 +4149,6 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Write document global values:
 %    \begin{macrocode}
-    \svn@checkwrite
     \immediate\write\svn@write{^^J%
       \@percentchar\space Global values:^^J%
       \noexpand\gdef\noexpand\svnrev{\@svn@rev}^^J%
@@ -4271,8 +4258,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % Open |.svt| file and write table header:
 %    \begin{macrocode}
-    \immediate\closeout\svn@write
-    \let\svn@svtwrite\svn@write
+    \newwrite\svn@svtwrite
     \immediate\openout\svn@svtwrite=\jobname.\svn@svt\relax
     \@onelevel@sanitize\svntable%
     \immediate\write\svn@svtwrite{%
