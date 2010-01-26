@@ -1974,6 +1974,15 @@
 \def\svne@handleentry{%
   \svn@ifequal{\svne@name}{\svnfilefname}%
     {%
+      \message{^^J%
+        Read from '.svn/entries' file:^^J%
+        Filename:  \svne@name^^J%
+        Date:      \svne@date^^J%
+        Revision:  \svne@rev^^J%
+        Author:    \svne@author^^J%
+        HeadURL:   \svne@url^^J%
+        ^^J%
+      }%
       \svnkwdef{Filename}{\svne@name}%
       \svnkwdef{Date}{\svne@date}%
       \svnkwdef{Revision}{\svne@rev}%
@@ -3780,6 +3789,9 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % |\csname| to avoid \TeX{} if-parsing errors when they are not defined.
 %    \begin{macrocode}
 \AtBeginDocument{%
+\ifx\chapter\relax
+  \let\chapter\@undefined
+\fi
 \ifx\chapter\@undefined
 
 %% Adapted from the \tableofcontents macro, LaTeX `article' class [2005/09/16]
