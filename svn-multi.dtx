@@ -1777,9 +1777,9 @@
 % \begin{macrocode}
 \newcommand*{\svne@catcodes}{%
   \let\do\@makeother
-  \endlinechar=-1
+  \endlinechar=-1%
   \dospecials
-  \do\- \do\: \do\. \do\^^L
+  \do\-\do\:\do\.\do\^^L%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1857,8 +1857,8 @@
 % Check the version and call the parse macros if OK:
 %    \begin{macrocode}
           \ifnum\svne@version>7\relax
-            \def\next{\svne@parsedirentry%
-                      \svne@parseentries}
+            \def\next{\svne@parsedirentry
+                      \svne@parseentries}%
           \else
             \closein\svne@read
           \fi
