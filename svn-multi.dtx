@@ -1904,12 +1904,12 @@
 \@makeother\.
 
 \gdef\svne@scandate#1{%
-  \expandafter\svne@scandate@#1\relax
-  0000-00-00T00:00:00.00000Z\relax\relax
+  \expandafter\svne@scandate@#1\empty
+  0000-00-00T00:00:00.00000Z\empty\empty
 }
 
-\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
-  \gdef\svnfileyear{#1}%
+\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\empty#8\empty{%
+  \xdef\svnfileyear{#1}%
   \gdef\svnfilemonth{#2}%
   \gdef\svnfileday{#3}%
   \gdef\svnfilehour{#4}%
@@ -1972,6 +1972,9 @@
 % used to stop the file reading.
 %    \begin{macrocode}
 \def\svne@handleentry{%
+  \ifx\svne@rev\empty
+    \let\svne@rev\svn@revinit
+  \fi
   \svn@ifequal{\svne@name}{\svnfilefname}%
     {%
       \message{^^J%
