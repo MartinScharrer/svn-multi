@@ -1,0 +1,51 @@
+%&pdflatex
+\documentclass{report}
+
+\usepackage{svn-multi}
+\usepackage{ifthen}
+
+\svnidlong
+%DIF < {$HeadURL$}
+%DIF -------
+{$HeadURL$} %DIF > 
+%DIF < {$LastChangedDate$}
+{$LastChangedDate$} %DIF > 
+%DIF < {$LastChangedRevision$}
+{$LastChangedRevision$} %DIF > 
+%DIF < {$LastChangedBy$}
+{$LastChangedBy$} %DIF > 
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+\chapter{Test 43}
+
+\svnkw{HeadURL} \\
+\svnkw{LastChangedDate} \\
+\svnkw{LastChangedRevision} \\
+\svnkw{LastChangedBy} \\
+
+\ifthenelse{\equal{\svnkw{HeadURL}}{svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test44.tex}}{}{\error}
+\ifthenelse{\equal{\svnkw{LastChangedDate}}{2009-02-27 12:23:50 +1234 (Fri, 27 Feb 2009)}}{}{\error}
+\ifthenelse{\equal{\svnkw{LastChangedRevision}}{207}}{}{\error}
+\ifthenelse{\equal{\svnkw{LastChangedBy}}{martin2}}{}{\error}
+
+\end{document}
+

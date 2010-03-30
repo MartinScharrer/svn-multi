@@ -2226,15 +2226,54 @@
 % inside the keywords.  The braces |{ }| are changed to allow comments between
 % the arguments.  \cs{svnidlong@readargsfull} is called to read the arguments.
 %    \begin{macrocode}
+  \if@svnmulti@verbatim
+    \expandafter\svnidlong@readverb
+  \else
+    \expandafter\svnidlong@readargs
+  \fi
+}
+\def\svnidlong@readverb{%
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@a}%
+    {}%
+}
+\def\svnidlong@readverb@#1{%
   \begingroup
-    \if@svnmulti@verbatim
-      \svn@catcodes
-      \catcode`\{=12
-      \catcode`\}=12
-    \else
-      \def\svnidlong@readargsfull{\svnidlong@readargs}%
-    \fi
-    \svnidlong@readargsfull
+  \svn@catcodes
+  \catcode`\{=1\relax
+  \catcode`\}=2\relax
+  #1%
+}
+\def\svnidlong@readverb@a#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@b}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+\def\svnidlong@readverb@b#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@c}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+\def\svnidlong@readverb@c#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@d}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+\def\svnidlong@readverb@d#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \ifx\svnkwDate\empty\else
+    \@svn@scanlongdate{\svnkwDate}%
+  \fi
+  \@svn@updateid{\svnkw{Revision}}{\svnkw{Date}}%
+  {\svnkw{Author}}{\svnkw{URL}}%
+  \ignorespaces
 }
 %    \end{macrocode}
 % \end{macro}
