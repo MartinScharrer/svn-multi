@@ -5,17 +5,22 @@
 \usepackage{ifthen}
 
 \svnidlong
-{$HeadURL$} % {}
-{$LastChangedDate$} %{}
-{$LastChangedRevision$} % {$  $} \svnidlong {}{}{}{}
-{$LastChangedBy$} %
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/dev/tests/test43.tex $} % {}
+{$LastChangedDate: 2010-03-30 10:00:45 +0100 (Tue, 30 Mar 2010) $} %{}
+{$LastChangedRevision: 1775 $} % {$  $} \svnidlong {}{}{}{}
+{$LastChangedBy: martin $} %
 
 \begin{document}
 \chapter{Test 43}
 
-\ifthenelse{\equal{\svnkw{HeadURL}}{svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test30.tex}}{}{\error}
-\ifthenelse{\equal{\svnkw{LastChangedDate}}{2009-02-27 12:24:50 +1234 (Fri, 27 Feb 2009)}}{}{\error}
-\ifthenelse{\equal{\svnkw{LastChangedRevision}}{206}}{}{\error}
+HeadURL: \svnkw{HeadURL} \\
+Date: \svnkw{LastChangedDate} \\
+Rev: \svnkw{LastChangedRevision} \\
+Author: \svnkw{LastChangedBy} \\
+
+\ifthenelse{\equal{\svnkw{HeadURL}}{svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/dev/tests/test43.tex}}{}{\error}
+\ifthenelse{\equal{\svnkw{LastChangedDate}}{2010-03-30 10:00:45 +0100 (Tue, 30 Mar 2010)}}{}{\error}
+\ifthenelse{\equal{\svnkw{LastChangedRevision}}{1775}}{}{\error}
 \ifthenelse{\equal{\svnkw{LastChangedBy}}{martin}}{}{\error}
 
 \end{document}
