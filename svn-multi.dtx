@@ -37,6 +37,8 @@
 \let\svnmulti@rev\filerev
 
 \documentclass{ltxdoc}
+\usepackage[english]{babel}
+\dateenglish
 
 \def\svnmulti@today#1/#2/#3\relax{%
   \begingroup
@@ -291,7 +293,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2743}
+% \CheckSum{2847}
 %
 % {\makeatother
 % \CharacterTable
@@ -1678,11 +1680,39 @@
 
 % \begin{macro}{\svn@inputsvx}[1]{file name/path without extension}
 % Used to save and restore file keywords when reading |.svx| files.
+% The normal catcodes are restored to avoid issues in special situations
+% regarding input of verbatim files
+% (e.g.\ \cs{lstinputlisting} from the \pkg{listings} package) or other
+% cases where catcodes might have changes (e.g.\ `|%|' in |.dtx| files).
 %    \begin{macrocode}
 \def\svn@inputsvx#1{%
   \svn@pushfilestack
+  \begingroup
+  \svn@normalcatcodes
   \svn@input{#1.svx}%
+  \endgroup
   \svn@popfilestack
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@normalcatcodes}
+% Sets the default catcodes.
+%    \begin{macrocode}
+\def\svn@normalcatcodes{%
+  \catcode`\\=0\relax
+  \catcode`\{=1\relax
+  \catcode`\}=2\relax
+  \catcode`\$=3\relax
+  \catcode`\&=4\relax
+  \catcode`\^^M=5\relax
+  \catcode`\#=6\relax
+  \catcode`\^=7\relax
+  \catcode`\_=8\relax
+  \catcode`\ =10\relax
+  \catcode`\@=12\relax
+  \catcode`\~=13\relax
+  \catcode`\%=14\relax
 }
 %    \end{macrocode}
 % \end{macro}
