@@ -1302,6 +1302,8 @@
 % detect any side effects or other issues causes by this package.
 %
 % \subsection{Packet \texttt{listings} uses \cs{input}}
+% \textbf{Update:} Newer versions of \svnmulti avoid this issue by changing the catcodes
+% back to normal while reading the |.svx| file.
 % If a file \meta{basename}.\meta{extension} is typeset verbatim using
 % |\lstinputlisting|, which uses |\input| to read the file, an existing
 % \meta{basename}|.svx| file is also included as part of the listing. This can
