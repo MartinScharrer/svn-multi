@@ -282,7 +282,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2847}
+% \CheckSum{2682}
 %
 % {\makeatother
 % \CharacterTable
@@ -2037,7 +2037,7 @@
 %    \begin{macrocode}
 \if@svnmulti@autokwall
 \AtBeginDocument{%
-    \svnegetfile{\jobname.\svn@mainext}%
+    \svnegetfile{\jobname.\currfile@mainext}%
 }
 \fi
 %    \end{macrocode}
@@ -3100,10 +3100,10 @@
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
 \svnmulti@atbegininputfile{%
-  \svn@ifequal{\currfilepath}{\svn@maindir\jobname.\svn@mainext}%
+  \svn@ifequal{\currfilepath}{\currfile@maindir\jobname.\currfile@mainext}%
     {}%
     {\svn@initfile}%
-  \svn@ifequal{\currfileext}{\svn@mainext}%
+  \svn@ifequal{\currfileext}{\currfile@mainext}%
     {\svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}}{}%
   \svn@ifequal{\currfileext}{sty}%
     {\svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}}{}%
@@ -3319,7 +3319,7 @@
 %    \begin{macrocode}
 \def\svnsubgroup{%
   \begingroup
-    \svn@removedotslash\currfiledir
+    \currfiledir
     \svn@subgroup{\currfiledir\currfilebase}%
     \svn@subgroup{\currfilepath}%
   \endgroup
@@ -3343,37 +3343,28 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
-% extensions (without leading dot) to ignore for automatic \csd{svnsubgroup}.}
-% A special macro is defined for all extensions. The existents of this macro is
-% then tested later to check if this extension should be ignored.
+% The following three macros are now deprecated, because \pkg{filehook} ignores
+% non-\cs{input}/\cs{include} files.
+% \begin{macro}{\svnignoreextensions}[1]{now ignored}
 %    \begin{macrocode}
 \def\svnignoreextensions#1{%
-  \@for\svn@temp:=#1\do{%
-    \expandafter\def\csname svn@ignore@ext@\svn@temp\endcsname{}%
-  }%
+  \PackageWarning{svn-multi}%
+    {Macro \string\svnignoreextensions\space is now deprecated.}{}{}%
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
-% extensions (without leading dot) to consider for automatic
-% \csd{svnsubgroup}.}
-% The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
-% to |\relax|.
+% \begin{macro}{\svnconsiderextensions}[1]{now ignored}
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
-  \@for\svn@temp:=#1\do{%
-  \expandafter\let\csname svn@ignore@ext@\svn@temp\endcsname\relax%
-  }%
+  \PackageWarning{svn-multi}%
+    {Macro \string\svnconsiderextensions\space is now deprecated.}{}{}%
 }
 %    \end{macrocode}
 % \end{macro}
 
-% The following extensions are ignored by default.
 %    \begin{macrocode}
-\svnignoreextensions{aux,bbl,fd,enc,fls,glo,idx,ilg,ind,ist,%
-lof,log,lot,out,svn,svt,svx,toc}
+\svnignoreextensions{}
 %    \end{macrocode}
 
 % Check at the end of every input file if files should be extra groups and
@@ -3382,9 +3373,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 \svnmulti@atendinputfile{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
-      \expandafter\ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
       \svnsubgroup
-      \fi
     \fi
   \fi
 }
@@ -3396,7 +3385,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \begin{macrocode}
 \if@svnmulti@subgroups
   \ifsvnsubgroups
-    \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
+    \svn@addfiletogroup{\jobname .\currfile@mainext}{\jobname}%
     \svnsubgroup
   \fi
 \fi
@@ -4297,17 +4286,12 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % the extension is not on the ignore list.
 %
 % This code is placed here because it has to come after the at-begin-input-file 
-% code.
+% code. TODO: move!
 %     \begin{macrocode}
 \if@svnmulti@autokwall
-
 \svnmulti@atbegininputfile{%
-  \expandafter
-  \ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
-    \svnegetfile{\currfilepath}%
-  \fi
+  \svnegetfile{\currfilepath}%
 }
-
 \fi
 %    \end{macrocode}
 
