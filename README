@@ -1,6 +1,6 @@
 --------------------------------------------------------------
  svn-multi (was svnkw)
- version 2.2, Oct 19th, 2009
+ version 2.3, Jul 19th, 2010
 --------------------------------------------------------------
 
 This package lets you typeset keywords of the version
@@ -8,7 +8,7 @@ control system Subversion inside your LaTeX files anywhere
 you like. Unlike the very similar package 'svn' the usage of
 multiple files for one LaTeX document is well supported.
 
-Copyright (C) 2006-2009 Martin Scharrer
+Copyright (C) 2006-2010 Martin Scharrer
 E-mail: martin@scharrer-online.de
 WWW: http://latex.scharrer-online.de/svn-multi/
 
