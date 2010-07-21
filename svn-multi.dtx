@@ -293,7 +293,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2847}
+% \CheckSum{2868}
 %
 % {\makeatother
 % \CharacterTable
@@ -2173,7 +2173,28 @@
 % \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
-\def\svn@scanId#1 #2 #3 #4 #5\relax{%
+\def\svn@scanId#1 #2#3#4\relax{%
+  \begingroup
+  \def\next{\svn@scanId@{#1}#2#3#4\relax}%
+  \ifx-#2\relax
+    \ifx1#3\relax
+      \def\next{\svn@scanId@{#1}-1 {0000-00-00} {00:00:00Z} {}\relax}%
+    \fi
+  \fi
+  \expandafter\endgroup\next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
+% (HH:MM:SSZ)}{author (username)}
+% Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
+% without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
+% \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
+% update global Id values and also sets the appropriate keywords.
+%    \begin{macrocode}
+\def\svn@scanId@#1#2 #3 #4 #5\relax{%
   \@svn@scandate{#3 #4}%
   \@svn@updateid{#2}{#3 #4}{#5}{#1}%
   \svnkwdef{Filename}{#1}%
