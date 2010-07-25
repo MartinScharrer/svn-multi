@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.3-dev}
+\def\svnmulti@version{v2.4-dev}
 \RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
@@ -37,6 +37,8 @@
 \let\svnmulti@rev\filerev
 
 \documentclass{ltxdoc}
+\usepackage[english]{babel}
+\dateenglish
 
 \def\svnmulti@today#1/#2/#3\relax{%
   \begingroup
@@ -336,6 +338,7 @@
 % Subversion 'entries' file: 'autokw' option}
 % \changes{v2.2}{2009/10/19}{Added \css{ifsvnmodified} and 
 % \css{ifsvnfilemodified} macros. Some bug fixes.}
+% \changes{v2.3-dev}{2010/03/30}{Changed \css{svnidlong} to ignore all comments between verbatim arguments.}
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
@@ -1299,6 +1302,8 @@
 % detect any side effects or other issues causes by this package.
 %
 % \subsection{Packet \texttt{listings} uses \cs{input}}
+% \textbf{Update:} Newer versions of \svnmulti avoid this issue by changing the catcodes
+% back to normal while reading the |.svx| file.
 % If a file \meta{basename}.\meta{extension} is typeset verbatim using
 % |\lstinputlisting|, which uses |\input| to read the file, an existing
 % \meta{basename}|.svx| file is also included as part of the listing. This can
@@ -1677,11 +1682,39 @@
 
 % \begin{macro}{\svn@inputsvx}[1]{file name/path without extension}
 % Used to save and restore file keywords when reading |.svx| files.
+% The normal catcodes are restored to avoid issues in special situations
+% regarding input of verbatim files
+% (e.g.\ \cs{lstinputlisting} from the \pkg{listings} package) or other
+% cases where catcodes might have changes (e.g.\ `|%|' in |.dtx| files).
 %    \begin{macrocode}
 \def\svn@inputsvx#1{%
   \svn@pushfilestack
+  \begingroup
+  \svn@normalcatcodes
   \svn@input{#1.svx}%
+  \endgroup
   \svn@popfilestack
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\svn@normalcatcodes}
+% Sets the default catcodes.
+%    \begin{macrocode}
+\def\svn@normalcatcodes{%
+  \catcode`\\=0\relax
+  \catcode`\{=1\relax
+  \catcode`\}=2\relax
+  \catcode`\$=3\relax
+  \catcode`\&=4\relax
+  \catcode`\^^M=5\relax
+  \catcode`\#=6\relax
+  \catcode`\^=7\relax
+  \catcode`\_=8\relax
+  \catcode`\ =10\relax
+  \catcode`\@=12\relax
+  \catcode`\~=13\relax
+  \catcode`\%=14\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1777,9 +1810,9 @@
 % \begin{macrocode}
 \newcommand*{\svne@catcodes}{%
   \let\do\@makeother
-  \endlinechar=-1
+  \endlinechar=-1%
   \dospecials
-  \do\- \do\: \do\. \do\^^L
+  \do\-\do\:\do\.\do\^^L%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1853,8 +1886,8 @@
 % Check the version and call the parse macros if OK:
 %    \begin{macrocode}
           \ifnum\svne@version>7\relax
-            \def\next{\svne@parsedirentry%
-                      \svne@parseentries}
+            \def\next{\svne@parsedirentry
+                      \svne@parseentries}%
           \else
             \closein\svne@read
           \fi
@@ -1901,12 +1934,12 @@
 \@makeother\.
 
 \gdef\svne@scandate#1{%
-  \expandafter\svne@scandate@#1\relax
-  0000-00-00T00:00:00.00000Z\relax\relax
+  \expandafter\svne@scandate@#1\empty
+  0000-00-00T00:00:00.00000Z\empty\empty
 }
 
-\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\relax#8\relax{%
-  \gdef\svnfileyear{#1}%
+\gdef\svne@scandate@#1-#2-#3T#4:#5:#6.#7\empty#8\empty{%
+  \xdef\svnfileyear{#1}%
   \gdef\svnfilemonth{#2}%
   \gdef\svnfileday{#3}%
   \gdef\svnfilehour{#4}%
@@ -1969,6 +2002,9 @@
 % used to stop the file reading.
 %    \begin{macrocode}
 \def\svne@handleentry{%
+  \ifx\svne@rev\empty
+    \let\svne@rev\svn@revinit
+  \fi
   \svn@ifequal{\svne@name}{\svnfilefname}%
     {%
       \svnkwdef{Filename}{\svne@name}%
@@ -2125,7 +2161,28 @@
 % \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
-\def\svn@scanId#1 #2 #3 #4 #5\relax{%
+\def\svn@scanId#1 #2#3#4\relax{%
+  \begingroup
+  \def\next{\svn@scanId@{#1}#2#3#4\relax}%
+  \ifx-#2\relax
+    \ifx1#3\relax
+      \def\next{\svn@scanId@{#1}-1 {0000-00-00} {00:00:00Z} {}\relax}%
+    \fi
+  \fi
+  \expandafter\endgroup\next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+
+% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
+% (HH:MM:SSZ)}{author (username)}
+% Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
+% without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
+% \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
+% update global Id values and also sets the appropriate keywords.
+%    \begin{macrocode}
+\def\svn@scanId@#1#2 #3 #4 #5\relax{%
   \@svn@scandate{#3 #4}%
   \@svn@updateid{#2}{#3 #4}{#5}{#1}%
   \svnkwdef{Filename}{#1}%
@@ -2207,19 +2264,80 @@
   \svnkwdef{Revision}{0}%
   \svnkwdef{Author}{}%
 %    \end{macrocode}
-% The catcodes are changed by \cs{svn@catcodes} to allow \TeX-special characters
-% inside the keywords.  The braces |{ }| are changed to allow comments between
-% the arguments.  \cs{svnidlong@readargsfull} is called to read the arguments.
+% Read arguments verbatim or non-verbatim.
 %    \begin{macrocode}
+  \if@svnmulti@verbatim
+    \expandafter\svnidlong@readverb
+  \else
+    \expandafter\svnidlong@readargs
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\svnidlong@readverb}
+% The following macros read the four arguments of |\svnidlong| one-by-one with
+% verbatim mode deactivated between them to ignore all comments. The macro 
+% |\@ifnextchar| is used to get rid of all spaces (and therefore comments) between
+% the arguments. An error message is printed if a wrong syntax is discovered.
+%    \begin{macrocode}
+\def\svnidlong@readverb{%
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@a}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+%    \end{macrocode}
+% Sets up verbatim mode and calls the macro given as an argument.
+%    \begin{macrocode}
+\def\svnidlong@readverb@#1{%
   \begingroup
-    \if@svnmulti@verbatim
-      \svn@catcodes
-      \catcode`\{=12
-      \catcode`\}=12
-    \else
-      \def\svnidlong@readargsfull{\svnidlong@readargs}%
-    \fi
-    \svnidlong@readargsfull
+  \svn@catcodes
+  \catcode`\{=1\relax
+  \catcode`\}=2\relax
+  #1%
+}
+%    \end{macrocode}
+% Reads first argument, ignores spaces and comments and calls next macro.
+%    \begin{macrocode}
+\def\svnidlong@readverb@a#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@b}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+%    \end{macrocode}
+% Reads second argument, ignores spaces and comments and calls next macro.
+%    \begin{macrocode}
+\def\svnidlong@readverb@b#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@c}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+%    \end{macrocode}
+% Reads third argument, ignores spaces and comments and calls next macro.
+%    \begin{macrocode}
+\def\svnidlong@readverb@c#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \@ifnextchar\bgroup
+    {\svnidlong@readverb@\svnidlong@readverb@d}%
+    {\PackageError{svn-multi}{Wrong syntax for \string\svnidlong}{}}%
+}
+%    \end{macrocode}
+% Reads last argument, scans date if not empty and calls the Id update macro.
+%    \begin{macrocode}
+\def\svnidlong@readverb@d#1{%
+  \endgroup
+  \svnkwsave@read #1\relax
+  \ifx\svnkwDate\empty\else
+    \@svn@scanlongdate{\svnkwDate}%
+  \fi
+  \@svn@updateid{\svnkw{Revision}}{\svnkw{Date}}%
+  {\svnkw{Author}}{\svnkw{URL}}%
+  \ignorespaces
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2243,32 +2361,7 @@
 \fi
 %    \end{macrocode}
 % \end{macro}
-
-% \begin{macro}{\svnidlong@readargsfull}[8]
-% {some text, ignored}{Keyword 1}
-% {some text, ignored}{Keyword 2}
-% {some text, ignored}{Keyword 3}
-% {some text, ignored}{Keyword 4}
-% Reads all four arguments of \cs{svnidlong} and passes them to
-% \cs{svnidlong@readargs}. The normal argument braces are changed to category
-% ``other'' and put into the macros parameter text to remove all code between
-% them. This is done to avoid problems with comments direct after one of the
-% arguments. Because the braces are now non-special the parentheses are made to
-% a local replacement.
 %
-%    \begin{macrocode}
-\if@svnmulti@verbatim
-\begingroup
-\catcode`\{=12\catcode`\}=12
-\catcode`\(=1\catcode`\)=2
-\gdef\svnidlong@readargsfull#1{#2}#3{#4}#5{#6}#7{#8}(%
- \svnidlong@readargs(#2)(#4)(#6)(#8)%
-)
-\endgroup
-\fi
-%    \end{macrocode}
-% \end{macro}
-
 % \begin{macro}{\svnidlong@readargs}[4]{Keyword 1}{Keyword 2}{Keyword 3}
 % {Keyword 4}
 % Calls sub macro for all four arguments and ends the catcode changes made
