@@ -200,7 +200,7 @@ print STDOUT "This is svn-multi.pl, Version $VERSION-$REV, $DATE\n";
 my ($jobname, $dir, $suffix) = fileparse(shift @ARGV, qr/\.(tex|ltx|dtx|svn)$/);
 %    \end{macrocode}
 % If a directory was specified this program is changing into it because the
-% file paths in the |.svn| file are relative to it.
+% file paths in the |.aux| file are relative to it.
 %    \begin{macrocode}
 if ($dir && $dir ne './') {
   printf STDOUT "Main directory is '$dir'.\n";
@@ -217,7 +217,7 @@ my $outfile = "$jobname.svx";
 my %external;
 
 %    \end{macrocode}
-% Regular expressions to read the |.svn| file:
+% Regular expressions to read the |.aux| file:
 % \paragraph{svnexternalpath:} The format is:\\
 % \hspace*{2em}|\@svnexternalpath{{patha}{pathb}{...}{pathd}}|
 %    \begin{macrocode}
@@ -275,8 +275,8 @@ my $resvnexternal = qr/
 %    \end{macrocode}
 
 %    \begin{macrocode}
-if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
-  print STDOUT "Reading '$jobname.svn'.\n";
+if (-e "$jobname.aux" and open( my $svnfh, '<', "$jobname.aux")) {
+  print STDOUT "Reading '$jobname.aux'.\n";
   while (<$svnfh>) {
     chomp;
     if  (/$resvnexternalpath/) {
@@ -291,7 +291,7 @@ if (-e "$jobname.svn" and open( my $svnfh, '<', "$jobname.svn")) {
   close ($svnfh);
 }
 else {
-  warn "No .svn file found for '$jobname'!\n";
+  warn "No .aux file found for '$jobname'!\n";
 }
 
 # Add TEXINPUTS to path
@@ -515,7 +515,7 @@ Usage:
 Description:
  This LaTeX helper script collects Subversion keywords from non-(La)TeX files
  and provides it to the 'svn-multi' package using '.svx' files.  It will first
- scan the file '<jobname>.svn' for files declared by the '\svnextern' macro but
+ scan the file '<jobname>.aux' for files declared by the '\svnextern' macro but
  also allows to provide additional files including the corresponding groups. The
  keywords for the additional files will be written in the file '<jobname>.svx'.
 
