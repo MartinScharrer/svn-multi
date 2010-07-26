@@ -18,7 +18,7 @@ open (my $tex, '<', "$name.tex");
 my @TEX = grep { chomp; s/^\s*\\svnexternal\s*// } <$tex>;
 close ($tex);
 
-open (my $svn, '<', "$name.svn");
+open (my $svn, '<', "$name.aux");
 my @SVN = grep { chomp; s/^\s*\\\@svnexternal\s*// } <$svn>;
 close ($svn);
 
