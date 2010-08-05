@@ -133,7 +133,7 @@ ${TESTS}: % : ${TESTDIR}/%.tex package testclean
 tds: .tds
 
 .tds: ${PACKAGE_STY} ${PACKAGE_DOC} ${PACKAGE_SRC}
-	@grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	@test -n "${IGNORE_CHECKSUM}" || grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	${RMDIR} tds
 	${MKDIR} tds/
 	${MKDIR} tds/tex/ tds/tex/latex/ tds/tex/latex/${PACKAGE}/
