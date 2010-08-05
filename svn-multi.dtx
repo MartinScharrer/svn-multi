@@ -1559,6 +1559,18 @@
 \fi
 %    \end{macrocode}
 
+% Check for \op{lyx} option without \op{autokw}[=all].
+%    \begin{macrocode}
+\if@svnmulti@lyx
+  \if@svnmulti@autokwall
+  \else
+    \PackageWarning{svn-multi}%
+      {The 'lyx' option only makes sense when the 'autokw' option 
+       is also used and set to 'all' (default, when enabled)'}%
+  \fi
+\fi
+%    \end{macrocode}
+
 % General switch if any graphic option is enabled:
 %    \begin{macrocode}
 \if@svnmulti@graphics
