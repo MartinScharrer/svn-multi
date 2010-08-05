@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.4-dev}
+\def\svnmulti@version{v2.4-lyx-dev}
 \RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
@@ -1463,6 +1463,7 @@
 \DeclareBoolOption[false]{table}
 \DeclareBoolOption[false]{filehooks}
 \DeclareStringOption[false]{autokw}[all]
+\DeclareBoolOption[false]{lyx}
 
 \ExecuteOptions{old}
 \ProcessKeyvalOptions{svn-multi}
@@ -2008,6 +2009,8 @@
   \ifx\svne@rev\empty
     \let\svne@rev\svn@revinit
   \fi
+  \@onelevel@sanitize\svnfilefname
+  \@onelevel@sanitize\svne@name
   \svn@ifequal{\svne@name}{\svnfilefname}%
     {%
       \message{^^J%
@@ -2039,7 +2042,24 @@
     \edef\svnfilefname{\svnfilefname}%
     \@onelevel@sanitize\svnfilefname
     \svne@parseentriesfile{\svnfiledir .svn/}%
+    %TODO: add check to avoid multiple parsings
     \svne@parseentriesfile{\svnfiledir _svn/}%
+    \if@svnmulti@lyx
+      \expandafter\svn@getfilebase\svnfilefname\empty.tex\empty\empty
+      \edef\svnfilefname{\svnfilebase.lyx}%
+      \expandafter\ifx\csname input@path\endcsname\relax
+        \def\input@path{{\noexpand\empty}}%
+      \else
+      \ifx\input@path\empty
+        \def\input@path{{\noexpand\empty}}%
+      \fi
+      \fi
+      \def\@tempa{\@for\path:=}%
+      \expandafter\@tempa\input@path\do {%
+        \svne@parseentriesfile{\path\svnfiledir .svn/}%
+        \svne@parseentriesfile{\path\svnfiledir _svn/}%
+      }%
+    \fi
   \endgroup
 }
 %    \end{macrocode}
@@ -4231,6 +4251,16 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 }%
 %    \end{macrocode}
 % \end{macro}
+
+% \begin{macro}{\svn@getfilebase}[1]{file base}{file extension}{fall-back extension}
+%    \begin{macrocode}
+\def\svn@getfilebase#1.#2\empty#3\empty{%
+  \edef\svnfilebase{#1}%
+  \edef\svnfileext{#2}%
+}%
+%    \end{macrocode}
+% \end{macro}
+
 
 % \subsection{Write to Auxiliary File}
 
