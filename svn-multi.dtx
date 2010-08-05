@@ -617,6 +617,16 @@
 %   must be still enabled manually.
 % \end{description}
 %
+% \DescribeOption{lyx}
+% \providecommand\LyX{LyX}
+% This boolean option enables proper functionality of the \op{autokw} option with \LyX\ files.
+% \LyX\ is a graphical front-end for \LaTeX\ files.
+% In this case the |.lyx| files will be under version control and the |.tex| files will be generated 
+% on the fly in a temporary directory. With this option enabled the \op{autokw} code will look first
+% for the original file name and then for \meta{base name}|.lyx| inside the |.svn/entries| file(s).
+% Please note that this option is still experimental and does not enable the \op{autokw} by itself 
+% but does not make sense without it.
+%
 % \subsection{Including Subversion Keywords}\label{sec:usage:id}
 % Subversion keywords are included using \cs{svnid} or \cs{svnidlong}.  These 
 % macros should be written very early in each file, \ie in the preamble of the 
