@@ -1812,7 +1812,20 @@
   \let\do\@makeother
   \endlinechar=-1%
   \dospecials
-  \do\-\do\:\do\.\do\^^L%
+  \do0\do1\do2\do3\do4%
+  \do5\do6\do7\do8\do9%
+  \do\:\do\^^L%
+  \do\<\do\>\do\*\do\.\do\-%
+  \do\/\do\[\do\]\do\`\do\'\do\"%
+  \def\do##1{\catcode`##1=11\relax}%
+  \do\A\do\B\do\C\do\D\do\E\do\F
+  \do\G\do\H\do\I\do\J\do\K\do\L
+  \do\M\do\N\do\O\do\P\do\Q\do\R
+  \do\S\do\T\do\U\do\V\do\X\do\Y\do\Z
+  \do\a\do\b\do\c\do\d\do\e\do\f
+  \do\g\do\h\do\i\do\j\do\k\do\l
+  \do\m\do\n\do\o\do\p\do\q\do\r
+  \do\s\do\t\do\u\do\v\do\x\do\y\do\z
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1884,7 +1897,6 @@
 %    \begin{macrocode}
         \openin\svne@read=#1entries\relax
         \ifeof\svne@read\else
-          \svne@catcodes
           \svne@readline\svne@version
 %    \end{macrocode}
 % Check the version and call the parse macros if OK:
@@ -2038,6 +2050,7 @@
     \svn@getfilename{#1}%
     \edef\svnfilefname{\svnfilefname}%
     \@onelevel@sanitize\svnfilefname
+    \svne@catcodes
     \svne@parseentriesfile{\svnfiledir .svn/}%
     \svne@parseentriesfile{\svnfiledir _svn/}%
   \endgroup
