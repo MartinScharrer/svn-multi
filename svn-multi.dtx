@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.4-dev}
+\def\svnmulti@version{v2.4-filehook2-dev}
 \RequirePackage{svn-prov}
 %</package|driver>
 %<*driver>
@@ -357,8 +357,8 @@
 % \DoNotIndex{\futurelet,\g@addto@macro,\global,\@gobbletwo,\hline}
 % \DoNotIndex{\hspace,\if@restonecol,\if@twocolumn,\ignorespaces}
 % \DoNotIndex{\makeatletter,\MakeUppercase,\@mkboth,\month,\@namedef}
-% \DoNotIndex{\NeedsTeXFormat,\newif,\onecolumn,\orig@fink@prepare}
-% \DoNotIndex{\orig@fink@restore,\PackageError,\ProcessOptions}
+% \DoNotIndex{\NeedsTeXFormat,\newif,\onecolumn}
+% \DoNotIndex{\PackageError,\ProcessOptions}
 % \DoNotIndex{\ProvidesPackage,\renewcommand,\RequirePackage}
 % \DoNotIndex{\@restonecolfalse,\@restonecoltrue,\section,\strut}
 % \DoNotIndex{\tableofcontents,\tableofrevisions,\texttt,\today}
@@ -572,7 +572,7 @@
 % section~\ref{sec:table} for more information.
 %
 % \DescribeOption{filehooks}
-% This option loads the \pkg{fink}  package and installs at-begin-input-file and 
+% This option loads the \pkg{filehook} package and installs at-begin-input-file and 
 % at-end-input-file hooks which are  needed for many of the options above. While 
 % this option is enabled  automatically if needed it can be also enabled 
 % manually to ensure that the  file-local macros are reset to empty values at 
@@ -1668,7 +1668,7 @@
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
 % with |\@@input| are used because |\InputIfFileExists| got redefined by the
-% \pkg{fink} package and there is no need to use \pkg{fink} for this files.
+% \pkg{filehook} package and there is no need to use \pkg{filehook} for this files.
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
@@ -1812,7 +1812,20 @@
   \let\do\@makeother
   \endlinechar=-1%
   \dospecials
-  \do\-\do\:\do\.\do\^^L%
+  \do0\do1\do2\do3\do4%
+  \do5\do6\do7\do8\do9%
+  \do\:\do\^^L%
+  \do\<\do\>\do\*\do\.\do\-%
+  \do\/\do\[\do\]\do\`\do\'\do\"%
+  \def\do##1{\catcode`##1=11\relax}%
+  \do\A\do\B\do\C\do\D\do\E\do\F
+  \do\G\do\H\do\I\do\J\do\K\do\L
+  \do\M\do\N\do\O\do\P\do\Q\do\R
+  \do\S\do\T\do\U\do\V\do\X\do\Y\do\Z
+  \do\a\do\b\do\c\do\d\do\e\do\f
+  \do\g\do\h\do\i\do\j\do\k\do\l
+  \do\m\do\n\do\o\do\p\do\q\do\r
+  \do\s\do\t\do\u\do\v\do\x\do\y\do\z
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1884,7 +1897,6 @@
 %    \begin{macrocode}
         \openin\svne@read=#1entries\relax
         \ifeof\svne@read\else
-          \svne@catcodes
           \svne@readline\svne@version
 %    \end{macrocode}
 % Check the version and call the parse macros if OK:
@@ -2038,6 +2050,7 @@
     \svn@getfilename{#1}%
     \edef\svnfilefname{\svnfilefname}%
     \@onelevel@sanitize\svnfilefname
+    \svne@catcodes
     \svne@parseentriesfile{\svnfiledir .svn/}%
     \svne@parseentriesfile{\svnfiledir _svn/}%
   \endgroup
@@ -2050,7 +2063,7 @@
 %    \begin{macrocode}
 \if@svnmulti@autokwall
 \AtBeginDocument{%
-    \svnegetfile{\jobname.\svn@mainext}%
+    \svnegetfile{\jobname.\currfile@mainext}%
 }
 \fi
 %    \end{macrocode}
@@ -2166,35 +2179,35 @@
 % \end{macro}
 %
 
-% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
-% (HH:MM:SSZ)}{author (username)}
-% Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
-% without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
-% \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
-% update global Id values and also sets the appropriate keywords.
+% \begin{macro}{\svn@scanId}[2]{file name}{rest of id line}
+% Ensures proper behaviour also for copied but not yet committed files which have 
+% no date, time and author name. The revision is set to -1. So \meta{rest} is simply
+% compared to `|-1|' and a fall-back text is supplied if needed.
 %    \begin{macrocode}
-\def\svn@scanId#1 #2#3#4\relax{%
+\def\svn@scanId#1 #2\relax{%
   \begingroup
-  \def\next{\svn@scanId@{#1}#2#3#4\relax}%
-  \ifx-#2\relax
-    \ifx1#3\relax
-      \def\next{\svn@scanId@{#1}-1 {0000-00-00} {00:00:00Z} {}\relax}%
-    \fi
+  \def\@tempa{#2}%
+  \def\@tempb{-1}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \svn@scanId@#1 -1 0000-00-00 00:00:00Z (uncommited)\relax
+  \else
+    \endgroup
+    \svn@scanId@#1 #2\relax
   \fi
-  \expandafter\endgroup\next
 }
 %    \end{macrocode}
 % \end{macro}
 %
 
-% \begin{macro}{\svn@scanId}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
+% \begin{macro}{\svn@scanId@}[5]{file name}{revision}{date (YYYY-MM-DD)}{time
 % (HH:MM:SSZ)}{author (username)}
 % Scans svn Id (after it got parsed by \cs{svnkwsave}).  Awaits only Id value
 % without leading `|Id:|' and a trailing |\relax| as end marker.  It calls
 % \cs{@svn@scandate} to extract the date information and \cs{@svn@updateid} to
 % update global Id values and also sets the appropriate keywords.
 %    \begin{macrocode}
-\def\svn@scanId@#1#2 #3 #4 #5\relax{%
+\def\svn@scanId@#1 #2 #3 #4 #5\relax{%
   \@svn@scandate{#3 #4}%
   \@svn@updateid{#2}{#3 #4}{#5}{#1}%
   \svnkwdef{Filename}{#1}%
@@ -2251,7 +2264,7 @@
       \fi
       \if@svnmulti@subgroups
         \ifsvnsubgroups
-          \svn@updategroup{\svn@filedir\svn@filebase}%
+          \svn@updategroup{\currfiledir\currfilebase}%
         \fi
       \fi
     \fi
@@ -2866,62 +2879,23 @@
 % \end{macro}
 
 % \subsection{Input File Name}
-% The \pkg{fink} package is used to get the input file names. AtBegin/AtEnd 
+% The \pkg{currfile} package is used to get the input file names. AtBegin/AtEnd 
 % hooks are installed which will be used later.
 %    \begin{macrocode}
 \if@svnmulti@filehooks
 %    \end{macrocode}
 
-% Load \pkg{fink} package and check if all needed macros are provided.
+% Load \pkg{filehook} and \pkg{currfile} packages.
 %    \begin{macrocode}
-\RequirePackage{fink}[2008/02/27]
-\begingroup
-\def\svn@finkerror{%
-\PackageError{svn-multi}{Your installed version of the 'fink' package does not
-provide the needed macros. It is either too old or too new.
-Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
-\let\svn@finkerror\relax
-}
-\@ifundefined{finkpath}{\svn@finkerror}{}%
-\@ifundefined{finkdir}{\svn@finkerror}{}%
-\@ifundefined{finkbase}{\svn@finkerror}{}%
-\@ifundefined{fink@prepare}{\svn@finkerror}{}%
-\@ifundefined{fink@restore}{\svn@finkerror}{}%
-\@ifundefined{fnk@maindir}{\svn@finkerror}{}%
-\@ifundefined{fnk@mainext}{\svn@finkerror}{}%
-\endgroup
+\RequirePackage{filehook}[2010/12/06]
+\RequirePackage{currfile}[2010/12/06]
 %    \end{macrocode}
-
-% \begin{macro}{\svn@removedotslash}[1]{string (\eg file path) which might start
-% with \texttt{./}}
-% Removes leading './' from given macro (holding a directory path). Awaits a
-% macro as argument which is redefined inside the current group!
-%    \begin{macrocode}
-\def\svn@removedotslash#1{%
-  \def\svn@removedotslash@##1##2##3\relax{%
-    \svn@ifequal{./}{##1##2}%
-      {\def\next{\svn@removedotslash@##3\empty\empty\empty\relax}}%
-      {\xdef#1{##1##2##3}\let\next\relax}%
-    \next
-  }%
-  \expandafter\svn@removedotslash@#1\empty\empty\empty\relax
-}
-%    \end{macrocode}
-% \end{macro}
 
 % Init values for file name macros.
 %    \begin{macrocode}
-\let\svn@mainext\fnk@mainext
-\let\svn@maindir\fnk@maindir
-\svn@removedotslash\svn@maindir
-\edef\svn@filebase{\jobname}%
-\edef\svn@fileext{\svn@mainext}%
-\edef\svn@filedir{\svn@maindir}%
 %    \end{macrocode}
 % Filename and -path are build using the other macros:
 %    \begin{macrocode}
-\def\svn@filename{\fink@file\svn@filebase\svn@fileext}%
-\def\svn@filepath{\svn@filedir\svn@filename}%
 %    \end{macrocode}
 
 % \begin{macro}{\svnmulti@begininputfilehook}
@@ -2929,73 +2903,36 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % package which will be executed at the begin of a input file. The file name and
 % path are not yet in |\finkpath| etc. but in |\fink@nextpath|.
 %    \begin{macrocode}
-\def\svnmulti@begininputfilehook{}
-\message{Package svn-multi: patching macro '\string\fink@prepare' from the
-'fink' package!}%
-\let\svnmulti@fink@prepare\fink@prepare
-\renewcommand*{\fink@prepare}[1]{%
-  \svnmulti@fink@prepare{#1}%
+\filehook@prefixwarg\filehook@atbegin{%
   \svn@pushfilestack
   \if@svnmulti@groups
-    \svn@ifequal{\svn@filepath}{\jobname.\svn@mainext}%
+    \let\@tempa=\svn@pg
+    \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
       {\xdef\svn@pg{\svn@g}}%
-      {\xdef\svn@pg{\svn@filedir\svn@filebase}}%
+      {\xdef\svn@pg{\currfiledir\currfilebase}}%
+    \message{^^JDEBUG: \currfilepath: '\@tempa' -> '\svn@pg'^^J}%
   \fi
-  \xdef\svn@filebase{\fink@nextbase}%
-  \xdef\svn@fileext{\fink@nextext}%
-  \xdef\svn@filedir{\fink@nextdir}%
-  \svn@removedotslash\svn@filedir
-  \svnmulti@begininputfilehook
-}%
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svnmulti@endinputfilehook}
-% This hook is installed in the |\fink@restore| macro from the \pkg{fink}
-% package which will be executed at the end of a input file. The file path
-% |\finkpath| etc. is still valid.
-%    \begin{macrocode}
-\def\svnmulti@endinputfilehook{}
-\message{Package svn-multi: patching macro '\string\fink@restore' from the
-'fink' package!}%
-\let\svnmulti@fink@restore\fink@restore
-\def\fink@restore#1{%
-  \svnmulti@endinputfilehook
-  \svnmulti@fink@restore{#1}%
+}
+\filehook@appendwarg\filehook@include@atbegin{%
+  \svn@pushfilestack
+  \if@svnmulti@groups
+    \message{^^JDEBUG: ADD {\currfiledir\currfilebase}{\svn@pg}}%
+    \svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}%
+  \fi
+}
+\AtEndOfIncludes{%
   \svn@popfilestack
-  \xdef\svn@filebase{\finkbase}%
-  \xdef\svn@fileext{\finkext}%
-  \xdef\svn@filedir{\finkdir}%
-  \svn@removedotslash\svn@filedir
-}%
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svnmulti@atbegininputfile}
-% This macro adds the argument to the end of the \cs{svnmulti@begininputfilehook}.
-%    \begin{macrocode}
-\def\svnmulti@atbegininputfile{%
-  \g@addto@macro\svnmulti@begininputfilehook
+}
+\AtEndOfFiles{%
+  \svn@popfilestack
+}
+\g@addto@macro\currfile@push{%
+    \message{^^JDEBUG PUSH: \currfilepath^^J}%
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnmulti@atendinputfile}
-% This macro adds the argument to the \emph{begin} of the
-% \cs{svnmulti@endinputfilehook}. This ensures that code added first is more at
-% the end than code added later.
-% The code below was adapted from the definition of the \LaTeX2e macro
-% |\g@addto@macro| which was used above.
-%    \begin{macrocode}
-\long\def\svnmulti@atendinputfile#1{%
-  \begingroup
-    \@temptokena\expandafter{\svnmulti@endinputfilehook}%
-    \toks@{#1}%
-    \xdef\svnmulti@endinputfilehook{\the\toks@\the\@temptokena}%
-  \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
+
 
 %    \begin{macrocode}
 \def\svn@filestack{{}}
@@ -3212,6 +3149,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % This is an internal macro so no `|*|' substitution for the group name.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
+  \svn@ifequal{#1}{#2}{}{%
+  \message{^^JDEBUG: add (#1) to (#2)^^J}%
   \expandafter
   \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
@@ -3223,6 +3162,7 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
        }%
       }%
   \fi
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3232,17 +3172,17 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 % Special care is taken to not re-initialise the main file which could happen in
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
-\svnmulti@atbegininputfile{%
-  \svn@ifequal{\svn@filepath}{\svn@maindir\jobname.\svn@mainext}%
+\AtBeginOfFiles{%
+  \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
     {}%
     {\svn@initfile}%
-  \svn@ifequal{\svn@fileext}{\svn@mainext}%
-    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
-  \svn@ifequal{\svn@fileext}{sty}%
-    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
-  \svn@ifequal{\svn@fileext}{cls}%
-    {\svn@addfiletogroup{\svn@filedir\svn@filebase}{\svn@pg}}{}%
-  \svn@addfiletogroup{\svn@filepath}{\svn@filedir\svn@filebase}%
+  \svn@ifequal{\currfileext}{\currfile@mainext}%
+    {\svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}}{}%
+  \svn@ifequal{\currfileext}{sty}%
+    {\svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}}{}%
+  \svn@ifequal{\currfileext}{cls}%
+    {\svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}}{}%
+  \svn@addfiletogroup{\currfilepath}{\currfiledir\currfilebase}%
 }
 %    \end{macrocode}
 
@@ -3452,9 +3392,8 @@ Try a different version, e.g. v2.1.1 from 2008/02/27}{}%
 %    \begin{macrocode}
 \def\svnsubgroup{%
   \begingroup
-    \svn@removedotslash\svn@filedir
-    \svn@subgroup{\svn@filedir\svn@filebase}%
-    \svn@subgroup{\svn@filepath}%
+    \svn@subgroup{\currfiledir\currfilebase}%
+    \svn@subgroup{\currfilepath}%
   \endgroup
 }
 %    \end{macrocode}
@@ -3512,10 +3451,10 @@ lof,log,lot,out,svn,svt,svx,toc}
 % Check at the end of every input file if files should be extra groups and
 % declare this file as group if its extension is not configured to be ignored.
 %    \begin{macrocode}
-\svnmulti@atendinputfile{%
+\AtEndOfFiles{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
-      \expandafter\ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
+      \expandafter\ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
       \svnsubgroup
       \fi
     \fi
@@ -3529,7 +3468,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \begin{macrocode}
 \if@svnmulti@subgroups
   \ifsvnsubgroups
-    \svn@addfiletogroup{\jobname .\svn@mainext}{\jobname}%
+    \svn@addfiletogroup{\jobname .\currfile@mainext}{\jobname}%
     \svnsubgroup
   \fi
 \fi
@@ -3629,11 +3568,11 @@ lof,log,lot,out,svn,svt,svx,toc}
           {\def\svn@temp{#1}}%
         }%
       \immediate\write\svn@write{%
-        \noexpand\@svnexternal[\svn@temp]{\svn@filepath}{#2}%
+        \noexpand\@svnexternal[\svn@temp]{\currfilepath}{#2}%
       }%
     \endgroup
   \fi
-  \svn@inputsvx{\svn@filedir\svn@filebase}%
+  \svn@inputsvx{\currfiledir\currfilebase}%
 }
 %    \end{macrocode}
 %    \begin{macrocode}
@@ -3672,7 +3611,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 % the \cs{svn@externalfile} is called to read the file name. Otherwise the
 % argument is simply removed.
 %    \begin{macrocode}
-\newcommand*\svnexternalfile[1][\svn@filedir\svn@filebase]{%
+\newcommand*\svnexternalfile[1][\currfiledir\currfilebase]{%
   \begingroup % TODO: maybe use \svn@catcodes
     \catcode`\_=12
     \catcode`\&=12
@@ -3693,7 +3632,7 @@ lof,log,lot,out,svn,svt,svx,toc}
   \if@svnmulti@subgroups
     \ifsvnsubgroups
       \svn@ifequal{#1}{\svn@rg}%
-        {\svn@addfiletogroup{#2}{\svn@filedir\svn@filebase}}%
+        {\svn@addfiletogroup{#2}{\currfiledir\currfilebase}}%
         {\svn@addfiletogroup{#2}{#1}}%
       \svn@subgroup{#2}%
     \fi
@@ -3713,15 +3652,15 @@ lof,log,lot,out,svn,svt,svx,toc}
 
 % \subsection{Auto loading of \texttt{.svx} files}
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files
-% using the \cs{svnmulti@atbegininputfile} macro.
+% using the \cs{AtBeginOfFiles} hook.
 % The macros \cs{svn@addfiletogroup} and \cs{svnsubgroup} are used to do the
 % actual work.
 %    \begin{macrocode}
 \if@svnmulti@autoload
 
-\svnmulti@atbegininputfile{%
-  \svn@ifequal{\svn@fileext}{tex}%
-    {\svn@inputsvx{\svn@filedir\svn@filebase}}%
+\AtBeginOfFiles{%
+  \svn@ifequal{\currfileext}{tex}%
+    {\svn@inputsvx{\currfiledir\currfilebase}}%
     {}%
 }
 %    \end{macrocode}
@@ -4412,10 +4351,10 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %     \begin{macrocode}
 \if@svnmulti@autokwall
 
-\svnmulti@atbegininputfile{%
+\AtBeginOfFiles{%
   \expandafter
-  \ifx\csname svn@ignore@ext@\svn@fileext\endcsname\relax
-    \svnegetfile{\svn@filepath}%
+  \ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
+    \svnegetfile{\currfilepath}%
   \fi
 }
 
