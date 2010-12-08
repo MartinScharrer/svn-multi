@@ -69,7 +69,7 @@
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
     \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
-    \@namedef{seen@package@#1}{1}%
+    \global\@namedef{seen@package@#1}{1}%
   }{}%
   \xspace
 }
@@ -561,14 +561,16 @@
 % section~\ref{sec:table} for more information.
 %
 % \DescribeOption{filehooks}
-% This option loads the \pkg{filehook} and \pkg{currfile} packages (before v2.3 
-% it was the \pkg{fink} package which required extra care in some situations) and 
-% installs at-begin-input-file and at-end-input-file hooks which are  needed for 
-% many of the options above. While this option is enabled  automatically if needed 
-% it can be also enabled manually to ensure that the  file-local macros are reset 
-% to empty values at the begin of each input file.   This prevents the keyword 
-% from leaking over from one file to the next.  After every subfile the file-local
-% keyword macros are also restored to the  value of the parent file.
+% This option loads the \pkg{filehook} package and installs at-begin-input-file and 
+% at-end-input-file hooks which are  needed for many of the options above. While 
+% this option is enabled  automatically if needed it can be also enabled 
+% manually to ensure that the  file-local macros are reset to empty values at 
+% the begin of each input file.   This prevents the keyword from leaking over 
+% from one file to the next.  After every subfile the file-local keyword macros 
+% are also restored to the  value of the parent file. A \cs{clearpage} should be
+% added at the very end of \cs{include}d files to ensure the last page is flushed 
+% out by \TeX\ before the keyword macros are restored. Otherwise the last page 
+% might display the mainfile keyword values.
 %
 % \DescribeOption{autokw}
 % This experimental feature allows the automatically extraction of the keyword 
@@ -1322,7 +1324,7 @@
 % {\infoline{Location:} CTAN: \url%
 % {http://tug.ctan.org/pkg/\thedeppackage}}
 %
-% Since v2.3 the authors packages \pkg{currfile} and \pkg{filename} replacing the 
+% Since v2.3 the authors packages \pkg{currfile} and \pkg{filehook} replacing the 
 % previous used (and patched) package \pkg{fink}.
 %
 % \begin{DepPackage}{hyperref}
@@ -1366,6 +1368,17 @@
 % \infoline{Authors/Maintainers:} \LaTeX3 Project
 % \end{DepPackage}
 %
+% \begin{DepPackage}{currfile}
+% The file name and path information are taken from the macros of this package.
+% It is from the same author and with the same license as \svnmulti\ itself.
+% \infoline{Version used:} 2010/12/06 v0.2
+% \end{DepPackage}
+%
+% \begin{DepPackage}{filehook}
+% This package is used to install file hooks to update subversion macros for subfiles etc.
+% It is from the same author and with the same license as \svnmulti\ itself.
+% \infoline{Version used:} 2010/12/06 v0.2
+% \end{DepPackage}
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
@@ -1646,7 +1659,7 @@
 % Macro to load |.svx| and |.svt| files.  The current keyword group is saved
 % away and restored after the |.svx| file is loaded.  The macros |\IfFileExists|
 % with |\@@input| are used because |\InputIfFileExists| got redefined by the
-% \pkg{filehook} package and there is no need to use hooks for this files.
+% \pkg{filehook} package and there is no need to use \pkg{filehook} for this files.
 %    \begin{macrocode}
 \def\svn@input#1{%
   \begingroup
@@ -2857,36 +2870,67 @@
 % \end{macro}
 
 % \subsection{Input File Name}
-% The \pkg{currfile} package is used to get the input file names. 
-% The \pkg{filehook} package is used to install AtBegin/AtEnd 
-% hooks.
+% The \pkg{currfile} package is used to get the input file names. AtBegin/AtEnd 
+% hooks are installed which will be used later.
 %    \begin{macrocode}
 \if@svnmulti@filehooks
 %    \end{macrocode}
 
+% Load \pkg{filehook} and \pkg{currfile} packages.
 %    \begin{macrocode}
-\RequirePackage{filehook}
-\RequirePackage{currfile}
+\RequirePackage{filehook}[2010/12/06]
+\RequirePackage{currfile}[2010/12/06]
 %    \end{macrocode}
 
-% \begin{macro}{\svnmulti@atbegininputfile}
-% This macro adds the argument to the end of the \cs{svnmulti@begininputfilehook}.
+% The following code installs the necessary hooks for input files.
+% It installs an own file stack \pkg{currfile} does.
+% The macro \cs{svn@pg} for the parent group needs to be set before
+% \cs{currfilepath} etc. is updated, so the internal \pkg{filehook}
+% macros are used to install the code before the \pkg{currfile} code.
+% This means that the file name macros below still hold the values of the
+% parent file.
+%
 %    \begin{macrocode}
-\long\def\svnmulti@atbegininputfile#1{%
-  \AtBeginOfInputs{#1}%
-  \AtBeginOfIncludes{#1}%
+\filehook@prefixwarg\filehook@atbegin{%
+  \svn@pushfilestack
+  \if@svnmulti@groups
+    \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
+      {\xdef\svn@pg{\svn@g}}%
+      {\xdef\svn@pg{\currfiledir\currfilebase}}%
+  \fi
+}
+\AtEndOfFiles{%
+  \svn@popfilestack
 }
 %    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\svnmulti@atendinputfile}
+% Special care is taken for include files, where the svn file macros
+% must be kept valid until the implied \cs{clearpage}, so that they can
+% be used in page headers and footers. Please note that \cs{include} uses
+% \cs{InputIfFileExists} internally where the normal filehooks are
+% installed.
+%
+% There is no simple way to exclude this hooks for \cs{include} files,
+% so the stack is pushed and popped twice for these files.
+% This causes an issue for subgroups because then that files are
+% declared to be there own parent group.
+% To fix this the current subgroup is added to correct 
+% parent group explicitly and the \cs{svn@addfiletogroup} macro was updated
+% to not add (sub-)groups to themselves.
+%
+% Please note that this hook is executed \emph{after} the \pkg{currfile}
+% macros are updated and therefore hold the file macros of the include
+% file, not the parent file.
 %    \begin{macrocode}
-\long\def\svnmulti@atendinputfile#1{%
-  \AtEndOfInputs{#1}%
-  \AtEndOfIncludes{#1}%
+\AtBeginOfIncludes{%
+  \svn@pushfilestack
+  \if@svnmulti@groups
+    \svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}%
+  \fi
+}
+\AtEndOfIncludes{%
+  \svn@popfilestack
 }
 %    \end{macrocode}
-% \end{macro}
 
 %    \begin{macrocode}
 \def\svn@filestack{{}}
@@ -3103,6 +3147,7 @@
 % This is an internal macro so no `|*|' substitution for the group name.
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
+  \svn@ifequal{#1}{#2}{}{%
   \expandafter
   \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
@@ -3114,6 +3159,7 @@
        }%
       }%
   \fi
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3123,8 +3169,8 @@
 % Special care is taken to not re-initialise the main file which could happen in
 % some special cases (\eg |\lstinputlisting{\jobname .tex}|).
 %    \begin{macrocode}
-\svnmulti@atbegininputfile{%
-  \svn@ifequal{\currfilepath}{\currfile@maindir\jobname.\currfile@mainext}%
+\AtBeginOfFiles{%
+  \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
     {}%
     {\svn@initfile}%
   \svn@ifequal{\currfileext}{\currfile@mainext}%
@@ -3343,7 +3389,6 @@
 %    \begin{macrocode}
 \def\svnsubgroup{%
   \begingroup
-    \currfiledir
     \svn@subgroup{\currfiledir\currfilebase}%
     \svn@subgroup{\currfilepath}%
   \endgroup
@@ -3367,37 +3412,48 @@
 %    \end{macrocode}
 % \end{macro}
 
-% The following three macros are now deprecated, because \pkg{filehook} ignores
-% non-\cs{input}/\cs{include} files.
-% \begin{macro}{\svnignoreextensions}[1]{now ignored}
+% \begin{macro}{\svnignoreextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to ignore for automatic \csd{svnsubgroup}.}
+% A special macro is defined for all extensions. The existents of this macro is
+% then tested later to check if this extension should be ignored.
 %    \begin{macrocode}
 \def\svnignoreextensions#1{%
-  \PackageWarning{svn-multi}%
-    {Macro \string\svnignoreextensions\space is now deprecated.}{}{}%
+  \@for\svn@temp:=#1\do{%
+    \expandafter\def\csname svn@ignore@ext@\svn@temp\endcsname{}%
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\svnconsiderextensions}[1]{now ignored}
+% \begin{macro}{\svnconsiderextensions}[1]{A comma separated list of file name
+% extensions (without leading dot) to consider for automatic
+% \csd{svnsubgroup}.}
+% The special macro defined by \csi{svnignoreextentions} is deleted, i.e. |\let|
+% to |\relax|.
 %    \begin{macrocode}
 \def\svnconsiderextensions#1{%
-  \PackageWarning{svn-multi}%
-    {Macro \string\svnconsiderextensions\space is now deprecated.}{}{}%
+  \@for\svn@temp:=#1\do{%
+  \expandafter\let\csname svn@ignore@ext@\svn@temp\endcsname\relax%
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
 
+% The following extensions are ignored by default.
 %    \begin{macrocode}
-\svnignoreextensions{}
+\svnignoreextensions{aux,bbl,fd,enc,fls,glo,idx,ilg,ind,ist,%
+lof,log,lot,out,svn,svt,svx,toc}
 %    \end{macrocode}
 
 % Check at the end of every input file if files should be extra groups and
 % declare this file as group if its extension is not configured to be ignored.
 %    \begin{macrocode}
-\svnmulti@atendinputfile{%
+\AtEndOfFiles{%
   \if@svnmulti@subgroups
     \ifsvnsubgroups
+      \expandafter\ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
       \svnsubgroup
+      \fi
     \fi
   \fi
 }
@@ -3593,13 +3649,13 @@
 
 % \subsection{Auto loading of \texttt{.svx} files}
 % Auto loading of |.svx| files at the begin of |\input| or |\include| files
-% using the \cs{svnmulti@atbegininputfile} macro.
+% using the \cs{AtBeginOfFiles} hook.
 % The macros \cs{svn@addfiletogroup} and \cs{svnsubgroup} are used to do the
 % actual work.
 %    \begin{macrocode}
 \if@svnmulti@autoload
 
-\svnmulti@atbegininputfile{%
+\AtBeginOfFiles{%
   \svn@ifequal{\currfileext}{tex}%
     {\svn@inputsvx{\currfiledir\currfilebase}}%
     {}%
@@ -4288,12 +4344,17 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % the extension is not on the ignore list.
 %
 % This code is placed here because it has to come after the at-begin-input-file 
-% code. TODO: move!
+% code.
 %     \begin{macrocode}
 \if@svnmulti@autokwall
-\svnmulti@atbegininputfile{%
-  \svnegetfile{\currfilepath}%
+
+\AtBeginOfFiles{%
+  \expandafter
+  \ifx\csname svn@ignore@ext@\currfileext\endcsname\relax
+    \svnegetfile{\currfilepath}%
+  \fi
 }
+
 \fi
 %    \end{macrocode}
 
