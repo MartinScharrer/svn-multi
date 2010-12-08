@@ -645,11 +645,12 @@
 % revision is not higher (but identical) than the revision of the \cs{svnidlong} 
 % macro it does not override its values. This way both the full time zone from 
 % the long and the file name from the short id macro can be accessed. Please 
-% note that all features from the 2.0 version load the \pkg{fink} package which 
+% note that all features from the 2.x version load the \pkg{currfile} package which 
 % lets you typeset the current file name anyway using 
-% |\finkbase.\finkext|\footnote{The file name in \texttt{\${}Id\$} is always the 
-% original Subversion file name while the one given by the \pkg{fink} package is 
-% the current file name.  Both could differ if the file got renamed.}.
+% |\currfilename|\footnote{The file name in \texttt{\${}Id\$} is always the 
+% original Subversion file name while the one given by the \pkg{currfile} package is 
+% the current file name.  Both could differ if the file got renamed.}. Before v2.3
+% the \pkg{fink} package was used to provide the file names.
 %
 % This macro must be written like seen above while the order of arguments is not 
 % meaningfull. The Subversion property |svn:keywords| must be set on all source 
@@ -796,7 +797,7 @@
 % These macros hold the keyword values of the current \LaTeX{} file, but only if
 % it contains a \cs{svnid} or \cs{svnidlong} macro. Otherwise the macros hold
 % either zero values or the values of the last file dependent on whether an
-% option is enabled which enabled the \pkg{fink} package. Please see
+% option is enabled which enabled the \pkg{currfile} package. Please see
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
 %
@@ -1334,6 +1335,9 @@
 % {\infoline{Location:} CTAN: \url%
 % {http://tug.ctan.org/pkg/\thedeppackage}}
 %
+% Since v2.3 the authors packages \pkg{currfile} and \pkg{filename} replacing the 
+% previous used (and patched) package \pkg{fink}.
+%
 % \begin{DepPackage}{hyperref}
 % The macro \cs{svnnolinkurl} is resembling the \pkg{hyperref} macro
 % |\nolinkurl| and uses some its internal macros from the |\url| macro
@@ -1342,19 +1346,6 @@
 % \infoline{Version used:} 2008/11/18 v6.78m
 % \infoline{Licence:} LPPL, any version
 % \infoline{Authors/Maintainers:} Sebastian Rahtz, Heiko Oberdiek
-% \end{DepPackage}
-%
-% \begin{DepPackage}{fink}
-% The FiNK (File Name Keeper) package is used to get the file name and path of
-% the input files. Two macros are patched to install hooks to execute own macros
-% before and after each input file. This is only done if needed for an enabled
-% option and therefore can be disabled using the option \op{old}.
-% \infoline{Used internal macros:} |\fink@file|, |\fink@nextdir|,
-% |\fink@nextext|, |\fink@nextbase|
-% \infoline{Patched internal macros:} |\fink@prepare|, |\fink@restore|
-% \infoline{Version used:} 2008/02/27 v2.1.1
-% \infoline{Licence:} LPPL, any version
-% \infoline{Author/Maintainer:} Didier Verna
 % \end{DepPackage}
 %
 % \begin{DepPackage}{graphics}
