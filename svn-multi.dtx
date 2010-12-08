@@ -80,7 +80,7 @@
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
     \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
-    \@namedef{seen@package@#1}{1}%
+    \global\@namedef{seen@package@#1}{1}%
   }{}%
   \xspace
 }
@@ -1335,7 +1335,7 @@
 % {\infoline{Location:} CTAN: \url%
 % {http://tug.ctan.org/pkg/\thedeppackage}}
 %
-% Since v2.3 the authors packages \pkg{currfile} and \pkg{filename} replacing the 
+% Since v2.3 the authors packages \pkg{currfile} and \pkg{filehook} replacing the 
 % previous used (and patched) package \pkg{fink}.
 %
 % \begin{DepPackage}{hyperref}
@@ -1379,6 +1379,17 @@
 % \infoline{Authors/Maintainers:} \LaTeX3 Project
 % \end{DepPackage}
 %
+% \begin{DepPackage}{currfile}
+% The file name and path information are taken from the macros of this package.
+% It is from the same author and with the same license as \svnmulti\ itself.
+% \infoline{Version used:} 2010/12/06 v0.2
+% \end{DepPackage}
+%
+% \begin{DepPackage}{filehook}
+% This package is used to install file hooks to update subversion macros for subfiles etc.
+% It is from the same author and with the same license as \svnmulti\ itself.
+% \infoline{Version used:} 2010/12/06 v0.2
+% \end{DepPackage}
 %
 % \section{Further Reading}
 % The \textsf{svn-multi} package (in version 1.3) and its usage got discussed in
@@ -2886,7 +2897,7 @@
 % It installs an own file stack \pkg{currfile} does.
 % The macro \cs{svn@pg} for the parent group needs to be set before
 % \cs{currfilepath} etc. is updated, so the internal \pkg{filehook}
-% macros are used to install the code before the \pkf{currfile} code.
+% macros are used to install the code before the \pkg{currfile} code.
 % This means that the file name macros below still hold the values of the
 % parent file.
 %
