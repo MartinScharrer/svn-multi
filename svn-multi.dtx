@@ -26,7 +26,7 @@
 %<*package|driver>
 % $Id$
 %
-\def\svnmulti@version{v2.4-dev}
+\def\svnmulti@version{v2.4}
 \RequirePackage{svn-prov}[2010/04/14]
 %</package|driver>
 %<*driver>
@@ -282,7 +282,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{2849}
 %
 % {\makeatother
 % \CharacterTable
@@ -327,7 +327,27 @@
 % Subversion 'entries' file: 'autokw' option}
 % \changes{v2.2}{2009/10/19}{Added \css{ifsvnmodified} and 
 % \css{ifsvnfilemodified} macros. Some bug fixes.}
-% \changes{v2.3-dev}{2010/03/30}{Changed \css{svnidlong} to ignore all comments between verbatim arguments.}
+% \changes{v2.3}{2010/03/30}{Changed \css{svnidlong} to ignore all comments between verbatim arguments.}
+% \changes{v2.3}{2010/07/19}{
+%      Fixed `autokw` to work with newer versions (1.6.x) of
+%        Subversion where the `format` file is not in the `.svn`
+%        directory anymore.
+%      Added debug output for `autokw` option.
+%      svn entries parser: fixed bugs with empty date and
+%        revision values.
+%      Fixed problem with `\cs{chapter}` defined as `\cs{relax}` in
+%        `\cs{tableofrevisions}`.
+%      Fixed unwanted spaces.
+%      Changed `\cs{svnidlong}` to allow comments with braces
+%        between arguments. This avoids problems with latexdiff.
+%      Changed catcodes to normal of reading `.svx` files.
+%      Updated code documentation.
+%      Updated user documentation.
+% }
+% \changes{v2.4}{2010/12/08}{
+%   Persistent data is now written to the '.aux' file, not to the '.svn' file to save a file handle.
+%   The 'fink' package usage got replaced by the 'currfile' and 'filehook' packages.
+% }
 %
 % ^^A \GetFileInfo{svn-multi.dtx}
 %
