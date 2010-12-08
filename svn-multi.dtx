@@ -2891,48 +2891,55 @@
 \RequirePackage{currfile}[2010/12/06]
 %    \end{macrocode}
 
-% Init values for file name macros.
-%    \begin{macrocode}
-%    \end{macrocode}
-% Filename and -path are build using the other macros:
-%    \begin{macrocode}
-%    \end{macrocode}
-
-% \begin{macro}{\svnmulti@begininputfilehook}
-% This hook is installed in the |\fink@prepare| macro from the \pkg{fink}
-% package which will be executed at the begin of a input file. The file name and
-% path are not yet in |\finkpath| etc. but in |\fink@nextpath|.
+% The following code installs the necessary hooks for input files.
+% It installs an own file stack \pkg{currfile} does.
+% The macro \cs{svn@pg} for the parent group needs to be set before
+% \cs{currfilepath} etc. is updated, so the internal \pkg{filehook}
+% macros are used to install the code before the \pkf{currfile} code.
+% This means that the file name macros below still hold the values of the
+% parent file.
+%
 %    \begin{macrocode}
 \filehook@prefixwarg\filehook@atbegin{%
   \svn@pushfilestack
   \if@svnmulti@groups
-    \let\@tempa=\svn@pg
     \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
       {\xdef\svn@pg{\svn@g}}%
       {\xdef\svn@pg{\currfiledir\currfilebase}}%
-    \message{^^JDEBUG: \currfilepath: '\@tempa' -> '\svn@pg'^^J}%
   \fi
 }
-\filehook@appendwarg\filehook@include@atbegin{%
+\AtEndOfFiles{%
+  \svn@popfilestack
+}
+%    \end{macrocode}
+% Special care is taken for include files, where the svn file macros
+% must be kept valid until the implied \cs{clearpage}, so that they can
+% be used in page headers and footers. Please note that \cs{include} uses
+% \cs{InputIfFileExists} internally where the normal filehooks are
+% installed.
+%
+% There is no simple way to exclude this hooks for \cs{include} files,
+% so the stack is pushed and popped twice for these files.
+% This causes an issue for subgroups because then that files are
+% declared to be there own parent group.
+% To fix this the current subgroup is added to correct 
+% parent group explicitly and the \cs{svn@addfiletogroup} macro was updated
+% to not add (sub-)groups to themselves.
+%
+% Please note that this hook is executed \emph{after} the \pkg{currfile}
+% macros are updated and therefore hold the file macros of the include
+% file, not the parent file.
+%    \begin{macrocode}
+\AtBeginOfIncludes{%
   \svn@pushfilestack
   \if@svnmulti@groups
-    \message{^^JDEBUG: ADD {\currfiledir\currfilebase}{\svn@pg}}%
     \svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}%
   \fi
 }
 \AtEndOfIncludes{%
   \svn@popfilestack
 }
-\AtEndOfFiles{%
-  \svn@popfilestack
-}
-\g@addto@macro\currfile@push{%
-    \message{^^JDEBUG PUSH: \currfilepath^^J}%
-}
 %    \end{macrocode}
-% \end{macro}
-
-
 
 %    \begin{macrocode}
 \def\svn@filestack{{}}
@@ -3150,7 +3157,6 @@
 %    \begin{macrocode}
 \def\svn@addfiletogroup#1#2{%
   \svn@ifequal{#1}{#2}{}{%
-  \message{^^JDEBUG: add (#1) to (#2)^^J}%
   \expandafter
   \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
