@@ -282,7 +282,7 @@
 %<*package>
 % \fi
 %
-% \CheckSum{2849}
+% \CheckSum{2840}
 %
 % {\makeatother
 % \CharacterTable
@@ -1391,13 +1391,13 @@
 % \begin{DepPackage}{currfile}
 % The file name and path information are taken from the macros of this package.
 % It is from the same author and with the same license as \svnmulti\ itself.
-% \infoline{Version used:} 2010/12/06 v0.2
+% \infoline{Version used:} 2010/12/29 v0.3
 % \end{DepPackage}
 %
 % \begin{DepPackage}{filehook}
 % This package is used to install file hooks to update subversion macros for subfiles etc.
 % It is from the same author and with the same license as \svnmulti\ itself.
-% \infoline{Version used:} 2010/12/06 v0.2
+% \infoline{Version used:} 2010/12/29 v0.4
 % \end{DepPackage}
 %
 % \section{Further Reading}
@@ -2898,11 +2898,11 @@
 
 % Load \pkg{filehook} and \pkg{currfile} packages.
 %    \begin{macrocode}
-\RequirePackage{filehook}[2010/12/08]
-\RequirePackage{currfile}[2010/12/08]
+\RequirePackage{filehook}[2010/12/29]
+\RequirePackage{currfile}[2010/12/29]
 %    \end{macrocode}
 
-% The following code installs the necessary hooks for input files.
+% The following code installs the necessary hooks for subfiles.
 % It installs an own file stack \pkg{currfile} does.
 % The macro \cs{svn@pg} for the parent group needs to be set before
 % \cs{currfilepath} etc. is updated, so the internal \pkg{filehook}
@@ -2911,7 +2911,7 @@
 % parent file.
 %
 %    \begin{macrocode}
-\filehook@prefixwarg\filehook@atbegin{%
+\filehook@prefix\filehook@every@atbegin{%
   \svn@pushfilestack
   \if@svnmulti@groups
     \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
@@ -2919,39 +2919,16 @@
       {\xdef\svn@pg{\currfiledir\currfilebase}}%
   \fi
 }
-\AtEndOfFiles{%
-  \svn@popfilestack
-}
 %    \end{macrocode}
-% Special care is taken for include files, where the svn file macros
-% must be kept valid until the implied \cs{clearpage}, so that they can
-% be used in page headers and footers. Please note that \cs{include} uses
-% \cs{InputIfFileExists} internally where the normal filehooks are
-% installed.
 %
-% There is no simple way to exclude this hooks for \cs{include} files,
-% so the stack is pushed and popped twice for these files.
-% This causes an issue for subgroups because then that files are
-% declared to be there own parent group.
-% To fix this the current subgroup is added to correct 
-% parent group explicitly and the \cs{svn@addfiletogroup} macro was updated
-% to not add (sub-)groups to themselves.
-%
-% Please note that this hook is executed \emph{after} the \pkg{currfile}
-% macros are updated and therefore hold the file macros of the include
-% file, not the parent file.
+% The file stack is popped at the end of the file hook to keep the macros valid
+% for normal hook code.
 %    \begin{macrocode}
-\AtBeginOfIncludes{%
-  \svn@pushfilestack
-  \if@svnmulti@groups
-    \svn@addfiletogroup{\currfiledir\currfilebase}{\svn@pg}%
-  \fi
-}
-\AtEndOfIncludes{%
+\filehook@append\filehook@every@atend{%
   \svn@popfilestack
 }
 %    \end{macrocode}
-
+%
 %    \begin{macrocode}
 \def\svn@filestack{{}}
 
