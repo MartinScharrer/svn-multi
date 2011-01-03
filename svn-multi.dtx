@@ -1539,7 +1539,7 @@
 \else
   \PackageError{svn-multi}%
     {Invalid value for 'autoload' option: '\@svnmulti@autoload'^^J%
-     ! Only 'true','false' or empty (='true') are allowed!}
+     ! Only 'true','false' or empty (='true') are allowed!}{}%
 \fi\fi\fi\fi
 %    \end{macrocode}
 
@@ -3024,7 +3024,7 @@
 \def\svngroup#1{%
   \svn@ifequal{#1}{*}%
     {\PackageError{svn-multi}%
-      {The group name '*' is invalid for '\string\svngroup'}{}{}%
+      {The group name '*' is invalid for '\string\svngroup'}{}%
     }{}%
   \xdef\svn@g{#1}%
   \let\svn@pg\svn@g
