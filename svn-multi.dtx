@@ -2898,8 +2898,8 @@
 
 % Load \pkg{filehook} and \pkg{currfile} packages.
 %    \begin{macrocode}
-\RequirePackage{filehook}[2010/12/29]
-\RequirePackage{currfile}[2010/12/29]
+\RequirePackage{filehook}[2011/01/03]
+\RequirePackage{currfile}[2011/01/03]
 %    \end{macrocode}
 
 % The following code installs the necessary hooks for subfiles.
@@ -2911,7 +2911,7 @@
 % parent file.
 %
 %    \begin{macrocode}
-\filehook@prefix\filehook@every@atbegin{%
+\filehook@prefixwarg\filehook@every@atbegin{%
   \svn@pushfilestack
   \if@svnmulti@groups
     \svn@ifequal{\currfilepath}{\jobname.\currfile@mainext}%
@@ -2924,7 +2924,7 @@
 % The file stack is popped at the end of the file hook to keep the macros valid
 % for normal hook code.
 %    \begin{macrocode}
-\filehook@append\filehook@every@atend{%
+\filehook@appendwarg\filehook@every@atend{%
   \svn@popfilestack
 }
 %    \end{macrocode}
