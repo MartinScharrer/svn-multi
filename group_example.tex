@@ -6,6 +6,7 @@
 {$LastChangedDate: 2000-01-01 01:44:01 +0000 (Main file) $}
 {$LastChangedRevision: 98 $}
 {$LastChangedBy: author3 $}
+\usepackage{currfile}
 
 
 % Pre-declaration of groups to define order in table
@@ -58,7 +59,7 @@ Last Changed Date     & \svnfiledate\\
 \par\noindent
 This files contains the following SVN keywords:\\*[-\baselineskip]
 {\let\input\@input
-\svnlstinputlisting[firstline=5,lastline=9]{\finkpath}
+\svnlstinputlisting[firstline=5,lastline=9]{\currfilepath}
 }
 }
 \makeatother
@@ -224,6 +225,7 @@ Last Changed Date     & \svncgdate\\
 
 \listfiles
 \begin{document}
+\currfilename
 
 % Custom titlepage:
 \hbox{}%
@@ -258,7 +260,7 @@ Last Changed Date     & \svndate\\
 \bigskip\par\noindent
 The main file of this document contains the following SVN
 keywords:\\*[-\baselineskip]
-\svnlstinputlisting[firstline=3,lastline=7]{\finkpath}
+\svnlstinputlisting[firstline=3,lastline=7]{\currfilepath}
 \thispagestyle{empty}
 \clearpage
 
