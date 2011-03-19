@@ -43,8 +43,6 @@
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
 
-\def\karg#1{\texttt{\$#1\$}}
-\def\kmarg#1{\texttt{\$}\meta{#1}\texttt{\$}}
 \def\DescribeOption{\par\smallskip\noindent\optpar}
 \let\scr\pkg
 \def\svnmulti{\pkg{svn-multi}\xspace}
@@ -417,11 +415,11 @@
 % files and include `|Id|' so that Subversion will expand it at the next commit.
 %
 % \begin{DescribeMacrosTab}{l}
-%   \Macro\svnidlong \\
-% \karg{HeadURL} \\
-% \karg{LastChangedDate} \\
-% \karg{LastChangedRevision} \\
-% \karg{LastChangedBy} \\
+%   \Macro\svnidlong\\
+%   \MacroArgs{'$HeadURL$'} \\
+%   \MacroArgs{'$LastChangedDate$'} \\
+%   \MacroArgs{'$LastChangedRevision$'} \\
+%   \MacroArgs{'$LastChangedBy$'} \\
 % \end{DescribeMacrosTab}
 % Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the 
 % above four keywords. The usage of \cs{svnid} or \cs{svnidlong} is a matter of 
