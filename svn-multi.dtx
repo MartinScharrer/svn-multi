@@ -35,231 +35,21 @@
 \DefineFileInfoSVN[svnmulti]
 \GetFileInfoSVN*
 
-\documentclass{ltxdoc}
+\documentclass{ydoc}[2011/03/19]
 \usepackage[english]{babel}
 \dateenglish
 
 \usepackage{svn-multi}[\svnmulti@date]
-\usepackage{booktabs}
-\usepackage{ifpdf}
-\ifpdf
-  % use hypdoc if you have it, hyperref else
-  \IfFileExists{hypdoc.sty}
-    {\usepackage{hypdoc}}
-    {\usepackage{hyperref}}
-\else
-  \let\url\texttt
-\fi
-\usepackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
 
-\iffalse
-\let\css=\cs
-\let\op=\cs
-\let\DescribeOption\DescribeMacro
-\let\DescribeScript\DescribeOption
-\else % crossreference of macros in documentation
-\makeatletter
-
-\usepackage{xspace}
-\@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
-\newcommand*{\pkg}[1]{%
-  \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
-  % URL footnote (for print-out) on first appearance:
-  \@ifundefined{seen@package@#1}{%
-    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
-    \global\@namedef{seen@package@#1}{1}%
-  }{}%
-  \xspace
-}
-\newcommand*{\svnmulti}{%
-  \texttt{svn-multi}\xspace%
-}
-
-% link \cs to macro definitions
-\let\origmacro\macro
-\let\origendmacro\endmacro
-\let\origStopEventually\StopEventually
-\let\origPrintDescribeMacro\PrintDescribeMacro
-\usepackage{xcolor}
-\definecolor{darkred}{rgb}{0.333,0.0,0.0}
-\hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
-\definecolor{macrodesccolor}{rgb}{0.0,0.0,0.8}
-\definecolor{macroimplcolor}{rgb}{0.0,0.0,0.4}
-\definecolor{metacolor}{rgb}{0.0,0.4,0.4}
-\definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
-\definecolor{optioncolor}{rgb}{0.3,0.2,0}
-
-\let\macroline\\
-\newlength{\macrosep}
-\setlength{\macrosep}{-3em}
-\renewcommand{\meta@font@select}{\color{metacolor}\itshape}
-\newcommand{\macroformat}[1]{\textbf{\ttfamily #1}}
-\newcommand{\optionformat}[1]{\textbf{\sffamily #1}}
-\newcommand{\scriptformat}[1]{\textbf{\ttfamily #1}}
-\newcommand{\macroargformat}[1]{\texttt{#1}}
-\newcommand{\scriptargformat}[1]{\textbf{#1}}
-\newcommand{\macrohlinkprefix}{desc}
-\newcommand{\macrolink}{}
-
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}%
-
-\def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
-\def\DescribeMacroN{%
-  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
-}
-\def\DescribeMacroS*#1#2{%
-  \begingroup
-  \g@namedef{href@desc@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@desc@#1}{}%
-  }%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1}}}%
-  \hypersetup{linkcolor=macrodesccolor}%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
-  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
-  \noindent\mbox{}\macroargformat{#2}\nopagebreak
-  \macroline*[0.2\baselineskip]%
-  \endgroup
-  \nopagebreak
-  \ignorespaces
-}
-\def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
-\def\DescribeScriptN{%
-  \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
-}
-\def\DescribeScriptS*#1#2{%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}%
-  \scriptformat{\textcolor{scriptcolor}{#1}}%
-  \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
-  \nopagebreak
-}
-\def\DescribeOption{\@ifnextchar*{\DescribeOptionS}{\DescribeOptionN}}
-\def\DescribeOptionN{%
-  \bigskip\par\noindent\DescribeOptionS*%
-}
-\def\DescribeOptionS*#1{%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}%
-  \optionformat{\textcolor{optioncolor}{#1}}%
-  \noindent\mbox{}\macroline*[0.2\baselineskip]%
-  \nopagebreak
-}
-\newcounter{macrolevel}
-\renewenvironment{macro}[1]{%
-  \addtocounter{macrolevel}{1}%
-  \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
-}{%
-  \addtocounter{macrolevel}{-1}%
-}
-\providecommand*{\g@namedef}[1]{%
-  \expandafter\gdef\csname #1\endcsname
-}
-\newcommand*{\macroX}[1]{%
-  \ifnum\c@macrolevel<2
-    \smallskip
-  \fi
-  \par\noindent
-  \g@namedef{href@impl@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@impl@#1}{}%
-  }%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1}}}%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}%
-  \macrolink{\macroformat{%
-    \textcolor{macroimplcolor}{\textbackslash #1}}}%
-  \\*[\smallskipamount]%
-  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
-}
-
-\newcounter{macroargs}
-\newcounter{nmacroarg}
-
-\newcommand*{\imacroarg}[1][0]{%
-  \setcounter{macroargs}{#1}%
-  \setcounter{nmacroarg}{1}%
-  \ifnum\c@macroargs>0
-    \expandafter\imacroargX
-  \fi
-}
-\newcommand*{\aftermacroargs}{%
-  \@ifnextchar\begin
-    {\\*[-2ex]\ignorespaces}%
-    {\\*[\smallskipamount]\ignorespaces}%
-}
-\newcommand*{\imacroargX}[1]{%
-  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
-  \ifnum\c@macroargs>1
-    \newline
-  \fi
-  \addtocounter{nmacroarg}{1}%
-  \addtocounter{macroargs}{-1}%
-  \ifnum\c@macroargs>0
-    \expandafter\imacroargX
-  \else
-    \expandafter\aftermacroargs
-  \fi
-}
-
-
-\def\karg#1{\{\$\textcolor{metacolor}{#1}\$\}}
-\def\kmarg#1{\{\$\meta{#1}\$\}}
-
-\DeclareRobustCommand{\csi}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macroimplcolor}%
-  \renewcommand{\macrohlinkprefix}{impl}%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1}}}%
-  \csX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\csd}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macrodesccolor}%
-  \renewcommand{\macrohlinkprefix}{macro}%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1}}}%
-  \csX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\csX}[1]{%
-  \begingroup
-  \macrolink{\texttt{\textbackslash#1}}%
-  \endgroup
-}
-\let\cs\csd
-\DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
-\DeclareRobustCommand{\op}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=optioncolor}%
-  \hyperlink{option@#1}{\textbf{\sffamily #1}}%
-  \endgroup
-}
-\DeclareRobustCommand{\scr}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=scriptcolor}%
-  \hyperlink{script@#1}{\scriptformat{#1}}%
-  \endgroup
-}
-
-\def\StopEventually#1{\origStopEventually{#1}%
-\let\cs\csi
-}
-
-\fi
+\def\karg#1{\texttt{\$#1\$}}
+\def\kmarg#1{\texttt{\$}\meta{#1}\texttt{\$}}
+\def\DescribeOption{\par\smallskip\noindent\optpar}
+\let\scr\pkg
+\def\svnmulti{\pkg{svn-multi}\xspace}
+\let\csi\cs
+\let\csd\cs
 
 \usepackage{graphicx}
 
@@ -381,25 +171,10 @@
 % \DoNotIndex{\ProcessKeyvalOptions,\SetupKeyvalOptions}
 % \DoNotIndex{\@firstoftwo,\@secondoftwo,\@gobble}
 %
-% \title{The \textsf{svn-multi} Package \\\large formerly known as 
-% \textsf{svnkw}}
-% \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
-% \url{http://latex.scharrer-online.de/svn-multi/}\\
-% CTAN: \url{http://tug.ctan.org/pkg/svn-multi}}
+% \author{Martin Scharrer}
+% \email{martin@scharrer-online.de}
 % \date{Version \expandafter\@gobble\svnmulti@version\\[0.5ex]\svnmulti@today}
 %
-% \ifpdf
-% \hypersetup{%
-%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle    = {The svn-multi package, \svnmulti@version, r\svnmulti@rev\ 
-%                  from \svnmulti@date},
-%   pdfsubject  = {Documentation of LaTeX package svn-multi which allows the 
-%                  typesetting of Subversion keywords in multi-file LaTeX 
-%                  documents},
-%   pdfkeywords = {svn-multi, svnkw, LaTeX, Subversion, keywords, Version 
-%                  Control, Id, Table Of Revisions}
-% }%
-% \fi
 % \maketitle
 %
 % \vfill
@@ -447,7 +222,7 @@
 % \cs{svnid} or \cs{svnidlong} macro or both.  See section~\ref{sec:usage:id} 
 % for more details about the id macros.  Please note that the file-local macros 
 % technically actually return the \emph{last registered} information from the 
-% last \cs{svnid} or \cs{svnidlong}. As long the \op{filehooks} option (new in 
+% last \cs{svnid} or \cs{svnidlong}. As long the \opt{filehooks} option (new in 
 % v2.0) is not enabled (explicit or implicit) this keyword macros will leak from 
 % one file over to the next.  This will cause wrong results if they are used in 
 % a file before or without any id macros. With this option the macros will be 
@@ -495,13 +270,13 @@
 %
 % All options except the first two are boolean key=value options (so far) and
 % await either `|true|' or `|false|' as value. A missing value means `|true|'.
-% So \eg |[groups=true,verbatim=false,external]|, enables the \op{external} and
-% \op{groups} options but disables the \op{verbatim} option.
+% So \eg |[groups=true,verbatim=false,external]|, enables the \opt{external} and
+% \opt{groups} options but disables the \opt{verbatim} option.
 %
 % The available options are:\par
 %
 % \DescribeOption{old}
-% Only pre-v2.0 features are active. This enables \op{verbatim} and disables all 
+% Only pre-v2.0 features are active. This enables \opt{verbatim} and disables all 
 % other options below. This is the default for reasons mentioned above.
 %
 % \DescribeOption{all}
@@ -517,9 +292,9 @@
 % \DescribeOption{external}
 % Controls the support for keywords from external files described in 
 % section~\ref{sec:external}. This needs either the external script 
-% \scr{svn-multi.pl} or the \op{autokw} option.
+% \scr{svn-multi.pl} or the \opt{autokw} option.
 %
-% If the \op{groups} option is enabled the macro 
+% If the \opt{groups} option is enabled the macro 
 % \csi{svnexternalgroup}\marg{group name} can be used to declare a own group 
 % which is used for all the external files.  Otherwise they are placed in the 
 % currently active group.  This macro can be used several times during the 
@@ -540,8 +315,8 @@
 % \DescribeOption{graphics}
 % This option allows to automatically declare all images included using the 
 % macro |\includegraphics| from the \pkg{graphics}/\pkg{graphicx} package as 
-% external files (see section~\ref{sec:external}). The options \op{external} and 
-% \op{autoload} are activated by this option so that the produced |.svx| files 
+% external files (see section~\ref{sec:external}). The options \opt{external} and 
+% \opt{autoload} are activated by this option so that the produced |.svx| files 
 % are loaded automatically.  An |autoload=false| option after \pkg{graphics} 
 % will deactivate this, but then an \cs{svnexternal} macro must be included in 
 % all \LaTeX\ files which should take the image revisions into account.\par The 
@@ -551,7 +326,7 @@
 % the \pkg{graphics} package and might fail if the internal structure of this 
 % package changes in future versions.
 %
-% If the \op{groups} option is enabled the macro 
+% If the \opt{groups} option is enabled the macro 
 % \csi{svngraphicsgroup}\marg{group name} can be used to declare a own group 
 % which is used for all the graphic files (also for pgf images, see below).  
 % Otherwise they are placed in the group specified by \cs{svnexternalgroup} 
@@ -564,7 +339,7 @@
 % can be then included manually using an explicit \cs{svnexternal} macro. 
 %
 % \DescribeOption{pgfimages}
-% Identical to like the \op{graphics} option but for the \pkg{pgf} package 
+% Identical to like the \opt{graphics} option but for the \pkg{pgf} package 
 % (implemented against the version from 2008/01/15) with the |\pgfuseimage| and 
 % |\pgfimage| macros.  Please also see the notes about package loading and ties 
 % mentioned above. 
@@ -573,14 +348,14 @@
 % Controls automatic loading of corresponding |.svx| files at the begin of files 
 % included using |\input| or |\import|. This avoids the need of putting an 
 % \cs{svnexternal} macro in every file just to load the |.svx| files created 
-% automatically by the \op{graphics} option. The option \op{external} is 
-% activated by \op{autoload}. 
+% automatically by the \opt{graphics} option. The option \opt{external} is 
+% activated by \opt{autoload}. 
 %
 % \DescribeOption{table}
 % Controls the generation of a table of revisions which can be included using 
 % the \cs{tableofrevisions} macro. This table shows the revisions of all files 
-% and groups. This needs \op{groups} to work which is activated with \op{table}. 
-% Enable \op{subgroups} to include a list of all files per group. See the 
+% and groups. This needs \opt{groups} to work which is activated with \opt{table}. 
+% Enable \opt{subgroups} to include a list of all files per group. See the 
 % section~\ref{sec:table} for more information.
 %
 % \DescribeOption{filehooks}
@@ -625,7 +400,7 @@
 %   necessary as long the files are inside a Subversion working directory and 
 %   not exported.
 %   \item[\texttt{ext}] Only the keywords of external files are extracted. This 
-%   avoids the need of the \scr{svn-multi.pl} script. The option \op{external} 
+%   avoids the need of the \scr{svn-multi.pl} script. The option \opt{external} 
 %   must be still enabled manually.
 % \end{description}
 %
@@ -637,18 +412,20 @@
 % not create any output.  See section~\ref{sec:kwaccess} to learn how to typeset 
 % the keyword values.
 %
-% \DescribeMacro{svnid}{\karg{Id}}
+% \DescribeMacro{svnid}{'$Id$'}
 % The macro is for the |Id| keyword and must be written like shown.  A trailing 
 % colon with or without spaces after the `|Id|' is also valid but 
 % \textbf{everything else} except a valid Subversion string will cause a \TeX{} 
 % parse error.  The subversion property |svn:keywords| must be set on all source 
 % files and include `|Id|' so that Subversion will expand it at the next commit.
 %
-% \DescribeMacro{svnidlong}{\ignorespaces
-% \\\hspace*{\macrosep}\karg{HeadURL}\ignorespaces
-% \\\hspace*{\macrosep}\karg{LastChangedDate}\ignorespaces
-% \\\hspace*{\macrosep}\karg{LastChangedRevision}\ignorespaces
-% \\\hspace*{\macrosep}\karg{LastChangedBy}}
+% \begin{DescribeMacrosTab}{l}
+%   \Macro\svnidlong \\
+% \karg{HeadURL} \\
+% \karg{LastChangedDate} \\
+% \karg{LastChangedRevision} \\
+% \karg{LastChangedBy} \\
+% \end{DescribeMacrosTab}
 % Macro for a ``long Id''.  Saves similar values like in `|Id|' but from the 
 % above four keywords. The usage of \cs{svnid} or \cs{svnidlong} is a matter of 
 % taste. The second is more readable inside the code and results in a nicer date 
@@ -670,19 +447,19 @@
 % |LastChangedRevision| |LastChangedBy|' or one of their alternative spellings 
 % (\eg `|URL|', `|Rev|', `|Date|', etc.).
 %
-% Please note that the arguments are read verbatim as long the \op{verbatim} 
+% Please note that the arguments are read verbatim as long the \opt{verbatim} 
 % option is not disabled explicitly. Special precaution are taken to allow 
 % spaces, newlines and comments direct after the |\svnidlong| and after each of 
 % the four arguments. In fact everything not inside braces |{ }| is ignored.
 %
-% \DescribeMacro{svn}{\kmarg{keyword}}
-% \DescribeMacro*{svn*}{\kmarg{keyword}}
+% \DescribeMacro{svn}{'$'<keyword>'$'}
+% \DescribeMacro{svn*}{'$'<keyword>'$'}
 % This macro let you typeset svn keywords directly. The dollars will be stripped
 % and the rest is typeset as normal text. The star version strips also the space
 % before the last dollar.  This macro alone was the very first version of
 % |svnkw| and is still included for fast and simple keyword typesetting.
 %
-% \DescribeMacro{svnkwsave}{\kmarg{keyword}}
+% \DescribeMacro{svnkwsave}{'$'<keyword>'$'}
 % This macro lets you include and save any keyword you like. The keyword can be
 % already expanded or not (no value and only ``|:|'' or nothing after the key
 % name). This macro is also used internally and does not create any output.
@@ -691,10 +468,10 @@
 %
 % \subsection{Groups}\label{sec:group}
 % Starting with v2.0 files can be grouped together and the keyword values of the
-% latest revision of a group can be accessed. Use the \op{groups} option to
+% latest revision of a group can be accessed. Use the \opt{groups} option to
 % activate these macros.
 %
-% \DescribeMacro{svngroup}{\marg{group name}}
+% \DescribeMacro{svngroup}{<\/group name>}
 % This macro declares all following files until the next \cs{svngroup} as part 
 % of the given keyword group. It can be placed inside the main file before some 
 % |\include|/|\input| macros or inside subfiles before the id macros, \ie direct 
@@ -708,10 +485,10 @@
 % The latest VC information of a group can be typeset with the |\svnvgXXX| 
 % macros or the \cs{svng} macro shown in section~\ref{sec:kwaccess}.
 %
-% \DescribeMacro{thesvngroup}{}
+% \DescribeMacro{thesvngroup}
 % Returns the name of the current keyword group.
 %
-% \DescribeMacro{svnsetcg}{\marg{group name}}
+% \DescribeMacro{svnsetcg}{<\/group name>}
 % Normally the |\svncgXXX| macros mentioned below use the last keyword 
 % group defined by \cs{svngroup} but this can be changed using the \cs{svnsetcg} 
 % macro. The idea behind it is that the currently selected group can be 
@@ -732,7 +509,7 @@
 % this group in the format of |\today| use: |{\svnsetcg{abc}\svncgtoday}|
 % \smallskip
 %
-% \DescribeMacro{thesvncg}{}
+% \DescribeMacro{thesvncg}
 % Returns the name of the current group selected by \cs{svnsetcg}.
 %
 % \subsubsection{Files as Subgroups}\label{sec:subgroups}
@@ -743,14 +520,15 @@
 % feature was introduced to automatically or manually define a file as subgroup 
 % for itself which does not influence its membership in a normal group.
 % \paragraph{Declaration:}
-% This feature is enabled by the \op{subgroups} option. All files of the
+% This feature is enabled by the \opt{subgroups} option. All files of the
 % document are then automatically declared as extra groups. This can be disabled
 % for parts of the document using \csi{svnsubgroupsfalse} and re-enabled
 % using \cs{svnsubgroupstrue} macros. The current file can be manually
 % declared as extra group with the \cs{svnsubgroup} macro.\par
-% \DescribeMacro{svnsubgroup}{}
+%
+% \DescribeMacro{svnsubgroup}
 % This macro declares the current file as subgroup. It is used automatically for 
-% every subfile if \op{subgroups} and \csi{svnsubgroupstrue} are enabled.
+% every subfile if \opt{subgroups} and \csi{svnsubgroupstrue} are enabled.
 %
 % \paragraph{Exclude/Consider files extensions:}
 % The above mentioned automatically group declaration uses an hook which is
@@ -759,12 +537,14 @@
 % read in by this packages. An internal filter is in place to ignore this files
 % by their file extension. This filter can by modified by the two following
 % macros.
-% \DescribeMacro{svnignoreextensions}{\marg{comma separated list of extension 
-% without leading dot}}
+%
+% \DescribeMacro{svnignoreextensions}{<comma separated list of extension 
+% without leading dot>}
 % Tells \svnmulti to ignore the following file extension and never declare files 
 % with them as extra groups.
-% \DescribeMacro{svnconsiderextensions}{\marg{comma separated list of extension 
-% without leading dot}}
+%
+% \DescribeMacro{svnconsiderextensions}{<comma separated list of extension 
+% without leading dot>}
 % Tells \svnmulti to (re-)consider the following file extension and declare 
 % files with them as extra groups if read in.
 %
@@ -795,17 +575,17 @@
 % two are described here while the third scope is described in
 % section~\ref{sec:group}.
 %
-% \DescribeMacro{svnrev}{}
-% \DescribeMacro*{svndate}{}
-% \DescribeMacro*{svnauthor}{}
+% \DescribeMacro{svnrev}
+% \DescribeMacro{svndate}
+% \DescribeMacro{svnauthor}
 % These macros hold the keyword values of the whole document, \ie of the most
 % recent revision. They can be used everywhere in every file of the \LaTeX{}
 % document, after |\usepackage{svn}| of course. Please see
 % section~\ref{sec:date} how to typeset parts of the date.
 %
-% \DescribeMacro{svnfilerev}{}
-% \DescribeMacro*{svnfiledate}{}
-% \DescribeMacro*{svnfileauthor}{}
+% \DescribeMacro{svnfilerev}
+% \DescribeMacro{svnfiledate}
+% \DescribeMacro{svnfileauthor}
 % These macros hold the keyword values of the current \LaTeX{} file, but only if
 % it contains a \cs{svnid} or \cs{svnidlong} macro. Otherwise the macros hold
 % either zero values or the values of the last file dependent on whether an
@@ -813,9 +593,9 @@
 % section~\ref{sec:date} how to typeset parts of the date. See \cs{svnkw} below
 % for all other keywords.
 %
-% \DescribeMacro{svncgrev}{}
-% \DescribeMacro*{svncgauthor}{}
-% \DescribeMacro*{svncgdate}{}
+% \DescribeMacro{svncgrev}
+% \DescribeMacro{svncgauthor}
+% \DescribeMacro{svncgdate}
 % These macros return keyword values of the currently selected keyword group.
 % In order to hold them robust, which is important to use them in macros like
 % \cs{svnFullAuthor}, they do not provide any arguments to select other groups
@@ -823,15 +603,15 @@
 % macro \cs{svng} or change the locally selected keyword group using the macro 
 % \cs{svnsetcg}.
 %
-% \DescribeMacro{svng}{\marg{group name}\marg{key}}
+% \DescribeMacro{svng}{<\/group name>}{<key>}
 % This macro is a general form of the |\svncgXXX| macro mentioned above.
 % The first argument is the requested keyword group, the second one the
 % requested keyword in the form of |rev|, |date|, |author|, |year|, etc.. Please
 % note that this macro can not be used inside macros like \cs{svnFullAuthor}.
 %
 %
-% \DescribeMacro{svnmainurl}{}
-% \DescribeMacro*{svnmainfilename}{}
+% \DescribeMacro{svnmainurl}
+% \DescribeMacro{svnmainfilename}
 % The macro \cs{svnmainurl} and \cs{svnmainfilename} hold the URL and the
 % filename of the main \LaTeX{file} as long the keywords |HeadURL| or |Id| were
 % used in it, respectively.  These can be used to typeset this information
@@ -839,7 +619,7 @@
 % current file (which can be typeset with \cs{svnkw}|{HeadURL}| or
 % \cs{svnkw}|{Filename}| after \cs{svnid} or \cs{svnidlong}, respectively).
 %
-% \DescribeMacro{svnsetmainfile}{}
+% \DescribeMacro{svnsetmainfile}
 % This will declare the current file as the main LaTeX file by defining the
 % above macros. It will automatically be called at the end of the preamble so
 % the user normally doesn't have to use it by him- or herself as long it isn't
@@ -848,7 +628,7 @@
 % over the auxiliary file. Calling it in several files will make this two macros
 % inconsistent.
 %
-% \DescribeMacro{svnkw}{\marg{keyword name}}
+% \DescribeMacro{svnkw}{<keyword name>}
 % All keywords saved with \cs{svnid}, \cs{svnidlong} or \cs{svnkwsave} can be
 % typeset by this macro which is a holdover from a very early version of this
 % package when multiple files where not supported.  It takes one argument which
@@ -867,7 +647,7 @@
 % used inside |\url|. In this case the warning code will be typeset(!) verbatim
 % into the document by |\url|.
 %
-% \DescribeMacro{svnkwdef}{\marg{keyword name}\marg{value}}
+% \DescribeMacro{svnkwdef}{<keyword name>}{<value>}
 % This macro is used to define the keyword values. This is normally only called
 % internally but could be used by the user to override single keywords.  The
 % values can then be typeset by \cs{svnkw}.  Note that this macro has no
@@ -880,9 +660,9 @@
 % |\svnkw{Revision}| or |\svnkw{LastChangedRev}| if you like.
 %
 % \subsubsection*{New in version 2.2. Will change in future versions:}
-% \DescribeMacro{ifsvnfilemodified}{\marg{case:~modified}\marg{case:~not 
-% modified}}
-% \DescribeMacro*{ifsvnmodified}{\marg{case:~modified}\marg{case:~not modified}}
+% \DescribeMacro{ifsvnfilemodified}{<case:~modified>}{<case:~not 
+% modified>}
+% \DescribeMacro{ifsvnmodified}{<case:~modified>}{<case:~not modified>}
 % This two macro can be used to check if either the current or any file was 
 % modified after it was last checked into the repository. At the moment (v2.2) a 
 % file is marked `modified' if there is either a `|*|' or `|M|' after the 
@@ -891,40 +671,40 @@
 % also be added manually.
 % 
 % Future versions of this package might mark files as modified by use of the 
-% \op{autokw} option which can read this information out of the working 
+% \opt{autokw} option which can read this information out of the working 
 % directory Subversion entries.
 %
 % \newpage
 % \subsection{Accessing Date Values}\label{sec:date}
-% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{\hspace{-2\macrosep}}l@{}}\\
-% \DescribeMacro*{svnyear}{}&
-% \DescribeMacro*{svnfileyear}{}&
-% \DescribeMacro*{svncgyear}{}\\
-% \DescribeMacro*{svnmonth}{}&
-% \DescribeMacro*{svnfilemonth}{}&
-% \DescribeMacro*{svncgmonth}{}\\
-% \DescribeMacro*{svnday}{}&
-% \DescribeMacro*{svnfileday}{}&
-% \DescribeMacro*{svncgday}{}\\
-% \DescribeMacro*{svnhour}{}&
-% \DescribeMacro*{svnfilehour}{}&
-% \DescribeMacro*{svncghour}{}\\
-% \DescribeMacro*{svnminute}{}&
-% \DescribeMacro*{svnfileminute}{}&
-% \DescribeMacro*{svncgminute}{}\\
-% \DescribeMacro*{svnsecond}{}&
-% \DescribeMacro*{svnfilesecond}{}&
-% \DescribeMacro*{svncgsecond}{}\\
-% \DescribeMacro*{svntimezone}{}&
-% \DescribeMacro*{svnfiletimezone}{}&
-% \DescribeMacro*{svncgtimezone}{}\\
-% \DescribeMacro*{svntimezonehour}{}&
-% \DescribeMacro*{svnfiletimezonehour}{}&
-% \DescribeMacro*{svncgtimezonehour}{}\\
-% \DescribeMacro*{svntimezoneminute}{}&
-% \DescribeMacro*{svnfiletimezoneminute}{}&
-% \DescribeMacro*{svncgtimezoneminute}{}\\
-% \end{tabular}
+% \begin{DescribeMacrosTab}{lll}
+% \Macro{svnyear}&
+% \Macro{svnfileyear}&
+% \Macro{svncgyear}\\
+% \Macro{svnmonth}&
+% \Macro{svnfilemonth}&
+% \Macro{svncgmonth}\\
+% \Macro{svnday}&
+% \Macro{svnfileday}&
+% \Macro{svncgday}\\
+% \Macro{svnhour}&
+% \Macro{svnfilehour}&
+% \Macro{svncghour}\\
+% \Macro{svnminute}&
+% \Macro{svnfileminute}&
+% \Macro{svncgminute}\\
+% \Macro{svnsecond}&
+% \Macro{svnfilesecond}&
+% \Macro{svncgsecond}\\
+% \Macro{svntimezone}&
+% \Macro{svnfiletimezone}&
+% \Macro{svncgtimezone}\\
+% \Macro{svntimezonehour}&
+% \Macro{svnfiletimezonehour}&
+% \Macro{svncgtimezonehour}\\
+% \Macro{svntimezoneminute}&
+% \Macro{svnfiletimezoneminute}&
+% \Macro{svncgtimezoneminute}\\
+% \end{DescribeMacrosTab}
 % \\*[\medskipamount]
 % Whenever the date information is read, \ie by
 % \cs{svnkwsave}|{LastChangedDate}| \cs{svnkwsave}|{Date}|, \cs{svnidlong} or
@@ -963,8 +743,8 @@
 % \vspace{1ex}
 %
 % \DescribeMacro{svntime}{}
-% \DescribeMacro*{svnfiletime}{}
-% \DescribeMacro*{svncgtime}{}
+% \DescribeMacro{svnfiletime}{}
+% \DescribeMacro{svncgtime}{}
 % This macros return the time part of the date only and simply return the
 % corresponding hour, minute and second macros with a colon as separator.
 %
@@ -976,8 +756,8 @@
 % compile your \LaTeX{} document.
 %
 % \DescribeMacro{svntoday}{}
-% \DescribeMacro*{svnfiletoday}{}
-% \DescribeMacro*{svncgtoday}{}
+% \DescribeMacro{svnfiletoday}{}
+% \DescribeMacro{svncgtoday}{}
 % These macros typeset the document-global, current-file or current-group date,
 % respectively, using the format of |\today| which depends on the used language.
 % To adjust the language of your document use the \pkg{babel} package.
@@ -994,8 +774,8 @@
 % This macro registers \meta{full name} as full name for \meta{author} (a
 % subversion username) for later use with \cs{svnFullAuthor}.
 %
-% \DescribeMacro{svnFullAuthor}{\marg{author name or macro}}
-% \DescribeMacro*{svnFullAuthor*}{\marg{author name or macro}}
+% \DescribeMacro{svnFullAuthor}{<author name or macro>}
+% \DescribeMacro{svnFullAuthor*}{<author name or macro>}
 % Takes the username as argument and returns the full name if it was registered
 % first with \cs{svnRegisterAuthor}, otherwise it returns the given username.
 % The star version returns the username in parentheses after the full name.
@@ -1015,8 +795,8 @@
 % This registers \meta{tag name} as tag name for \meta{revision number} for
 % later use with \cs{svnFullRevision}.
 %
-% \DescribeMacro{svnFullRevision}{\marg{revision number or macro}}
-% \DescribeMacro*{svnFullRevision*}{\marg{revision number or macro}}
+% \DescribeMacro{svnFullRevision}{<revision number or macro>}
+% \DescribeMacro{svnFullRevision*}{<revision number or macro>}
 % Takes a revision number coming from a macro like \cs{svnrev}, \cs{svnfilerev}
 % or a number as argument and returns the full name if it was registered first
 % with \cs{svnRegisterRevision}, otherwise it returns ``Revision \meta{revision
@@ -1025,7 +805,7 @@
 %
 % \subsection{Verbatim URLs with and without Hyperlinks}
 % \vspace{-\baselineskip}
-% \DescribeMacro{svnnolinkurl}{\marg{macro with returns special text}}
+% \DescribeMacro{svnnolinkurl}{<macro with returns special text>}
 % This macro allows you to write |\svnnolinkurl{\svnkw{HeadURL}}| and get the
 % Head URL typeset verbatim. However |\url{|\cs{svnkw}|{HeadURL}}|
 % (\pkg{hyperref} package) gives you the same result with a hyperlink. Both
@@ -1046,11 +826,11 @@
 % document.
 %
 % \DescribeMacro{tableofrevisions}{}
-% If the \op{table} is enabled a table of revision is written into a file called
+% If the \opt{table} is enabled a table of revision is written into a file called
 % \meta{main \LaTeX\ file}|.svt| (|t| for table) which can be included using the
 % \cs{tableofrevisions} macro. The table contains the revision information of
 % the complete document and of all defined groups.
-% If the \op{subgroups} option is set the table will also include the single
+% If the \opt{subgroups} option is set the table will also include the single
 % files sorted by group.\par
 %
 % \subsubsection*{Table Format Macros}
@@ -1098,20 +878,20 @@
 %   \caption{Table formatting macros and their position.}\label{fig:tablemacros}
 % \end{figure}
 %
-% \DescribeMacro{svnrevisionsname}{}
+% \DescribeMacro{svnrevisionsname}
 % Holds the name of the table of revisions which is printed above it. The
 % default is ``Table of Revisions'' which can be changed \eg to another
 % language.
 %
-% \DescribeMacro{svnbeforetable}{}
+% \DescribeMacro{svnbeforetable}
 % Can hold some content to be placed between the headline and the table.
 %
-% \DescribeMacro{svnaftertable}{}
+% \DescribeMacro{svnaftertable}
 % Can hold some content to be placed after the table. By default it holds a
 % macro to force a new page.
 %
-% \DescribeMacro{svntable}{}
-% \DescribeMacro*{endsvntable}{}
+% \DescribeMacro{svntable}
+% \DescribeMacro{endsvntable}
 % This macros build the table environment and hold a |\begin{tabular}{llll}|
 % |\end{tabular}| group by default. They can be redefined using\\
 % \hspace*{3em}|\renewcommand{svntable}{...}{...}|.\\ In order to support
@@ -1120,29 +900,29 @@
 % other table macros are written as string and will be expanded when the |.svt|
 % is read back.
 %
-% \DescribeMacro{svntablehead}{}
+% \DescribeMacro{svntablehead}
 % Holds the table head row ``Name |&| Rev |&| Author |&| Date |\\\hline|''.
 %
-% \DescribeMacro{svntablefoot}{}
+% \DescribeMacro{svntablefoot}
 % Can hold the table foot row but is empty by default.
 %
 % \noindent
-% \begin{tabular}{@{}l@{\hspace{-2\macrosep}}l@{}}\\
-%   \DescribeMacro*{svnglobalrow}{}   & \DescribeMacro*{endsvnglobalrow}{}   \\
-%   \DescribeMacro*{svngrouprow}{}    & \DescribeMacro*{endsvngrouprow}{}    \\
-%   \DescribeMacro*{svnsubgrouprow}{} & \DescribeMacro*{endsvnsubgrouprow}{} \\
-%   \DescribeMacro*{svnfilerow}{}     & \DescribeMacro*{endsvnfilerow}{}     \\
-% \end{tabular}
-% \\*[\medskipamount]
+% \begin{DescribeMacrosTab}{ll}
+%   \Macro{svnglobalrow}   & \Macro{endsvnglobalrow}   \\
+%   \Macro{svngrouprow}    & \Macro{endsvngrouprow}    \\
+%   \Macro{svnsubgrouprow} & \Macro{endsvnsubgrouprow} \\
+%   \Macro{svnfilerow}     & \Macro{endsvnfilerow}     \\
+% \end{DescribeMacrosTab}
+%
 % This macros are placed at the begin and end of every corresponding row and are
 % empty be default. They can be used to insert horizontal lines before or after
 % certain row types.
 %
-% \DescribeMacro{svntabglobal}{}
+% \DescribeMacro{svntabglobal}
 % Simply typesets the name for the row holding the information of the whole
 % document, \eg ``Document''.
 %
-% \DescribeMacro{svntabgroup}{\marg{group name}}
+% \DescribeMacro{svntabgroup}{<\/group name>}
 % Formats the group name.
 %
 % \DescribeMacro{svntabsubgroup}{\marg{nesting level
@@ -1158,15 +938,15 @@
 % (1,2,3,\ldots)}\marg{file path/name}}
 % Same as for the subgroup above but for file names.
 %
-% \DescribeMacro{svntabrev}{\marg{revision number}}
+% \DescribeMacro{svntabrev}{<revision number>}
 % Allows the formatting of the revision number. If empty the number will be
 % typeset as normal. Conditional formatting is possible using the \pkg{ifthen}
 % package: \eg the highest revision should be bold:
 % \begin{verbatim}
 %  \renewcommand*{\svntabrev}[1]{\ifthenelse{#1=\svnrev}{\textbf{#1}}{#1}}
 % \end{verbatim}
-% \vspace{-1\baselineskip}
-% \DescribeMacro{svntabauthor}{\marg{author username}}
+%
+% \DescribeMacro{svntabauthor}{<author username>}
 % Formats the user names in the table. The macro \cs{svnFullAuthor} is a good
 % candidate to be used here.
 %
@@ -1229,22 +1009,21 @@
 % any combination of them. Please note that the word |jobname| stands for
 % the main \LaTeX\ file name without the |.tex| extension.
 %
-% \DescribeScript{svn-multi.pl}{\meta{jobname}}
+% \DescribeScript{svn-multi.pl}<\/jobname>
 % As already mentioned in the \cs{svnexternal} description above this script
-% reads the requested external filename from the \meta{jobname}|.aux| file. The
+% reads the requested external filename from the \meta{\/jobname}|.aux| file. The
 % Subversion command line client |svn| is then used to fetch the needed keywords
 % which are placed in a \cs{svnidlong} macro inside a \meta{source file}|.svx|
 % file. Every single source file which uses \cs{svnexternal} will become its own
 % |.svx| file which allows to attach specific external files to one (or more)
 % specific source files.
 %
-% \DescribeScript{svn-multi.pl}{\meta{jobname} [-{}-group \meta{group name}]
-% \meta{file(s)} \ldots}
+% \DescribeScript{svn-multi.pl}<\/jobname>~['--group'~<\/group name>]~<\/file(s)>~!\ldots!
 % The second way to use \scr{svn-multi.pl} is to call it with a list of external
-% files. A keyword group can be specified using the |--group| \meta{group name}
+% files. A keyword group can be specified using the |--group| \meta{\/group name}
 % option which can placed any number of times between the file names. The group
 % is used for all external files listed after the option until the next group is
-% specified. All keywords of these files are written in the \meta{jobname}|.svx|
+% specified. All keywords of these files are written in the \meta{\/jobname}|.svx|
 % file and read in by the main \LaTeX\ file if a, possible empty,
 % \cs{svnexternal} macro is included. This allows for easy including of many
 % external files without specifying them all inside the source file. For example
@@ -1256,10 +1035,9 @@
 % the files given by \cs{svnexternal} in this sub-file will not be honoured in
 % this case.
 %
-% \DescribeScript{svn-multi.pl}{\meta{jobname} [-{}-group \meta{group name}]
-% -{}-fls}
+% \DescribeScript{svn-multi.pl}<\/jobname>~['--group'~<\/group name>]~'--fls'
 % Instead of providing a list of all non-\LaTeX/external files the |--fls|
-% option can be used to read this list from the \meta{jobname}|.fls| file. This
+% option can be used to read this list from the \meta{\/jobname}|.fls| file. This
 % file is produced by the \LaTeX\ compiler when run with the |--recorder| option
 % and contains a list of all input and output files. Only input files with a
 % relative path are used. A corresponding keyword group can also be specified.
@@ -1361,7 +1139,7 @@
 % \end{DepPackage}
 %
 % \begin{DepPackage}{graphics}
-% If the \op{graphics} option is enabled the following macro is patched to
+% If the \opt{graphics} option is enabled the following macro is patched to
 % record the file name and path of the included graphic.
 % \infoline{Patched internal macros:} |\Gin@setfile|
 % \infoline{Version used:} 2006/02/20 v1.0o
@@ -1372,7 +1150,7 @@
 % \begin{DepPackage}{pgf}
 % Like the \pkg{graphics} package above a macro of this package is pathed to
 % record the file names and paths of included images when the option
-% \op{pgfimages} is enabled. Because this images pre-declares images for later
+% \opt{pgfimages} is enabled. Because this images pre-declares images for later
 % use the internal declared `image macros' are patched as well.
 % \infoline{Patched internal macros:} |\pgf@declareimage|,
 % \hbox{|\pgf@image@|\meta{image name}|!|}
@@ -1521,7 +1299,7 @@
 \fi
 %    \end{macrocode}
 %
-% Check if \op{autoload} was set explicitly and obey the value.
+% Check if \opt{autoload} was set explicitly and obey the value.
 %    \begin{macrocode}
 \ifx\@svnmulti@autoload\@undefined
 \else
@@ -1546,7 +1324,7 @@
 \fi\fi\fi\fi
 %    \end{macrocode}
 
-% Set \op{autokw} modes:
+% Set \opt{autokw} modes:
 %    \begin{macrocode}
 \def\svn@temp{true}
 \ifx\@svnmulti@autokw\svn@temp
@@ -1800,7 +1578,7 @@
 % \subsection{Auto-Keywords}
 
 % Special care must be taken for the line feed character, otherwise it causes an 
-% error if \op{autokw} is disabled.
+% error if \opt{autokw} is disabled.
 %    \begin{macrocode}
 \begingroup
 \@makeother\^^L
@@ -3638,7 +3416,7 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \end{macrocode}
 % \end{macro}
 
-% If \op{external} option is not enabled a placeholder macro is defined which
+% If \opt{external} option is not enabled a placeholder macro is defined which
 % simply ignores its argument.
 %    \begin{macrocode}
 \else
@@ -4340,7 +4118,7 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 %    \end{macrocode}
 % \end{macro}
 
-% Load the keywords of every subfile if the \op{autokw} option is enabled and 
+% Load the keywords of every subfile if the \opt{autokw} option is enabled and 
 % the extension is not on the ignore list.
 %
 % This code is placed here because it has to come after the at-begin-input-file 
@@ -4375,7 +4153,6 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
 % \subsection{Backward compatibility wrapper \texttt{svnkw.sty}}
 % For backward compatibility a wrapper file with the old package name |svnkw| is
 % provided. Newer documents should use the name \svnmulti.
-% \setcounter{CodelineNo}{0}
 % \iffalse
 %</package>
 %<*wrapper>
