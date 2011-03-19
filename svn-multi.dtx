@@ -58,7 +58,7 @@
 \CodelineIndex
 %\PageIndex
 \RecordChanges
-%\OnlyDescription
+\OnlyDescription
 \widowpenalty=500
 \clubpenalty=500
 \listfiles
@@ -177,8 +177,6 @@
 %
 % \maketitle
 %
-% \vfill
-%
 % \section{Introduction}
 % This package allows to typeset version control (VC) information provided by 
 % Subversion\footnote{Subversion homepage: \url{http://subversion.tigris.org/}} 
@@ -203,7 +201,6 @@
 %   \item Including of the VC information of external files.
 %   \item Table of Revisions.
 % \end{itemize}
-% \newpage
 %
 % \subsection{Scope of Keywords}
 % This package provides the Subversion keyword data in several different scopes:
@@ -674,7 +671,6 @@
 % \opt{autokw} option which can read this information out of the working 
 % directory Subversion entries.
 %
-% \newpage
 % \subsection{Accessing Date Values}\label{sec:date}
 % \begin{DescribeMacrosTab}{lll}
 % \Macro{svnyear}&
@@ -742,22 +738,22 @@
 % \endgroup
 % \vspace{1ex}
 %
-% \DescribeMacro{svntime}{}
-% \DescribeMacro{svnfiletime}{}
-% \DescribeMacro{svncgtime}{}
+% \DescribeMacro{svntime}
+% \DescribeMacro{svnfiletime}
+% \DescribeMacro{svncgtime}
 % This macros return the time part of the date only and simply return the
 % corresponding hour, minute and second macros with a colon as separator.
 %
-% \DescribeMacro{svnpdfdate}{}
+% \DescribeMacro{svnpdfdate}
 % Returns the last changed date of the whole document in a format needed for
 % |\pdfinfo|. Can be used like this:\\
 % \hbox{}\hfill|\pdfinfo{ /CreationDate (D:\svnpdfdate) }|\hfill\hbox{}\\
 % to set the PDF creation date to the last changed date if you use |pdflatex| to
 % compile your \LaTeX{} document.
 %
-% \DescribeMacro{svntoday}{}
-% \DescribeMacro{svnfiletoday}{}
-% \DescribeMacro{svncgtoday}{}
+% \DescribeMacro{svntoday}
+% \DescribeMacro{svnfiletoday}
+% \DescribeMacro{svncgtoday}
 % These macros typeset the document-global, current-file or current-group date,
 % respectively, using the format of |\today| which depends on the used language.
 % To adjust the language of your document use the \pkg{babel} package.
@@ -770,7 +766,7 @@
 % then you can write \eg |\svnFullAuthor{\svnauthor}| or
 % |\svnFullAuthor{\svnfileauthor}|.
 %
-% \DescribeMacro{svnRegisterAuthor}{\marg{author}\marg{full name}}
+% \DescribeMacro{svnRegisterAuthor}{<author>}{<\/full name>}
 % This macro registers \meta{full name} as full name for \meta{author} (a
 % subversion username) for later use with \cs{svnFullAuthor}.
 %
@@ -791,7 +787,7 @@
 % correct results when you like to tag the to-be-checked-in revision.  Please
 % note that this has nothing to do with the normal subversion tagging.
 %
-% \DescribeMacro{svnRegisterRevision}{\marg{revision number}\marg{tag name}}
+% \DescribeMacro{svnRegisterRevision}{<revision number>}{<tag name>}
 % This registers \meta{tag name} as tag name for \meta{revision number} for
 % later use with \cs{svnFullRevision}.
 %
@@ -825,7 +821,7 @@
 % typeset which holds the version control information of all files of the
 % document.
 %
-% \DescribeMacro{tableofrevisions}{}
+% \DescribeMacro{tableofrevisions}
 % If the \opt{table} is enabled a table of revision is written into a file called
 % \meta{main \LaTeX\ file}|.svt| (|t| for table) which can be included using the
 % \cs{tableofrevisions} macro. The table contains the revision information of
@@ -925,8 +921,7 @@
 % \DescribeMacro{svntabgroup}{<\/group name>}
 % Formats the group name.
 %
-% \DescribeMacro{svntabsubgroup}{\marg{nesting level
-% (1,2,3,\ldots)}\marg{subgroup name}}
+% \DescribeMacro{svntabsubgroup}{<nesting level (1,2,3,\ldots)>}{<subgroup name>}
 % Formats a subgroup name. The name is derived from a file name and therefore 
 % could contain characters like `|_|' which should be taken into account. The
 % macro \cs{svnnolinkurl} can be used for this. Because subgroups can be nested
@@ -934,8 +929,7 @@
 % different indents for different levels: \eg: 
 % |\addtolength{\leftskip}{#1\someindentamount}|.
 %
-% \DescribeMacro{svntabfile}{\marg{nesting level
-% (1,2,3,\ldots)}\marg{file path/name}}
+% \DescribeMacro{svntabfile}{<nesting level (1,2,3,\ldots)>}{<\/file path/name>}
 % Same as for the subgroup above but for file names.
 %
 % \DescribeMacro{svntabrev}{<revision number>}
@@ -962,8 +956,7 @@
 % Version 2.0 now supports the inclusion of keywords of external files using the
 % following macros and the Perl script \scr{svn-multi.pl}.
 %
-% \DescribeMacro{svnexternal}{\oarg{group name}\{\{\meta{filea}\}\ignorespaces
-% \{\meta{fileb}\}\ldots\{\meta{filex}\}\}}
+% \DescribeMacro{svnexternal}[<\/group name>]{<\/file~1>}{<\/file~2>}!\ldots!{<\/file~$n$>}
 % Subversion keywords of external files (\eg non-\LaTeX\ files like images or
 % even directories) can be included using this macro which awaits a list of
 % files, each with the full path relative to the main \LaTeX\ file and each
@@ -982,8 +975,7 @@
 % makes sense if \eg the included graphics are taken as logical part of a source
 % file.
 %
-% \DescribeMacro{svnexternalpath}{\{\{\meta{patha}\}\ignorespaces
-% \{\meta{pathb}\}\ldots\{\meta{pathx}\}\}}
+% \DescribeMacro{svnexternalpath}{{<path~1>}{<path~2>}!\ldots!{<path~$n$>}}
 % This macro can be used in the document preamble to declare a set of paths to
 % be scanned for files specified with \cs{svnexternal}. This avoids the need to
 % provide the path again and again for every file.
@@ -1526,10 +1518,10 @@
 % change during the document and are used to produce the values of the
 % |\svn|\meta{kw} macros when the |.aux| file is written.\par
 % Group wide macros are initialised when the group is first defined and have
-% three different macros: |\svng@|\meta{group}|@|\meta{kw} (defined in |.aux|),
-% |\@svng@|\meta{group}|@|\meta{kw} (accumulator) and also an access
-% macro |\svncg|\meta{group} which uses
-% |\svn@g|\meta{current group}|@|\meta{kw}.
+% three different macros: \Macro\svng@<\/group>'@'<kw>\relax (defined in |.aux|),
+% \Macro\@svng@<\/group>'@'<kw>\relax (accumulator) and also an access
+% macro \Macro\svncg<\/group> which uses
+% \Macro\svn@g<current group>'@'<kw>.
 %    \begin{macrocode}
 % Init values
 \def\svn@revinit{-2}
@@ -2796,10 +2788,10 @@
 %    \end{macrocode}
 
 % \begin{macro}{\svngroup}[1]{group name}
-% Saves the group to |\svn@g| and initiates |\svn@g@|\meta{group name}|@rev|
-% and |\@svn@g@|\meta{group name}|@rev| if this is the first time the group
+% Saves the group to |\svn@g| and initiates \Macro\svn@g@<group name>'@rev'
+% and \Macro\@svn@g@<group name>'@rev' if this is the first time the group
 % got used.\par
-% The current group symbol `|*|' is invalid here because there is no way to
+% The current group symbol "*" is invalid here because there is no way to
 % change to a current group.
 %    \begin{macrocode}
 \def\svngroup#1{%
@@ -3094,7 +3086,7 @@
 
 
 % \begin{macro}{\svn@gkwset}[3]{group name}{keyword name}{value}
-% Sets \meta{value} for \meta{keyword} in \meta{group}.
+% Sets \meta{value} for \meta{keyword} in \meta{\/group}.
 %    \begin{macrocode}
 \def\svn@gkwset#1#2#3{%
   \expandafter
