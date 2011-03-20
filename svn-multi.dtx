@@ -1541,7 +1541,7 @@
 \def\svn@temp{}
 
 \def\svn@pg{} \def\svn@g{} \def\svn@cg{\svn@g} \def\svn@rg{\svn@pg}
-\let\@svng@@files\relax
+\let\@svng@@files\empty
 
 \def\svn@initfile{%
   \global\let\svnfilerev\svn@revinit
@@ -2805,10 +2805,15 @@
     }{}%
   \xdef\svn@g{#1}%
   \let\svn@pg\svn@g
-  \ifx\svn@g\empty\else%
+  \svn@checkgroup{#1}%
+}
+\def\svn@checkgroup#1{%
+  \begingroup
+  \edef\svn@g{#1}%
 %    \end{macrocode}
 % Only initialise the group at first usage:
 %    \begin{macrocode}
+  \ifx\svn@g\empty\else%
     \expandafter
     \ifx\csname @svng@\svn@g @rev\endcsname\relax%
       \svn@initgroup{\svn@g}%
@@ -2823,6 +2828,7 @@
       \fi
     \fi
   \fi
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2926,12 +2932,16 @@
   \ifx\csname @svng@#2@files@#1\endcsname\relax%
     \expandafter\gdef\csname @svng@#2@files@#1\endcsname{1}%
     %
+    \expandafter\ifx\csname @svng@#2@files\endcsname\empty%
+      \expandafter\xdef\csname @svng@#2@files\endcsname{#1}%
+    \else
     \@ifundefined{@svng@#2@files}%
       {\expandafter\xdef\csname @svng@#2@files\endcsname{#1}}%
       {\expandafter\xdef\csname @svng@#2@files\endcsname{%
         \csname @svng@#2@files\endcsname,#1%
        }%
       }%
+    \fi
   \fi
   }%
 }
@@ -3310,6 +3320,7 @@ lof,log,lot,out,svn,svt,svx,toc}
       {\edef\svn@eg{\svn@externalgroup}}%
       {\edef\svn@eg{#1}}%
     }%
+  \svn@checkgroup{\svn@eg}%
   \svne@@external#2\relax
   \svn@popfilestack
 }
