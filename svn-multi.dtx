@@ -2007,6 +2007,8 @@
 % |\svn@value| which can change very soon after this macro.
 %    \begin{macrocode}
 \def\@svn@updateid#1#2#3#4{%
+  \begingroup
+  \let\protect\@unexpandable@protect
   \xdef\svnfilerev{#1}%
   \ifsvn@modified
     \global\let\ifsvnfilemodified\@firstoftwo
@@ -2051,6 +2053,7 @@
       \fi
     \fi
   \fi
+  \endgroup
 }
 
 \def\@svncg@save#1#2{%
@@ -2275,7 +2278,10 @@
 % make the definition globally.
 %    \begin{macrocode}
 \newcommand{\svnkwdef@}[2]{%
+  \begingroup
+  \let\protect\@unexpandable@protect
   \expandafter\xdef\csname svnkw#1\endcsname{#2}%
+  \endgroup
 }
 %    \end{macrocode}
 % Example: |\svnkwdef{Revision}{23}| will define |\svnkwRevision| as 23.
@@ -3332,6 +3338,7 @@ lof,log,lot,out,svn,svt,svx,toc}
           {\def\svn@temp{\svn@externalgroup}}%
           {\def\svn@temp{#1}}%
         }%
+      \let\protect\@unexpandable@protect
       \immediate\write\svn@write{%
         \noexpand\@svnexternal[\svn@temp]{\currfilepath}{#2}%
       }%
@@ -3350,9 +3357,12 @@ lof,log,lot,out,svn,svt,svx,toc}
 %    \begin{macrocode}
 \def\svnexternalpath#1{%
   \if@filesw
+    \begingroup
+    \let\protect\@unexpandable@protect
     \immediate\write\svn@write{%
       \noexpand\@svnexternalpath{#1}%
     }%
+    \endgroup
   \fi
 }
 %    \end{macrocode}
@@ -4132,8 +4142,11 @@ patch generated macros '\string\pgf@image@<name>!' from the 'pgf' package!}%
   \if@filesw
     \ifx\@svn@rev\empty\else
       \ifnum\@svn@rev<1\else
+        \begingroup
+        \let\protect\@unexpandable@protect
         \svn@writesvn
         \svn@writesvt
+        \endgroup
       \fi
     \fi
   \fi
