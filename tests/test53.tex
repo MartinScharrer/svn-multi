@@ -1,0 +1,25 @@
+\documentclass[12pt]{report}
+\usepackage{svn-multi}
+
+% URL without _ or %
+\svnidlong
+{$HeadURL: svn+ssh://scharrer-online.de/home/martin/svn/src/trunk/latex/svn-multi/tests/test6.tex $}
+{$LastChangedDate: 2008-12-03 13:29:19 +0000 (Wed, 03 Dec 2008) $}
+{$LastChangedRevision: 146 $}
+{$LastChangedBy: martin $}
+
+\begin{document}
+
+\chapter{Test 53}
+Definition of \verb+\ifsvnmodified+: file was not modified\\
+
+\noindent
+The revision number should not include the 'M' marker:\\
+Rev: \ifnum\svnrev>0 \fi
+File Rev: \ifnum\svnfilerev>0 \fi
+
+% Should not be modified
+\ifsvnmodified    {\error}{not modified}
+\ifsvnfilemodified{\error}{not modified}
+
+\end{document}
