@@ -1992,11 +1992,11 @@
 %    \begin{macrocode}
 \def\svn@scanId@#1 #2 #3 #4 #5\relax{%
   \@svn@scandate{#3 #4}%
-  \@svn@updateid{#2}{#3 #4}{#5}{#1}%
   \svnkwdef{Filename}{#1}%
   \svnkwdef{Date}{#3 #4}%
   \svnkwdef{Revision}{#2}%
   \svnkwdef{Author}{#5}%
+  \@svn@updateid{\svnkw{Revision}}{\svnkw{Date}}{\svnkw{Author}}{\svnkw{URL}}%
 }
 %    \end{macrocode}
 % \end{macro}
