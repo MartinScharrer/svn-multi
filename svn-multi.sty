@@ -192,6 +192,8 @@
   \begingroup
   \edef\svn@stringa{#1}%
   \edef\svn@stringb{#2}%
+  \@onelevel@sanitize\svn@stringa
+  \@onelevel@sanitize\svn@stringb
   \ifx\svn@stringa\svn@stringb
     \endgroup
     \expandafter
