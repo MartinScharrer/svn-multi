@@ -13,8 +13,9 @@ DTXFILES      = ${MAINDTXS}
 INSFILES      = ${CONTRIBUTION}.ins
 LTXFILES      = ${CONTRIBUTION}.sty svnkw.sty
 MAINPDFS      = ${CONTRIBUTION}.pdf svn-multi-pl.pdf
-LTXDOCFILES   = svn-multi.pdf README
-LTXSRCFILES   = ${DTXFILES} ${INSFILES}
+LTXDOCFILES   = svn-multi.pdf README example_chap1.tex example_main.tex group_example.tex
+LTXSRCFILES   = ${DTXFILES} ${INSFILES} 
+FIXEDSRCFILES = ${INSFILES} README example_chap1.tex example_main.tex group_example.tex
 PLAINFILES    = #${CONTRIBUTION}.tex
 PLAINDOCFILES = #${CONTRIBUTION}.?
 PLAINSRCFILES = #${CONTRIBUTION}.?
@@ -77,7 +78,7 @@ endif
 
 ${BUILDDIR}: ${MAINFILES}
 	-mkdir ${BUILDDIR} 2>/dev/null || true
-	cp ${INSFILES} README ${BUILDDIR}/
+	cp ${FIXEDSRCFILES} README ${BUILDDIR}/
 	$(foreach DTX,${MAINDTXS}, tex '\input ydocincl\relax\includefiles{${DTX}}{${BUILDDIR}/${DTX}}' && rm -f ydocincl.log;)
 	cd ${BUILDDIR}; $(foreach INS, ${INSFILES}, tex ${INS};)
 	cd ${BUILDDIR}; $(foreach DTX, ${MAINDTXS}, ${LATEXMK} ${DTX};)
