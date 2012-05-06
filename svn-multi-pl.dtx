@@ -8,11 +8,9 @@
 #  version 0.1, Mar 1st, 2009
 # --------------------------------------------------------------
 #
-# Copyright (C) 2006-2009 Martin Scharrer
+# Copyright (C) 2006-2012 Martin Scharrer
 # E-mail: martin@scharrer-online.de
-# WWW: http://latex.scharrer-online.de/svn-multi/
-#
-# $Id$
+# Code repository: https://bitbucket.org/martin_scharrer/svn-multi
 #
 # This program works only in combination with the LaTeX package 'svn-multi' and
 # generates .svx files with '\svnidlong' macros holding Subversion keywords for
@@ -59,15 +57,15 @@
 %<*driver>
 \fi
 \makeatletter
-% $Id$
+% $Id: svn-multi-pl.dtx 1873 2010-07-26 15:31:45Z martin $
 \def\svnmultipl@version {v0.1a}
 \def\svnmultipl@rev  $#1: #2 ${\def\svnmultipl@rev{#2}}
 \def\svnmultipl@date $#1: #2-#3-#4 #5 ${%
   \def\svnmultipl@today{{\year#2\month#3\day#4\today}}%
   \def\svnmultipl@date{#2/#3/#4}%
 }
-\svnmultipl@rev  $Rev$
-\svnmultipl@date $Date$
+\svnmultipl@rev  $Rev: 1873 $
+\svnmultipl@date $Date: 2010-07-26 17:31:45 +0200 (Mon, 26 Jul 2010) $
 
 \ProvidesFile{svn-multi-pl.dtx}
  [\svnmultipl@date\space\svnmultipl@version\space SVN Keywords extractor for svn-multi]

@@ -1,29 +1,37 @@
 % \iffalse meta-comment
-% Copyright (C) 2006-2011 by Martin Scharrer <martin@scharrer-online.de>
-% http://latex.scharrer-online.de/svn-multi/
-% -----------------------------------------------------------------
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%   http://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-%
-% The Current Maintainer of this work is Martin Scharrer.
-%
-% This work consists of the files svn-multi.dtx and svn-multi.ins
-% and the derived files svn-multi.sty and svnkw.sty.
-%
+%<=*COPYRIGHT>
+%% Copyright (C) 2006-2012 by Martin Scharrer <martin@scharrer-online.de>
+%% -----------------------------------------------------------------------
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Martin Scharrer.
+%%
+%% This work consists of the files svn-multi.dtx and svn-multi.ins
+%% and the derived filebase svn-multi.sty and svnkw.sty.
+%%
+%<=/COPYRIGHT>
 % \fi
+%
 % \iffalse
 %<*driver>
-\ProvidesFile{svn-multi.dtx}[2011/08/30 svn-multi DTX file]
-
+\ProvidesFile{svn-multi.dtx}[%
+%<=*DATE>
+    2011/08/30
+%<=/DATE>
+%<=*VERSION>
+    v2.4d
+%<=/VERSION>
+    svn-multi DTX file]
 \documentclass{ydoc}[2011/03/19]
+\GetFileInfo{svn-multi.dtx}
 \usepackage[english]{babel}
 \dateenglish
 
@@ -44,7 +52,7 @@
 \CodelineIndex
 %\PageIndex
 \RecordChanges
-%\OnlyDescription
+\OnlyDescription
 \widowpenalty=500
 \clubpenalty=500
 \listfiles
@@ -159,11 +167,12 @@
 % \DoNotIndex{\ProcessKeyvalOptions,\SetupKeyvalOptions}
 % \DoNotIndex{\@firstoftwo,\@secondoftwo,\@gobble}
 %
+% \GetFileInfo{svn-multi.dtx}
 % \author{Martin Scharrer}
 % \email{martin@scharrer-online.de}
-% \date{Version \expandafter\@gobble\svnmulti@version\\[0.5ex]\svnmulti@today}
-%
-% \GetFileInfo[svn-multi.dtx]
+% \ifdefined\repository
+%   \repository{https://bitbucket.org/martin_scharrer/svn-multi}
+% \fi
 % \maketitle
 %
 % \section{Introduction}
