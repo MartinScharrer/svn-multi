@@ -188,3 +188,68 @@ webupload: ${CTAN_FILE}
 	${WEBBROWSER} 'http://dante.ctan.org/upload.html?contribution=${CONTRIBUTION}&version=${VERSION}&name=${NAME}&email=${EMAIL}&summary=${SUMMARY}&directory=${DIRECTORY}&DoNotAnnounce=${DONOTANNOUNCE}&announce=${ANNOUNCEMENT}&notes=${NOTES}&license=${LICENSE}&freeversion=${FREEVERSION}' &
 
 
+###############################################################################
+TESTDIR = tests
+TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
+TESTARGS = -output-directory ${TESTDIR}
+
+LATEX_OPTIONS = -interaction=batchmode
+LATEX = pdflatex ${LATEX_OPTIONS}
+
+RED   = \033[01;31m
+GREEN = \033[01;32m
+WHITE = \033[00m
+
+CP = cp -v
+MV = mv -v
+RMDIR = rm -rf
+MKDIR = mkdir -p
+
+.PHONY: testclean ${TESTS} ${CHECK_LOG}
+
+###############################################################################
+
+example: example.pdf gexample
+
+example.pdf: example_main.tex example_chap1.tex ${PACKAGE}.sty
+	${LATEX} $<
+	perl ./svn-multi.pl $<
+	${LATEX} $<
+	mv example_main.pdf $@
+
+gexample: group_example.pdf
+	
+group_example.pdf: group_example.tex svn-multi.sty
+	${RM} $(addprefix group_example, ${TEXAUX}) group_example_*.tex
+	${LATEX} $<
+	perl svn-multi.pl group_example
+	${LATEX} $<
+	${LATEX} $<
+	${LATEX} $<
+
+
+###############################################################################
+
+# Make sure TeX finds the input files in TESTDIR
+tests ${TESTS}: export TEXINPUTS:=${TEXINPUTS}:${TESTDIR}
+tests ${TESTS}: LATEX_OPTIONS=
+
+testclean:
+	@${RM} $(foreach ext, aux log out pdf svn svx, tests/test*.${ext})
+
+tests: testclean
+	@echo "Running tests: ${TESTS}:"
+	@${MAKE} -e -i --no-print-directory ${TESTS} \
+		TESTARGS="-interaction=batchmode -output-directory=${TESTDIR}"\
+		TESTPLOPT="-q"\
+		> /dev/null
+
+${TESTS}: % : ${TESTDIR}/%.tex testclean
+	@-${LATEX} -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
+	@if test -e ${TESTDIR}/$*.svn; then perl ./svn-multi.pl ${TESTDIR}/$* 1>/dev/null ; fi
+	@if (${LATEX} ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
+		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
+		else /bin/echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
+
+###############################################################################
+
