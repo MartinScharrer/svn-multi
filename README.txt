@@ -7,9 +7,9 @@ control system Subversion inside your LaTeX files anywhere
 you like. Unlike the very similar package 'svn' the usage of
 multiple files for one LaTeX document is well supported.
 
-Copyright (C) 2006-2016 Martin Scharrer
-E-mail: martin@scharrer-online.de
-WWW: http://latex.scharrer-online.de/svn-multi/
+Copyright (c) 2006-2022 Martin Scharrer
+E-mail: martin.scharrer@web.de
+svn-multi/
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License, either version 1.3c

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ################################################################################
-# Copyright (c) 2008 Martin Scharrer <martin@scharrer-online.de>
+# Copyright (c) 2008-2022 Martin Scharrer <martin.scharrer@web.de>
 # This is open source software under the GPL v3 or later.
 #
 # $Id$
